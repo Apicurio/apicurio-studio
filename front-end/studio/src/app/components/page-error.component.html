@@ -8,27 +8,27 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-warning"></span>
-                        <span>Server Error Encountered</span>
+                        <span i18n>Server Error Encountered</span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
-                    <p>
+                    <p i18n>
                         Uh oh!  It looks like there was an error either receiving data from the server or
                         sending data to it.  You have a couple options at this point.  You can reload the
                         page or we can shoot you back to the Dashboard.  Your choice!
                     </p>
                     <div class="actions">
-                        <a class="btn btn-primary" routerLink="/dashboard">Back to Dashboard</a>
-                        <button class="btn btn-default" (click)="reloadPage()">Reload Page</button>
+                        <a class="btn btn-primary" routerLink="/dashboard" i18n>Back to Dashboard</a>
+                        <button class="btn btn-default" (click)="reloadPage()" i18n>Reload Page</button>
                     </div>
                     <div class="details" *ngIf="showDetails">
                         <hr />
-                        <h3>Server Error Details</h3>
+                        <h3 i18n>Server Error Details</h3>
                         <pre>{{ stackTrace() }}</pre>
                     </div>
                 </div>
                 <div class="card-pf-footer" style="text-align: right">
-                    <button class="btn btn-default btn-xs" (click)="toggleDetails()">Toggle Details</button>
+                    <button class="btn btn-default btn-xs" (click)="toggleDetails()" i18n>Toggle Details</button>
                 </div>
             </div>
 
@@ -37,16 +37,16 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-search-minus"></span>
-                        <span>Page Not Found</span>
+                        <span i18n>Page Not Found</span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
-                    <p>
+                    <p i18n>
                         You attempted to navigate to a page that does not exist!  I guess you should either
                         hit the back button or go back to the Dashboard (button below).
                     </p>
                     <div class="actions">
-                        <a class="btn btn-primary" routerLink="/dashboard">Back to Dashboard</a>
+                        <a class="btn btn-primary" routerLink="/dashboard" i18n>Back to Dashboard</a>
                     </div>
                 </div>
             </div>
@@ -56,18 +56,18 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-exclamation-triangle"></span>
-                        <span>Data Already Exists</span>
+                        <span i18n>Data Already Exists</span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
-                    <p>
+                    <p i18n>
                         It appears you attempted to add or create something that already exists
                         in Apicurio Studio.  Instead of adding it again, try finding the resource
                         that is already there and editing it!
                     </p>
                     <div class="actions">
-                        <a class="btn btn-primary" routerLink="/dashboard">Back to Dashboard</a>
-                        <button class="btn btn-default" (click)="reloadPage()">Reload Page</button>
+                        <a class="btn btn-primary" routerLink="/dashboard" i18n>Back to Dashboard</a>
+                        <button class="btn btn-default" (click)="reloadPage()" i18n>Reload Page</button>
                     </div>
                 </div>
             </div>
@@ -77,17 +77,17 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-plug"></span>
-                        <span>Connection Error</span>
-                        <span>(Could Not Reach Server)</span>
+                        <span i18n>Connection Error</span>
+                        <span i18n>(Could Not Reach Server)</span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
-                    <p>
+                    <p i18n>
                         We couldn't reach the Apicurio Studio server!  Perhaps try reloading this
                         page in a few minutes?  Maybe check your internet connection?
                     </p>
                     <div class="actions">
-                        <button class="btn btn-default" (click)="reloadPage()">Reload Page</button>
+                        <button class="btn btn-default" (click)="reloadPage()" i18n>Reload Page</button>
                     </div>
                 </div>
             </div>
@@ -97,27 +97,27 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-info"></span>
-                        <span>Problem Detected: {{ errorMessage() }}</span>
+                        <span><ng-container i18n>Problem Detected:</ng-container> {{ errorMessage() }}</span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
-                    <p>
+                    <p i18n>
                         We have detected a problem that prevented us from doing what you wanted!  Please
                         see the error message above, and optionally the (toggleable) details below for
                         more information.
                     </p>
                     <div class="actions">
-                        <a class="btn btn-primary" routerLink="/dashboard">Back to Dashboard</a>
-                        <button class="btn btn-default" (click)="reloadPage()">Reload Page</button>
+                        <a class="btn btn-primary" routerLink="/dashboard" i18n>Back to Dashboard</a>
+                        <button class="btn btn-default" (click)="reloadPage()" i18n>Reload Page</button>
                     </div>
                     <div class="details" *ngIf="showDetails">
                         <hr />
-                        <h3>Server Error Details</h3>
+                        <h3 i18n>Server Error Details</h3>
                         <pre>{{ stackTrace() }}</pre>
                     </div>
                 </div>
                 <div class="card-pf-footer" style="text-align: right">
-                    <button class="btn btn-default btn-xs" (click)="toggleDetails()">Toggle Details</button>
+                    <button class="btn btn-default btn-xs" (click)="toggleDetails()" i18n>Toggle Details</button>
                 </div>
             </div>
 
@@ -126,21 +126,21 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-exclamation"></span>
-                        <span>Unexpected Error on Page</span>
-                        <span>(</span>
+                        <span i18n>Unexpected Error on Page</span>
+                        <span i18n>(</span>
                         <span>{{ errorMessage() }}</span>
-                        <span>)</span>
+                        <span i18n>)</span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
-                    <p>
+                    <p i18n>
                         Something unexpected happened and we aren't sure how to deal with it.
                         You could try reloading the page, or you could just go back to the
                         Dashboard.  See the buttons below...
                     </p>
                     <div class="actions">
-                        <a class="btn btn-primary" routerLink="/dashboard">Back to Dashboard</a>
-                        <button class="btn btn-default" (click)="reloadPage()">Reload Page</button>
+                        <a class="btn btn-primary" routerLink="/dashboard" i18n>Back to Dashboard</a>
+                        <button class="btn btn-default" (click)="reloadPage()" i18n>Reload Page</button>
                     </div>
                 </div>
             </div>

@@ -2,12 +2,12 @@
      (dragover)="onDragOver($event)" (drop)="onDrop($event)"
      (dragend)="onDragEnd($event)" (dragexit)="onDragEnd($event)" (dragleave)="onDragEnd($event)">
     <div class="panel-body">
-        <h1>Import an Existing API Design</h1>
+        <h1 i18n>Import an Existing API Design</h1>
         <form id="importapi-form" class="form-horizontal" (submit)="importApi()" #apiForm="ngForm" accept-charset="UTF-8">
             <div>&nbsp;</div>
 
             <div class="form-group">
-                <label class="col-sm-2 control-label required" for="api-import-type">Import Type</label>
+                <label class="col-sm-2 control-label required" for="api-import-type" i18n>Import Type</label>
                 <div class="col-sm-10">
                     <drop-down id="api-import-type" [id]="'api-import-type'" [value]="importType" [options]="importTypeOptions()"
                                (onValueChange)="changeImportType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
@@ -15,13 +15,13 @@
             </div>
 
             <div class="form-group" *ngIf="importType === 'from-url' || importType === 'from-scs'">
-                <label class="col-sm-2 control-label required" for="api-repository-url">Url</label>
+                <label class="col-sm-2 control-label required" for="api-repository-url" i18n>Url</label>
                 <div class="col-sm-10">
                     <input name="repository.url" type="url" id="api-repository-url" class="form-control"
                            placeholder="{{ urlPlaceholder() }}" required pattern="https?://.+" #url="ngModel"
                            [(ngModel)]="model.url">
-                    <form-error-message [inputModel]="url" [type]="'required'">URL is required.</form-error-message>
-                    <form-error-message [inputModel]="url" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                    <form-error-message [inputModel]="url" [type]="'required'" i18n>URL is required.</form-error-message>
+                    <form-error-message [inputModel]="url" [type]="'pattern'" i18n>Please enter a valid URL.</form-error-message>
                 </div>
             </div>
 
@@ -36,15 +36,15 @@
                 </div>
             </div>
 
-            <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="notice-of-required"><ng-container i18n>The fields marked with</ng-container> <span class="required-icon" i18n>*</span> <ng-container i18n>are required.</ng-container></div>
             <hr/>
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-primary pull-right"
                             [disabled]="!apiForm.form.valid || importing || (importType === 'from-text' && !model.data)">
-                        <span *ngIf="!importing">Import API</span>
-                        <span *ngIf="importing"><span class="spinner spinner-xs spinner-inline"></span> Importing...</span>
+                        <span *ngIf="!importing" i18n>Import API</span>
+                        <span *ngIf="importing"><span class="spinner spinner-xs spinner-inline"></span> <ng-container i18n>Importing...</ng-container></span>
                     </button>
                 </div>
             </div>

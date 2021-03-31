@@ -1,0 +1,762 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="e03b6cba7c88318e4f91a60a079870e8fba4bee7" datatype="html">
+        <source>Link</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1bd5e17c9582661e20763a7634ef07881e33bbd7" datatype="html">
+        <source>Action</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f7df9cd8be3d814020d48d76ebc52cf8d8c198b7" datatype="html">
+        <source>Disabled
+                            Link</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="928530c69ff78938c4a66cdfbe254a826a0cd4f1" datatype="html">
+        <source>Disabled Action</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8d12487caabeabfabd93ff058895ebf1133b8327" datatype="html">
+        <source>Separated Link</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1fc7357bcaebbe82afafd57fbfd136f38a0503aa" datatype="html">
+        <source>About
+                                </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4b66399fe443ac78dc983197aa0c426a13e33efa" datatype="html">
+        <source>Logout </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.component.html</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8fe73a4787b8068b2ba61f54ab7e0f9af2ea1fc9" datatype="html">
+        <source>Version</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.component.html</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="66a74c224cd9a8a550848567571a06f7c4411939" datatype="html">
+        <source>Built On</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.component.html</context>
+          <context context-type="linenumber">100</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a9fb32ac9d2a1e31b7fd798bef3294495eac5b72" datatype="html">
+        <source>Edition</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/app.component.html</context>
+          <context context-type="linenumber">104</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="64aa9ee3c0e903ad61fc4f4c5fbb9eb1960d4763" datatype="html">
+        <source>Server Error Encountered</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="04cc3efcd841b71e2a1d539b86c1179fea8f7c52" datatype="html">
+        <source>
+                        Uh oh!  It looks like there was an error either receiving data from the server or
+                        sending data to it.  You have a couple options at this point.  You can reload the
+                        page or we can shoot you back to the Dashboard.  Your choice!
+                    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="cb2b053029578ad7b1a8ead9a9a19fc1464f5715" datatype="html">
+        <source>Back to Dashboard</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">142</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="69712d0548d1fdf0b6894a8bc684ae388feae2bf" datatype="html">
+        <source>Reload Page</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">70</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">111</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">143</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="26c4f232b9eb49843463a654bbe4346e44545b63" datatype="html">
+        <source>Server Error Details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="64aae0100891e9c52588d8cd12060e774c6a49f1" datatype="html">
+        <source>Toggle Details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">120</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="03354b2489337882c5a4fd033fec9b9f4b8d109f" datatype="html">
+        <source>Page Not Found</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fc832e06f40548813419e682b05d7e3b3602187b" datatype="html">
+        <source>
+                        You attempted to navigate to a page that does not exist!  I guess you should either
+                        hit the back button or go back to the Dashboard (button below).
+                    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="005160b8d39f5f60fed8e0c0352e62b5e94cff44" datatype="html">
+        <source>Data Already Exists</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8071716ed4f70c9061c7e4cfd5e193ca55276a27" datatype="html">
+        <source>
+                        It appears you attempted to add or create something that already exists
+                        in BAMs Design.  Instead of adding it again, try finding the resource
+                        that is already there and editing it!
+                    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="aee61aa04b417b80d5e7cf4066753b5f9435076d" datatype="html">
+        <source>Connection Error</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="619c5f853f51591369832ee9eabbb7dfd141ee91" datatype="html">
+        <source>(Could Not Reach Server)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="02c193bb36069b23a1a5e59490dd185a225a2c05" datatype="html">
+        <source>
+                        We couldn&apos;t reach the BAMs Design server!  Perhaps try reloading this
+                        page in a few minutes?  Maybe check your internet connection?
+                    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="211a76a68d6daf214410496f5a48fb9c4cd1c485" datatype="html">
+        <source>Problem Detected:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">100</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="225cb07dd92e286ebb64e69c68e9a1df3c393e0c" datatype="html">
+        <source>
+                        We have detected a problem that prevented us from doing what you wanted!  Please
+                        see the error message above, and optionally the (toggleable) details below for
+                        more information.
+                    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">104</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4975ebfc68a35f84f0e5efb1103a0926d798e51c" datatype="html">
+        <source>Unexpected Error on Page</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b9a288cab426778c9f0259495c27abc78574aea4" datatype="html">
+        <source>(</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">130</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4c1ee1cda895b28a652ff5ef2fd4962fbc254cea" datatype="html">
+        <source>)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">132</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="11129e3ef87c356db9a3eebe599ef155dfc51a3a" datatype="html">
+        <source>
+                        Something unexpected happened and we aren&apos;t sure how to deal with it.
+                        You could try reloading the page, or you could just go back to the
+                        Dashboard.  See the buttons below...
+                    </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/page-error.component.html</context>
+          <context context-type="linenumber">136</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f65253954b66e929a8b4d5ecaf61f9129f8cec64" datatype="html">
+        <source>Dashboard</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="200f2878b67bb7fa339771425b2c2bb48b2a40b7" datatype="html">
+        <source>APIs</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/create.page.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="121cc5391cd2a5115bc2b3160379ee5b36cd7716" datatype="html">
+        <source>Settings</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">42</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6282d921b930bd0457c570618a63ac91b63cdc5f" datatype="html">
+        <source>View All APIs</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="74db9ef73cc13a38db7c414d069aacc8790d6bc2" datatype="html">
+        <source>Create New API</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="165ec06c7bd1a007b1e7ccf04f84bb6a1f357221" datatype="html">
+        <source>Import API</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/_components/import-form.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="831f1065c703ea0cbbd418cc25837966315ba640" datatype="html">
+        <source>User Profile</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d00f4312c9904eb96b41c91ab5e374a642bd687a" datatype="html">
+        <source>Linked Accounts</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="12ce9154fb4b6bd40e48658b72fe680d164e94e9" datatype="html">
+        <source>Validation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/components/vertical-nav.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="cff1428d10d59d14e45edec3c735a27b5482db59" datatype="html">
+        <source>Name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7b2c55bedfd9144783a1d444834472c43817b687" datatype="html">
+        <source>Filter by name or tag...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+        <note priority="1" from="description">Filter by name or tag...</note>
+      </trans-unit>
+      <trans-unit id="826b25211922a1b46436589233cb6f1a163d89b7" datatype="html">
+        <source>Delete</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f72626a892b0d49b0ee50ad0220e0deb2eab9ed7" datatype="html">
+        <source>APIs found</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4f779dd2e2592e32cfa6e86053a2360c9f206640" datatype="html">
+        <source>(out of</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5f40396eb21b212975e71b5002bcf8349b53f6ae" datatype="html">
+        <source>total)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="416193bb373d59477458b00e5922d755e2e2cacd" datatype="html">
+        <source>Deleting</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="597a3e31631fbc0bee509750276c7ad9625c5489" datatype="html">
+        <source>APIs, please wait...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b6fbb52c893c534de009092af6ab7761a25984a8" datatype="html">
+        <source>No APIs Found</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="14903a800c3caf0472824eec6a8d7db8bb3768e3" datatype="html">
+        <source>
+                    It seems you have no APIs in the Studio yet.  This is probably the first time you&apos;ve used it and haven&apos;t
+                    created or improted any APIs yet!
+                </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="30e77b7fb341ab3519e9501ba82698f314fbd0fc" datatype="html">
+        <source>
+                    Click below to either create a new API or import an existing API to the Studio.
+                </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="411f990ab6ec58ab3cd12ba3db757c52a9bec8b2" datatype="html">
+        <source>Toggle Dropdown</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="c677cc67b851319121a641fe73ad2198a3e27f40" datatype="html">
+        <source>No APIs matched the filter!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">78</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="74d614bd2edf955027376266d24274b498410eb5" datatype="html">
+        <source>Try changing your filter criteria - there is definitely at least one API you can work on...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">78</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="c83f2bee4b2e6d1d3b7c81e517c55ab6953d47de" datatype="html">
+        <source>Loading API Designs...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ab7175df7ad8743d30e203395d31d3f6569a047c" datatype="html">
+        <source>Do you really want to delete the selected API?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">109</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a269a3bd14054c2a49ae56505dd95b341c5c7431" datatype="html">
+        <source>Do you really want to delete the</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="26d7856a60f2e699721451688f3353f0f37724ec" datatype="html">
+        <source>selected APIs?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="c9cf08381074345fa223dbf0868d9310defb46d3" datatype="html">
+        <source>NOTE:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">114</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="67687b9b825aaeb326aeaced60ccba27fe8690a8" datatype="html">
+        <source>This will</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2b79d397a0c9be28e79170570308b6d8e1ceb13b" datatype="html">
+        <source>permanently</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d8ded8b3c7cad04836c18b0857651ffb433ef5d4" datatype="html">
+        <source>delete the API definition from BAMs Design.  This operation cannot be undone.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/apis.page.html</context>
+          <context context-type="linenumber">115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4781e9dc403fd5e961a080a7e4051edfddd42c43" datatype="html">
+        <source>Create a New API Design</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fb216c22c4d30ebe07a374b289c7fe21c00b080c" datatype="html">
+        <source>Enter the new API&apos;s name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="541087322c34e8b26954fd67ff4fc80d1a6c1b33" datatype="html">
+        <source>Name is required.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="eec715de352a6b114713b30b640d319fa78207a0" datatype="html">
+        <source>Description</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3c1b41170c3ebff8a1b3d0bbb7014808e5d19184" datatype="html">
+        <source>Type a short description of the API</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f61c6867295f3b53d23557021f2f4e0aa1d0b8fc" datatype="html">
+        <source>Type</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="467bff8643ae9525e0477374f132a6b19bedbfd5" datatype="html">
+        <source>Template</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4c2d9042d63e2a84704b2a5c065eb9c8e20f6478" datatype="html">
+        <source>The fields marked with</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/_components/import-form.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2ce68fac5384fd3b3ff02cfcc40a82840469e697" datatype="html">
+        <source>*</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/_components/import-form.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5a487355f108a0770a9e5c0d06a98e06fbe85717" datatype="html">
+        <source>are required.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/_components/import-form.component.html</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="a764537506b378a3f3019cae3679874478fa8dd8" datatype="html">
+        <source>Create API</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/create.page.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="114b5f92b9192b229ffc9a450319a97ccca2aa5c" datatype="html">
+        <source>Creating</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/create/_components/create-form.component.html</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="eef3aa77089fdaad4810b520eec98594c9ef69b0" datatype="html">
+        <source>Error Importing API!</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="0173a4907bf3831c05a0ddef1e9c4b6b6091e1b5" datatype="html">
+        <source>We couldn&apos;t find the content you&apos;ve asked us to import.  Please verify that
+                a valid API Design exists at the import location.  If you are trying to import from Source Control, make sure you
+                have successfully linked your account(s) in</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d0adb9a980a9616bb555c98a0da8d72e0c30a31b" datatype="html">
+        <source>What is this page?</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="eb67d0c9b08f244ede992f74ad5e99bea2c9dbe7" datatype="html">
+        <source>
+                    Hey there! Here you can import an existing API to the Studio by either giving us the OpenAPI document or
+                    telling us where we can get it.
+                </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9a7deb5863235091f3644d7c3a8ba2f08166b733" datatype="html">
+        <source>
+                    Choose from the following options:
+                </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6be11fafb8308aaf6b94d00ca0c694d274c83a90" datatype="html">
+        <source>Import from Source Control URL</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4073be61e390f3836f6ab6c589b75b4574e64301" datatype="html">
+        <source>Import raw content from URL</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bd26cab18d5cf17d02999a7882f7f690966f42a9" datatype="html">
+        <source>Copy/Paste raw content directly</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/import.page.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="97adbb0e708bd0fd7d75b968d826a9552ef10b57" datatype="html">
+        <source>Import an Existing API Design</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/_components/import-form.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6f8afc5af866b097d528f4272b8883a9ec6f99a6" datatype="html">
+        <source>Import Type</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/_components/import-form.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="484d369ab6d7e37d808403e2141c38c01f6f9911" datatype="html">
+        <source>Url</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/_components/import-form.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="35cfb2e4af68a6d99b843362f048a9f3c7c5f35e" datatype="html">
+        <source>URL is required.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/_components/import-form.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9ddccf3ea37d9232c2f47f32d4b884b4d416daf5" datatype="html">
+        <source>Please enter a valid URL.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/_components/import-form.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="92fdc7f8bb857e868f7babaa4a6ab866b5fa7c22" datatype="html">
+        <source>Importing...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/import/_components/import-form.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="498538d4d17307f23ebddd5e2d9f53473a4b7c3a" datatype="html">
+        <source>No description available.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/_components/apis-list.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/pages/apis/_components/apis-cards.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+        <note priority="1" from="description">No description available.</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

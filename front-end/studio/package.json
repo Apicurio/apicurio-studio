@@ -14,7 +14,9 @@
     "debug": "ng serve --port 8888 --sourcemap -dev -v",
     "build": "ng build --prod",
     "build-editor": "ng build editor && cp-cli README-npm.md dist-editor/README.md",
-    "extract": "ng xi18n --output-path locale"
+    "extract": "ng xi18n --output-path locale",
+    "start-ja": "ng serve --port 8888 --aot --configuration=ja",
+    "debug-ja": "ng serve --port 8888 --sourcemap -dev -v --configuration=ja"
   },
   "private": false,
   "peerDependencies": {

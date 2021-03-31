@@ -6,10 +6,10 @@
                 <button type="button" class="close" aria-hidden="true" (click)="cancel()">
                     <span class="pficon pficon-close"></span>
                 </button>
-                <h4 class="modal-title" id="configureValidationModalLabel">Configure API Validation</h4>
+                <h4 class="modal-title" id="configureValidationModalLabel" i18n>Configure API Validation</h4>
             </div>
             <div class="modal-body">
-                <p>Choose a validation profile from the list below.</p>
+                <p i18n>Choose a validation profile from the list below.</p>
                 <div class="profiles">
                     <div class="profile" *ngFor="let profile of allValidationProfiles()" (click)="selectProfile(profile)">
                         <div class="rad">
@@ -25,8 +25,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="ok()" [disabled]="!isDirty()">OK</button>
-                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+                <button type="button" class="btn btn-primary" (click)="ok()" [disabled]="!isDirty()" i18n>OK</button>
+                <button type="button" class="btn btn-default" (click)="cancel()" i18n>Cancel</button>
             </div>
         </div>
     </div>

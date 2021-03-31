@@ -13,7 +13,10 @@
     "start": "ng serve --port 8888 --aot",
     "debug": "ng serve --port 8888 --sourcemap -dev -v",
     "build": "ng build --prod",
-    "build-editor": "ng build editor --prod && cp-cli README-npm.md dist-editor/README.md"
+    "build-editor": "ng build editor --prod && cp-cli README-npm.md dist-editor/README.md",
+    "extract": "ng extract-i18n --output-path src/locale",
+    "start-ja": "ng serve --port 8888 --aot --configuration=ja",
+    "debug-ja": "ng serve --port 8888 --sourcemap -dev -v --configuration=ja"
   },
   "private": false,
   "peerDependencies": {
@@ -41,6 +44,7 @@
     "@angular/core": "11.2.14",
     "@angular/forms": "11.2.14",
     "@angular/language-service": "11.2.14",
+    "@angular/localize": "11.2.14",
     "@angular/platform-browser": "11.2.14",
     "@angular/platform-browser-dynamic": "11.2.14",
     "@angular/router": "11.2.14",

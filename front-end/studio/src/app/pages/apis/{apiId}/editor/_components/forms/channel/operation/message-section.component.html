@@ -6,15 +6,15 @@
     </span>
     <div body>
         <signpost *ngIf="!hasMessage()">
-            <span>No request body has been defined.</span>
-            <a (click)="addMessage()">Add a message</a>
+            <span i18n>No request body has been defined.</span>
+            <a (click)="addMessage()" i18n>Add a message</a>
         </signpost>
 
         <div class="half-section" *ngIf="hasMessage()">
             <!-- Name -->
             <div class="section-field-label">
                 <validation-problem [model]="message()" [shallow]="true" [property]="'name'"></validation-problem>
-                <span>Name</span>
+                <span i18n>Name</span>
             </div>
             <div class="section-field name">
                 <pf-inline-text-editor [value]="message().name" [noValueMessage]="'No name.'"
@@ -27,7 +27,7 @@
             <!-- Title -->
             <div class="section-field-label">
                 <validation-problem [model]="message()" [shallow]="true" [property]="'title'"></validation-problem>
-                <span>Title</span>
+                <span i18n>Title</span>
             </div>
             <div class="section-field title">
                 <pf-inline-text-editor [value]="message().title" [noValueMessage]="'No title.'"
@@ -40,7 +40,7 @@
             <!-- Summary -->
             <div class="section-field-label">
                 <validation-problem [model]="message()" [shallow]="true" [property]="'summary'"></validation-problem>
-                <span>Summary</span>
+                <span i18n>Summary</span>
             </div>
             <div class="section-field summary">
                 <pf-inline-text-editor [value]="message().summary" [noValueMessage]="'No summary.'"
@@ -53,7 +53,7 @@
             <!-- Description -->
             <div class="section-field-label">
                 <validation-problem [model]="message()" [shallow]="true" [property]="'description'"></validation-problem>
-                <span>Description</span>
+                <span i18n>Description</span>
             </div>
             <div class="section-field description">
                 <inline-markdown-editor [value]="message().description" [noValueMessage]="'No description.'"
@@ -69,7 +69,7 @@
             <!-- Correlation ID -->
             <div class="section-field-label">
                 <validation-problem [model]="message()" [shallow]="true" [property]="'name'"></validation-problem>
-                <span>Correlation ID</span>
+                <span i18n>Correlation ID</span>
             </div>
             <div class="section-field name">
                 <pf-inline-text-editor [value]="message().name" [noValueMessage]="'No name.'"
@@ -82,7 +82,7 @@
             <!-- Content Type -->
             <div class="section-field-label">
                 <validation-problem [model]="message()" [shallow]="true" [property]="'contentType'"></validation-problem>
-                <span>Content Type</span>
+                <span i18n>Content Type</span>
             </div>
             <div class="section-field contentType">
                 <pf-inline-text-editor [value]="message().contentType" [noValueMessage]="'No content type. Default will apply.'"
@@ -95,7 +95,7 @@
             <!-- Schema Format -->
             <div class="section-field-label">
                 <validation-problem [model]="message()" [shallow]="true" [property]="'schemaFormat'"></validation-problem>
-                <span>Schema Format</span>
+                <span i18n>Schema Format</span>
             </div>
             <div class="section-field schemaFormat">
                 <drop-down [value]="message().schemaFormat"
@@ -107,17 +107,17 @@
 
         <div class="section-field-label" *ngIf="hasMessage()">
             <validation-problem [model]="message()" [shallow]="true" [property]="'payload'"></validation-problem>
-            <span>Content</span>
+            <span i18n>Content</span>
         </div>
         <div class="parts-tabs" *ngIf="hasMessage()">
             <div class="tab" [class.active]="isPartActive('payload')">
                 <a (click)="setActivePart('payload')">
-                    <span>Payload</span>
+                    <span i18n>Payload</span>
                 </a>
             </div>
             <div class="tab" [class.active]="isPartActive('headers')">
                 <a (click)="setActivePart('headers')">
-                    <span>Headers</span>
+                    <span i18n>Headers</span>
                 </a>
             </div>
         </div>

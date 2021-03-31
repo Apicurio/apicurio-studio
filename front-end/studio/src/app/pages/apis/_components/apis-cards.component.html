@@ -13,7 +13,7 @@
                     <hr/>
                     <tag-list [tags]="api.tags" (tagSelected)="selectTag($event)"></tag-list>
                     <p class="api-description">
-                        <markdown-summary [data]="api.description" emptyText="No description available."></markdown-summary>
+                        <markdown-summary [data]="api.description" emptyText="No description available." i18n-emptyText="No description available."></markdown-summary>
                     </p>
                 </div>
             </div>

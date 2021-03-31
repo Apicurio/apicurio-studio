@@ -2,7 +2,7 @@
     <div class="detail-label">
         <span class="fa fa-fw fa-code"></span>
         <span>{{ definitionName() }}</span>
-        <span class="imported label label-info" *ngIf="isImported()">Imported</span>
+        <span class="imported label label-info" *ngIf="isImported()" i18n>Imported</span>
     </div>
     <div class="detail-actions">
         <div class="dropdown">
@@ -13,33 +13,33 @@
                 <li>
                     <a href="#" onclick="return false" (click)="collapseAllSections()">
                         <span class="fa fa-compress"></span>
-                        <span>Collapse All Sections</span>
+                        <span i18n>Collapse All Sections</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" onclick="return false" (click)="expandAllSections()">
                         <span class="fa fa-expand"></span>
-                        <span>Expand All Sections</span>
+                        <span i18n>Expand All Sections</span>
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
                     <a href="#" onclick="return false" (click)="rename()">
                         <span class="fa fa-pencil-square-o"></span>
-                        <span>Rename Data Type</span>
+                        <span i18n>Rename Data Type</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" onclick="return false" (click)="clone()">
                         <span class="fa fa-clone"></span>
-                        <span>Clone Data Type</span>
+                        <span i18n>Clone Data Type</span>
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
                     <a href="#" onclick="return false" (click)="delete()">
                         <span class="pficon pficon-delete"></span>
-                        <span>Delete Data Type</span>
+                        <span i18n>Delete Data Type</span>
                     </a>
                 </li>
             </ul>
@@ -48,20 +48,20 @@
 </div>
 <div class="detail-tabs">
     <ul class="nav nav-tabs nav-tabs-pf">
-        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()">Design</a></li>
-        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()">Source</a></li>
+        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()" i18n>Design</a></li>
+        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()" i18n>Source</a></li>
     </ul>
 </div>
 
 <!-- Source Mode -->
 <div class="detail-actionbar" *ngIf="isSourceMode()">
-    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
-    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
-    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span i18n>Format</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span i18n>Revert</span></button>
+    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span i18n>Save</span></button>
     <button class="btn btn-default btn-xs" [disabled]="!canToggleSourceFormat()" (click)="toggleSourceFormat()">
         <span class="fa fa-fw fa-code"></span>
-        <span *ngIf="isSourceFormatYaml()">As JSON</span>
-        <span *ngIf="isSourceFormatJson()">As YAML</span>
+        <span *ngIf="isSourceFormatYaml()" i18n>As JSON</span>
+        <span *ngIf="isSourceFormatJson()" i18n>As YAML</span>
     </button>
 </div>
 <div class="detail-content" style="position: relative" *ngIf="isSourceMode()">
@@ -83,8 +83,8 @@
                 <definition-info-section [definition]="definition"></definition-info-section>
 
                 <!-- Simple Type -->
-                <section type="simpleType" label="TYPE" *ngIf="!isObject()"
-                         contextHelp="Use this section to manage the type information."
+                <section type="simpleType" i18n-label label="TYPE" *ngIf="!isObject()"
+                         i18n-contextHelp contextHelp="Use this section to manage the type information."
                          [validationModels]="[ definition ]"
                          [validationProperties]="['type', 'format', 'items']"
                          [validationShallow]="true">
@@ -95,10 +95,10 @@
                 </section>
 
                 <!-- Inheritance -->
-                <section type="inheritance" label="INHERITANCE" *ngIf="isObject()">
+                <section type="inheritance" i18n-label label="INHERITANCE" *ngIf="isObject()">
                     <div body>
                         <div class="section-field-label">
-                            <span>Inheritance Type</span>
+                            <span i18n>Inheritance Type</span>
                         </div>
                         <div class="section-field inheritance-type">
                             <drop-down [id]="'inheritance-type'" [value]="inheritanceType()" [options]="inheritanceTypeOptions()"
@@ -123,19 +123,19 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active">
                 <!-- Reference -->
-                <section type="dtReference" label="REFERENCE"
-                         contextHelp="This section describes the externally referenced Data Type."
+                <section type="dtReference" i18n-label label="REFERENCE"
+                         i18n-contextHelp contextHelp="This section describes the externally referenced Data Type."
                          [validationModels]="[ definition ]"
                          [validationProperties]="['$ref']"
                          [validationShallow]="true">
                     <div body>
-                        <span>This Data Type is an external reference to: </span>
+                        <span i18n>This Data Type is an external reference to: </span>
                         <em><a [href]="refLink()" target="_blank"><span class="fa fa-fw fa-external-link"></span>{{ definition.$ref }}</a></em>
                     </div>
                 </section>
                 <!-- Reference Details -->
-                <section type="dtReferenceDetails" label="REFERENCE DETAILS"
-                         contextHelp="This section shows details about the externally referenced Data Type.">
+                <section type="dtReferenceDetails" i18n-label label="REFERENCE DETAILS"
+                         i18n-contextHelp contextHelp="This section shows details about the externally referenced Data Type.">
                     <div body>
                         <pre>{{ referenceContent() }}</pre>
                     </div>
@@ -147,8 +147,8 @@
 
 <clone-definition-dialog #cloneDefinitionDialog (onClone)="clone($event)"></clone-definition-dialog>
 <rename-entity-dialog #renameDefinitionDialog
-                      type="Data Type"
-                      title="Rename Data Type"
-                      warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
+                      i18n-type type="Data Type"
+                      i18n-title title="Rename Data Type"
+                      i18n-warning warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
                       validationPattern="[a-zA-Z0-9\.\-_]+"
                       (onRename)="rename($event)"></rename-entity-dialog>

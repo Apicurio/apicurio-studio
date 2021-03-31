@@ -17,7 +17,7 @@
                         <div class="card-pf card-pf-accented">
                             <div class="card-pf-heading">
                                 <h1 class="card-pf-title">
-                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading API information...</p>
+                                    <p i18n><span class="spinner spinner-xs spinner-inline"></span> Loading API information...</p>
                                 </h1>
                             </div>
                         </div>
@@ -31,8 +31,8 @@
         <div class="form-instructions col-md-3">
             <div class="alert alert-info">
                 <span class="pficon pficon-info"></span>
-                <strong>What is this page?</strong>
-                <p style="line-height: 18px">
+                <strong i18n>What is this page?</strong>
+                <p style="line-height: 18px" i18n>
                     Use this page to create or update mocks from your API. If the API is using OpenAPI 3.0 or AsyncAPI 2.0 format and you have 
                     a Microcks instance configured, you may choose to publish once or create an importing job.
                 </p>
@@ -41,9 +41,9 @@
         <div class="col-md-7">
             <div class="mockapi-panel panel panel-default">
                 <div class="panel-body" *ngIf="!mocked">
-                    <h2>Create a Mock for API "{{ api.name }}"?</h2>
+                    <h2 i18n>Create a Mock for API "{{ api.name }}"?</h2>
 
-                    <p>
+                    <p i18n>
                         Doing this will create/update a Mock in the Microcks server, allowing you to test your API!
                     </p>
 
@@ -54,8 +54,8 @@
                         <div class="form-group" >
                             <div class="col-sm-offset-2 col-sm-10">
                                 <button type="submit" class="btn btn-primary pull-right" [disabled]="!isValid() || mocking">
-                                    <span *ngIf="!mocking">Mock API</span>
-                                    <span *ngIf="mocking"><span class="spinner spinner-xs spinner-inline"></span> Mocking...</span>
+                                    <span *ngIf="!mocking" i18n>Mock API</span>
+                                    <span *ngIf="mocking" i18n><span class="spinner spinner-xs spinner-inline"></span> Mocking...</span>
                                 </button>
                             </div>
                         </div>
@@ -68,16 +68,16 @@
                     <div class="blank-slate-pf-icon">
                         <span class="pficon pficon pficon-add-circle-o"></span>
                     </div>
-                    <h1>API Mocked Successfully</h1>
-                    <p>
+                    <h1 i18n>API Mocked Successfully</h1>
+                    <p i18n>
                         Your API <strong>{{ api.name }}</strong> has been successfully mocked to Microcks server.  No additional
                         steps need to be taken.
                     </p>
-                    <p>
+                    <p i18n>
                         Service Reference: <a href="{{ mockReference.mockURL }}" target="external">{{ mockReference.serviceRef }}</a>
                     </p>
                     <div class="blank-slate-pf-main-action">
-                        <a [routerLink]="[ '/apis', api.id ]" class="btn btn-primary btn-lg">OK</a>
+                        <a [routerLink]="[ '/apis', api.id ]" class="btn btn-primary btn-lg" i18n>OK</a>
                     </div>
                 </div>
             </div>

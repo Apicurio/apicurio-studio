@@ -1,4 +1,4 @@
-<section type="servers" label="SERVERS"
+<section type="servers" i18n-label label="SERVERS"
          [counterItems]="servers()"
          [contextHelp]="description"
          [collaborationNodePath]="serversPath()"
@@ -12,8 +12,8 @@
     </span>
     <div body>
         <signpost *ngIf="servers().length === 0">
-            <span>No servers have been defined.</span>
-            <a (click)="onAddServer()">Add a server</a>
+            <span i18n>No servers have been defined.</span>
+            <a (click)="onAddServer()" i18n>Add a server</a>
         </signpost>
 
         <!-- The list of servers -->

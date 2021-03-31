@@ -1,0 +1,2403 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="e03b6cba7c88318e4f91a60a079870e8fba4bee7" datatype="html">
+        <source>Link</source>
+      </trans-unit>
+      <trans-unit id="1bd5e17c9582661e20763a7634ef07881e33bbd7" datatype="html">
+        <source>Action</source>
+      </trans-unit>
+      <trans-unit id="f7df9cd8be3d814020d48d76ebc52cf8d8c198b7" datatype="html">
+        <source>Disabled Link</source>
+      </trans-unit>
+      <trans-unit id="928530c69ff78938c4a66cdfbe254a826a0cd4f1" datatype="html">
+        <source>Disabled Action</source>
+      </trans-unit>
+      <trans-unit id="8d12487caabeabfabd93ff058895ebf1133b8327" datatype="html">
+        <source>Separated Link</source>
+      </trans-unit>
+      <trans-unit id="1fc7357bcaebbe82afafd57fbfd136f38a0503aa" datatype="html">
+        <source>About </source>
+      </trans-unit>
+      <trans-unit id="4b66399fe443ac78dc983197aa0c426a13e33efa" datatype="html">
+        <source>Logout </source>
+      </trans-unit>
+      <trans-unit id="8fe73a4787b8068b2ba61f54ab7e0f9af2ea1fc9" datatype="html">
+        <source>Version</source>
+      </trans-unit>
+      <trans-unit id="66a74c224cd9a8a550848567571a06f7c4411939" datatype="html">
+        <source>Built On</source>
+      </trans-unit>
+      <trans-unit id="a9fb32ac9d2a1e31b7fd798bef3294495eac5b72" datatype="html">
+        <source>Edition</source>
+      </trans-unit>
+      <trans-unit id="4884511c25dae499f31e0d9b8b571620a0173fed" datatype="html">
+        <source>Project URL</source>
+      </trans-unit>
+      <trans-unit id="a6ecf76f074e2098ee024b6c2586a0475a2d6dd3" datatype="html">
+        <source>Confirm Delete</source>
+      </trans-unit>
+      <trans-unit id="d7b35c384aecd25a516200d6921836374613dfe7" datatype="html">
+        <source>Cancel</source>
+      </trans-unit>
+      <trans-unit id="826b25211922a1b46436589233cb6f1a163d89b7" datatype="html">
+        <source>Delete</source>
+      </trans-unit>
+      <trans-unit id="64aa9ee3c0e903ad61fc4f4c5fbb9eb1960d4763" datatype="html">
+        <source>Server Error Encountered</source>
+      </trans-unit>
+      <trans-unit id="04cc3efcd841b71e2a1d539b86c1179fea8f7c52" datatype="html">
+        <source> Uh oh! It looks like there was an error either receiving data from the server or sending data to it. You have a couple options at this point. You can reload the page or we can shoot you back to the Dashboard. Your choice! </source>
+      </trans-unit>
+      <trans-unit id="cb2b053029578ad7b1a8ead9a9a19fc1464f5715" datatype="html">
+        <source>Back to Dashboard</source>
+      </trans-unit>
+      <trans-unit id="69712d0548d1fdf0b6894a8bc684ae388feae2bf" datatype="html">
+        <source>Reload Page</source>
+      </trans-unit>
+      <trans-unit id="26c4f232b9eb49843463a654bbe4346e44545b63" datatype="html">
+        <source>Server Error Details</source>
+      </trans-unit>
+      <trans-unit id="64aae0100891e9c52588d8cd12060e774c6a49f1" datatype="html">
+        <source>Toggle Details</source>
+      </trans-unit>
+      <trans-unit id="03354b2489337882c5a4fd033fec9b9f4b8d109f" datatype="html">
+        <source>Page Not Found</source>
+      </trans-unit>
+      <trans-unit id="fc832e06f40548813419e682b05d7e3b3602187b" datatype="html">
+        <source> You attempted to navigate to a page that does not exist! I guess you should either hit the back button or go back to the Dashboard (button below). </source>
+      </trans-unit>
+      <trans-unit id="005160b8d39f5f60fed8e0c0352e62b5e94cff44" datatype="html">
+        <source>Data Already Exists</source>
+      </trans-unit>
+      <trans-unit id="f52dfbdb9889f54bc1d490c7cdf9c2b5a13c76a5" datatype="html">
+        <source> It appears you attempted to add or create something that already exists in Apicurio Studio. Instead of adding it again, try finding the resource that is already there and editing it! </source>
+      </trans-unit>
+      <trans-unit id="aee61aa04b417b80d5e7cf4066753b5f9435076d" datatype="html">
+        <source>Connection Error</source>
+      </trans-unit>
+      <trans-unit id="619c5f853f51591369832ee9eabbb7dfd141ee91" datatype="html">
+        <source>(Could Not Reach Server)</source>
+      </trans-unit>
+      <trans-unit id="e6bc4a02cc027553b4d0c40b7a55ac5b0b738683" datatype="html">
+        <source> We couldn&apos;t reach the Apicurio Studio server! Perhaps try reloading this page in a few minutes? Maybe check your internet connection? </source>
+      </trans-unit>
+      <trans-unit id="211a76a68d6daf214410496f5a48fb9c4cd1c485" datatype="html">
+        <source>Problem Detected:</source>
+      </trans-unit>
+      <trans-unit id="225cb07dd92e286ebb64e69c68e9a1df3c393e0c" datatype="html">
+        <source> We have detected a problem that prevented us from doing what you wanted! Please see the error message above, and optionally the (toggleable) details below for more information. </source>
+      </trans-unit>
+      <trans-unit id="4975ebfc68a35f84f0e5efb1103a0926d798e51c" datatype="html">
+        <source>Unexpected Error on Page</source>
+      </trans-unit>
+      <trans-unit id="b9a288cab426778c9f0259495c27abc78574aea4" datatype="html">
+        <source>(</source>
+      </trans-unit>
+      <trans-unit id="4c1ee1cda895b28a652ff5ef2fd4962fbc254cea" datatype="html">
+        <source>)</source>
+      </trans-unit>
+      <trans-unit id="11129e3ef87c356db9a3eebe599ef155dfc51a3a" datatype="html">
+        <source> Something unexpected happened and we aren&apos;t sure how to deal with it. You could try reloading the page, or you could just go back to the Dashboard. See the buttons below... </source>
+      </trans-unit>
+      <trans-unit id="f65253954b66e929a8b4d5ecaf61f9129f8cec64" datatype="html">
+        <source>Dashboard</source>
+      </trans-unit>
+      <trans-unit id="200f2878b67bb7fa339771425b2c2bb48b2a40b7" datatype="html">
+        <source>APIs</source>
+      </trans-unit>
+      <trans-unit id="121cc5391cd2a5115bc2b3160379ee5b36cd7716" datatype="html">
+        <source>Settings</source>
+      </trans-unit>
+      <trans-unit id="6282d921b930bd0457c570618a63ac91b63cdc5f" datatype="html">
+        <source>View All APIs</source>
+      </trans-unit>
+      <trans-unit id="74db9ef73cc13a38db7c414d069aacc8790d6bc2" datatype="html">
+        <source>Create New API</source>
+      </trans-unit>
+      <trans-unit id="165ec06c7bd1a007b1e7ccf04f84bb6a1f357221" datatype="html">
+        <source>Import API</source>
+      </trans-unit>
+      <trans-unit id="831f1065c703ea0cbbd418cc25837966315ba640" datatype="html">
+        <source>User Profile</source>
+      </trans-unit>
+      <trans-unit id="d00f4312c9904eb96b41c91ab5e374a642bd687a" datatype="html">
+        <source>Linked Accounts</source>
+      </trans-unit>
+      <trans-unit id="12ce9154fb4b6bd40e48658b72fe680d164e94e9" datatype="html">
+        <source>Validation</source>
+      </trans-unit>
+      <trans-unit id="498538d4d17307f23ebddd5e2d9f53473a4b7c3a" datatype="html">
+        <source>No description available.</source>
+        <note priority="1" from="description">No description available.</note>
+      </trans-unit>
+      <trans-unit id="cff1428d10d59d14e45edec3c735a27b5482db59" datatype="html">
+        <source>Name</source>
+      </trans-unit>
+      <trans-unit id="7b2c55bedfd9144783a1d444834472c43817b687" datatype="html">
+        <source>Filter by name or tag...</source>
+        <note priority="1" from="description">Filter by name or tag...</note>
+      </trans-unit>
+      <trans-unit id="f72626a892b0d49b0ee50ad0220e0deb2eab9ed7" datatype="html">
+        <source>APIs found</source>
+      </trans-unit>
+      <trans-unit id="4f779dd2e2592e32cfa6e86053a2360c9f206640" datatype="html">
+        <source>(out of</source>
+      </trans-unit>
+      <trans-unit id="5f40396eb21b212975e71b5002bcf8349b53f6ae" datatype="html">
+        <source>total)</source>
+      </trans-unit>
+      <trans-unit id="416193bb373d59477458b00e5922d755e2e2cacd" datatype="html">
+        <source>Deleting</source>
+      </trans-unit>
+      <trans-unit id="597a3e31631fbc0bee509750276c7ad9625c5489" datatype="html">
+        <source>APIs, please wait...</source>
+      </trans-unit>
+      <trans-unit id="b6fbb52c893c534de009092af6ab7761a25984a8" datatype="html">
+        <source>No APIs Found</source>
+      </trans-unit>
+      <trans-unit id="14903a800c3caf0472824eec6a8d7db8bb3768e3" datatype="html">
+        <source> It seems you have no APIs in the Studio yet. This is probably the first time you&apos;ve used it and haven&apos;t created or improted any APIs yet! </source>
+      </trans-unit>
+      <trans-unit id="30e77b7fb341ab3519e9501ba82698f314fbd0fc" datatype="html">
+        <source> Click below to either create a new API or import an existing API to the Studio. </source>
+      </trans-unit>
+      <trans-unit id="411f990ab6ec58ab3cd12ba3db757c52a9bec8b2" datatype="html">
+        <source>Toggle Dropdown</source>
+      </trans-unit>
+      <trans-unit id="c677cc67b851319121a641fe73ad2198a3e27f40" datatype="html">
+        <source>No APIs matched the filter!</source>
+      </trans-unit>
+      <trans-unit id="74d614bd2edf955027376266d24274b498410eb5" datatype="html">
+        <source>Try changing your filter criteria - there is definitely at least one API you can work on...</source>
+      </trans-unit>
+      <trans-unit id="c83f2bee4b2e6d1d3b7c81e517c55ab6953d47de" datatype="html">
+        <source>Loading API Designs...</source>
+      </trans-unit>
+      <trans-unit id="ab7175df7ad8743d30e203395d31d3f6569a047c" datatype="html">
+        <source>Do you really want to delete the selected API?</source>
+      </trans-unit>
+      <trans-unit id="a269a3bd14054c2a49ae56505dd95b341c5c7431" datatype="html">
+        <source>Do you really want to delete the</source>
+      </trans-unit>
+      <trans-unit id="26d7856a60f2e699721451688f3353f0f37724ec" datatype="html">
+        <source>selected APIs?</source>
+      </trans-unit>
+      <trans-unit id="c9cf08381074345fa223dbf0868d9310defb46d3" datatype="html">
+        <source>NOTE:</source>
+      </trans-unit>
+      <trans-unit id="67687b9b825aaeb326aeaced60ccba27fe8690a8" datatype="html">
+        <source>This will</source>
+      </trans-unit>
+      <trans-unit id="2b79d397a0c9be28e79170570308b6d8e1ceb13b" datatype="html">
+        <source>permanently</source>
+      </trans-unit>
+      <trans-unit id="a53662e5313662e21685fa5c7a2a16acabfed7da" datatype="html">
+        <source>delete the API definition from Apicurio Studio. This operation cannot be undone.</source>
+      </trans-unit>
+      <trans-unit id="4781e9dc403fd5e961a080a7e4051edfddd42c43" datatype="html">
+        <source>Create a New API Design</source>
+      </trans-unit>
+      <trans-unit id="fb216c22c4d30ebe07a374b289c7fe21c00b080c" datatype="html">
+        <source>Enter the new API&apos;s name</source>
+      </trans-unit>
+      <trans-unit id="541087322c34e8b26954fd67ff4fc80d1a6c1b33" datatype="html">
+        <source>Name is required.</source>
+      </trans-unit>
+      <trans-unit id="eec715de352a6b114713b30b640d319fa78207a0" datatype="html">
+        <source>Description</source>
+      </trans-unit>
+      <trans-unit id="3c1b41170c3ebff8a1b3d0bbb7014808e5d19184" datatype="html">
+        <source>Type a short description of the API</source>
+      </trans-unit>
+      <trans-unit id="f61c6867295f3b53d23557021f2f4e0aa1d0b8fc" datatype="html">
+        <source>Type</source>
+      </trans-unit>
+      <trans-unit id="467bff8643ae9525e0477374f132a6b19bedbfd5" datatype="html">
+        <source>Template</source>
+      </trans-unit>
+      <trans-unit id="da0f70ca9fa1203597685943c50cabddef3618c8" datatype="html">
+        <source>The fields marked with <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;required-icon&quot;&gt;"/>*<x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> are required.</source>
+      </trans-unit>
+      <trans-unit id="a764537506b378a3f3019cae3679874478fa8dd8" datatype="html">
+        <source>Create API</source>
+      </trans-unit>
+      <trans-unit id="114b5f92b9192b229ffc9a450319a97ccca2aa5c" datatype="html">
+        <source>Creating</source>
+      </trans-unit>
+      <trans-unit id="97adbb0e708bd0fd7d75b968d826a9552ef10b57" datatype="html">
+        <source>Import an Existing API Design</source>
+      </trans-unit>
+      <trans-unit id="6f8afc5af866b097d528f4272b8883a9ec6f99a6" datatype="html">
+        <source>Import Type</source>
+      </trans-unit>
+      <trans-unit id="484d369ab6d7e37d808403e2141c38c01f6f9911" datatype="html">
+        <source>Url</source>
+      </trans-unit>
+      <trans-unit id="35cfb2e4af68a6d99b843362f048a9f3c7c5f35e" datatype="html">
+        <source>URL is required.</source>
+      </trans-unit>
+      <trans-unit id="9ddccf3ea37d9232c2f47f32d4b884b4d416daf5" datatype="html">
+        <source>Please enter a valid URL.</source>
+      </trans-unit>
+      <trans-unit id="92fdc7f8bb857e868f7babaa4a6ab866b5fa7c22" datatype="html">
+        <source>Importing...</source>
+      </trans-unit>
+      <trans-unit id="2fb85967970ab82f5549469a3d7e1171148b94c7" datatype="html">
+        <source><x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Error Importing API!<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> We couldn&apos;t find the content you&apos;ve asked us to import. Please verify that a valid API Design exists at the import location. If you are trying to import from Source Control, make sure you have successfully linked your account(s) in <x id="START_LINK" ctype="x-a" equiv-text="&lt;a routerLink=&quot;/settings/accounts&quot;&gt;"/>Settings<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/>.</source>
+      </trans-unit>
+      <trans-unit id="d0adb9a980a9616bb555c98a0da8d72e0c30a31b" datatype="html">
+        <source>What is this page?</source>
+      </trans-unit>
+      <trans-unit id="eb67d0c9b08f244ede992f74ad5e99bea2c9dbe7" datatype="html">
+        <source> Hey there! Here you can import an existing API to the Studio by either giving us the OpenAPI document or telling us where we can get it. </source>
+      </trans-unit>
+      <trans-unit id="9a7deb5863235091f3644d7c3a8ba2f08166b733" datatype="html">
+        <source> Choose from the following options: </source>
+      </trans-unit>
+      <trans-unit id="6be11fafb8308aaf6b94d00ca0c694d274c83a90" datatype="html">
+        <source>Import from Source Control URL</source>
+      </trans-unit>
+      <trans-unit id="4073be61e390f3836f6ab6c589b75b4574e64301" datatype="html">
+        <source>Import raw content from URL</source>
+      </trans-unit>
+      <trans-unit id="bd26cab18d5cf17d02999a7882f7f690966f42a9" datatype="html">
+        <source>Copy/Paste raw content directly</source>
+      </trans-unit>
+      <trans-unit id="1d0ba2bbecb3120cf6144e7a7e2cf4f6ac566fd2" datatype="html">
+        <source>Configure API Validation</source>
+      </trans-unit>
+      <trans-unit id="f4708a8af730ec2b006dc962bdd7fad8b778e29c" datatype="html">
+        <source>Choose a validation profile from the list below.</source>
+      </trans-unit>
+      <trans-unit id="7e6c975ebea8b5f8b120905ca7acf9f8edf59d8e" datatype="html">
+        <source>OK</source>
+      </trans-unit>
+      <trans-unit id="fa84d0c5f3a15ac59d60dc2433d2c7c7b3838dd1" datatype="html">
+        <source>Download API Specification</source>
+      </trans-unit>
+      <trans-unit id="5ba2fec02b8cc463b9f68d216e7ad99aa2d5a2b0" datatype="html">
+        <source>Make a few choices below and then download the specification.</source>
+      </trans-unit>
+      <trans-unit id="7722a92a1fc887570b4f4d8a7bb916f067f32028" datatype="html">
+        <source>Format</source>
+      </trans-unit>
+      <trans-unit id="0dc2e6fb6d0244d5024e73ede409a45d5b0c8a64" datatype="html">
+        <source>References</source>
+      </trans-unit>
+      <trans-unit id="f4e529ae5ffd73001d1ff4bbdeeb0a72e342e5c8" datatype="html">
+        <source>Close</source>
+      </trans-unit>
+      <trans-unit id="dc75033a5238fdc4f462212c847a45ba8018a3fd" datatype="html">
+        <source>Download</source>
+      </trans-unit>
+      <trans-unit id="d94c41bfd49c2dfbb550beb384ab990dde8cb146" datatype="html">
+        <source>Experimental </source>
+      </trans-unit>
+      <trans-unit id="752b854803bc08425dbf3b5f5b13c92353c97d1d" datatype="html">
+        <source>Project Generation Wizard</source>
+      </trans-unit>
+      <trans-unit id="4f3e86e5e9e2eabd635e10a6db769bc0403eb85d" datatype="html">
+        <source>1</source>
+      </trans-unit>
+      <trans-unit id="8db0b881db4eef8df2a5bb757b85ff91b909df83" datatype="html">
+        <source>Select Type</source>
+      </trans-unit>
+      <trans-unit id="446c5c1e01eb5746070f8fd6e6647013366baa03" datatype="html">
+        <source>2</source>
+      </trans-unit>
+      <trans-unit id="1da848061c70efe75ca64f167ad95803472b5a0d" datatype="html">
+        <source>Configure Project</source>
+      </trans-unit>
+      <trans-unit id="a98b6fdf6513b598738f4d70bd87a696690504fa" datatype="html">
+        <source>3</source>
+      </trans-unit>
+      <trans-unit id="c2913dbeaaf4a13722357426078f1b3461adabc5" datatype="html">
+        <source>Choose Location</source>
+      </trans-unit>
+      <trans-unit id="704c876dd7b54a2c5a98342ae7c9382863db076c" datatype="html">
+        <source>4</source>
+      </trans-unit>
+      <trans-unit id="6a0723e1568abffd0d219eeba7b0ba52f5f7ed71" datatype="html">
+        <source>Push to Git</source>
+      </trans-unit>
+      <trans-unit id="9b49b4bed6fc756508c634051c553cfa0db3d145" datatype="html">
+        <source>Loading Wizard Data</source>
+      </trans-unit>
+      <trans-unit id="a25af7c83f94c3eb0e5febd466c247f4c3f128d4" datatype="html">
+        <source>Loading information needed by the Project Generation Wizard, please wait...</source>
+      </trans-unit>
+      <trans-unit id="a002d9922916ae7cec7b5061ed1eaac2c1bfd197" datatype="html">
+        <source>Bootstrap a new implementation project</source>
+      </trans-unit>
+      <trans-unit id="9710745d4e9a3c09254c33a26638d7b74357d332" datatype="html">
+        <source> Create a brand new project from this API. All boilerplate files will be generated. Use this option if this is the first time you&apos;ve generated a project for this API. </source>
+      </trans-unit>
+      <trans-unit id="7a4bb63f2e4828a1c5aa4af451c301129d95a52a" datatype="html">
+        <source>Update an existing implementation project</source>
+      </trans-unit>
+      <trans-unit id="68a104c277469719b420d2f27b56d027b00cf4ef" datatype="html">
+        <source> Update an existing implementation project that was previously generated using this API Contract. Generates a subset of the resources for the project (excludes some boilerplate). </source>
+      </trans-unit>
+      <trans-unit id="1799bc2475965707fd96dfc9a0414375b4af26f8" datatype="html">
+        <source>Skip maven project generation (generate code only)</source>
+      </trans-unit>
+      <trans-unit id="5d9e2fc8da0d2dfc5636b4c99c2b31466abbe1b4" datatype="html">
+        <source>Make the project Reactive (i.e. use CompletionStage&lt;T&gt; responses) </source>
+      </trans-unit>
+      <trans-unit id="31597114989f6aec498879e4fd21643b1c380118" datatype="html">
+        <source>Group ID</source>
+      </trans-unit>
+      <trans-unit id="40ca77187946fab59487e1aa34ba14732851f83d" datatype="html">
+        <source>org.example.api</source>
+      </trans-unit>
+      <trans-unit id="c7b9b86ed5d6bb21a4c4c230d01624ac79e4ea1b" datatype="html">
+        <source>Group ID is required.</source>
+      </trans-unit>
+      <trans-unit id="151cab3f3bc9cf57e8b28cf9566473d542c31b5e" datatype="html">
+        <source>Please enter a valid Maven groupId.</source>
+      </trans-unit>
+      <trans-unit id="ca6562b2a0ae0224e6021e586063bb5576bb0589" datatype="html">
+        <source>Artifact ID</source>
+      </trans-unit>
+      <trans-unit id="57f4a064b82129c578efdd26d5d20239451e99e3" datatype="html">
+        <source>my-api</source>
+      </trans-unit>
+      <trans-unit id="66477b6ee23f5f4d53021694b68193f8588acb9d" datatype="html">
+        <source>Artifact ID is required.</source>
+      </trans-unit>
+      <trans-unit id="d8cd7a0c4c3a0bb3a440c6f68483eb5b3536dc3a" datatype="html">
+        <source>Please enter a valid Maven artifactId.</source>
+      </trans-unit>
+      <trans-unit id="7bf24e8e86c8dd239fbfd0a1c31ee1648c964bbe" datatype="html">
+        <source>Java Package</source>
+      </trans-unit>
+      <trans-unit id="ae7936196bfcbd13caaf82ebebf599588d1b7e06" datatype="html">
+        <source>Java package is required.</source>
+      </trans-unit>
+      <trans-unit id="dfec9f1ff43e3e04cf524f27521e3c23e09f1e33" datatype="html">
+        <source>Please enter a valid Java package name.</source>
+      </trans-unit>
+      <trans-unit id="044fb86f7c0c9268b834f408da42e2b1f1a39ba4" datatype="html">
+        <source>Download result as ZIP</source>
+      </trans-unit>
+      <trans-unit id="8ba0144f3fa3af5d79dde12f496cb924a6cdb980" datatype="html">
+        <source> Download the resulting generated project as a ZIP file containing all of the generated resources. </source>
+      </trans-unit>
+      <trans-unit id="6130ea037262136948efdf471f29c6c3aebbf108" datatype="html">
+        <source>Publish result to source control</source>
+      </trans-unit>
+      <trans-unit id="924267f6faf4cde6ea4e1c0d142f99378cb35491" datatype="html">
+        <source> Publish the resulting generated project to a source control system (e.g. GitHub). </source>
+      </trans-unit>
+      <trans-unit id="b3e91986c3385ac94e773a4520233d805452f0d3" datatype="html">
+        <source>Publish To</source>
+      </trans-unit>
+      <trans-unit id="b201ba08c511a29f278d7fce7c7a59fd5347a47c" datatype="html">
+        <source>Cannot Publish API</source>
+      </trans-unit>
+      <trans-unit id="6c1ee683ce858cd3272da89e7ffc481951a052c8" datatype="html">
+        <source> You haven&apos;t linked your Apicurio account to a source control system. Do this first from the appropriate </source>
+      </trans-unit>
+      <trans-unit id="34667ccb17afe9f6c4bcb950093b10ca4c1689bf" datatype="html">
+        <source> page.</source>
+      </trans-unit>
+      <trans-unit id="f17b4dc29f2d56fbb2ceba84ab5a3af98c1de128" datatype="html">
+        <source>Not yet implemented</source>
+      </trans-unit>
+      <trans-unit id="db5604f3a4a8edc2e0773336de86eb834382dedd" datatype="html">
+        <source> Apologies, we have not </source>
+      </trans-unit>
+      <trans-unit id="b36315de37be35f1bee43d7728904a434bc5eeb3" datatype="html">
+        <source>yet</source>
+      </trans-unit>
+      <trans-unit id="1ca0b99164312f9630d76669b48ce78a9457e70c" datatype="html">
+        <source> implemented publishing a generated code project to GitLab. Check back later!</source>
+      </trans-unit>
+      <trans-unit id="5a550addf918eb734e2de2eec03e81011914cf17" datatype="html">
+        <source><x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Not yet implemented<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> Apologies, we have not <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>yet<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> implemented publishing a generated code project to Bitbucket. Check back later!</source>
+      </trans-unit>
+      <trans-unit id="ed31c09fd77c36238c13d83635f3fe5294c733d2" datatype="html">
+        <source>Location</source>
+      </trans-unit>
+      <trans-unit id="238876e035b14677843bdec2da1275b5ede98664" datatype="html">
+        <source>/path/to/project-root</source>
+      </trans-unit>
+      <trans-unit id="c0009dd3d3ae85862fafc7111aa07e88a7e32f1b" datatype="html">
+        <source>Location is required.</source>
+      </trans-unit>
+      <trans-unit id="a1b3672399ea602917bb186c947e3fe91f48174c" datatype="html">
+        <source>Commit Message</source>
+      </trans-unit>
+      <trans-unit id="c7ba5500ed231096ee340964a326121dcfb947af" datatype="html">
+        <source>Project Generation in progress</source>
+      </trans-unit>
+      <trans-unit id="59a093b9289798293cea4f90de663f513cd2017c" datatype="html">
+        <source>Please wait while we generate a project from your OpenAPI definition.</source>
+      </trans-unit>
+      <trans-unit id="40be2245aca39e1ce3ade862ef87374e1bf59bcf" datatype="html">
+        <source>Project was successfully generated</source>
+      </trans-unit>
+      <trans-unit id="9282db364443b157996de64a1df202381641386a" datatype="html">
+        <source>Alright! We&apos;ve successfully generated a project from your OpenAPI definition.</source>
+      </trans-unit>
+      <trans-unit id="913c79f96cef17f7629bceb407cd42af6c140e4e" datatype="html">
+        <source>If your ZIP download does not start within a few seconds, please click <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Download<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> below.</source>
+      </trans-unit>
+      <trans-unit id="247ee02e5aa14048937d5a6f63cfe1fddd9867e9" datatype="html">
+        <source> Your generated code project has been committed to Git and a pull/merge request has been created. Click the <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>View Pull Request<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> button below to review and merge the changes.</source>
+      </trans-unit>
+      <trans-unit id="d4c37f3821ee92fc47383e1cd2bc3144ab8090d7" datatype="html">
+        <source>View Pull Request</source>
+      </trans-unit>
+      <trans-unit id="b5343ac6231ca637aa39bd082c56b6762083e6b9" datatype="html">
+        <source> Uh oh! It seems we have encountered an error while trying to generate an implementation project from your OpenAPI definition. Perhaps close the wizard and try again... </source>
+      </trans-unit>
+      <trans-unit id="cda31dbd724cf5f4fa7a4274d9120651490c8a8c" datatype="html">
+        <source>Back</source>
+      </trans-unit>
+      <trans-unit id="f732c304c7433e5a83ffcd862c3dce709a0f4982" datatype="html">
+        <source>Next</source>
+      </trans-unit>
+      <trans-unit id="1b258b258b4cc475ceb2871305b61756b0134f4a" datatype="html">
+        <source>Generate</source>
+      </trans-unit>
+      <trans-unit id="ba402fbfd7e9aa14d7d4eb39c30f1c8787c8a1fa" datatype="html">
+        <source>Select Resource(s)</source>
+      </trans-unit>
+      <trans-unit id="166d7efcf1810781c0dd6e44c3f92277dc65b8f2" datatype="html">
+        <source>Choose </source>
+      </trans-unit>
+      <trans-unit id="6523895cfd110d53667e04c82c0f769c19d8ee74" datatype="html">
+        <source>Review</source>
+      </trans-unit>
+      <trans-unit id="76128b815d449a9be5a09205d1be37a2ca5b11f4" datatype="html">
+        <source>Choose one or more component source from the list below.</source>
+      </trans-unit>
+      <trans-unit id="f920ae22103654f2888d57671ea2163b01ea909f" datatype="html">
+        <source>Please wait, loading list of resources...</source>
+      </trans-unit>
+      <trans-unit id="5a5b2650324147d76e9720c119d0e8e2353a9d53" datatype="html">
+        <source>Choose one or more <x id="INTERPOLATION" equiv-text="{{ displayType() }}"/> from the list below.</source>
+      </trans-unit>
+      <trans-unit id="aedfeab30d688c904425373360d06b27a75e486e" datatype="html">
+        <source> Please review your <x id="INTERPOLATION" equiv-text="{{ displayType() }}"/> selections below and then click <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/>Import<x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/>. Note that if you already have components with the same name in your API Design, then the new components will not be imported. </source>
+      </trans-unit>
+      <trans-unit id="e27224f2dd59c3bb0af671bb7fad95f33ca68a78" datatype="html">
+        <source> Uh oh! It seems we have encountered an error while trying to import from other resources. Please close the wizard and try again. </source>
+      </trans-unit>
+      <trans-unit id="a059709f71aa4c0ac219e160e78a738682ca6a36" datatype="html">
+        <source>Import</source>
+      </trans-unit>
+      <trans-unit id="89e084db691c044b194ebb1cd1a1756b26bd2249" datatype="html">
+        <source>Sharing Documentation</source>
+      </trans-unit>
+      <trans-unit id="998eac4ea3c1c2188942c2aac7f0e992247c8ec6" datatype="html">
+        <source> Loading...</source>
+      </trans-unit>
+      <trans-unit id="9b00bde099641d8902c4f5bcbbf2e79148f54e82" datatype="html">
+        <source>Documentation is not currently being shared.</source>
+      </trans-unit>
+      <trans-unit id="3d0883886893bef71c4f3e24662b4924da0542ab" datatype="html">
+        <source> Click here to enable sharing</source>
+      </trans-unit>
+      <trans-unit id="eaff3ddd2606b4988d0cc9f8ad3791f3e350a566" datatype="html">
+        <source> Sharing, please wait...</source>
+      </trans-unit>
+      <trans-unit id="6c7e54e6b6348d8d4ab04c11aa587e225a87fb52" datatype="html">
+        <source>Documentation is being shared! Copy the link below and share it freely.</source>
+      </trans-unit>
+      <trans-unit id="6b81c814b966c50c10b898e1d2a94da41aaa70e0" datatype="html">
+        <source>Link successfully copied to the clipboard!</source>
+      </trans-unit>
+      <trans-unit id="4ab9b2739c97464fe7c928a38041584f827e22db" datatype="html">
+        <source> Disable sharing</source>
+      </trans-unit>
+      <trans-unit id="15afd496734247a508d2762ab7bfdbb4e59c04c1" datatype="html">
+        <source> Loading API information...</source>
+      </trans-unit>
+      <trans-unit id="ab0773fc47b0b928aaf1d29d7b828313c3c26675" datatype="html">
+        <source>Edit...</source>
+      </trans-unit>
+      <trans-unit id="3f3605f5f67ebea0ee16c85e4013e891cb4a21b5" datatype="html">
+        <source>Preview Docs...</source>
+      </trans-unit>
+      <trans-unit id="d0228b4bc869a6e3d70d3670dfa99a5f35131c01" datatype="html">
+        <source>Share Docs</source>
+      </trans-unit>
+      <trans-unit id="8eee877f3bc1bf3c25459f29efb87b171fbb8f1e" datatype="html">
+        <source>Collaborate...</source>
+      </trans-unit>
+      <trans-unit id="e54788b00f86e2b06b0e926b97f6b238dabea7ff" datatype="html">
+        <source>Make a Copy...</source>
+      </trans-unit>
+      <trans-unit id="45d15fb554ba946ec2b81ce1f54b279a6f7fb97e" datatype="html">
+        <source>Publish...</source>
+      </trans-unit>
+      <trans-unit id="5894485aa35ed885596e5bf95eab2acd77bd9530" datatype="html">
+        <source>Mock with Microcks...</source>
+      </trans-unit>
+      <trans-unit id="0a82dd1033813aa3b83a568d0519821699c0f9fb" datatype="html">
+        <source>Generate Project</source>
+      </trans-unit>
+      <trans-unit id="8ac01b54e1e4cf7745d11d2ec2cb1705c27fd012" datatype="html">
+        <source> Created on </source>
+      </trans-unit>
+      <trans-unit id="b0ce553f3901d24f75b5461dc25a12fddba6731f" datatype="html">
+        <source> Created by </source>
+      </trans-unit>
+      <trans-unit id="2bc20d2b6c67f43f44b8da422489637ddc59f7bd" datatype="html">
+        <source>Other Collaborator(s)</source>
+      </trans-unit>
+      <trans-unit id="e3aeb129e89a1b3ebe85f47c446e13faa6d354ec" datatype="html">
+        <source> Edit API</source>
+      </trans-unit>
+      <trans-unit id="c1ae076a4ea222dc7f62af1c9a3c7e38c20a39de" datatype="html">
+        <source> Preview Documentation</source>
+      </trans-unit>
+      <trans-unit id="715e02a806d352fe1b5c15133dce50b50a3ab140" datatype="html">
+        <source>Top Contributors</source>
+      </trans-unit>
+      <trans-unit id="bc145865f46786c8d7d135ee0b64932e92cf4c2c" datatype="html">
+        <source> Loading contributors data...</source>
+      </trans-unit>
+      <trans-unit id="e6a3529c58dd11acd9748216b8eb9d3f98cd1d1e" datatype="html">
+        <source> edits</source>
+      </trans-unit>
+      <trans-unit id="84e877ce2ec93ca66ee2aa8c85c5bb0a94f42217" datatype="html">
+        <source>API Mocking</source>
+      </trans-unit>
+      <trans-unit id="a7c330f4ec66d4bbbebeed5a134a2cd87e83bab1" datatype="html">
+        <source> Loading mock information...</source>
+      </trans-unit>
+      <trans-unit id="7f4d38b185cc32a8e10ba18264e5c07e5015c9e7" datatype="html">
+        <source>This API has </source>
+      </trans-unit>
+      <trans-unit id="65c627304c170d4cdcf3a011787fb260ca71b7ac" datatype="html">
+        <source>not yet been mocked in Microcks</source>
+      </trans-unit>
+      <trans-unit id="006ca4c6daa99bf8cdcdd4894e7d6d3056fcb60b" datatype="html">
+        <source>Mock with Microcks</source>
+      </trans-unit>
+      <trans-unit id="c0107c55988d56fca2a54ab34a26c7bd8be98720" datatype="html">
+        <source>This API is being mocked in </source>
+      </trans-unit>
+      <trans-unit id="2124a4681dd9cec34bcda8be8c9c0e7f5c90dfcc" datatype="html">
+        <source>Microcks</source>
+      </trans-unit>
+      <trans-unit id="fc73678c78ca0feb1e3b26e5825b112bb848b751" datatype="html">
+        <source>Mock created on </source>
+      </trans-unit>
+      <trans-unit id="aee8359dec07e077f2174042dcc24d338e72c16b" datatype="html">
+        <source>Mock created by </source>
+      </trans-unit>
+      <trans-unit id="44291263e23dc84e37818332587a6b7a26449763" datatype="html">
+        <source>View in Microcks</source>
+      </trans-unit>
+      <trans-unit id="a600794a33882d268f8d96027d2b9f001f1ae956" datatype="html">
+        <source>Update Mock in Microcks</source>
+      </trans-unit>
+      <trans-unit id="1adca4ddbe1e4bbcef1178c277a0a096eeb78f0d" datatype="html">
+        <source> Loading API activity...</source>
+      </trans-unit>
+      <trans-unit id="cb5e0fd104dea3b9f8019cd0894d9d0bd87a1c64" datatype="html">
+        <source>Activity Log</source>
+      </trans-unit>
+      <trans-unit id="ca98710638193518e4fe1302f8977d2db4f2b842" datatype="html">
+        <source>Show More</source>
+      </trans-unit>
+      <trans-unit id="86d90ed229bf3a9f5b564ad081f8971e7fd5bc99" datatype="html">
+        <source>No Activity Found!</source>
+      </trans-unit>
+      <trans-unit id="89e46c250aea6394c95613e81f28750795e317cb" datatype="html">
+        <source> No changes have been made to this API yet.</source>
+      </trans-unit>
+      <trans-unit id="346515fb1e2013dd1da7c378b66cc18517ece091" datatype="html">
+        <source>Do you really want to delete this API?</source>
+      </trans-unit>
+      <trans-unit id="3023286aeecc3030ef20785242ad3407a50caee8" datatype="html">
+        <source>This will </source>
+      </trans-unit>
+      <trans-unit id="7dd021d7a788e60c4e19cef7340fe0f8ca59e6a2" datatype="html">
+        <source> delete the API definition from Apicurio Studio. This operation cannot be undone.</source>
+      </trans-unit>
+      <trans-unit id="708b34d02bbbd2d46d23a08a42b0796f7db85419" datatype="html">
+        <source>Invitation to Collaborate</source>
+      </trans-unit>
+      <trans-unit id="232b03205bfb3e86766affc000463cc9547ca946" datatype="html">
+        <source>Collaborate on </source>
+      </trans-unit>
+      <trans-unit id="994707e61c7184f9f593287d64fc70d78dd63c79" datatype="html">
+        <source> This link is unique to this invitation and so can only be used once for another user to join you on this API as a collaborator. Copy and share this link with just one other user - if you would like to collaborate with additional users you must create more invitations. </source>
+      </trans-unit>
+      <trans-unit id="62bcd646f5961334ffa12510dd2f90d2c686f985" datatype="html">
+        <source>Collaboration allows:</source>
+      </trans-unit>
+      <trans-unit id="9faa1c938486256023e03b36c1c474c853e8ac9a" datatype="html">
+        <source>Editing the API Content (at the same time!)</source>
+      </trans-unit>
+      <trans-unit id="aaecf3a947df9e5ad27d15b163bb7a0149662f2f" datatype="html">
+        <source>Downloading the API</source>
+      </trans-unit>
+      <trans-unit id="21a3198ca66b215220d0500a0310f21ea0cfb0c0" datatype="html">
+        <source>Publishing the API</source>
+      </trans-unit>
+      <trans-unit id="cee44f03a07fd20b201f3cd2b6ca7bc5286e2ac3" datatype="html">
+        <source>Generating an Implementation Project</source>
+      </trans-unit>
+      <trans-unit id="e38cfc71113dbc44243e599d87e3d01941f1dcde" datatype="html">
+        <source>Invitation Link</source>
+      </trans-unit>
+      <trans-unit id="1adb74bed07dd599acdbafafbf4c1b5a3f70e0af" datatype="html">
+        <source>Copy link to clipboard.</source>
+      </trans-unit>
+      <trans-unit id="ae0660991fc46994ecc337130107df7f70d91791" datatype="html">
+        <source>URL successfully copied to the clipboard!</source>
+      </trans-unit>
+      <trans-unit id="c840b02377bf91855c0b278233c7cd03d72856a1" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;spinner spinner-lg spinner-inline&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> Loading invitation, please wait...</source>
+      </trans-unit>
+      <trans-unit id="630ffb75cfbcb911a4e334eb565dce9c0056f117" datatype="html">
+        <source> You have been invited by <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{ invitation.createdBy }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> to collaborate on an API Design. Would you like to accept? </source>
+      </trans-unit>
+      <trans-unit id="99957390983dd1ef0e1ab68fffcb7543dc33cbeb" datatype="html">
+        <source> (Invitation created on <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span&gt;"/><x id="INTERPOLATION" equiv-text="{{ invitation.createdOn | date }}"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/>) </source>
+      </trans-unit>
+      <trans-unit id="6fc5e65900ae1415d3170d5d2842f0dcae1b6645" datatype="html">
+        <source>Accept</source>
+      </trans-unit>
+      <trans-unit id="0bbd410526d3dbaa2e4ae64adf90a672659f4b45" datatype="html">
+        <source>No Thanks</source>
+      </trans-unit>
+      <trans-unit id="a276f1b7e3a94beb7bf8bcde0f386f1cc4c8c8eb" datatype="html">
+        <source>Accepting invitation, please wait...</source>
+      </trans-unit>
+      <trans-unit id="3630022091d1044a60591f58536cfff54b241eaa" datatype="html">
+        <source>Collaboration</source>
+      </trans-unit>
+      <trans-unit id="b7d79698e82d0ee1da655966cc0a4e3868b98128" datatype="html">
+        <source> Loading collaborator information...</source>
+      </trans-unit>
+      <trans-unit id="339b024e329c7fccab49a3e6c7692e69f6bf1ce7" datatype="html">
+        <source>Collaborators</source>
+      </trans-unit>
+      <trans-unit id="b60bb02240bcf8ce139ba13c4ab34b510b6825fc" datatype="html">
+        <source>Invite a Collaborator</source>
+      </trans-unit>
+      <trans-unit id="5f609e01d9849c915032679ddaf384e5b50339d3" datatype="html">
+        <source>No invitations have been accepted to collaborate on </source>
+      </trans-unit>
+      <trans-unit id="6a76030c990933529a5355b89fee4701d2d7d76a" datatype="html">
+        <source> You can resend an outstanding invitation link by clicking the invitation and copying the link. </source>
+      </trans-unit>
+      <trans-unit id="aa058a811eca3ce96e782f8648cdb58e47289f3d" datatype="html">
+        <source> To send new invitations, click the Invite button. </source>
+      </trans-unit>
+      <trans-unit id="3bd1f445cf6f4589d507a6b2524551f052e423b4" datatype="html">
+        <source> Loading invitations...</source>
+      </trans-unit>
+      <trans-unit id="75cb82abf253b66d6f12bbf96bfef47bc355e30e" datatype="html">
+        <source>Invitations</source>
+      </trans-unit>
+      <trans-unit id="e5c56a1acab69857cc34f3a2b44646b81043593a" datatype="html">
+        <source>No Invitations Found</source>
+      </trans-unit>
+      <trans-unit id="a3fa5407086e7b7c8941c6111a009c0f3222ad55" datatype="html">
+        <source>Cancel this invitation.</source>
+      </trans-unit>
+      <trans-unit id="61d04c8ec373a47f91dead1fbeab907df410ae6b" datatype="html">
+        <source> Creating invitation, please wait... <x id="START_SMALL_TEXT" ctype="x-small" equiv-text="&lt;small&gt;"/>Invitation creation by <x id="INTERPOLATION" equiv-text="{{ invitation.createdBy }}"/><x id="CLOSE_SMALL_TEXT" ctype="x-small" equiv-text="&lt;/small&gt;"/></source>
+      </trans-unit>
+      <trans-unit id="3e74aa959e344762a9a78189e95aff2f5b86e8cc" datatype="html">
+        <source> Rejecting invitation, please wait... <x id="START_SMALL_TEXT" ctype="x-small" equiv-text="&lt;small&gt;"/>Invitation previously created by <x id="INTERPOLATION" equiv-text="{{ invitation.createdBy }}"/><x id="CLOSE_SMALL_TEXT" ctype="x-small" equiv-text="&lt;/small&gt;"/></source>
+      </trans-unit>
+      <trans-unit id="5593caa72d2a903f574fb07d841237d3585a6b32" datatype="html">
+        <source>Created on <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/><x id="INTERPOLATION" equiv-text="{{ invitation.createdOn | date }}"/> by <x id="INTERPOLATION_1" equiv-text="{{ invitation.createdBy }}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/></source>
+      </trans-unit>
+      <trans-unit id="9282d209a17e3bf163e62bd68e9f1f4e15f70d0b" datatype="html">
+        <source>Pending (click above to copy the link and send it to someone!)</source>
+      </trans-unit>
+      <trans-unit id="c3ecbba111d98aab47cf187cb5f7a86e4669b510" datatype="html">
+        <source> : Accepted on </source>
+      </trans-unit>
+      <trans-unit id="0095bd49f21d534af803b4e41208189d03042741" datatype="html">
+        <source>Invitation created on <x id="START_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;em&gt;"/><x id="INTERPOLATION" equiv-text="{{ invitation.createdOn | date }}"/> by <x id="INTERPOLATION_1" equiv-text="{{ invitation.createdBy }}"/><x id="CLOSE_EMPHASISED_TEXT" ctype="x-em" equiv-text="&lt;/em&gt;"/></source>
+      </trans-unit>
+      <trans-unit id="b33188b3064fc3fc11223d5e8e5095bea6c7b29e" datatype="html">
+        <source>Created on </source>
+      </trans-unit>
+      <trans-unit id="7026bd1cbbf23864700f501e89df017d0b8d755d" datatype="html">
+        <source>by</source>
+      </trans-unit>
+      <trans-unit id="831686d90e082c40910701a98fe1329c0eda4292" datatype="html">
+        <source>Rejected by <x id="INTERPOLATION" equiv-text="{{ invitation.modifiedBy }}"/> on <x id="INTERPOLATION_1" equiv-text="{{ invitation.modifiedOn | date }}"/></source>
+      </trans-unit>
+      <trans-unit id="4826ae31928706b13985c42152ffc80f83a01abc" datatype="html">
+        <source>Do you really want to remove this collaborator?</source>
+      </trans-unit>
+      <trans-unit id="e4938d3f0a5f47a6744da20b4f3f2898c3c8c1be" datatype="html">
+        <source> This will make it so the user can no longer access this API design. If you wish to collaborate with the user again in the future you will need to re-invite them. </source>
+      </trans-unit>
+      <trans-unit id="314589a9b0bf1ea2729c6f5718ff42221bd140ac" datatype="html">
+        <source> Use this page to make a copy of an existing API. If the API is in the OpenAPI/Swagger 2.0 format, you can also optionally convert it to OpenAPI 3.0 when making a copy. </source>
+      </trans-unit>
+      <trans-unit id="1e9e87e01d72b1a9cda95d4ca2aa4ac535926c71" datatype="html">
+        <source>Copy API </source>
+      </trans-unit>
+      <trans-unit id="fdf7cbdc140d0aab0f0b6c06065a0fd448ed6a2e" datatype="html">
+        <source>Title</source>
+      </trans-unit>
+      <trans-unit id="cad54c94f9c05028fa2b879e2d5618d70533d33e" datatype="html">
+        <source>Enter a title for the API...</source>
+      </trans-unit>
+      <trans-unit id="349d3f6af1da79a441435e11c6d6819d502b5d25" datatype="html">
+        <source>Title is required.</source>
+      </trans-unit>
+      <trans-unit id="77412e06c747545d62d59df0b1861033033c4aa5" datatype="html">
+        <source>Convert from OpenAPI/Swagger 2.0 to OpenAPI 3.0.x</source>
+      </trans-unit>
+      <trans-unit id="87c8204be69880fc4648cdf614f6e237e7af209d" datatype="html">
+        <source>Copy API</source>
+      </trans-unit>
+      <trans-unit id="c01660db3750c8d83e5e45eab5c65f16566f8ce7" datatype="html">
+        <source> Copying...</source>
+      </trans-unit>
+      <trans-unit id="e26f9cf3666aace4e524b1505c9795d76d87738d" datatype="html">
+        <source>Rename</source>
+      </trans-unit>
+      <trans-unit id="54a4a3132b693575728a45a5f3154ad4c9af404b" datatype="html">
+        <source>Clone</source>
+      </trans-unit>
+      <trans-unit id="7b4539d8de40ef46acc2da31dfb32d5701b941f5" datatype="html">
+        <source>No channels have been created.</source>
+      </trans-unit>
+      <trans-unit id="dfae3668c9d44cd467f2305f0943115b32ab9741" datatype="html">
+        <source>Add a channel</source>
+      </trans-unit>
+      <trans-unit id="58b25e4991b7f56c7a201aa2c0e53ad9784ddcd1" datatype="html">
+        <source>No reusable types have been created.</source>
+      </trans-unit>
+      <trans-unit id="4baa2895f7ad8f7e910cc22d3bef6d119dbe9688" datatype="html">
+        <source>Add a data type</source>
+      </trans-unit>
+      <trans-unit id="8a84fc2570b1d0b2977df848bcf21b7a94199bf7" datatype="html">
+        <source>No operation traits have been created.</source>
+      </trans-unit>
+      <trans-unit id="7ff859df9fb5997c87d8cd820a5ccbe929a6887d" datatype="html">
+        <source>Add an operation trait</source>
+      </trans-unit>
+      <trans-unit id="cf804501c96ec40c1f0c0b12b085d0e6fbc0b195" datatype="html">
+        <source>No message traits have been created.</source>
+      </trans-unit>
+      <trans-unit id="553219ef936de77e133ca0ac2f7a0166645be615" datatype="html">
+        <source>Add a message trait</source>
+      </trans-unit>
+      <trans-unit id="db212c7462460306476147621ec2e70e2ab8dc37" datatype="html">
+        <source>Add Scope</source>
+      </trans-unit>
+      <trans-unit id="7e892ba15f2c6c17e83510e273b3e10fc32ea016" datatype="html">
+        <source>Search</source>
+      </trans-unit>
+      <trans-unit id="8c2817cce5df8aa36643a887144438229a57461e" datatype="html">
+        <source>Add Example</source>
+      </trans-unit>
+      <trans-unit id="698becb123114c2be19ab55d919180e2ce7d94e1" datatype="html">
+        <source>Enter the new example name and payload value below and then click Add.</source>
+      </trans-unit>
+      <trans-unit id="a9641728698315cfe217d6cbee60471dc0c0af26" datatype="html">
+        <source>Payload</source>
+      </trans-unit>
+      <trans-unit id="199c9af1a2592a53e7cbb1b8de1615cf23d9b0b5" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;fa fa-fw fa-code&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> Generate</source>
+      </trans-unit>
+      <trans-unit id="5c219e50f367dc42f51e8961fc6585e5bcc7342f" datatype="html">
+        <source>Headers</source>
+      </trans-unit>
+      <trans-unit id="f6755cff4957d5c3c89bafce5651f1b6fa2b1fd9" datatype="html">
+        <source>Add</source>
+      </trans-unit>
+      <trans-unit id="0864ebcc2e755395b24029e60a005f51925c7a04" datatype="html">
+        <source>Add Channel</source>
+      </trans-unit>
+      <trans-unit id="2c2e9ad633b4f667cf408f9d53b455e7165c2a85" datatype="html">
+        <source>Enter a new channel below and then click Add.</source>
+      </trans-unit>
+      <trans-unit id="0cc554f4d7bb6a87515d2d95438e183b50702071" datatype="html">
+        <source>Channel</source>
+      </trans-unit>
+      <trans-unit id="bda89edc571fb1ba95548c05f9135fab63f5c267" datatype="html">
+        <source>Enter a Channel</source>
+      </trans-unit>
+      <trans-unit id="5e9de63a2ac5251048ae193b8ba457859d983727" datatype="html">
+        <source>Channel already exists.</source>
+      </trans-unit>
+      <trans-unit id="506f1d9ae2a32e399c1cfa5d95776e14b094a51c" datatype="html">
+        <source>Enter a valid channel.</source>
+      </trans-unit>
+      <trans-unit id="2895e60d7bdb66c75d2398d81b15543ed2f17fe2" datatype="html">
+        <source>Channel is required.</source>
+      </trans-unit>
+      <trans-unit id="bca5e3cb6a86199bfb7e0d4be02f9ae2f4cb35d7" datatype="html">
+        <source>Enter the example content-type (mime type) and value below and then click Add.</source>
+      </trans-unit>
+      <trans-unit id="1d2d96418b0aebc8776bc17558070750a5e20488" datatype="html">
+        <source>Enter an Example Content Type</source>
+      </trans-unit>
+      <trans-unit id="9e830516ecdc5092e5b2c02eabe2791d6d292450" datatype="html">
+        <source>Enter the new example name and value below and then click Add.</source>
+      </trans-unit>
+      <trans-unit id="f5a87e4568229f0533a6bd662301926f421974c8" datatype="html">
+        <source>Add Media Type</source>
+      </trans-unit>
+      <trans-unit id="41f29404e5c5ba9f4eb533c600c6dd64a064adfb" datatype="html">
+        <source>Choose a Media Type (e.g. application/json) below and then click Add.</source>
+      </trans-unit>
+      <trans-unit id="f9bbe2eb17cb4aaade0d818af17668b8c4052abd" datatype="html">
+        <source>Media Type</source>
+      </trans-unit>
+      <trans-unit id="a9ea58534cd28d5e3f9100d14a072789afd9ada6" datatype="html">
+        <source>Choose Media Type</source>
+      </trans-unit>
+      <trans-unit id="b7710a4b42a0f4fdd4bdce3b66bf94cddbc9e694" datatype="html">
+        <source>Selected media type already exists.</source>
+      </trans-unit>
+      <trans-unit id="762953298721f644380aa1f0c00330766d99a3b5" datatype="html">
+        <source>Custom Type</source>
+      </trans-unit>
+      <trans-unit id="e5f3b247a6c7615fc4df5a3d7af97fe83806d275" datatype="html">
+        <source>Enter a custom Media Type</source>
+      </trans-unit>
+      <trans-unit id="86487acdc510f65e0f9c818c1ae2e5741ad2a0d0" datatype="html">
+        <source>Custom media type is required.</source>
+      </trans-unit>
+      <trans-unit id="57ea548cc1be0004db52cff55c458594f802a5d6" datatype="html">
+        <source>The fields marked with </source>
+      </trans-unit>
+      <trans-unit id="2ce68fac5384fd3b3ff02cfcc40a82840469e697" datatype="html">
+        <source>*</source>
+      </trans-unit>
+      <trans-unit id="6d014524ab54d35d047ae0dec831a1eb2d17fa0a" datatype="html">
+        <source> are required.</source>
+      </trans-unit>
+      <trans-unit id="ff8aa2fb4724311bcc5857672bbcffcca729ede5" datatype="html">
+        <source>Add Path</source>
+      </trans-unit>
+      <trans-unit id="0d8a9fc6414c94f86d93be443fc9af5a74700aa5" datatype="html">
+        <source>Enter a new resource path below and then click Add.</source>
+      </trans-unit>
+      <trans-unit id="766c66ad5cc981c531aaf3fe3a2a7a346ddc8d83" datatype="html">
+        <source>Path</source>
+      </trans-unit>
+      <trans-unit id="2adfe88d02241702fc565b090737c51b7e186775" datatype="html">
+        <source>Enter a Path</source>
+      </trans-unit>
+      <trans-unit id="3028702fadfe8dbf8163065b12ffb50901632082" datatype="html">
+        <source>Path already exists.</source>
+      </trans-unit>
+      <trans-unit id="e41080fd3f614ed02a96be13d125f6e597b9664a" datatype="html">
+        <source>Enter a valid path.</source>
+      </trans-unit>
+      <trans-unit id="aff106648b9b57633f784fda85155ad8d7c695af" datatype="html">
+        <source>Path is required.</source>
+      </trans-unit>
+      <trans-unit id="df6857a97723e64f7b567f19d4500de878151949" datatype="html">
+        <source>Add Response</source>
+      </trans-unit>
+      <trans-unit id="5887d9944049e6f024145f8a15a18386001be2e1" datatype="html">
+        <source>Enter information about the new response below and then click Add.</source>
+      </trans-unit>
+      <trans-unit id="c30bc7fe6fc02f6e8f674eacbaa9c0a7201e5927" datatype="html">
+        <source>Response Status Code</source>
+      </trans-unit>
+      <trans-unit id="66ec16619bf2b2cdb6d5d3f9c66f3a6bb1f90960" datatype="html">
+        <source>Response with this code already exists.</source>
+      </trans-unit>
+      <trans-unit id="2ffb7f67e388b8dd668cb4901cd1b2832388a3fa" datatype="html">
+        <source>Response Definition </source>
+      </trans-unit>
+      <trans-unit id="2e73b2661c3d6ae412b570bce223fb58b42246e1" datatype="html">
+        <source>(optional)</source>
+      </trans-unit>
+      <trans-unit id="b54408af74090d13505686d6bcdfc1022247f0ce" datatype="html">
+        <source>(reset)</source>
+      </trans-unit>
+      <trans-unit id="a998cb97911f04becfcdfec520113da304796ebf" datatype="html">
+        <source>Add Schema</source>
+      </trans-unit>
+      <trans-unit id="fafcd5208acf91bddccb963091a5e060030958f9" datatype="html">
+        <source>Choose a schema to add from the dropdown below and then click Add.</source>
+      </trans-unit>
+      <trans-unit id="0b2779c3d0e070a4ec131cbf83e7f748220d10a9" datatype="html">
+        <source>Schema</source>
+      </trans-unit>
+      <trans-unit id="d9a6d2f30e57a02a6b36a7773c39a3791c42ae9c" datatype="html">
+        <source>Add Tag</source>
+      </trans-unit>
+      <trans-unit id="86f6c09484dd65a67145fbbd0c7fd016ecc6a2c6" datatype="html">
+        <source>Enter information about the new tag below and then click </source>
+      </trans-unit>
+      <trans-unit id="337ca2e5eeea28eaca91e8511eb5eaafdb385ce6" datatype="html">
+        <source>Tag</source>
+      </trans-unit>
+      <trans-unit id="f339508e35745934e4cfe06c1f4eb888b0fda212" datatype="html">
+        <source>Tag Name</source>
+      </trans-unit>
+      <trans-unit id="b96f7f987f47d5f80f47e076937caec18b02318d" datatype="html">
+        <source>Tag already exists.</source>
+      </trans-unit>
+      <trans-unit id="c4bc4d31313d6c717e9edc2a3ecc345cedccb374" datatype="html">
+        <source>Tag description</source>
+      </trans-unit>
+      <trans-unit id="ac18c2565eba99f2e2a7b866da9c47cc37e36e50" datatype="html">
+        <source>Clone Data Type</source>
+      </trans-unit>
+      <trans-unit id="b1b064bad942144526df20bad4efda5df6e86828" datatype="html">
+        <source>Enter a new data type name below and then click Clone.</source>
+      </trans-unit>
+      <trans-unit id="cc75e8bac50a20c1a09d8c5084042e9e7d41be6b" datatype="html">
+        <source>Data type already exists.</source>
+      </trans-unit>
+      <trans-unit id="4944bc0780da6cd442278b7e71d7b205d6bca5a2" datatype="html">
+        <source>Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</source>
+      </trans-unit>
+      <trans-unit id="6a8f210fc087c0e212d9bc0dc843169ecbe39341" datatype="html">
+        <source>Clone Path</source>
+      </trans-unit>
+      <trans-unit id="73cdff687e137c806692010b82655aa7ed7fa592" datatype="html">
+        <source>Enter a new resource path below and then click Clone.</source>
+      </trans-unit>
+      <trans-unit id="b3b128a4353415d1c15ffd5640140a2b186e8549" datatype="html">
+        <source>Clone Response Definition</source>
+      </trans-unit>
+      <trans-unit id="7b50be964bffd5fe9c353e503ad982acf95ed11a" datatype="html">
+        <source>Enter a new response definition name below and then click Clone.</source>
+      </trans-unit>
+      <trans-unit id="18b6e84e40b1be7f98d53382d4db33a6f71ef329" datatype="html">
+        <source>Enter a Response Definition Name</source>
+      </trans-unit>
+      <trans-unit id="fbcd29a48bec6e560efd0f130b7241ffe47e401c" datatype="html">
+        <source>Response definition already exists.</source>
+      </trans-unit>
+      <trans-unit id="3ead3ad8557de2965b47e0882657990d3d35bc91" datatype="html">
+        <source>Clone Response</source>
+      </trans-unit>
+      <trans-unit id="3e22210152f6cd7672371cd87c663212a2d43221" datatype="html">
+        <source>Enter information about the new response below and then click Clone.</source>
+      </trans-unit>
+      <trans-unit id="46080ac1be9d4fa6517fc544dad22ad23a742afd" datatype="html">
+        <source>Edit Example</source>
+      </trans-unit>
+      <trans-unit id="2e3f5c4bdf6d8fb783de9c142c10c4ace789b45f" datatype="html">
+        <source>Enter the new example payload value below and then click Edit.</source>
+      </trans-unit>
+      <trans-unit id="28f86ffd419b869711aa13f5e5ff54be6d70731c" datatype="html">
+        <source>Edit</source>
+      </trans-unit>
+      <trans-unit id="3c9c0681946d3d416175f6790314f8bb700fc66c" datatype="html">
+        <source>Enter the new example value below and then click Edit.</source>
+      </trans-unit>
+      <trans-unit id="c2117e692e743d47970ca4581938d371d65d51aa" datatype="html">
+        <source>Editor Disconnected</source>
+      </trans-unit>
+      <trans-unit id="71bef85b6233754a83677ca4ae54ace3441e452f" datatype="html">
+        <source>Lost Connection</source>
+      </trans-unit>
+      <trans-unit id="3874399d603ee690add7ecf604bbc43810086eb2" datatype="html">
+        <source> Connection to the server has been lost. Any changes you make to this API will only be saved once a connection to the server can be re-established. However, you may continue working in </source>
+      </trans-unit>
+      <trans-unit id="595d5620b086c28672ea04610696b3497d846916" datatype="html">
+        <source>Offline Mode</source>
+      </trans-unit>
+      <trans-unit id="128b7a1f126481affa5771014f5f661092b80849" datatype="html">
+        <source> - just don&apos;t close this browser window!</source>
+      </trans-unit>
+      <trans-unit id="783c40758258eb9029cd37ba19690a046044c3e1" datatype="html">
+        <source>Work Offline</source>
+      </trans-unit>
+      <trans-unit id="c142a2e31015fc193afaa6619d80993bfb1cc7ff" datatype="html">
+        <source>You should know!</source>
+      </trans-unit>
+      <trans-unit id="5c68588c4c4bd7de0c1f2c9470eb04c8079e3563" datatype="html">
+        <source>Current name</source>
+      </trans-unit>
+      <trans-unit id="bd15b8d5c0fa160161728eefbbb585710414d471" datatype="html">
+        <source>New name</source>
+      </trans-unit>
+      <trans-unit id="4d8613b3600aa5125aae34896f9b0416f65d2c8b" datatype="html">
+        <source>Enter a <x id="INTERPOLATION" equiv-text="{{ type }}"/> Name</source>
+      </trans-unit>
+      <trans-unit id="e3f0e65eb0f03eb0209904cb509a5eb5bdaa3dd2" datatype="html">
+        <source><x id="INTERPOLATION" equiv-text="{{ type }}"/> already exists.</source>
+      </trans-unit>
+      <trans-unit id="04208dc2ead28020904da82c058466d1c034ffa5" datatype="html">
+        <source>Rename Path</source>
+      </trans-unit>
+      <trans-unit id="a0e7ae6a3c8040e65350344fe5729d136bdb07e3" datatype="html">
+        <source>Enter a new path below and then click Rename.</source>
+      </trans-unit>
+      <trans-unit id="5acab21e38e840a0f5752f6b6322800550ad0f04" datatype="html">
+        <source>Enter a Path Name</source>
+      </trans-unit>
+      <trans-unit id="c099e668a5a18fb05a1c7232150bc064e8612337" datatype="html">
+        <source>Also rename </source>
+      </trans-unit>
+      <trans-unit id="359d81e2508350bce7bc69170224658252990eb6" datatype="html">
+        <source> sub-path(s).</source>
+      </trans-unit>
+      <trans-unit id="de828900e1e54330a6ac961edf31242ee770a014" datatype="html">
+        <source>Choose a License</source>
+      </trans-unit>
+      <trans-unit id="c970ba71b459fda3a36cdb775afc8d869cd2d107" datatype="html">
+        <source>Use This License</source>
+      </trans-unit>
+      <trans-unit id="d5e0e911ada995124c92d7195d7764e71841412e" datatype="html">
+        <source>View full </source>
+      </trans-unit>
+      <trans-unit id="70f45880fce6ac5d8e468e25e82aefbba8098cfe" datatype="html">
+        <source>Permissions</source>
+      </trans-unit>
+      <trans-unit id="986668e81481d0fd0934b4ef56b4236ccb298712" datatype="html">
+        <source>Conditions</source>
+      </trans-unit>
+      <trans-unit id="2b0e7d80e94bfa90dcdd9051994e7997484dd504" datatype="html">
+        <source>Limitations</source>
+      </trans-unit>
+      <trans-unit id="19f7128cc38debd9d030da70c8b9a00d4a74c3da" datatype="html">
+        <source>License information provided by </source>
+      </trans-unit>
+      <trans-unit id="560ce26df56c333e8949f75aa77b83bf3404a494" datatype="html">
+        <source>Choose a License © </source>
+      </trans-unit>
+      <trans-unit id="1efa85366350e1fe4196fb95e9f666ec3b1fd35e" datatype="html">
+        <source> under the </source>
+      </trans-unit>
+      <trans-unit id="8ecc027eb14f7b3e8addd9931e84605869b67c06" datatype="html">
+        <source>Create Commons License</source>
+      </trans-unit>
+      <trans-unit id="c0c2f987283625b9ddd589303e4f4ceecab129ca" datatype="html">
+        <source>Define a New Data Type</source>
+      </trans-unit>
+      <trans-unit id="ccec098221e7c61f303d5b8ccd2f0a7379ed720d" datatype="html">
+        <source>1. Enter Basic Information</source>
+      </trans-unit>
+      <trans-unit id="668be17dd0aa41ae35a6aea10cb1f8de471ddead" datatype="html">
+        <source> Enter a name and description for the new data type. </source>
+      </trans-unit>
+      <trans-unit id="62cea83d88c98d92383cc07215825311003fafdc" datatype="html">
+        <source>Enter a unique data type name.</source>
+      </trans-unit>
+      <trans-unit id="bcdf7435cb93a88d7b1a02152e257f590c7c3866" datatype="html">
+        <source>Data type named </source>
+      </trans-unit>
+      <trans-unit id="39b0916756ca50ed00ce53dfaaa979fedcf5da83" datatype="html">
+        <source> already exists.</source>
+      </trans-unit>
+      <trans-unit id="d10e108a093c7d8074ae168fab1b11c9538609a8" datatype="html">
+        <source>2. Enter JSON Example </source>
+      </trans-unit>
+      <trans-unit id="e6d6d6dd37a41af9620835079af2db37ac94ef56" datatype="html">
+        <source> Enter a JSON formatted example of the data type that will be used to bootstrap the Data Type&apos;s schema properties. </source>
+      </trans-unit>
+      <trans-unit id="50a8ded9dde04076117194ee446bb280bb248f2d" datatype="html">
+        <source>JSON Example</source>
+      </trans-unit>
+      <trans-unit id="e2ca9bd5ee46e7329f16331f403ae7202f43c16d" datatype="html">
+        <source>3. Choose to create a REST Resource with the Data Type </source>
+      </trans-unit>
+      <trans-unit id="1aa73af054cad6c92c24cd3d739fa8d82aed5b0d" datatype="html">
+        <source> Create the new Data Type with some additional paths and operations automatically generated. </source>
+      </trans-unit>
+      <trans-unit id="a63ba711a61a6eb333c0749f8d15c55c8fedd651" datatype="html">
+        <source>No Resource</source>
+      </trans-unit>
+      <trans-unit id="e5c788c2e2e559d49adcd1aa870cfac1821bf817" datatype="html">
+        <source>REST Resource</source>
+      </trans-unit>
+      <trans-unit id="2188fab2d535268eb2283dba77b37d3759e9b05e" datatype="html">
+        <source>No additional paths or operations will be generated when creating this Data Type - only the Data Type itself will be created.</source>
+      </trans-unit>
+      <trans-unit id="f8a49fa80efc12f0d3eabec21ac7abdb5b722d1d" datatype="html">
+        <source>This will cause paths and operations to be created for the new Data Type, using a standard REST resource pattern and based on the name of the Data Type.</source>
+      </trans-unit>
+      <trans-unit id="787e44bf8fb991dfb43b1c7eb7056090514d6905" datatype="html">
+        <source>Operation</source>
+      </trans-unit>
+      <trans-unit id="f2dc0b81852bca82b38d67886bd2dff4cd914c17" datatype="html">
+        <source>Data Type</source>
+      </trans-unit>
+      <trans-unit id="52c9a103b812f258bcddc3d90a6e3f46871d25fe" datatype="html">
+        <source>Save</source>
+      </trans-unit>
+      <trans-unit id="f1eb25bec540820d9b963a26ab920e206158a805" datatype="html">
+        <source> Enter a name and description for the new message trait. </source>
+      </trans-unit>
+      <trans-unit id="356c088b5e3cc83189935bc657bd12505cc42d27" datatype="html">
+        <source>Message Trait named <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{ model.name }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> already exists.</source>
+      </trans-unit>
+      <trans-unit id="8707c6db3dfda0658bcf55d4b72d6e6c1acbca0d" datatype="html">
+        <source> Enter a name and description for the new operation trait. </source>
+      </trans-unit>
+      <trans-unit id="0dc68ccff745cd744423267ca099e51421b8eb73" datatype="html">
+        <source>Operation Trait named <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{ model.name }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> already exists.</source>
+      </trans-unit>
+      <trans-unit id="5249474fa6cf124dbc53364cd281a23bbf129c6e" datatype="html">
+        <source>Enter a name and description for the new query parameter.</source>
+      </trans-unit>
+      <trans-unit id="1e47fd323439d053660f5c81f153656615704362" datatype="html">
+        <source>Enter a name and description for the new header parameter.</source>
+      </trans-unit>
+      <trans-unit id="c95bd1fdce611215479ff1f419da641c03d9511a" datatype="html">
+        <source>Enter a name and description for the new cookie parameter.</source>
+      </trans-unit>
+      <trans-unit id="146fcfbc319a54aebf1b225f5941c41222065f35" datatype="html">
+        <source>Enter a name and description for the new form data parameter.</source>
+      </trans-unit>
+      <trans-unit id="25efbdbcdf3e88022006a7e6d8e5f42e6b2c18fd" datatype="html">
+        <source>Enter a unique parameter name.</source>
+      </trans-unit>
+      <trans-unit id="c6e411959b2bcf0779e2910c8e1309356eb2afea" datatype="html">
+        <source>Parameter named </source>
+      </trans-unit>
+      <trans-unit id="6cfc1f1e5f7520b4ddac74efb2c75aa33530e8f5" datatype="html">
+        <source>2. Enter Type Information </source>
+      </trans-unit>
+      <trans-unit id="efd61ca21566e42101e70684e48191d6fbda6e6f" datatype="html">
+        <source> Enter information about the parameter&apos;s type (and whether it is required). </source>
+      </trans-unit>
+      <trans-unit id="3b267ed2f1a07afabe2bbf29daab8235db7cb3ed" datatype="html">
+        <source>Parameter is</source>
+      </trans-unit>
+      <trans-unit id="00945670683ef7fd04d9819696298d26f709cf76" datatype="html">
+        <source>and has type</source>
+      </trans-unit>
+      <trans-unit id="169eed2bc3e08e1bea977bcc5d799379f6b8a758" datatype="html">
+        <source>of</source>
+      </trans-unit>
+      <trans-unit id="ffada225bf2323d3d626bc91d1ce6511cd4398fd" datatype="html">
+        <source>as</source>
+      </trans-unit>
+      <trans-unit id="282c80fded89e843fc5973d124bd7e41210a7bf9" datatype="html">
+        <source>Enum Values: </source>
+      </trans-unit>
+      <trans-unit id="8bb97506f842a2f1ed33a6b072f115274be298a6" datatype="html">
+        <source>Click to define enum values.</source>
+      </trans-unit>
+      <trans-unit id="033a32b7193c08f66be40de702c96c4b24ebd11d" datatype="html">
+        <source>Enter a name and description for the new property.</source>
+      </trans-unit>
+      <trans-unit id="9e23a90326a718fb677e8ed541c01316ca277a72" datatype="html">
+        <source>Enter a unique property name.</source>
+      </trans-unit>
+      <trans-unit id="d94fd5d3e1e2c2a299fa8365faf1b0d8f791a86f" datatype="html">
+        <source>Property named </source>
+      </trans-unit>
+      <trans-unit id="142a4fb2e6c8fb1390b29f1bab2494869a22166f" datatype="html">
+        <source> Enter information about the property&apos;s type (and whether it is required). </source>
+      </trans-unit>
+      <trans-unit id="77d6b6b59561c95e160cdfd82a76afe0db61a4a6" datatype="html">
+        <source>Property is</source>
+      </trans-unit>
+      <trans-unit id="73caa4b9ee8b0307f96fbd5946712e0c240074af" datatype="html">
+        <source>Define a New Response</source>
+      </trans-unit>
+      <trans-unit id="8f507cdfb390ffe66e682166b5e0926e2cdcb841" datatype="html">
+        <source> Enter a name and description for the new response. </source>
+      </trans-unit>
+      <trans-unit id="96320d5f4d0041a87abe3df2e57c90040bb516c8" datatype="html">
+        <source>Enter a unique response name.</source>
+      </trans-unit>
+      <trans-unit id="007dbaa17a51adc864e3c5ec2e981353b6a9e14d" datatype="html">
+        <source>Response named <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{ model.name }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> already exists.</source>
+      </trans-unit>
+      <trans-unit id="8f8605d7bcf870d08dedd3b30808d648fd0ee61e" datatype="html">
+        <source>Define the Security Requirement</source>
+      </trans-unit>
+      <trans-unit id="50be9402cdd2a5c74c1ef84160dd4ccc787d51b3" datatype="html">
+        <source>Configure a Security Requirement</source>
+      </trans-unit>
+      <trans-unit id="983b8988429986a1a22f6deb41ab85773ea3af22" datatype="html">
+        <source>Choose which combination of security schemes are required by clients accessing</source>
+      </trans-unit>
+      <trans-unit id="8f584c8c5fa542d5f44de3711efab78bc726e3e1" datatype="html">
+        <source>this operation.</source>
+      </trans-unit>
+      <trans-unit id="be07a4788ba72f4e21059926f9f3454ba6e52726" datatype="html">
+        <source>any operation in this API.</source>
+      </trans-unit>
+      <trans-unit id="051b2a39a43d1a4ea61214a757f3b15f2ed05f2b" datatype="html">
+        <source>When necessary (depending on the type of scheme) also configure required scopes for each enabled scheme.</source>
+      </trans-unit>
+      <trans-unit id="601a263fb6858068193549a0455fbff86b5b365e" datatype="html">
+        <source>No Security Schemes Found</source>
+      </trans-unit>
+      <trans-unit id="255c746bfcacac01e0373de759f09573602c3eee" datatype="html">
+        <source>There are currently no </source>
+      </trans-unit>
+      <trans-unit id="fc903dfadead429d099af6361880e25205762507" datatype="html">
+        <source>Security Schemes</source>
+      </trans-unit>
+      <trans-unit id="b720765996b90ce2033d81d3e658451ec8a62328" datatype="html">
+        <source> defined for this API. Before you can configure the </source>
+      </trans-unit>
+      <trans-unit id="7f9e07b08189e70bab61971ae4d5e728d22daa86" datatype="html">
+        <source>security requirements</source>
+      </trans-unit>
+      <trans-unit id="a2161898dd655731efa4cddebee966ee3e124655" datatype="html">
+        <source>, you must first configure the possible schemes. Security schemes are configured at the root/global of the API.</source>
+      </trans-unit>
+      <trans-unit id="a209e927497cb4d320922398bdde3edd5e8fb254" datatype="html">
+        <source>No Security</source>
+      </trans-unit>
+      <trans-unit id="f58d0478fc1e46abf848ef45872692b7f8a285ca" datatype="html">
+        <source>anonymous</source>
+      </trans-unit>
+      <trans-unit id="4a7881c4f6ea8b1eb8b294a9db22267185c27d6e" datatype="html">
+        <source>Allow access to the API without authentication (cannot be <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>combined<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> with other security).</source>
+      </trans-unit>
+      <trans-unit id="f7f8fdfe13ca8fef82c3f65b517300a41456090c" datatype="html">
+        <source>Specify scopes to define the permissions necessary for users to access operations in this API.</source>
+      </trans-unit>
+      <trans-unit id="187854a4518426d6934caa4b2ccdb787d16d210c" datatype="html">
+        <source>Specify scopes to define the permissions necessary for a user to access the operation.</source>
+      </trans-unit>
+      <trans-unit id="6dc5b394e00e71d5e3fa9a92e890dfe6fa8ee0b4" datatype="html">
+        <source>No Available Scopes</source>
+      </trans-unit>
+      <trans-unit id="ea5d693920a66fd858ff86e8116b57115e96c8e5" datatype="html">
+        <source> No scopes have been configured for this Security Scheme.</source>
+      </trans-unit>
+      <trans-unit id="e69a1d07084fd5951ef97f094ef0c63ce8b36068" datatype="html">
+        <source>Define the Security Scheme</source>
+      </trans-unit>
+      <trans-unit id="c828e7c67d71646f3292bdc556eb563f6de3487b" datatype="html">
+        <source>1. Enter Security Scheme Info</source>
+      </trans-unit>
+      <trans-unit id="dca3621f333a74af60e8363d473737180411adad" datatype="html">
+        <source> Enter the name, description, and type of the security scheme. </source>
+      </trans-unit>
+      <trans-unit id="f211d6637254ff47fa54ac39362108f47565dabd" datatype="html">
+        <source>Enter Security Scheme Name</source>
+      </trans-unit>
+      <trans-unit id="c04cf18092b6a78f9f01cacb7f13aa5241d069a8" datatype="html">
+        <source>Security Scheme already exists.</source>
+      </trans-unit>
+      <trans-unit id="e2cf27798fb28d74da4c3f9c82fc84bd1b99026e" datatype="html">
+        <source>Security Scheme name is required.</source>
+      </trans-unit>
+      <trans-unit id="37727d2ac9efc7f7a423d8000718d0f7de924412" datatype="html">
+        <source>To change a security scheme name, choose the &apos;Rename&apos; option from the previous screen.</source>
+      </trans-unit>
+      <trans-unit id="e762f04fd167a27f36a6c91ff836a6debb0ec19d" datatype="html">
+        <source>Server description</source>
+      </trans-unit>
+      <trans-unit id="d7b0bafa2f034e0fb305faf17b3b19563e155c2b" datatype="html">
+        <source>Security Type</source>
+      </trans-unit>
+      <trans-unit id="2169335bf5b9c8283439d0d26efc65284e5be110" datatype="html">
+        <source>Choose Type</source>
+      </trans-unit>
+      <trans-unit id="74b1ca414544e0b78069d91cf4f01e0e7fc08eea" datatype="html">
+        <source>BASIC</source>
+      </trans-unit>
+      <trans-unit id="258c041e93862316871096965e2d70579282fb1a" datatype="html">
+        <source>API Key</source>
+      </trans-unit>
+      <trans-unit id="da265f40ef19b9c462381a9028f8fbe97eb18c2d" datatype="html">
+        <source>OAuth 2</source>
+      </trans-unit>
+      <trans-unit id="3c0ddd1b8fc7b4f25e9611ca4647eab9aea583be" datatype="html">
+        <source>HTTP</source>
+      </trans-unit>
+      <trans-unit id="efc3c8a0267a04acabbd191aaf5b58e7eb4d3519" datatype="html">
+        <source>OpenID Connect</source>
+      </trans-unit>
+      <trans-unit id="6604ea4dfdcd359f40939ed27cd8704a0ac867dd" datatype="html">
+        <source>2. Configure Security Scheme Details</source>
+      </trans-unit>
+      <trans-unit id="ba911829db8d8f20d65b952f32eeb844129e98b6" datatype="html">
+        <source> Configure the type-specific details for the security scheme. You must first configure the scheme type above. </source>
+      </trans-unit>
+      <trans-unit id="7ed292f5762b4c5ce832781295db911c280dc8da" datatype="html">
+        <source> No security type has been configured for this security scheme. A type must first be selected prior to configuring the scheme&apos;s type-specific details. </source>
+      </trans-unit>
+      <trans-unit id="4cc9a7ceeb6968083774a1c42f571e94b248cec8" datatype="html">
+        <source>All Set!</source>
+      </trans-unit>
+      <trans-unit id="13ee3bc9fba1fed7042af48a6cd66b56315a8f3b" datatype="html">
+        <source> No additional configuration options are needed for BASIC authentication.</source>
+      </trans-unit>
+      <trans-unit id="1d6a512aa16ab2eef2e1aa0077bd91ed67b24e5a" datatype="html">
+        <source>Key Location</source>
+      </trans-unit>
+      <trans-unit id="75567f0e5040302b62c459642fb60a461227bfa4" datatype="html">
+        <source>HTTP header</source>
+      </trans-unit>
+      <trans-unit id="82954ddf33c4a2c4ef9d480725e4b099f168cb27" datatype="html">
+        <source>Query Parameter</source>
+      </trans-unit>
+      <trans-unit id="1ccb5e4717c98db008680d385b88fe7c90b75653" datatype="html">
+        <source>Header/Parameter Name</source>
+      </trans-unit>
+      <trans-unit id="c9425e12f9b910c6604e2549a73104a0044a039a" datatype="html">
+        <source>OAuth Flow</source>
+      </trans-unit>
+      <trans-unit id="25adf8c8af94b178b01bfd4b59f6d16328d65fc6" datatype="html">
+        <source>Choose Flow</source>
+      </trans-unit>
+      <trans-unit id="4ae6e5217b528a878ff9bae9edab52c6efc847ea" datatype="html">
+        <source>Implicit</source>
+      </trans-unit>
+      <trans-unit id="c32ef07f8803a223a83ed17024b38e8d82292407" datatype="html">
+        <source>Password</source>
+      </trans-unit>
+      <trans-unit id="cba4c170355f67defdb328b44f86ebd4f30255fb" datatype="html">
+        <source>Application</source>
+      </trans-unit>
+      <trans-unit id="190a0caf6ddac8b5347008c55791abc9e26655d8" datatype="html">
+        <source>Access Code</source>
+      </trans-unit>
+      <trans-unit id="059e9c9b4c003bbc31ab639262e8a562e27acb1f" datatype="html">
+        <source>Auth URL</source>
+      </trans-unit>
+      <trans-unit id="1a0658e2780f040de38bf6eb76161db6ab8f03d4" datatype="html">
+        <source>Enter the authorization URL</source>
+      </trans-unit>
+      <trans-unit id="708918e23416958006938555b3e09fecbde0db04" datatype="html">
+        <source>Token URL</source>
+      </trans-unit>
+      <trans-unit id="36f647c05d31203867078df8ebb30eee8cee5c1b" datatype="html">
+        <source>Enter the token URL</source>
+      </trans-unit>
+      <trans-unit id="4c868744dbbf8bcdb48cd56b8d8da3d5a107b817" datatype="html">
+        <source>Scopes</source>
+      </trans-unit>
+      <trans-unit id="8e26a5a1ea0fcf1a587b57bd8ef8f0006d4d712a" datatype="html">
+        <source>Scheme</source>
+      </trans-unit>
+      <trans-unit id="d09478b2601200a0b5cd12b83d5025f39404fe3b" datatype="html">
+        <source>Choose Scheme</source>
+      </trans-unit>
+      <trans-unit id="8bf47f29cf6388248eb8dbe4661244ee9b49bccd" datatype="html">
+        <source>Bearer</source>
+      </trans-unit>
+      <trans-unit id="ae50a7291ac86efaefeefaaf53afff3b8b8c088b" datatype="html">
+        <source>Digest</source>
+      </trans-unit>
+      <trans-unit id="93c41219fed04bb1ed0a42320762497c0450c401" datatype="html">
+        <source>Choose Format</source>
+      </trans-unit>
+      <trans-unit id="18762219ff1522811b3213a7f8e356552465a640" datatype="html">
+        <source>JWT</source>
+      </trans-unit>
+      <trans-unit id="e57d14a5fcdc96e2de101e554225a34f8c8ecb86" datatype="html">
+        <source>OAuth</source>
+      </trans-unit>
+      <trans-unit id="a2f14a73f7a6e94479f67423cc51102da8d6f524" datatype="html">
+        <source>None</source>
+      </trans-unit>
+      <trans-unit id="c44e764346ccedb62a30fc369c44f8b2301d45db" datatype="html">
+        <source>OpenID Connect URL</source>
+      </trans-unit>
+      <trans-unit id="9a8749b12a4a15a33b4506ee5d5139c4158d0093" datatype="html">
+        <source>Enter a valid OpenID Connect URL</source>
+      </trans-unit>
+      <trans-unit id="1bb62b417cffdf6ca4c8d0714a96ad26cdcf5c69" datatype="html">
+        <source>Cookie</source>
+      </trans-unit>
+      <trans-unit id="3a75391248f66ecb447085d144ad80af4ee59cd8" datatype="html">
+        <source>Client Credentials</source>
+      </trans-unit>
+      <trans-unit id="b1515bcaf37f8a699452810069fe637aa628044d" datatype="html">
+        <source>Authorization Code</source>
+      </trans-unit>
+      <trans-unit id="c71081b6314889a73b7e8f44a8cbf7dee21a9274" datatype="html">
+        <source>Enable this OAuth flow</source>
+      </trans-unit>
+      <trans-unit id="b97f84786678f4f85f106bf3d73d0e22e76120da" datatype="html">
+        <source>OAuth Authorization URL</source>
+      </trans-unit>
+      <trans-unit id="a9d29e8d015f442ebaabeaf6889d5c99f1feb9e2" datatype="html">
+        <source>Refresh URL</source>
+      </trans-unit>
+      <trans-unit id="cfbfc616aaa8a1990314311b94196edf68c26f6c" datatype="html">
+        <source>OAuth Refresh URL</source>
+      </trans-unit>
+      <trans-unit id="aa952b29e934af86bb0fd80696fa03e6838e22c1" datatype="html">
+        <source>OAuth Token URL</source>
+      </trans-unit>
+      <trans-unit id="178a8355ae3cceadb126f3163b8c56c613bcc07f" datatype="html">
+        <source>Define the Server</source>
+      </trans-unit>
+      <trans-unit id="33234812515b41550490cd8f114e9ff82817e796" datatype="html">
+        <source>1. Enter Server URL</source>
+      </trans-unit>
+      <trans-unit id="d4eeb804dd14b608f31f5ae39ef72f3eec362832" datatype="html">
+        <source> Enter the URL template of the server. Include server variables in the URL template using the following syntax: </source>
+      </trans-unit>
+      <trans-unit id="0e108a5612e84b7b8c4d3b8a5b85485bd4509348" datatype="html">
+        <source>Server URL</source>
+      </trans-unit>
+      <trans-unit id="4466afdde4052c3531689669c4af6e6628c5e201" datatype="html">
+        <source>Enter Server URL</source>
+      </trans-unit>
+      <trans-unit id="c2d0ac9f528bbd5f53fd34269fde8b59e029621b" datatype="html">
+        <source>Apply</source>
+      </trans-unit>
+      <trans-unit id="06c663bf1474713f57551123a46b34318543b67d" datatype="html">
+        <source>Reset</source>
+      </trans-unit>
+      <trans-unit id="1b8ee9f6819c1d35470ce1a185d628b1cb8f31c3" datatype="html">
+        <source>Server URL is required.</source>
+      </trans-unit>
+      <trans-unit id="21bfc4220482b5bccc452fb41caff4578c0d0924" datatype="html">
+        <source>URL has been changed. Press enter or click &quot;Apply&quot; to accept.</source>
+      </trans-unit>
+      <trans-unit id="21ea338c2c9025a1bfedcef1316f5bcadcd23865" datatype="html">
+        <source>2. Configure Server Variables</source>
+      </trans-unit>
+      <trans-unit id="731d1af5e4a478428bc721d84f60f15dd78d5728" datatype="html">
+        <source> Configure the server variables found in the server URL template. </source>
+      </trans-unit>
+      <trans-unit id="98028988089c7625e766a4785149b499695c4185" datatype="html">
+        <source> This server URL does not contain variables. Server variables are defined in the server URL template. </source>
+      </trans-unit>
+      <trans-unit id="c134eb8abb62f3c913d33158d0ada76421cc82fe" datatype="html">
+        <source>Default Value</source>
+      </trans-unit>
+      <trans-unit id="9236de9d84b5bd28764c6ecca502e9cae3e6bfab" datatype="html">
+        <source>Default value</source>
+      </trans-unit>
+      <trans-unit id="52f0bca05345f165dfc3f3dbbe36e4fc7fccdf61" datatype="html">
+        <source>Variable description</source>
+      </trans-unit>
+      <trans-unit id="b307e817a013c5009ff98f7645834d503869db50" datatype="html">
+        <source>Design</source>
+      </trans-unit>
+      <trans-unit id="6834fa6b43d1ecbdf147c48dd9c4d72f1484571d" datatype="html">
+        <source>Source</source>
+      </trans-unit>
+      <trans-unit id="47d4d0d630fb480e6f7dd6eb684f15877e8db9f2" datatype="html">
+        <source>Revert</source>
+      </trans-unit>
+      <trans-unit id="904095b7d82fc49feb099f843a530a7936110460" datatype="html">
+        <source>As JSON</source>
+      </trans-unit>
+      <trans-unit id="0f0d34815c9d06390552367db6bab86ee57fae32" datatype="html">
+        <source>As YAML</source>
+      </trans-unit>
+      <trans-unit id="4c2a109e62a7837712bffdb2e36ccc7eb38b6aee" datatype="html">
+        <source>In this section you can easily edit the Summary and Description of the Channel Item.</source>
+      </trans-unit>
+      <trans-unit id="7529307ff5a8475ecd0755abb1b8a91ae24c1d52" datatype="html">
+        <source>Reference</source>
+      </trans-unit>
+      <trans-unit id="a8233de047500bf0f0d9f9f1712ddb071501a283" datatype="html">
+        <source>Summary</source>
+      </trans-unit>
+      <trans-unit id="3130aebb14f33bb606b10c6f2a8a82309847c876" datatype="html">
+        <source>Operation ID</source>
+      </trans-unit>
+      <trans-unit id="cafc87479686947e2590b9f588a88040aeaf660b" datatype="html">
+        <source>Tags</source>
+      </trans-unit>
+      <trans-unit id="d5d16ec3b7611225f7ca256e5b77f321e873a5f6" datatype="html">
+        <source>No request body has been defined.</source>
+      </trans-unit>
+      <trans-unit id="7d1344e3d4e8b1b30abaaf383945b4543d70b303" datatype="html">
+        <source>Add a message</source>
+      </trans-unit>
+      <trans-unit id="1842d0282a1e88e3c372d660323d883c357b7a39" datatype="html">
+        <source>Correlation ID</source>
+      </trans-unit>
+      <trans-unit id="fc8ce052c64a183bb3fc914b48e28e39bf856121" datatype="html">
+        <source>Content Type</source>
+      </trans-unit>
+      <trans-unit id="4a8272ac03dac4333c0119cd6c03a8ffb67cb6df" datatype="html">
+        <source>Schema Format</source>
+      </trans-unit>
+      <trans-unit id="4ab4cb601522b9194922554d934c4c30bd93567d" datatype="html">
+        <source>Content</source>
+      </trans-unit>
+      <trans-unit id="5ce5d91f4237b3e14b2e8a67bbc8450a9ac627a2" datatype="html">
+        <source>Examples</source>
+      </trans-unit>
+      <trans-unit id="7e7fa73cde1687d4db06c67213c758a9625393ff" datatype="html">
+        <source>No examples have been defined.</source>
+      </trans-unit>
+      <trans-unit id="41ba197b193563997fba7c8d2846d85d823bdd10" datatype="html">
+        <source>Add an example</source>
+      </trans-unit>
+      <trans-unit id="285e92d4bcf7ded01f15e95d0de044358c18d9a5" datatype="html">
+        <source>Delete all examples</source>
+      </trans-unit>
+      <trans-unit id="3b9f4138abbca0fd66db1f7332f4b54e2a6d916d" datatype="html">
+        <source>Imported</source>
+      </trans-unit>
+      <trans-unit id="661c0243a2251ec0a72c2ad185fc0f2d5e6dd061" datatype="html">
+        <source>Collapse All Sections</source>
+      </trans-unit>
+      <trans-unit id="ce1aec87ce0b4cce58cb22d8e8c27839e687c52f" datatype="html">
+        <source>Expand All Sections</source>
+      </trans-unit>
+      <trans-unit id="d8552d6d80d70d565b634e8c4347e4e07b342f07" datatype="html">
+        <source>Rename Data Type</source>
+      </trans-unit>
+      <trans-unit id="799c381b7279b0079b25e8d7a780766d0908c287" datatype="html">
+        <source>Delete Data Type</source>
+      </trans-unit>
+      <trans-unit id="23ba4fa46d1f0e9eda186a9d76402c6812b440a3" datatype="html">
+        <source>TYPE</source>
+      </trans-unit>
+      <trans-unit id="086e1ad575f843995cfd0c274ec43d81d2238d47" datatype="html">
+        <source>Use this section to manage the type information.</source>
+      </trans-unit>
+      <trans-unit id="100430447c24e8e2bdcdade25c604368a2c27d7a" datatype="html">
+        <source>INHERITANCE</source>
+      </trans-unit>
+      <trans-unit id="bcf3b04a28d837b15959ac1440c46de3dbfbd4c5" datatype="html">
+        <source>Inheritance Type</source>
+      </trans-unit>
+      <trans-unit id="7080aaba73f72c55715589ee38742919bd768e79" datatype="html">
+        <source>REFERENCE</source>
+      </trans-unit>
+      <trans-unit id="b62cc4be21e4f0288a50d3671f53240876e91b86" datatype="html">
+        <source>This section describes the externally referenced Data Type.</source>
+      </trans-unit>
+      <trans-unit id="7fbdaac2b02193fdf0ad4d3b6aaf8d20de407278" datatype="html">
+        <source>This Data Type is an external reference to: </source>
+      </trans-unit>
+      <trans-unit id="f735316222f691ea50289d60bb2dff14955a83ac" datatype="html">
+        <source>REFERENCE DETAILS</source>
+      </trans-unit>
+      <trans-unit id="53463b1688b88ba4d58a1f878272aac8b4cc0e18" datatype="html">
+        <source>This section shows details about the externally referenced Data Type.</source>
+      </trans-unit>
+      <trans-unit id="07bd12c16afed428271dc5253e5bb329cd0cd923" datatype="html">
+        <source>Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies).</source>
+      </trans-unit>
+      <trans-unit id="e5a31515e3b4f58a347092edc3f814bcadceb080" datatype="html">
+        <source>EXAMPLE</source>
+      </trans-unit>
+      <trans-unit id="2cfa699de2e489e65c279ed2355af1981e9466d0" datatype="html">
+        <source>This section allows you to modify the Data Type&apos;s Example.</source>
+      </trans-unit>
+      <trans-unit id="9f974c9efaa03c5342096d1e63465e9f9dc35163" datatype="html">
+        <source>INFO</source>
+      </trans-unit>
+      <trans-unit id="6555fcf520a62d26c7211811ed61f8b72b34cc8b" datatype="html">
+        <source>This section allows you to modify the Description of the Data Type.</source>
+      </trans-unit>
+      <trans-unit id="a317e5fad23cb730774f7c13745a97c8d8fc5c4a" datatype="html">
+        <source>This data type is currently a complex object.</source>
+      </trans-unit>
+      <trans-unit id="95d29e43073ac25d1b1e89b8877f7966ca5cc6cc" datatype="html">
+        <source>Switch to simple type</source>
+      </trans-unit>
+      <trans-unit id="49e243112504ecdda20a5ff522bd1547db01acc4" datatype="html">
+        <source>This data type is currently a simple type.</source>
+      </trans-unit>
+      <trans-unit id="2760c75667d5f09540c2076b7d6dab162cf0ed62" datatype="html">
+        <source>Switch to complex (object) type</source>
+      </trans-unit>
+      <trans-unit id="095716e0fd1ac2bb563f1b148c034acc4e1e2721" datatype="html">
+        <source>PROPERTIES</source>
+      </trans-unit>
+      <trans-unit id="c6480efdba6e828162d5912d80f2dd5984a10761" datatype="html">
+        <source>Use this section to define the properties that make up this data type.</source>
+      </trans-unit>
+      <trans-unit id="4eca140d15ea9a1c7acb750c6d43a268fd5e3d7a" datatype="html">
+        <source>No schema properties have been defined.</source>
+      </trans-unit>
+      <trans-unit id="f111b35be72ffd21f48c9d98965becb7eed7410e" datatype="html">
+        <source>Add a property</source>
+      </trans-unit>
+      <trans-unit id="cf17e2f3737e74b8e3b874867ec9cf5fa46f2146" datatype="html">
+        <source>Property</source>
+      </trans-unit>
+      <trans-unit id="dcb926808da74774e8c6ab154a9facb9b221d116" datatype="html">
+        <source>Rename Property</source>
+      </trans-unit>
+      <trans-unit id="25f9b41f827f93ee229677f5983b51c597e9e431" datatype="html">
+        <source>No contact information has been entered.</source>
+      </trans-unit>
+      <trans-unit id="838528707484c38427d9ad95a781777c8ed08e26" datatype="html">
+        <source>Add contact info</source>
+      </trans-unit>
+      <trans-unit id="244aae9346da82b0922506c2d2581373a15641cc" datatype="html">
+        <source>Email</source>
+      </trans-unit>
+      <trans-unit id="801b98c6f02fe3b32f6afa3ee854c99ed83474e6" datatype="html">
+        <source>URL</source>
+      </trans-unit>
+      <trans-unit id="aa4f4b7c81ae9cabfcebc2173f31e3f4bf08d833" datatype="html">
+        <source>Terms of Service</source>
+      </trans-unit>
+      <trans-unit id="e4e5d3707940f688c53d2d4ea70735e9b2194925" datatype="html">
+        <source>No license has been set.</source>
+      </trans-unit>
+      <trans-unit id="eb696273cbd15c6c06454e6e3e1c0eefaa213a1c" datatype="html">
+        <source>Set license</source>
+      </trans-unit>
+      <trans-unit id="be970616695be0ca83d6fc2e0d33c27e8251a8cd" datatype="html">
+        <source>You have configured a license that we are not familiar with. For information about the license, click the link above! Or else click the button below to choose a different license...</source>
+      </trans-unit>
+      <trans-unit id="1cdaa4514db4e935dc5880790c47527bf76f0446" datatype="html">
+        <source>Change License</source>
+      </trans-unit>
+      <trans-unit id="a6b5258218db5e7f1bce3e835d47b40ef55aa2e1" datatype="html">
+        <source>View full <x id="INTERPOLATION" equiv-text="{{ license().fullName }}"/> »</source>
+      </trans-unit>
+      <trans-unit id="fdbe66d92e5382bb70088c9e8ea6baf47b83d7b6" datatype="html">
+        <source>CONTACT</source>
+      </trans-unit>
+      <trans-unit id="0c3bb26514ebb20a085981a18a62e903a89c663e" datatype="html">
+        <source>Update the information contained in this section to provide users of the API details about how to contact you should they need help.</source>
+      </trans-unit>
+      <trans-unit id="2f1da53f31dce21839e66d7e370fffde8d185256" datatype="html">
+        <source>This section allows you to modify the Version and Description of the API.</source>
+      </trans-unit>
+      <trans-unit id="6729f7ca4e3077f40206c7bf26a5496700cd2b39" datatype="html">
+        <source>Consumes (Inputs)</source>
+      </trans-unit>
+      <trans-unit id="2c83936e13daf3fc6370ac9bf1c98563d92c3d35" datatype="html">
+        <source>Produces (Outputs)</source>
+      </trans-unit>
+      <trans-unit id="16e1229a10200248f2e84c61243732d91cec96b4" datatype="html">
+        <source>LICENSE</source>
+      </trans-unit>
+      <trans-unit id="e2ff0aa3b1c2dc802db691b33cfe0a2ab18be822" datatype="html">
+        <source>Does your API have a license?  If it does, you can configure it here.</source>
+      </trans-unit>
+      <trans-unit id="fa21610ca90cac55b773f98a9c187056c32d6f1c" datatype="html">
+        <source>You have configured a license that we are not familiar with. For information about the license, click the link above! Or else click the button below to choose a different license...</source>
+      </trans-unit>
+      <trans-unit id="cb0185fb299a76b9d45365a1db639de86a746639" datatype="html">
+        <source>SECURITY SCHEMES</source>
+      </trans-unit>
+      <trans-unit id="7b9d8424d0ae96fd5ee9c3eee32591ab1200ae4d" datatype="html">
+        <source>Use this section to configure your API&apos;s security options.  There are several schemes you can choose from, for example OAuth2.</source>
+      </trans-unit>
+      <trans-unit id="73c1a4830583df792194f0c4c6e73d327392bb6e" datatype="html">
+        <source>Delete all security schemes.</source>
+      </trans-unit>
+      <trans-unit id="10cf821b822cbd5b76d02f17db367083de0ef463" datatype="html">
+        <source>No security options have been configured.</source>
+      </trans-unit>
+      <trans-unit id="ae2602438312884e86fe950b840a1a38e6951d4b" datatype="html">
+        <source>Add a security scheme</source>
+      </trans-unit>
+      <trans-unit id="164e75a850493b383ab66ec3055134abca4873c3" datatype="html">
+        <source>Rename Security Scheme</source>
+      </trans-unit>
+      <trans-unit id="4c6731551d26f8855aab7887d3ba2bdf01ddd089" datatype="html">
+        <source>Renaming a Security Scheme will also update any references to that scheme elsewhere in the API (e.g. security requirements in operations).</source>
+      </trans-unit>
+      <trans-unit id="9c0452587a9ea4672a96fcdfa56bd31a1e11e50a" datatype="html">
+        <source>TAG DEFINITIONS</source>
+      </trans-unit>
+      <trans-unit id="843ec9fc709dc0879766deef691b25d168f1f4a0" datatype="html">
+        <source>Configure tags for your API in this section.  Once defined, tags can be used to organize your API&apos;s operations by arbitrary criteria.</source>
+      </trans-unit>
+      <trans-unit id="f9f63e45928047664edc3c7d951947dfff24c224" datatype="html">
+        <source>Add a tag to the API.</source>
+      </trans-unit>
+      <trans-unit id="6799f7aaa8b7abe4de36c112a092791054c01ac9" datatype="html">
+        <source>Delete all tag definitions.</source>
+      </trans-unit>
+      <trans-unit id="8176c22bd90b36fb129e24d6b877a06701f0652e" datatype="html">
+        <source>No tags have been configured.</source>
+      </trans-unit>
+      <trans-unit id="0f6bc1dc23c52097dcd38cf35285e305c782cbb6" datatype="html">
+        <source>Add a tag</source>
+      </trans-unit>
+      <trans-unit id="d299ea061dbe0a44e745bc8e8b041aa6b910b444" datatype="html">
+        <source>Rename Tag</source>
+      </trans-unit>
+      <trans-unit id="99a9c049f4c52035c5af47ff83bc7b0d61264f24" datatype="html">
+        <source>Renaming a Tag will also update any references to that tag elsewhere in the API (e.g. tagging on operations).</source>
+      </trans-unit>
+      <trans-unit id="659ed58df04e2c356933326f739ce505444b2ece" datatype="html">
+        <source>New Sub-Path</source>
+      </trans-unit>
+      <trans-unit id="66600b1b557eddfd034d287983c5afaa59fdfafe" datatype="html">
+        <source>Delete Path</source>
+      </trans-unit>
+      <trans-unit id="21b00b88148ed865162a4fc7f4ab38245b14f8b4" datatype="html">
+        <source>In this section you can easily edit the Summary and Description of the Path Item.</source>
+      </trans-unit>
+      <trans-unit id="5e469a1393921356d70c9d1eb141872485e12aeb" datatype="html">
+        <source>Add a media type</source>
+      </trans-unit>
+      <trans-unit id="91f8c67b5467c4856399410f6bb076fb8e158b67" datatype="html">
+        <source>No media types have been defined.</source>
+      </trans-unit>
+      <trans-unit id="8d23d6336731eb7601cbc016c6ea28fc7d2cede2" datatype="html">
+        <source>In this section you can easily edit the Summary, ID, and Description of the Operation.</source>
+      </trans-unit>
+      <trans-unit id="561985d71704b842d3f74dd590b61c805f8b13d9" datatype="html">
+        <source>No tags configured.</source>
+      </trans-unit>
+      <trans-unit id="b4edb696e7ce288dc1e33bb1b2de3f9d9a9d7183" datatype="html">
+        <source>Content types inherited from global scope.</source>
+      </trans-unit>
+      <trans-unit id="0bb14842189b2a243022992351529b651e7fd4e5" datatype="html">
+        <source>Override the &apos;consumes&apos; setting.</source>
+      </trans-unit>
+      <trans-unit id="8226821567f097b9faa3aa687d0919d84e5d80cf" datatype="html">
+        <source>Override</source>
+      </trans-unit>
+      <trans-unit id="6eebfd93d863a31a159a9b817177cddd1242f9f7" datatype="html">
+        <source>Overrides the global &apos;consumes&apos; setting.</source>
+      </trans-unit>
+      <trans-unit id="c138a0e2f9d2ff893dfc6c3e4c7388a4763ae6cc" datatype="html">
+        <source>Content types defined in this operation only (no global setting).</source>
+      </trans-unit>
+      <trans-unit id="f83b5049170f17915d37ddf2171f9aeba4b96522" datatype="html">
+        <source>No content types defined at any level.</source>
+      </trans-unit>
+      <trans-unit id="6fbc55247f22162c2b57b6da1e9cb4bf19dd664b" datatype="html">
+        <source>Override the produces setting.</source>
+      </trans-unit>
+      <trans-unit id="9bfd54cca45a768390a6449ac18cdaa4d1a2ee34" datatype="html">
+        <source>Overrides the global &apos;produces&apos; setting.</source>
+      </trans-unit>
+      <trans-unit id="e051e0335f55f64e5658f4880d21d883abe1c901" datatype="html">
+        <source>Operation Not Defined</source>
+      </trans-unit>
+      <trans-unit id="35cb8b424ad8c81760c440cb6f00628933b63e83" datatype="html">
+        <source> This operation is not yet defined. If you want this path/endpoint to support the operation, get started by clicking the </source>
+      </trans-unit>
+      <trans-unit id="80f1835ccf9c78c940304494288eb3e63ce25fc8" datatype="html">
+        <source>Add Operation</source>
+      </trans-unit>
+      <trans-unit id="0fb79b0787985eb5561e1b4da92fe3aba0e5d302" datatype="html">
+        <source> button below.</source>
+      </trans-unit>
+      <trans-unit id="058f98cc40e95c4a70729234105e6dacf970d3fe" datatype="html">
+        <source>REQUEST BODY</source>
+      </trans-unit>
+      <trans-unit id="7568f585552e78428ea954518af9cadca6635cf7" datatype="html">
+        <source>Use this section to configure the operation&apos;s Request Body.  Typically a request body is used for PUT and POST only.</source>
+      </trans-unit>
+      <trans-unit id="8d8bfe72e841ba31f3552cb517f918d79eec10bb" datatype="html">
+        <source>Add a request body</source>
+      </trans-unit>
+      <trans-unit id="e6c183a09134e55c300dbc630f3cb0f0f6a2da1c" datatype="html">
+        <source>, or</source>
+      </trans-unit>
+      <trans-unit id="13b3f9b4c52e2fe82043c24c27098139e67dc8e3" datatype="html">
+        <source>add request form data</source>
+      </trans-unit>
+      <trans-unit id="bf8c94293cd03a226d6b11dea2e444355d09e64f" datatype="html">
+        <source>Not Recommended</source>
+      </trans-unit>
+      <trans-unit id="ae212d8529730381ea8f3335d73a92735043712b" datatype="html">
+        <source>It is unusual and not recommended to define a request body for a </source>
+      </trans-unit>
+      <trans-unit id="10c92632c713a805466416dc19b31a801a5d47d9" datatype="html">
+        <source>GET</source>
+      </trans-unit>
+      <trans-unit id="e01b2d0142a4a8ed3e2fdc51f487537879cec54a" datatype="html">
+        <source> operation.</source>
+      </trans-unit>
+      <trans-unit id="2f73532c4724b12c48aa100436e01efaf554ae19" datatype="html">
+        <source>No request body description.</source>
+      </trans-unit>
+      <trans-unit id="8b2cb4323c68d0b2c575032f8c301a9683cbefa3" datatype="html">
+        <source>Request Body Type</source>
+      </trans-unit>
+      <trans-unit id="d5d191ba468cf62ea3c5c5bad8bac933a522ab62" datatype="html">
+        <source>It is</source>
+      </trans-unit>
+      <trans-unit id="80d02aef4f660f4cee1b2a05dcb3ba583691a58d" datatype="html">
+        <source>that clients include the request body.</source>
+      </trans-unit>
+      <trans-unit id="de60494b953d1d941773d541fd9a22a15fec754a" datatype="html">
+        <source>Media Types</source>
+      </trans-unit>
+      <trans-unit id="769ebaabba479fe96c19b61198d5ff2891e7db40" datatype="html">
+        <source>Form Data Parameter</source>
+      </trans-unit>
+      <trans-unit id="97767055517f5b16e857a23730666e69bf0792c5" datatype="html">
+        <source>Rename Form Data Parameter</source>
+      </trans-unit>
+      <trans-unit id="315409d521cb7ee3ec47396c16c34aac7cc23ba8" datatype="html">
+        <source>Renaming a Form Data Parameter may also update any form data parameters with the same name depending on path and operation hierarchies.</source>
+      </trans-unit>
+      <trans-unit id="f9b99fdb5509dfec39a6c7f121f7a2e7609c2165" datatype="html">
+        <source>No description.</source>
+      </trans-unit>
+      <trans-unit id="a4538268fb4f3d26c30432215077f053a833caea" datatype="html">
+        <source>Response Body</source>
+      </trans-unit>
+      <trans-unit id="d4d0df4d322edd3f7714fb7b67d85ef48b1f6508" datatype="html">
+        <source>Response Definition</source>
+      </trans-unit>
+      <trans-unit id="3aa3b58b67da15dc8344b03174def39f84a014aa" datatype="html">
+        <source>This response references the </source>
+      </trans-unit>
+      <trans-unit id="f0d2b03332644d8a60dba9eb70ffa65e11e79995" datatype="html">
+        <source> Response Definition.</source>
+      </trans-unit>
+      <trans-unit id="b3e8a59549dcefe617dc6719731e54fc650e9865" datatype="html">
+        <source>Response Type</source>
+      </trans-unit>
+      <trans-unit id="6db909a826f1878ad78bf853a62b6cc5cbda3d3f" datatype="html">
+        <source>Example</source>
+      </trans-unit>
+      <trans-unit id="adb0e5a696a1a3ae3d04c867de14fafb5e27fb36" datatype="html">
+        <source>RESPONSES</source>
+      </trans-unit>
+      <trans-unit id="8cbc59b9eb201537f83be658150ffae854715c2f" datatype="html">
+        <source>Use this section to configure the operation&apos;s Responses (e.g. 200, 404, 500).</source>
+      </trans-unit>
+      <trans-unit id="151edb23c7390543b6ea603c956d4c7acd93c567" datatype="html">
+        <source>No responses have been defined.</source>
+      </trans-unit>
+      <trans-unit id="496593003dc96f565049e1805d8b31cc9e7f9ad5" datatype="html">
+        <source>Add a response</source>
+      </trans-unit>
+      <trans-unit id="b600b4f66a5a035ed1db2363c63ce417f9d4bde1" datatype="html">
+        <source>Delete Response</source>
+      </trans-unit>
+      <trans-unit id="a2a9ac43d4830d17c797ca1b5178292d3677a9e6" datatype="html">
+        <source>OPERATIONS</source>
+      </trans-unit>
+      <trans-unit id="287ca5d0fb2135e222aad84e3482051e98bcbc08" datatype="html">
+        <source>In this section you can manage the operations defined for the path.</source>
+      </trans-unit>
+      <trans-unit id="8f910cd5b062fd38268107b2d3fdece063e98d48" datatype="html">
+        <source>Get</source>
+      </trans-unit>
+      <trans-unit id="6b456b07ae5692e2e94a244ff717549a7331cab7" datatype="html">
+        <source>Put</source>
+      </trans-unit>
+      <trans-unit id="c45f7b3af5a4c87ef8a0e5ea40859dfcf576946a" datatype="html">
+        <source>Post</source>
+      </trans-unit>
+      <trans-unit id="24813b8a3e45f0b57136c18d003027262cfe2d1f" datatype="html">
+        <source>Options</source>
+      </trans-unit>
+      <trans-unit id="9c8178aaafc387cc91c319a593c63f7e6506e020" datatype="html">
+        <source>Head</source>
+      </trans-unit>
+      <trans-unit id="7d8ff441ac09b99d10893a07675aea31d2721331" datatype="html">
+        <source>Patch</source>
+      </trans-unit>
+      <trans-unit id="f89c288ea202055a18a67abb5f21cba8a3fcfb90" datatype="html">
+        <source>Trace</source>
+      </trans-unit>
+      <trans-unit id="4c17c4212cea238f38af7c50e83aeababa34701d" datatype="html">
+        <source>Delete Operation</source>
+      </trans-unit>
+      <trans-unit id="285a3fe72935982f6f8052ce7f0835d2f7045589" datatype="html">
+        <source>Delete All Operations</source>
+      </trans-unit>
+      <trans-unit id="232086c7002869a9222df263fac6edebc2a6623c" datatype="html">
+        <source>Rename Response</source>
+      </trans-unit>
+      <trans-unit id="571262954e4c858755d1d7558f360f3af6935ea3" datatype="html">
+        <source>This section describes the externally referenced Response.</source>
+      </trans-unit>
+      <trans-unit id="c8f93410f0e15cd5cc44502948496ae2e891d43f" datatype="html">
+        <source>This Response is an external reference to: </source>
+      </trans-unit>
+      <trans-unit id="56a463333aa5fb0759bffa6baef939394f483272" datatype="html">
+        <source>This section shows details about the externally referenced Response.</source>
+      </trans-unit>
+      <trans-unit id="732f3d45df383f501b33f823d5e6182de53ba1f1" datatype="html">
+        <source>Renaming a Response will also update any references to the response elsewhere in the API (e.g. operations).</source>
+      </trans-unit>
+      <trans-unit id="17ebf2f36b366b8e758732775387fff3410119a6" datatype="html">
+        <source>COOKIE PARAMETERS</source>
+      </trans-unit>
+      <trans-unit id="190db06ec5562a907ecdaace6ca6b2467e238800" datatype="html">
+        <source>No cookie parameters have been defined.</source>
+      </trans-unit>
+      <trans-unit id="83a33b0acba879bd034d7a2c14efb8380eba8fa0" datatype="html">
+        <source>Add a cookie parameter</source>
+      </trans-unit>
+      <trans-unit id="c67a6820f5cee8b994a3d110563a150805ef633b" datatype="html">
+        <source>Rename Cookie Parameter</source>
+      </trans-unit>
+      <trans-unit id="f845da794377f1b844ab151541d924e7529e7e2e" datatype="html">
+        <source>Renaming a Cookie Parameter may also update any cookie parameters with the same name depending on path and operation hierarchies.</source>
+      </trans-unit>
+      <trans-unit id="8789578d17b86988eb187413b604d1ebd0e8b0b0" datatype="html">
+        <source>HEADER PARAMETERS</source>
+      </trans-unit>
+      <trans-unit id="8b0ca39383bba9cabc9d766d8d7054fc571a651e" datatype="html">
+        <source>No header parameters have been defined.</source>
+      </trans-unit>
+      <trans-unit id="204bb9798aaac54d0556b85441ed8cf9e98edb85" datatype="html">
+        <source>Add a header parameter</source>
+      </trans-unit>
+      <trans-unit id="8e125313fb00d9a11e798e95f290651fda207909" datatype="html">
+        <source>Rename Header</source>
+      </trans-unit>
+      <trans-unit id="87e6c24f5e7da39c0c6837240eec95f67deafb18" datatype="html">
+        <source>Renaming a Header may also update any headers with the same name depending on path and operation hierarchies.</source>
+      </trans-unit>
+      <trans-unit id="70a67e04629f6d412db0a12d51820b480788d795" datatype="html">
+        <source>Create</source>
+      </trans-unit>
+      <trans-unit id="520f3f9e9bea8b5ec5dfd0d288239216a9ee5d44" datatype="html">
+        <source>QUERY PARAMETERS</source>
+      </trans-unit>
+      <trans-unit id="76e28a3749d702e7f3f8639b9d14cba67f6072ae" datatype="html">
+        <source>No query parameters have been defined.</source>
+      </trans-unit>
+      <trans-unit id="453fee397ab7a7e29c5eb0cf2bc5afdd00910310" datatype="html">
+        <source>Add a query parameter</source>
+      </trans-unit>
+      <trans-unit id="d69aee460cea18c7806d47ae0a0bdf903813bbdd" datatype="html">
+        <source>Rename Query Parameter</source>
+      </trans-unit>
+      <trans-unit id="5b8b2fbd8f007f5e7e8f89942b0e015d48c193ee" datatype="html">
+        <source>Renaming a Query Parameter may also update any query parameters with the same name depending on path and operation hierarchies.</source>
+      </trans-unit>
+      <trans-unit id="407163ec28670d2c5366eee8db886c0fe9cfc8f0" datatype="html">
+        <source>Enum Values:</source>
+      </trans-unit>
+      <trans-unit id="f5334a2d9f58ea999587edad6f732eaa61eeed9a" datatype="html">
+        <source>Collapse All Other Sections</source>
+      </trans-unit>
+      <trans-unit id="21bbf9f4addd932b5254ca2fef5e960ad0f6b4b8" datatype="html">
+        <source>SECURITY REQUIREMENTS</source>
+      </trans-unit>
+      <trans-unit id="ace2932dd4c901a5be228cd5c66f8d230cf6c405" datatype="html">
+        <source>Delete all security requirements.</source>
+      </trans-unit>
+      <trans-unit id="11303bf3e8b2ffbf87676e2fe80cff64c83b6580" datatype="html">
+        <source>No security requirements have been configured.</source>
+      </trans-unit>
+      <trans-unit id="4ac0fd476bb5bee1f00e17c3e669c180c7675fa4" datatype="html">
+        <source>Add security requirement</source>
+      </trans-unit>
+      <trans-unit id="7aff12882ef156de342e6d594da137732af66705" datatype="html">
+        <source>Security Requirements needed to access </source>
+      </trans-unit>
+      <trans-unit id="6e1851bbee7e3f769e7b6f11d7e750b3f36586c8" datatype="html">
+        <source>Operations in this API</source>
+      </trans-unit>
+      <trans-unit id="c048b70d0031ab085068afe7ad8ffb2e042aa62a" datatype="html">
+        <source> (clients must choose one combination):</source>
+      </trans-unit>
+      <trans-unit id="7520b99d1ba5d31420eb40a165a85b8d0bf2bb41" datatype="html">
+        <source>this Operation</source>
+      </trans-unit>
+      <trans-unit id="492f7f65e73eb27473465ea0e6c5080910e32ee9" datatype="html">
+        <source>SERVERS</source>
+      </trans-unit>
+      <trans-unit id="f5d2c0c15e615c681d19a3af9194c5061b3fc24a" datatype="html">
+        <source>No servers have been defined.</source>
+      </trans-unit>
+      <trans-unit id="49561b7aa0f62a77e742c1fe7e790e26331dfe72" datatype="html">
+        <source>Add a server</source>
+      </trans-unit>
+      <trans-unit id="f70f8b1d5244e87cb949377f5ea3722f7a52d553" datatype="html">
+        <source>Paths</source>
+      </trans-unit>
+      <trans-unit id="43d0810979464ec29bf0093f207753ca8913ec14" datatype="html">
+        <source>The core of any REST API is the set of resources/paths it exposes.  Each path is of the form &apos;/path/to/resource&apos; and can support a number of operations.</source>
+      </trans-unit>
+      <trans-unit id="a05e0e49060608225dd8de48519067433ebd838e" datatype="html">
+        <source>No paths have been created.</source>
+      </trans-unit>
+      <trans-unit id="5767ba76365ed9ed651b7abe4fd1ad8c4eda11ee" datatype="html">
+        <source>Add a path</source>
+      </trans-unit>
+      <trans-unit id="9a7d3cbd798f9dac19064d1881425b93d80ef123" datatype="html">
+        <source>Data Types</source>
+      </trans-unit>
+      <trans-unit id="97f032deddaf1ccd18549989fcefadd08913ea03" datatype="html">
+        <source>It is often necessary for many operations to return the same type of data (or a list of that same data type).  Rather than define the same data type multiple times within each operation, you can create named Data Types in this section.</source>
+      </trans-unit>
+      <trans-unit id="0233d20b9c1fca3c53d6bcf2136d2a8424c904fb" datatype="html">
+        <source>Create Data Type</source>
+      </trans-unit>
+      <trans-unit id="0dcf258112c280b262a9704754cd37fc7ae9f7d6" datatype="html">
+        <source>Import Data Type</source>
+      </trans-unit>
+      <trans-unit id="e12cf9872dd6c1a4f04c8b06a5b78628eb5f2fbb" datatype="html">
+        <source>Responses</source>
+      </trans-unit>
+      <trans-unit id="fa346df472d8f088737a8fc1b1fb106c0f8acf8f" datatype="html">
+        <source>Define re-usable response definition in this section, allowing quick re-use across multiple operations.</source>
+      </trans-unit>
+      <trans-unit id="eb72131cf5b86dfe6375ed66bd2c65028af1eb20" datatype="html">
+        <source>Create Response</source>
+      </trans-unit>
+      <trans-unit id="af9b222d673529d8978601b7f38316dbcbaf2d91" datatype="html">
+        <source>Import Response</source>
+      </trans-unit>
+      <trans-unit id="28edf438ae3e7f94a07cc62da4a58af0bad7d262" datatype="html">
+        <source>No reusable responses have been created.</source>
+      </trans-unit>
+      <trans-unit id="a140b2831ba1428ef2893701d86a8f985354a44a" datatype="html">
+        <source>Renaming a Response will also update any references to it elsewhere in the API.</source>
+      </trans-unit>
+      <trans-unit id="f952db2f62b6f6e633385908f94a8d01b8113710" datatype="html">
+        <source>Validation Problems</source>
+      </trans-unit>
+      <trans-unit id="50de8b7682c75ec1d1565d193205b2f3eebc4e98" datatype="html">
+        <source>Go to problem</source>
+      </trans-unit>
+      <trans-unit id="f2042337d427ae31e4472ded10a7b4bdee551bc0" datatype="html">
+        <source>There are no problems to display.</source>
+      </trans-unit>
+      <trans-unit id="66db799d67958d4b0765181d072df62e2d1c16f5" datatype="html">
+        <source>Issues</source>
+      </trans-unit>
+      <trans-unit id="91444811128782dee281d41b12cd7e8f60df4673" datatype="html">
+        <source>Editor</source>
+      </trans-unit>
+      <trans-unit id="0a29af182e906dfe37f2aedecc790509316c73cc" datatype="html">
+        <source>Offline/disconnected mode enabled - click for details.</source>
+      </trans-unit>
+      <trans-unit id="6a3d052a9abe48cc7421bfc05392426a87033714" datatype="html">
+        <source>Disconnected/Offline Mode</source>
+      </trans-unit>
+      <trans-unit id="e0a3549abdd27b55b9e98918c079f435eb1c741f" datatype="html">
+        <source> You have changes that have not been saved (either because of a server error or disconnect). You can continue to edit the document locally (offline mode). Your changes will be sent to the server the next time it is available. If you navigate away or close this browser tab, your changes will be lost! </source>
+      </trans-unit>
+      <trans-unit id="c0d4ba61479087aaa1fb1aed4c4d3a58211e0204" datatype="html">
+        <source>You have </source>
+      </trans-unit>
+      <trans-unit id="b618455790b0df19d3699f382029820a60ec4004" datatype="html">
+        <source> unsaved change(s).</source>
+      </trans-unit>
+      <trans-unit id="7baf328f12568f214985a7640ab13c62642d2aaf" datatype="html">
+        <source>Will attempt to re-connect </source>
+      </trans-unit>
+      <trans-unit id="dcfa431ee3f2c909ff16b0ea9dc17dd797b225c8" datatype="html">
+        <source>Try to reconnect to the server right now (no waiting).</source>
+      </trans-unit>
+      <trans-unit id="55d51e8e8da01a219b657bda3e2daaaf41d7b64d" datatype="html">
+        <source>Reconnect Now</source>
+      </trans-unit>
+      <trans-unit id="e2b10ab690ec36e6c4e6da2ad68b85c5fa9f6a40" datatype="html">
+        <source> Live Documentation</source>
+      </trans-unit>
+      <trans-unit id="e3c04ad4bece4c7ba759ed98e988cc4a760c9d16" datatype="html">
+        <source> Loading API definition...</source>
+      </trans-unit>
+      <trans-unit id="afd356052b5a2df67e8311eb7602c232e3593f5f" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;spinner spinner-xs spinner-inline&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> Loading API definition...</source>
+      </trans-unit>
+      <trans-unit id="27ff95ea37181b8e7318da8df732c5689e8020c0" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;spinner spinner-xs spinner-inline&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> Loading API information...</source>
+      </trans-unit>
+      <trans-unit id="c4bfadfbda7f8595611b4a80cfc3b4d73238d4b0" datatype="html">
+        <source> Use this page to create or update mocks from your API. If the API is using OpenAPI 3.0 or AsyncAPI 2.0 format and you have a Microcks instance configured, you may choose to publish once or create an importing job. </source>
+      </trans-unit>
+      <trans-unit id="cb4b322adb02956e1e324bf4a9d39a6ed40ee4ae" datatype="html">
+        <source>Create a Mock for API &quot;<x id="INTERPOLATION" equiv-text="{{ api.name }}"/>&quot;?</source>
+      </trans-unit>
+      <trans-unit id="0269b2eb3740e5996e8ac8e2026241ac24c0371c" datatype="html">
+        <source> Doing this will create/update a Mock in the Microcks server, allowing you to test your API! </source>
+      </trans-unit>
+      <trans-unit id="47ede1257a8c0bc7269f5e90720a63a8d7decd8a" datatype="html">
+        <source>Mock API</source>
+      </trans-unit>
+      <trans-unit id="4d5e4056c72f8ba80dcaa20585574cf1bfc7519d" datatype="html">
+        <source><x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span class=&quot;spinner spinner-xs spinner-inline&quot;&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> Mocking...</source>
+      </trans-unit>
+      <trans-unit id="7064a540cbf58b7c0655e86a79029c7a8d3fd29e" datatype="html">
+        <source>API Mocked Successfully</source>
+      </trans-unit>
+      <trans-unit id="64415c3d8f48b91a0410d68141850c85d4e75415" datatype="html">
+        <source> Your API <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{ api.name }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> has been successfully mocked to Microcks server. No additional steps need to be taken. </source>
+      </trans-unit>
+      <trans-unit id="62ac4da736e2f147fe15de52867419ad2dcc0b5f" datatype="html">
+        <source> Service Reference: <x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;{{ mockReference.mockURL }}&quot; target=&quot;external&quot;&gt;"/><x id="INTERPOLATION" equiv-text="{{ mockReference.serviceRef }}"/><x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/></source>
+      </trans-unit>
+      <trans-unit id="764a8a101f8ee5a4b98844e93406182fb078507b" datatype="html">
+        <source>Team</source>
+      </trans-unit>
+      <trans-unit id="b45d01f61abb874a71b314051193f4b72c3d4cf2" datatype="html">
+        <source>Repository</source>
+      </trans-unit>
+      <trans-unit id="3c8d7c1ae417833f3382afe4a62fbb622ec1dd4c" datatype="html">
+        <source>Branch</source>
+      </trans-unit>
+      <trans-unit id="f3a58c8a81b9ffda26a154eae25a422c9f7de37b" datatype="html">
+        <source>Organization</source>
+      </trans-unit>
+      <trans-unit id="4c90059afafb7e160384d9f512797c95bb95c6dc" datatype="html">
+        <source>Group</source>
+      </trans-unit>
+      <trans-unit id="c8ac022dae267e926db44cb2a8481e1927af5f74" datatype="html">
+        <source>Project</source>
+      </trans-unit>
+      <trans-unit id="324c7882fe435c80ddb3260070d3ae21eea56e94" datatype="html">
+        <source> Use this page to publish your API (when it&apos;s ready) to a source control system such as GitHub, GitLab, or Bitbucket. You will need to link your Apicurio account to your source control system for this to work. </source>
+      </trans-unit>
+      <trans-unit id="82a3b44f5a7817fb27898956e285853821371a7f" datatype="html">
+        <source>Account linking can be done from the </source>
+      </trans-unit>
+      <trans-unit id="484917fa57c8889aeb314cf4256af11abb1e355a" datatype="html">
+        <source>Settings -&gt; Accounts</source>
+      </trans-unit>
+      <trans-unit id="ebafd91d8f96fa3bccf3c5e63bd056920f0a71f0" datatype="html">
+        <source>Publish API </source>
+      </trans-unit>
+      <trans-unit id="0593502e211c3f291d6d51668d0b965146d37dcf" datatype="html">
+        <source> You haven&apos;t linked your Apicurio account to a source control system. Do this first from the appropriate </source>
+      </trans-unit>
+      <trans-unit id="ffde342dc48f0b074d3dbcbb2f665216a2dd3deb" datatype="html">
+        <source>Resource</source>
+      </trans-unit>
+      <trans-unit id="4523701eaef0487614503898100141199498646a" datatype="html">
+        <source>Resource is required.</source>
+      </trans-unit>
+      <trans-unit id="66b70ce9f5f45fece9d27e49882e937696825683" datatype="html">
+        <source>Publish API</source>
+      </trans-unit>
+      <trans-unit id="9470e33be8f9a6614e2f0b3410b9f34b738dcef9" datatype="html">
+        <source> Publishing...</source>
+      </trans-unit>
+      <trans-unit id="d8dcd8b603aa80ab9d60181e40bcb1f5c12e782f" datatype="html">
+        <source>API Published Successfully</source>
+      </trans-unit>
+      <trans-unit id="89f33bfe3aa9109b33bbd20df2259afe0687d192" datatype="html">
+        <source>Your API </source>
+      </trans-unit>
+      <trans-unit id="c29596abaee3deb64215e9a76e78149a6daf0873" datatype="html">
+        <source> has been successfully published to </source>
+      </trans-unit>
+      <trans-unit id="36a6740967b77eb15ea2ab3f24b5041a9e4d8200" datatype="html">
+        <source>. No additional steps need to be taken.</source>
+      </trans-unit>
+      <trans-unit id="86c7ffde79627a168bf8a3ef60bc085b26342029" datatype="html">
+        <source>Welcome to <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Apicurio<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>!</source>
+      </trans-unit>
+      <trans-unit id="c811f2a9ce66543ee3cc5a1235918c0127e50982" datatype="html">
+        <source> Hey <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{ user().name }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>, thanks for logging into <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>Apicurio<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/>. Use this tool to create, modify and collaborate on new and existing APIs (with just a few clicks). </source>
+      </trans-unit>
+      <trans-unit id="1e37685f4e4697e08ed39b67380e130ec75db64f" datatype="html">
+        <source>Learn more about the Apicurio project</source>
+      </trans-unit>
+      <trans-unit id="fa7c32cfb723b83dc417758e02806fa3b31fe682" datatype="html">
+        <source>View our Roadmap</source>
+      </trans-unit>
+      <trans-unit id="2c97b0dfefa867d3540da4aebbd546c73730edb2" datatype="html">
+        <source>Question or Ideas? Contact our development team!</source>
+      </trans-unit>
+      <trans-unit id="ae4112019e56fb51611c2a9bb794c8353f293377" datatype="html">
+        <source> Loading Recent APIs...</source>
+      </trans-unit>
+      <trans-unit id="91fe446a8aea3dbc7373c7d400c905720e61d599" datatype="html">
+        <source> We couldn&apos;t find any APIs for you - it&apos;s possible that you have not yet created/imported any APIs to the studio. Or perhaps you have some APIs but haven&apos;t worked on them recently. Pick an action below that makes sense for you! </source>
+      </trans-unit>
+      <trans-unit id="3ad12d53e0cdac04fdcf3d02f4acebda98a5968e" datatype="html">
+        <source> Create New API</source>
+      </trans-unit>
+      <trans-unit id="0513703c09862fbc597a00f4432cbb60293b0dd9" datatype="html">
+        <source> Import API</source>
+      </trans-unit>
+      <trans-unit id="f9e5ff9b24ca6ad2d5d6f87b8df2b1571ef8ea6b" datatype="html">
+        <source>Your Recent APIs</source>
+      </trans-unit>
+      <trans-unit id="41afbd8b57d27582b234cd9f23fe9938cc593ab3" datatype="html">
+        <source> Loading User activity...</source>
+      </trans-unit>
+      <trans-unit id="a338c4748a009c57f4eafb347ac8c36899a7cbb6" datatype="html">
+        <source>Your Most Recent Activity</source>
+      </trans-unit>
+      <trans-unit id="a69ed6b5888516e1d763e07d79161856a2d225d6" datatype="html">
+        <source> You haven&apos;t made any API changes yet.</source>
+      </trans-unit>
+      <trans-unit id="19367767cdf5352375b0ce86e6d08808a8cbb31b" datatype="html">
+        <source> Loading linked accounts...</source>
+      </trans-unit>
+      <trans-unit id="b4c7b8ed9a734473143ebde10fb034c29ec483fd" datatype="html">
+        <source>Unlink</source>
+      </trans-unit>
+      <trans-unit id="355a222236bc01b9a8cd3cb9ecf76891125aed69" datatype="html">
+        <source>GitHub</source>
+      </trans-unit>
+      <trans-unit id="28409d1d32197ebbf6604ae81bb456340c22d0bd" datatype="html">
+        <source>Link to your </source>
+      </trans-unit>
+      <trans-unit id="059945fdce47b38477358643139f23a8368838ba" datatype="html">
+        <source> account.</source>
+      </trans-unit>
+      <trans-unit id="a97a8d30a5cc6cae4d501aaf79e0ae059eb42a7d" datatype="html">
+        <source>A link has been established to your </source>
+      </trans-unit>
+      <trans-unit id="ca80f0728521c78ed52cea9a530803fd1c89719c" datatype="html">
+        <source> account!</source>
+      </trans-unit>
+      <trans-unit id="9e5aadbfac0b734d648d18a08a66fc7573d43719" datatype="html">
+        <source>We&apos;re linking your </source>
+      </trans-unit>
+      <trans-unit id="04d5365715326328805c96431144fc5dd72fc46b" datatype="html">
+        <source> account now.</source>
+      </trans-unit>
+      <trans-unit id="aa5672c9270c93281b0ddbb671654d1452a168be" datatype="html">
+        <source>Linked on</source>
+      </trans-unit>
+      <trans-unit id="f200fb46425d49f99c34c260ba0a1dd621270c9f" datatype="html">
+        <source>Link initiated, awaiting completion...</source>
+      </trans-unit>
+      <trans-unit id="707a0a9bfc2ac3d4d23b7a10ba33f6022368b762" datatype="html">
+        <source>GitLab</source>
+      </trans-unit>
+      <trans-unit id="7c9e837a19a88c4d8b4bed0fcf23626c68a2cb2c" datatype="html">
+        <source>Bitbucket</source>
+      </trans-unit>
+      <trans-unit id="b03cfda607ca3bfdb5913513f0e70521075eef9a" datatype="html">
+        <source>Account Linking Error</source>
+      </trans-unit>
+      <trans-unit id="6cf15112b2cd1019fd3fd32cb6fde2fe7af02f55" datatype="html">
+        <source> Account linking has failed because you were not logged in. This has caused the process to fail, so you must go back to the Accounts page and try again. </source>
+      </trans-unit>
+      <trans-unit id="e265c46ee3faa9b8391fec06b9e696997aeb0500" datatype="html">
+        <source> Account linking has failed because no Identity Provider for accounts of type <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/><x id="INTERPOLATION" equiv-text="{{ accountType }}"/><x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> has been configured. Please contact your system administrator to resolve this configuration problem. </source>
+      </trans-unit>
+      <trans-unit id="fbb562e7b943465da8dd616c5924e2e960a55923" datatype="html">
+        <source> An unexpected error occurred while trying to create a linked account. The process has failed, so you must go back and try again. </source>
+      </trans-unit>
+      <trans-unit id="6948e61144e7f2dfc1b3b4a45fadad90359fedbd" datatype="html">
+        <source>Finalizing Linked Account</source>
+      </trans-unit>
+      <trans-unit id="88ce45821465a179e6fbc6c4c9656fcaaaa968b7" datatype="html">
+        <source> You&apos;ve successfully authorized Apicurio Studio with <x id="START_TAG_SPAN" ctype="x-span" equiv-text="&lt;span *ngIf=&quot;isGitHub()&quot;&gt;"/><x id="START_LINK" ctype="x-a" equiv-text="&lt;a href=&quot;https://www.github.com&quot;&gt;"/>GitHub<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_TAG_SPAN_1" ctype="x-span_1" equiv-text="&lt;span *ngIf=&quot;isGitLab()&quot;&gt;"/><x id="START_LINK_1" equiv-text="&lt;a href=&quot;https://www.gitlab.com&quot;&gt;"/>GitLab<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/><x id="START_TAG_SPAN_2" ctype="x-span_2" equiv-text="&lt;span *ngIf=&quot;isBitbucket()&quot;&gt;"/><x id="START_LINK_2" equiv-text="&lt;a href=&quot;https://www.bitbucket.org&quot;&gt;"/>Bitbucket<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/><x id="CLOSE_TAG_SPAN" ctype="x-span" equiv-text="&lt;/span&gt;"/> and we are now finalizing the link. This should only take a moment, after which you will be redirected back to the <x id="START_LINK_3" equiv-text="&lt;a [routerLink]=&quot;[&apos;/settings/accounts&apos;]&quot;&gt;"/>Settings &gt;&gt; Accounts<x id="CLOSE_LINK" ctype="x-a" equiv-text="&lt;/a&gt;"/> page. </source>
+      </trans-unit>
+      <trans-unit id="94d21912315802201cef61c6685b27781ea263c0" datatype="html">
+        <source>Action Already Completed</source>
+      </trans-unit>
+      <trans-unit id="6cd1cf6a0cf4643fa4374ff60d5f3340441c6e8b" datatype="html">
+        <source> This account has already been successfully linked. Click the button below to return to the Settings page. </source>
+      </trans-unit>
+      <trans-unit id="d56047e446d482de6af4ff5edf5e1f7ed24c09e6" datatype="html">
+        <source>Back to Accounts</source>
+      </trans-unit>
+      <trans-unit id="994363f08f9fbfa3b3994ff7b35c6904fdff18d8" datatype="html">
+        <source>Profile</source>
+      </trans-unit>
+      <trans-unit id="616e206cb4f25bd5885fc35925365e43cf5fb929" datatype="html">
+        <source>Name:</source>
+      </trans-unit>
+      <trans-unit id="7fa0cc3a3b07e5097e71c822f34986306ee99797" datatype="html">
+        <source>Login:</source>
+      </trans-unit>
+      <trans-unit id="91b96d7228b6e05c238fa4e39abfc17ad51a6eef" datatype="html">
+        <source>Email:</source>
+      </trans-unit>
+      <trans-unit id="82e172f416633a42bef6864512702df30d0f56b0" datatype="html">
+        <source>Create </source>
+      </trans-unit>
+      <trans-unit id="b0b631e7f262a69bc76c5b3dd910b3cb5f27da01" datatype="html">
+        <source>Edit </source>
+      </trans-unit>
+      <trans-unit id="0e4fd4377fe268ef0622ff4616d0e722959de943" datatype="html">
+        <source>Validation Profile</source>
+      </trans-unit>
+      <trans-unit id="eed110d618265b2044d416d843b3e9730a8f9b8a" datatype="html">
+        <source>Enter a validation profile name.</source>
+      </trans-unit>
+      <trans-unit id="3965cbdf5f70a0d064c772918b7a62e7ee6c23b3" datatype="html">
+        <source>Validation Rules</source>
+      </trans-unit>
+      <trans-unit id="1240f285cd74dd9987fb43d73649532cb445afb9" datatype="html">
+        <source> Validation rules provide a way to check the content of an API. Use any of the rules, provided here, to check that the API is correct. If the content violates a rule, an issue will be created to alert the user. </source>
+      </trans-unit>
+      <trans-unit id="58a02c79426c3c5df9f0b02c45c3dbd2aa170017" datatype="html">
+        <source>Filter by name</source>
+      </trans-unit>
+      <trans-unit id="084776398ae474355bd7d57b9b5b9a75e71414f5" datatype="html">
+        <source>Filter by severity</source>
+      </trans-unit>
+      <trans-unit id="fe2355978065120836f3576680363c05c078136e" datatype="html">
+        <source>Filter by rule type</source>
+      </trans-unit>
+      <trans-unit id="93416c8837735321bcde45e3c8e91cb8b5cf77dd" datatype="html">
+        <source>Filter by entity type</source>
+      </trans-unit>
+      <trans-unit id="c5c9c71941794e09b4f5445bf1141dd572c370af" datatype="html">
+        <source>Filter by version</source>
+      </trans-unit>
+      <trans-unit id="f79611b9cc78f612ae8cc2cce08ff9f14581aeb3" datatype="html">
+        <source>Selected</source>
+      </trans-unit>
+      <trans-unit id="80ed5b776a26a78099e230e0e89d96c33ba44e24" datatype="html">
+        <source>Results</source>
+      </trans-unit>
+      <trans-unit id="f9f1e347c4553ad84a77e7e90d215b71e5feeb79" datatype="html">
+        <source>Active filters:</source>
+      </trans-unit>
+      <trans-unit id="2f33515a935c36763660e8420940b8a7e11fb1f4" datatype="html">
+        <source>Clear all filters</source>
+      </trans-unit>
+      <trans-unit id="c94355304950b9ae3ab46cbc00512571831f5eb2" datatype="html">
+        <source>no validation issue will result</source>
+      </trans-unit>
+      <trans-unit id="9556266f0a2b1762a44b686f2bb21dbfefb01c12" datatype="html">
+        <source>Low</source>
+      </trans-unit>
+      <trans-unit id="c4b73ee81bfb10e70e9331bd920cf124172442ec" datatype="html">
+        <source>info that may need your attention</source>
+      </trans-unit>
+      <trans-unit id="7d9241387918beed34b73911e9f9f8ad78b2b0c6" datatype="html">
+        <source>Medium</source>
+      </trans-unit>
+      <trans-unit id="cd2b55ca9dcd6e38a9ff14da53ef084ab44a2945" datatype="html">
+        <source>a condition that might cause a problem</source>
+      </trans-unit>
+      <trans-unit id="72279141a67cc042d9864102b703216cc8a428a3" datatype="html">
+        <source>High</source>
+      </trans-unit>
+      <trans-unit id="28549ee5a5d8e5a7cdf083481185623c6d853f43" datatype="html">
+        <source>a serious error that must be corrected</source>
+      </trans-unit>
+      <trans-unit id="d7b7af0f80571b641cfc959952aa993732f70c0b" datatype="html">
+        <source>Rule Type</source>
+      </trans-unit>
+      <trans-unit id="71da6939969e509f155876ce192ce25bf87e0293" datatype="html">
+        <source>Entity Type</source>
+      </trans-unit>
+      <trans-unit id="d3007843e0aa9a447576c90e30acca2a35567bb0" datatype="html">
+        <source>Version(s)</source>
+      </trans-unit>
+      <trans-unit id="b5b3ed9f2f973323f85ad9b2babb9ea70c186ffc" datatype="html">
+        <source>No results match the filter criteria</source>
+      </trans-unit>
+      <trans-unit id="c97727076d9d93a436f9a35a5c958861669ecfd5" datatype="html">
+        <source>Zero </source>
+      </trans-unit>
+      <trans-unit id="77fe2bdb9995b7f026f127d0cb9de97d6c707163" datatype="html">
+        <source>rules</source>
+      </trans-unit>
+      <trans-unit id="c01849d8e644da6b21474d4c8f98319381df2951" datatype="html">
+        <source> matched the provided filters.</source>
+      </trans-unit>
+      <trans-unit id="8a1ea88c038e174d03c06dd8140ae734ad41994b" datatype="html">
+        <source>Check for conflicting filters and try again.</source>
+      </trans-unit>
+      <trans-unit id="a921df75d7e3896d88d8af58daa580861dfde9d0" datatype="html">
+        <source>OpenAPI 2.0</source>
+      </trans-unit>
+      <trans-unit id="ef3536854087c03de8ca4c157a566ba10629ca3a" datatype="html">
+        <source>OpenAPI 3.x</source>
+      </trans-unit>
+      <trans-unit id="af9ff39c3a04c425255e97b837a6265253bc363f" datatype="html">
+        <source>GraphQL</source>
+      </trans-unit>
+      <trans-unit id="b948bb09ecae6f2091c5d4f304db06aecf975003" datatype="html">
+        <source>AsyncAPI 2.x</source>
+      </trans-unit>
+      <trans-unit id="07ec5b7bd78cca423e3b1653046fcf8bb1dfa0ed" datatype="html">
+        <source>Validation Profiles</source>
+      </trans-unit>
+      <trans-unit id="83d0416058c401b54c3d98cf18053492734fadc6" datatype="html">
+        <source> Validation profiles provide a way ot group validation rules, for issues, allowing different severity assignments for rules in each validation profile. </source>
+      </trans-unit>
+      <trans-unit id="5471cb8f3ef31e41608539f55baaaabecf3b129f" datatype="html">
+        <source>Create a new validation profile</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

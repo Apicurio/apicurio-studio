@@ -17,7 +17,7 @@
                         <div class="card-pf card-pf-accented">
                             <div class="card-pf-heading">
                                 <h1 class="card-pf-title">
-                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading API information...</p>
+                                    <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Loading API information...</ng-container></p>
                                 </h1>
                             </div>
                         </div>
@@ -31,24 +31,24 @@
         <div class="form-instructions col-md-3">
             <div class="alert alert-info">
                 <span class="pficon pficon-info"></span>
-                <strong>What is this page?</strong>
-                <p style="line-height: 18px">
+                <strong i18n>What is this page?</strong>
+                <p style="line-height: 18px" i18n>
                     Use this page to publish your API (when it's ready) to a source control system such as
                     GitHub, GitLab, or Bitbucket.  You will need to link your Apicurio account to your
                     source control system for this to work.
                 </p>
                 <p style="line-height: 18px; margin-top: 10px;">
-                    Account linking can be done from the <a routerLink="/settings/accounts">Settings -> Accounts</a> page.
+                    <ng-container i18n>Account linking can be done from the </ng-container><a routerLink="/settings/accounts" i18n>Settings -> Accounts</a><ng-container i18n> page.</ng-container>
                 </p>
             </div>
         </div>
         <div class="col-md-7">
             <div class="publishapi-panel panel panel-default">
                 <div class="panel-body" *ngIf="!published">
-                    <h2>Publish API "{{ api.name }}"?</h2>
+                    <h2><ng-container i18n>Publish API </ng-container>"{{ api.name }}"?</h2>
                     <form id="publish-form" class="form-horizontal" (submit)="publishApi()" #publishForm="ngForm">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label required">Publish To</label>
+                            <label class="col-sm-2 control-label required" i18n>Publish To</label>
                             <div class="col-sm-10">
                                 <span class="publish-to-option fa fa-github" (click)="setPublishTo('GitHub')"
                                     title="Publish to GitHub" [class.disabled]="!hasAccount('GitHub')"
@@ -61,8 +61,8 @@
                                       [class.selected]="isSelected('Bitbucket')"></span>
                                 <div class="alert alert-warning" *ngIf="!hasAtLeastOneAccount()" style="margin-top: 20px;">
                                     <span class="pficon pficon-warning-triangle-o"></span>
-                                    <strong>Cannot Publish API</strong> You haven't linked your Apicurio account to a source
-                                    control system.  Do this first from the appropriate <a routerLink="/settings/accounts">Settings</a> page.
+                                    <strong i18n>Cannot Publish API</strong><ng-container i18n> You haven't linked your Apicurio account to a source
+                                    control system.  Do this first from the appropriate </ng-container><a routerLink="/settings/accounts" i18n>Settings</a><ng-container i18n> page.</ng-container>
                                 </div>
                             </div>
                         </div>
@@ -78,17 +78,17 @@
                                             (onValid)="modelValid = $event"></bitbucket-resource>
 
                         <div class="form-group" *ngIf="_selectedType">
-                            <label class="col-sm-2 control-label required" for="gh-resource">Resource</label>
+                            <label class="col-sm-2 control-label required" for="gh-resource" i18n>Resource</label>
                             <div class="col-sm-10">
                                 <input name="repository.resource" type="text" id="gh-resource" class="form-control"
                                        placeholder="/path/to/apis/openapi.yaml" required #ghResource="ngModel"
                                        [(ngModel)]="resource" (keyup)="resourceChanged()">
-                                <form-error-message [inputModel]="ghResource" [type]="'required'">Resource is required.</form-error-message>
+                                <form-error-message [inputModel]="ghResource" [type]="'required'" i18n>Resource is required.</form-error-message>
                             </div>
                         </div>
 
                         <div class="form-group" *ngIf="_selectedType">
-                            <label class="col-sm-2 control-label required" for="format">Format</label>
+                            <label class="col-sm-2 control-label required" for="format" i18n>Format</label>
                             <div class="col-sm-10">
                                 <drop-down id="format" [id]="'format'" [value]="format" [options]="formatOptions()"
                                            (onValueChange)="format = $event" [noSelectionLabel]="'Choose Format'"></drop-down>
@@ -96,21 +96,21 @@
                         </div>
 
                         <div class="form-group" *ngIf="_selectedType">
-                            <label class="col-sm-2 control-label required">Commit Message</label>
+                            <label class="col-sm-2 control-label required" i18n>Commit Message</label>
                             <div class="col-sm-10">
                                 <code-editor [mode]="commitMessageMode()" [(text)]="commitMessage"
                                              [debounceTime]="100" [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc'}"></code-editor>
                             </div>
                         </div>
 
-                        <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                        <div class="notice-of-required"><ng-container i18n>The fields marked with </ng-container><span class="required-icon" i18n>*</span><ng-container i18n> are required.</ng-container></div>
                         <hr />
 
                         <div class="form-group" >
                             <div class="col-sm-offset-2 col-sm-10">
                                 <button type="submit" class="btn btn-primary pull-right" [disabled]="!isValid() || publishing">
-                                    <span *ngIf="!publishing">Publish API</span>
-                                    <span *ngIf="publishing"><span class="spinner spinner-xs spinner-inline"></span> Publishing...</span>
+                                    <span *ngIf="!publishing" i18n>Publish API</span>
+                                    <span *ngIf="publishing"><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Publishing...</ng-container></span>
                                 </button>
                             </div>
                         </div>
@@ -122,13 +122,13 @@
                         <div class="blank-slate-pf-icon">
                             <span class="pficon pficon pficon-add-circle-o"></span>
                         </div>
-                        <h1>API Published Successfully</h1>
+                        <h1 i18n>API Published Successfully</h1>
                         <p>
-                            Your API <strong>{{ api.name }}</strong> has been successfully published to {{ _selectedType }}.  No additional
-                            steps need to be taken.
+                            <ng-container i18n>Your API </ng-container> <strong>{{ api.name }}</strong><ng-container i18n> has been successfully published to </ng-container> {{ _selectedType }}<ng-container i18n>.  No additional
+                            steps need to be taken.</ng-container>
                         </p>
                         <div class="blank-slate-pf-main-action">
-                            <a [routerLink]="[ '/apis', api.id ]" class="btn btn-primary btn-lg">OK</a>
+                            <a [routerLink]="[ '/apis', api.id ]" class="btn btn-primary btn-lg" i18n>OK</a>
                         </div>
                     </div>
                 </div>

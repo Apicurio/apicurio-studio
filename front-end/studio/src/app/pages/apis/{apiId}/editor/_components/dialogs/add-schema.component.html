@@ -7,13 +7,13 @@
                 <button type="button" class="close" aria-hidden="true" (click)="cancel()">
                     <span class="pficon pficon-close"></span>
                 </button>
-                <h4 class="modal-title" id="addSchemaModalLabel">Add Schema</h4>
+                <h4 class="modal-title" id="addSchemaModalLabel" i18n>Add Schema</h4>
             </div>
             <div class="modal-body">
-                <p>Choose a schema to add from the dropdown below and then click Add.</p>
+                <p i18n>Choose a schema to add from the dropdown below and then click Add.</p>
                 <form id="addSchema-form" class="form-horizontal" (submit)="add()" #addSchemaForm="ngForm">
                     <div class="form-group" *ngIf="hasReferences()">
-                        <label class="col-sm-5 control-label required" for="refDropDown">Schema</label>
+                        <label class="col-sm-5 control-label required" for="refDropDown" i18n>Schema</label>
                         <div class="col-sm-7">
                             <drop-down id="refDropDown" [id]="'refDropDown'"
                                        [options]="getReferenceDropDownOptions()"
@@ -25,10 +25,10 @@
 
                 </form>
             </div>
-            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="notice-of-required modal-notice-of-required" i18n>The fields marked with <span class="required-icon">*</span> are required.</div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!isValid()">Add</button>
-                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!isValid()" i18n>Add</button>
+                <button type="button" class="btn btn-default" (click)="cancel()" i18n>Cancel</button>
             </div>
         </div>
     </div>

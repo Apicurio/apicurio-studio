@@ -5,7 +5,7 @@
             <a title="Customize validation settings for this API..." class="drawer-pf-settings pficon pficon-settings"
                *ngIf="showValidationSettings()"
                (click)="onConfigureValidation.emit()"></a>
-            <h3 class="text-center">Validation Problems</h3>
+            <h3 class="text-center" i18n>Validation Problems</h3>
         </div>
         <div class="panel-group">
             <div class="panel panel-default">
@@ -16,7 +16,7 @@
                             <span class="drawer-pf-notification-message">{{ summaryFor(error) }}</span>
                             <div class="drawer-pf-notification-info">
                                 <div class="explanation">{{ explanationFor(error) }}</div>
-                                <a (click)="goTo(error)">Go to problem</a>
+                                <a (click)="goTo(error)" i18n>Go to problem</a>
                             </div>
                         </div>
                     </div>
@@ -24,7 +24,7 @@
                         <div class="blank-slate-pf-icon">
                             <span class="pficon-info"></span>
                         </div>
-                        <h1>There are no problems to display.</h1>
+                        <h1 i18n>There are no problems to display.</h1>
                     </div>
                 </div>
             </div>

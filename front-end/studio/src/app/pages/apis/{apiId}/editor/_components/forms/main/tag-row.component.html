@@ -18,9 +18,9 @@
                     <span class="fa fa-ellipsis-v"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a (click)="renameTag()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Rename</span></a></li>
+                    <li><a (click)="renameTag()"><span class="fa fa-fw fa-pencil-square-o"></span><span i18n>Rename</span></a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span i18n>Delete</span></a></li>
                 </ul>
             </div>
         </div>
@@ -30,7 +30,7 @@
             <form  class="form-horizontal">
                 <div class="col-md-11">
                     <div class="tag-description">
-                        <div class="form-label">Description</div>
+                        <div class="form-label" i18n>Description</div>
                         <inline-markdown-editor [value]="item.description" [noValueMessage]="'Enter description here.'"
                                                 [baseNode]="item" nodePath="description"
                                                 (onChange)="setDescription($event)"></inline-markdown-editor>

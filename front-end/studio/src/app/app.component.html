@@ -32,17 +32,17 @@
                             aria-expanded="false" aria-label="Actions">
                         <i class="fas fa-ellipsis-v" aria-hidden="true"></i></button>
                     <ul class="pf-c-dropdown__menu pf-m-align-right" aria-labelledby="dropdown-kebab-right-aligned-1-button" hidden="">
-                        <li><a class="pf-c-dropdown__menu-item" href="#">Link</a></li>
+                        <li><a class="pf-c-dropdown__menu-item" href="#" i18n>Link</a></li>
                         <li>
-                            <button class="pf-c-dropdown__menu-item">Action</button>
+                            <button class="pf-c-dropdown__menu-item" i18n>Action</button>
                         </li>
-                        <li><a class="pf-c-dropdown__menu-item pf-m-disabled" aria-disabled="true" tabindex="-1" href="#">Disabled
+                        <li><a class="pf-c-dropdown__menu-item pf-m-disabled" aria-disabled="true" tabindex="-1" href="#" i18n>Disabled
                             Link</a></li>
                         <li>
-                            <button class="pf-c-dropdown__menu-item" disabled="">Disabled Action</button>
+                            <button class="pf-c-dropdown__menu-item" disabled="" i18n>Disabled Action</button>
                         </li>
                         <li class="pf-c-dropdown__separator" role="separator"></li>
-                        <li><a class="pf-c-dropdown__menu-item" href="#">Separated Link</a></li>
+                        <li><a class="pf-c-dropdown__menu-item" href="#" i18n>Separated Link</a></li>
                     </ul>
                 </div>
                 <div class="pf-m-user pf-screen-reader">
@@ -55,12 +55,12 @@
                         <ul class="pf-c-dropdown__menu pf-m-align-right" aria-labelledby="helpDropdownButton" *ngIf="helpExpanded">
                             <li>
                                 <a class="pf-c-dropdown__menu-item" data-toggle="modal" data-target="#about-modal" rel="nofollow"
-                                   role="link" target="_blank" (click)="helpExpanded = false">About
+                                   role="link" target="_blank" (click)="helpExpanded = false" i18n>About
                                 </a>
                             </li>
                             <li class="pf-c-dropdown__separator" role="separator"></li>
                             <li class="">
-                                <a (click)="logout()" class="pf-c-dropdown__menu-item" role="link">Logout </a>
+                                <a (click)="logout()" class="pf-c-dropdown__menu-item" role="link" i18n>Logout </a>
                             </li>
                         </ul>
                     </div>
@@ -93,19 +93,19 @@
                 <div class="product-versions-pf">
                     <table>
                         <tr>
-                            <td><strong>Version</strong></td>
+                            <td><strong i18n>Version</strong></td>
                             <td>{{ version }}</td>
                         </tr>
                         <tr>
-                            <td><strong>Built On</strong></td>
+                            <td><strong i18n>Built On</strong></td>
                             <td>{{ builtOn | date }}</td>
                         </tr>
                         <tr>
-                            <td><strong>Edition</strong></td>
+                            <td><strong i18n>Edition</strong></td>
                             <td>CLIv7</td>
                         </tr>
                         <tr>
-                            <td><strong>Project URL</strong><span>&nbsp;</span></td>
+                            <td><strong i18n>Project URL</strong><span>&nbsp;</span></td>
                             <td><a href="{{ projectUrl }}" target="_blank">{{ projectUrl }} <span class="fa fa-external-link"></span></a></td>
                         </tr>
                     </table>

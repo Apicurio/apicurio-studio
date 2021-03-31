@@ -65,6 +65,12 @@
                   "maximumWarning": "6kb"
                 }
               ]
+            },
+            "ja": {
+              "aot": true,
+              "i18nFile": "src/locale/messages.ja.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "ja"
             }
           }
         },
@@ -76,7 +82,16 @@
           "configurations": {
             "production": {
               "browserTarget": "studio:build:production"
+            },
+            "ja": {
+              "browserTarget": "studio:build:ja"
             }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "studio:build"
           }
         }
       }

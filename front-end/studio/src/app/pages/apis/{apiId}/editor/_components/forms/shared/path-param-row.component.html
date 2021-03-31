@@ -32,14 +32,14 @@
                     <span class="fa fa-ellipsis-v"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span i18n>Delete</span></a></li>
                 </ul>
             </div>
             <button *ngIf="isMissing()" type="button" class="btn btn-primary btn-xs btn-create"
                     title="The path parameter is required but not declared.  Create it now."
-                    (click)="create()"><span class="fa fa-fw fa-plus"></span><span class="btn-label">Create</span></button>
+                    (click)="create()"><span class="fa fa-fw fa-plus"></span><span class="btn-label" i18n>Create</span></button>
             <button *ngIf="isOverridable()" (click)="override()" title="Override the path parameter."
-                    class="btn btn-default btn-xs btn-override">Override</button>
+                    class="btn btn-default btn-xs btn-override" i18n>Override</button>
         </div>
     </div>
     <div class="body" *ngIf="isEditing()">
@@ -47,7 +47,7 @@
             <form  class="form-horizontal">
                 <div class="col-md-11">
                     <div class="param-description" *ngIf="isEditingDescription()">
-                        <div class="form-label">Description</div>
+                        <div class="form-label" i18n>Description</div>
                         <inline-markdown-editor [value]="item.description" [noValueMessage]="'No description.'"
                                                 [baseNode]="item" nodePath="description"
                                                 (onChange)="setDescription($event)"></inline-markdown-editor>
@@ -59,17 +59,17 @@
                         </div>
                     </div>
                     <div class="param-examples" *ngIf="isEditingExamples()">
-                        <div class="form-label">Examples</div>
+                        <div class="form-label" i18n>Examples</div>
                         <signpost *ngIf="!hasExamples()">
-                            <span>No examples have been defined.</span>
-                            <a (click)="addExampleDialog.open()">Add an example</a>
+                            <span i18n>No examples have been defined.</span>
+                            <a (click)="addExampleDialog.open()" i18n>Add an example</a>
                         </signpost>
                         <div *ngIf="hasExamples()">
                             <table class="table table-striped table-bordered table-examples">
                                 <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th class="pre-actions">Example</th>
+                                    <th i18n>Name</th>
+                                    <th class="pre-actions" i18n>Example</th>
                                     <th class="actions"></th>
                                 </tr>
                                 </thead>
@@ -93,7 +93,7 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <a (click)="addExampleDialog.open()">Add an example</a>
+                            <a (click)="addExampleDialog.open()" i18n>Add an example</a>
                         </div>
                     </div>
                 </div>

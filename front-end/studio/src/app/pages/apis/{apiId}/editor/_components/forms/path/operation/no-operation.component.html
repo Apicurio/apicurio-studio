@@ -2,12 +2,12 @@
     <div class="blank-slate-pf-icon">
         <span class="pficon pficon pficon-add-circle-o"></span>
     </div>
-    <h1>Operation Not Defined</h1>
-    <p>
+    <h1 i18n>Operation Not Defined</h1>
+    <p><ng-container i18n>
         This operation is not yet defined.  If you want this path/endpoint to support the operation, get
-        started by clicking the <strong>Add Operation</strong> button below.
+        started by clicking the </ng-container><strong i18n>Add Operation</strong><ng-container i18n> button below.</ng-container>
     </p>
     <div class="blank-slate-pf-main-action">
-        <button class="btn btn-primary btn-lg" (click)="add.emit()">Add Operation</button>
+        <button class="btn btn-primary btn-lg" (click)="add.emit()" i18n>Add Operation</button>
     </div>
 </div>

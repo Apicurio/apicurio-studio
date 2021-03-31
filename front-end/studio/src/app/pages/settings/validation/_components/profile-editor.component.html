@@ -4,9 +4,9 @@
         <div class="row-fluid header">
             <div class="col-md-12">
                 <h1 class="title">
-                    <span *ngIf="profile.id === null">Create </span>
-                    <span *ngIf="profile.id !== null">Edit </span>
-                    <span>Validation Profile</span></h1>
+                    <span *ngIf="profile.id === null" i18n>Create </span>
+                    <span *ngIf="profile.id !== null" i18n>Edit </span>
+                    <span i18n>Validation Profile</span></h1>
             </div>
         </div>
 
@@ -14,15 +14,15 @@
         <div class="row-fluid body-section profile-section">
             <div class="col-sm-12 col-md-8">
                 <div class="form-group">
-                    <label class="control-label required" for="name">Name</label>
+                    <label class="control-label required" for="name" i18n>Name</label>
                     <div>
                         <input name="name" type="text" id="name" class="form-control" required #nameInput="ngModel"
-                               [(ngModel)]="profile.name" placeholder="Enter a validation profile name." (keydown)="onInputKeypress($event)">
-                        <form-error-message [inputModel]="nameInput" type="required">Name is required.</form-error-message>
+                               [(ngModel)]="profile.name" i18n-placeholder placeholder="Enter a validation profile name." (keydown)="onInputKeypress($event)">
+                        <form-error-message [inputModel]="nameInput" type="required" i18n>Name is required.</form-error-message>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label" for="description">Description</label>
+                    <label class="control-label" for="description" i18n>Description</label>
                     <div>
                         <textarea name="description" id="description" class="form-control" [(ngModel)]="profile.description"></textarea>
                     </div>
@@ -35,11 +35,11 @@
             <div class="col-md-12">
                 <div class="action-header">
                     <div class="notice">
-                        <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                        <div class="notice-of-required modal-notice-of-required"><ng-container i18n>The fields marked with </ng-container><span class="required-icon" i18n>*</span><ng-container i18n> are required.</ng-container></div>
                     </div>
                     <div class="actions">
-                        <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!entityEditorForm.valid">Save</button>
-                        <button class="btn btn-default" (click)="onClose.emit()">Cancel</button>
+                        <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!entityEditorForm.valid" i18n>Save</button>
+                        <button class="btn btn-default" (click)="onClose.emit()" i18n>Cancel</button>
                     </div>
                 </div>
                 <hr />
@@ -50,8 +50,8 @@
         <div class="row-fluid body-section rules-section">
             <!-- Header and explanation -->
             <div class="col-sm-12">
-                <div class="section-header"><span>Validation Rules</span></div>
-                <p>
+                <div class="section-header"><span i18n>Validation Rules</span></div>
+                <p i18n>
                     Validation rules provide a way to check the content of an API.  Use any of the rules,
                     provided here, to check that the API is correct.  If the content violates a rule, an issue
                     will be created to alert the user.
@@ -63,27 +63,27 @@
                            (onValueChange)="filterType = $event; filterValue = null"></drop-down>
 
                 <input name="name-filter" type="text" id="name-filter" class="form-control" [(ngModel)]="filterValue"
-                       (keydown)="onNameFilterKeypress($event)" placeholder="Filter by name" *ngIf="filterType == 'name'">
+                       (keydown)="onNameFilterKeypress($event)" i18n-placeholder placeholder="Filter by name" *ngIf="filterType == 'name'">
                 <drop-down [id]="'severity-filter'" [value]="filterValue" [options]="severityOptions()" [classes]="'dd-filter'"
-                           (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by severity"
+                           (onValueChange)="filterValue = $event; addFilter()" i18n-noSelectionLabel noSelectionLabel="Filter by severity"
                            *ngIf="filterType == 'severity'"></drop-down>
                 <drop-down [id]="'rule-type-filter'" [value]="filterValue" [options]="ruleTypeOptions()" [classes]="'dd-filter'"
-                           (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by rule type"
+                           (onValueChange)="filterValue = $event; addFilter()" i18n-noSelectionLabel noSelectionLabel="Filter by rule type"
                            *ngIf="filterType == 'ruleType'"></drop-down>
                 <drop-down [id]="'entity-type-filter'" [value]="filterValue" [options]="entityTypeOptions()" [classes]="'dd-filter'"
-                           (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by entity type"
+                           (onValueChange)="filterValue = $event; addFilter()" i18n-noSelectionLabel noSelectionLabel="Filter by entity type"
                            *ngIf="filterType == 'entityType'"></drop-down>
                 <drop-down [id]="'version-filter'" [value]="filterValue" [options]="versionOptions()" [classes]="'dd-filter'"
-                           (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by version"
+                           (onValueChange)="filterValue = $event; addFilter()" i18n-noSelectionLabel noSelectionLabel="Filter by version"
                            *ngIf="filterType == 'version'"></drop-down>
             </div>
             <!-- Filter Results -->
             <div class="col-sm-12 filter-results" *ngIf="hasActiveFilters()">
                 <hr />
                 <div class="filter-results-bar">
-                    <div class="num-selected" *ngIf="!isNoneSelected()">{{ getNumSelectedRules() }} Selected</div>
-                    <div class="results">{{ filteredRules.length }} Results</div>
-                    <span class="active-filter-label">Active filters:</span>
+                    <div class="num-selected" *ngIf="!isNoneSelected()">{{ getNumSelectedRules() }} <ng-container i18n>Selected</ng-container></div>
+                    <div class="results">{{ filteredRules.length }} <ng-container i18n>Results</ng-container></div>
+                    <span class="active-filter-label" i18n>Active filters:</span>
                     <div class="active-filters">
                         <span class="label label-info" *ngFor="let filter of activeFilters">
                             <span>{{ getFilterLabel(filter) }}:</span>
@@ -92,7 +92,7 @@
                         </span>
                     </div>
                     <div class="clear-all">
-                        <a (click)="clearAllFilters()"><span>Clear all filters</span></a>
+                        <a (click)="clearAllFilters()"><span i18n>Clear all filters</span></a>
                     </div>
                 </div>
             </div>
@@ -120,48 +120,48 @@
                                         <li class="rule-severity-option">
                                             <a (click)="bulkEdit(ignore())">
                                                 <span class="icon fa fa-ban"></span>
-                                                <span class="name">None</span>
-                                                <span class="description">no validation issue will result</span>
+                                                <span class="name" i18n>None</span>
+                                                <span class="description" i18n>no validation issue will result</span>
                                             </a>
                                         </li>
                                         <li class="rule-severity-option">
                                             <a (click)="bulkEdit(low())">
                                                 <span class="icon fa fa-info-circle"></span>
-                                                <span class="name">Low</span>
-                                                <span class="description">info that may need your attention</span>
+                                                <span class="name" i18n>Low</span>
+                                                <span class="description" i18n>info that may need your attention</span>
                                             </a>
                                         </li>
                                         <li class="rule-severity-option">
                                             <a (click)="bulkEdit(medium())">
                                                 <span class="icon fa fa-exclamation-triangle"></span>
-                                                <span class="name">Medium</span>
-                                                <span class="description">a condition that might cause a problem</span>
+                                                <span class="name" i18n>Medium</span>
+                                                <span class="description" i18n>a condition that might cause a problem</span>
                                             </a>
                                         </li>
                                         <li class="rule-severity-option">
                                             <a (click)="bulkEdit(high())">
                                                 <span class="icon fa fa-times-circle"></span>
-                                                <span class="name">High</span>
-                                                <span class="description">a serious error that must be corrected</span>
+                                                <span class="name" i18n>High</span>
+                                                <span class="description" i18n>a serious error that must be corrected</span>
                                             </a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="name column">Name</div>
-                            <div class="rule-type column">Rule Type</div>
-                            <div class="entity-type column">Entity Type</div>
-                            <div class="versions column" [class.trimmed]="rulesDiv.scrollHeight != rulesDiv.clientHeight">Version(s)</div>
+                            <div class="name column" i18n>Name</div>
+                            <div class="rule-type column" i18n>Rule Type</div>
+                            <div class="entity-type column" i18n>Entity Type</div>
+                            <div class="versions column" [class.trimmed]="rulesDiv.scrollHeight != rulesDiv.clientHeight" i18n>Version(s)</div>
                         </div>
                     </div>
                     <div class="rules" #rulesDiv>
                         <!-- "NO Rules found" -->
                         <div class="no-rules" *ngIf="filteredRules.length == 0">
-                            <div class="title">No results match the filter criteria</div>
-                            <div class="explanation">Zero <strong>rules</strong> matched the provided filters.</div>
-                            <div class="explanation">Check for conflicting filters and try again.</div>
+                            <div class="title" i18n>No results match the filter criteria</div>
+                            <div class="explanation"><ng-container i18n>Zero </ng-container><strong i18n>rules</strong><ng-container i18n> matched the provided filters.</ng-container></div>
+                            <div class="explanation" i18n>Check for conflicting filters and try again.</div>
                             <div class="actions">
-                                <a (click)="clearAllFilters()"><span>Clear all filters</span></a>
+                                <a (click)="clearAllFilters()"><span i18n>Clear all filters</span></a>
                             </div>
                         </div>
 
@@ -186,10 +186,10 @@
                                     <div class="rule-type column text" title="{{ rule.type }}">{{ rule.type }}</div>
                                     <div class="entity-type column text" title="{{ rule.entity }}">{{ rule.entity }}</div>
                                     <div class="versions column">
-                                        <div title="OpenAPI 2.0" *ngIf="isOpenApi20(rule)" class="type-icon oai2-icon16">&nbsp;</div>
-                                        <div title="OpenAPI 3.x" *ngIf="isOpenApi30(rule)" class="type-icon oai3-icon16">&nbsp;</div>
-                                        <div title="GraphQL" *ngIf="isGraphQL(rule)" class="type-icon graphql-icon16">&nbsp;</div>
-                                        <div title="AsyncAPI 2.x" *ngIf="isAsyncApi20(rule)" class="type-icon aai2-icon16">&nbsp;</div>
+                                        <div i18n-title title="OpenAPI 2.0" *ngIf="isOpenApi20(rule)" class="type-icon oai2-icon16">&nbsp;</div>
+                                        <div i18n-title title="OpenAPI 3.x" *ngIf="isOpenApi30(rule)" class="type-icon oai3-icon16">&nbsp;</div>
+                                        <div i18n-title title="GraphQL" *ngIf="isGraphQL(rule)" class="type-icon graphql-icon16">&nbsp;</div>
+                                        <div i18n-title title="AsyncAPI 2.x" *ngIf="isAsyncApi20(rule)" class="type-icon aai2-icon16">&nbsp;</div>
                                     </div>
                                 </div>
                             </div>
@@ -209,8 +209,8 @@
         <div class="row-fluid actions-section">
             <div class="col-md-12">
                 <div class="actions">
-                    <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!entityEditorForm.valid">Save</button>
-                    <button class="btn btn-default" (click)="onClose.emit()">Cancel</button>
+                    <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!entityEditorForm.valid" i18n>Save</button>
+                    <button class="btn btn-default" (click)="onClose.emit()" i18n>Cancel</button>
                 </div>
             </div>
         </div>

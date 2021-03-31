@@ -1,11 +1,11 @@
 <entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="server" *ngIf="isOpen()"
-               [showRequiredFieldsMessage]="true" heading="Define the Server" [valid]="isValid()">
+               [showRequiredFieldsMessage]="true" i18n-heading heading="Define the Server" [valid]="isValid()">
 
     <div class="row-fluid body-section">
         <div class="col-md-12">
-            <h3>1. Enter Server URL</h3>
+            <h3 i18n>1. Enter Server URL</h3>
             <p class="explanation">
-                <span>
+                <span i18n>
                     Enter the URL template of the server. Include server variables in the URL template using the following syntax:
                 </span>
                 <br />
@@ -16,25 +16,25 @@
         </div>
         <div class="col-md-12">
             <div class="form-group">
-                <label class="control-label required" for="serverUrl">Server URL</label>
+                <label class="control-label required" for="serverUrl" i18n>Server URL</label>
                 <div *ngIf="_mode === 'create'">
                     <table class="server-url-wrapper">
                         <tr>
                             <td width="100%">
                                 <input #urlInput="ngModel" name="server" type="text" id="serverUrl" class="form-control"
-                                       placeholder="Enter Server URL" (keypress)="onServerUrlKeypress($event)"
+                                       i18n-placeholder placeholder="Enter Server URL" (keypress)="onServerUrlKeypress($event)"
                                        required [(ngModel)]="url">
                             </td>
                             <td>
-                                <button class="btn btn-primary url-action" (click)="apply()" [disabled]="!canApply()">Apply</button>
+                                <button class="btn btn-primary url-action" (click)="apply()" [disabled]="!canApply()" i18n>Apply</button>
                             </td>
                             <td>
-                                <button class="btn btn-default url-action" (click)="reset()" [disabled]="!canApply()">Reset</button>
+                                <button class="btn btn-default url-action" (click)="reset()" [disabled]="!canApply()" i18n>Reset</button>
                             </td>
                         </tr>
                     </table>
-                    <form-error-message [inputModel]="urlInput" [type]="'required'">Server URL is required.</form-error-message>
-                    <div *ngIf="canApply()" class="form-error-message error">URL has been changed.  Press enter or click "Apply" to accept.</div>
+                    <form-error-message [inputModel]="urlInput" [type]="'required'" i18n>Server URL is required.</form-error-message>
+                    <div *ngIf="canApply()" class="form-error-message error" i18n>URL has been changed.  Press enter or click "Apply" to accept.</div>
                 </div>
                 <div *ngIf="_mode === 'edit'">
                     <input name="server" type="text" id="server_ro" class="form-control" required
@@ -42,10 +42,10 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label" for="description">Description</label>
+                <label class="control-label" for="description" i18n>Description</label>
                 <div>
                         <textarea name="description" id="description" class="form-control" autosize #descriptionInput
-                                  placeholder="Server description" [(ngModel)]="model.description"></textarea>
+                                  i18n-placeholder placeholder="Server description" [(ngModel)]="model.description"></textarea>
                 </div>
             </div>
         </div>
@@ -57,15 +57,15 @@
     </div>
     <div class="row-fluid body-section">
         <div class="col-md-12">
-            <h3>2. Configure Server Variables</h3>
+            <h3 i18n>2. Configure Server Variables</h3>
             <p class="explanation">
-                    <span>
+                    <span i18n>
                         Configure the server variables found in the server URL template.
                     </span>
             </p>
         </div>
         <div class="col-md-12">
-            <p class="empty-state" *ngIf="!hasVariables()">
+            <p class="empty-state" *ngIf="!hasVariables()" i18n>
                 This server URL does not contain variables.  Server variables are defined in the server URL template.
             </p>
 
@@ -76,18 +76,18 @@
                 <div class="panel panel-default tab-panel">
                     <div *ngFor="let varName of variableNames()" class="panel-body" [class.hidden]="varName != _varSelected">
                         <div class="form-group">
-                            <label class="control-label">Default Value</label>
+                            <label class="control-label" i18n>Default Value</label>
                             <div class="">
                                 <input name="defval_{{ varName }}" type="text" class="form-control short"
                                        (keypress)="onKeypress($event)"
-                                       placeholder="Default value" [(ngModel)]="model.variables[varName].default">
+                                       i18n-placeholder placeholder="Default value" [(ngModel)]="model.variables[varName].default">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">Description</label>
+                            <label class="control-label" i18n>Description</label>
                             <div class="">
                                     <textarea name="description_{{ varName }}" class="form-control" autosize
-                                              placeholder="Variable description" [(ngModel)]="model.variables[varName].description"></textarea>
+                                              i18n-placeholder placeholder="Variable description" [(ngModel)]="model.variables[varName].description"></textarea>
                             </div>
                         </div>
                     </div>

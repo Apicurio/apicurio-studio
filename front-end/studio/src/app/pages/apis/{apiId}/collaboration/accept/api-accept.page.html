@@ -6,30 +6,30 @@
         <div class="col-sm-12 col-md-8 col-lg-6">
 
             <div *ngIf="!dataLoaded['invitation']">
-                <p><span class="spinner spinner-lg spinner-inline"></span> Loading invitation, please wait...</p>
+                <p i18n><span class="spinner spinner-lg spinner-inline"></span> Loading invitation, please wait...</p>
             </div>
 
             <div class="blank-slate-pf api-invitation" id="" *ngIf="dataLoaded['invitation']">
                 <div class="blank-slate-pf-icon">
                     <span class="pficon pficon pficon-users"></span>
                 </div>
-                <h1>Invitation to Collaborate</h1>
+                <h1 i18n>Invitation to Collaborate</h1>
                 <h3 class="subject">"{{ invitation.subject }}"</h3>
-                <p>
+                <p i18n>
                     You have been invited by <strong>{{ invitation.createdBy }}</strong> to collaborate on an
                     API Design.  Would you like to accept?
                 </p>
-                <p class="created-on">
+                <p class="created-on" i18n>
                     (Invitation created on <span>{{ invitation.createdOn | date }}</span>)
                 </p>
                 <div class="blank-slate-pf-main-action" *ngIf="!_accepting">
-                    <button (click)="acceptInvitation()" class="btn btn-primary btn-lg">Accept</button>
+                    <button (click)="acceptInvitation()" class="btn btn-primary btn-lg" i18n>Accept</button>
                 </div>
                 <div class="blank-slate-pf-secondary-action" *ngIf="!_accepting">
-                    <button (click)="rejectInvitation()" class="btn btn-default">No Thanks</button>
+                    <button (click)="rejectInvitation()" class="btn btn-default" i18n>No Thanks</button>
                 </div>
                 <div *ngIf="_accepting" class="accepting-spinner">
-                    <p><span class="spinner spinner-sm spinner-inline"></span> <span class="spinner-label">Accepting invitation, please wait...</span></p>
+                    <p><span class="spinner spinner-sm spinner-inline"></span> <span class="spinner-label" i18n>Accepting invitation, please wait...</span></p>
                 </div>
             </div>
 

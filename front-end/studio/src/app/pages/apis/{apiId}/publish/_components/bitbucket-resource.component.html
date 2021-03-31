@@ -1,5 +1,5 @@
 <div class="form-group">
-    <label class="col-sm-2 control-label required" for="gh-team">Team</label>
+    <label class="col-sm-2 control-label required" for="gh-team" i18n>Team</label>
     <div class="col-sm-10">
         <drop-down id="gh-team" [id]="'gh-team'" [value]="model.team" [options]="teamOptions()"
                    [loading]="gettingTeams"
@@ -7,7 +7,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label class="col-sm-2 control-label required" for="gh-repo">Repository</label>
+    <label class="col-sm-2 control-label required" for="gh-repo" i18n>Repository</label>
     <div class="col-sm-10">
         <drop-down id="gh-repo" [id]="'gh-repo'" [value]="model.repo" [options]="repoOptions()"
                    [loading]="gettingRepos"
@@ -15,7 +15,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label class="col-sm-2 control-label required" for="gh-branch">Branch</label>
+    <label class="col-sm-2 control-label required" for="gh-branch" i18n>Branch</label>
     <div class="col-sm-10">
         <drop-down id="gh-branch" [id]="'gh-branch'" [value]="model.branch" [options]="branchOptions()"
                    [loading]="gettingBranches"

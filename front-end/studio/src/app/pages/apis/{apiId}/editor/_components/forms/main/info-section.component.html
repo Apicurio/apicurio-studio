@@ -1,5 +1,5 @@
-<section type="info" label="INFO"
-         contextHelp="This section allows you to modify the Version and Description of the API."
+<section type="info" i18n-label label="INFO"
+         i18n-contextHelp contextHelp="This section allows you to modify the Version and Description of the API."
          [collaborationNodePath]="[ '/info/version', '/info/description' ]"
          [validationModels]="[info()]" [validationProperties]="['version', 'description']" [validationShallow]="true">
     <span actions></span>
@@ -7,7 +7,7 @@
         <!-- Version -->
         <div class="section-field-label">
             <validation-problem [model]="info()" property="version" [shallow]="true"></validation-problem>
-            <span>Version</span>
+            <span i18n>Version</span>
         </div>
         <div class="section-field version">
             <pf-inline-text-editor [value]="version()"
@@ -20,7 +20,7 @@
         <!-- Description -->
         <div class="section-field-label">
             <validation-problem [model]="info()" property="description" [shallow]="true"></validation-problem>
-            <span>Description</span>
+            <span i18n>Description</span>
         </div>
         <div class="section-field description">
             <inline-markdown-editor [value]="description()"
@@ -35,7 +35,7 @@
             <!-- Consumes -->
             <div class="section-field-label">
                 <validation-problem [model]="document" property="consumes" [shallow]="true"></validation-problem>
-                <span>Consumes (Inputs)</span>
+                <span i18n>Consumes (Inputs)</span>
             </div>
             <div class="section-field consumes">
                 <inline-array-editor [value]="consumes()" [noValueMessage]="'Set the consumes content-type.'"
@@ -46,7 +46,7 @@
             <!-- Produces -->
             <div class="section-field-label">
                 <validation-problem [model]="document" property="produces" [shallow]="true"></validation-problem>
-                <span>Produces (Outputs)</span>
+                <span i18n>Produces (Outputs)</span>
             </div>
             <div class="section-field produces">
                 <inline-array-editor [value]="produces()" [noValueMessage]="'Set the produces content-type.'"

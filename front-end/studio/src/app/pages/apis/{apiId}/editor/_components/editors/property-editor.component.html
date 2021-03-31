@@ -3,25 +3,25 @@
 
     <div class="row-fluid body-section">
         <div class="col-md-12">
-            <h3>1. Enter Basic Information</h3>
+            <h3 i18n>1. Enter Basic Information</h3>
             <p class="explanation">
-                <span>Enter a name and description for the new property.</span>
+                <span i18n>Enter a name and description for the new property.</span>
             </p>
         </div>
         <div class="col-md-12">
             <div class="form-group">
-                <label class="control-label required" for="qp_name">Name</label>
+                <label class="control-label required" for="qp_name" i18n>Name</label>
                 <div>
                     <input name="name" type="text" id="qp_name" class="form-control" required #nameInput="ngModel"
-                           [(ngModel)]="model.name" placeholder="Enter a unique property name." pattern="[a-zA-Z0-9\.\-_]+"
+                           [(ngModel)]="model.name" i18n-placeholder placeholder="Enter a unique property name." pattern="[a-zA-Z0-9\.\-_]+"
                            (ngModelChange)="propExists = props.indexOf($event) != -1" autocomplete="off">
-                    <form-error-message [inputModel]="nameInput" type="required">Name is required.</form-error-message>
-                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
-                    <div class="form-error-message error" *ngIf="propExists">Property named <strong>{{ model.name }}</strong> already exists.</div>
+                    <form-error-message [inputModel]="nameInput" type="required" i18n>Name is required.</form-error-message>
+                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true" i18n>Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                    <div class="form-error-message error" *ngIf="propExists"><ng-container i18n>Property named </ng-container><strong>{{ model.name }}</strong><ng-container i18n> already exists.</ng-container></div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label" for="description">Description</label>
+                <label class="control-label" for="description" i18n>Description</label>
                 <div>
                     <markdown-editor [(value)]="model.description" id="description"
                                      [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc', width: '100%' }"></markdown-editor>
@@ -36,9 +36,9 @@
     </div>
     <div class="row-fluid body-section type-section">
         <div class="col-md-12">
-            <h3>2. Enter Type Information <span class="optional empty">(optional)</span></h3>
+            <h3><ng-container i18n>2. Enter Type Information </ng-container><span class="optional empty" i18n>(optional)</span></h3>
             <p class="explanation">
-                <span>
+                <span i18n>
                     Enter information about the property's type (and whether it is required).
                 </span>
             </p>
@@ -47,26 +47,26 @@
             <div class="form-group">
                 <div>
                     <div class="prop-type">
-                        <span class="propIs-label dropdown-label">Property is</span>
+                        <span class="propIs-label dropdown-label" i18n>Property is</span>
                         <drop-down [id]="'api-prop-required'"
                                    [value]="required()"
                                    [options]="requiredOptions()"
                                    (onValueChange)="changeRequired($event)"
                                    [noSelectionLabel]="'Not Required'"></drop-down>
-                        <span class="strong type-label dropdowns-label">and has type</span>
+                        <span class="strong type-label dropdowns-label" i18n>and has type</span>
                         <drop-down [id]="'api-prop-type'"
                                    [value]="type()"
                                    [options]="typeOptions()"
                                    (onValueChange)="changeType($event)"
                                    [noSelectionLabel]="'Choose Type'"></drop-down>
-                        <span class="of-label dropdowns-label" *ngIf="type() === 'array'">of</span>
+                        <span class="of-label dropdowns-label" *ngIf="type() === 'array'" i18n>of</span>
                         <drop-down *ngIf="type() === 'array'"
                                    [id]="'api-prop-type-of'"
                                    [value]="typeOf()"
                                    [options]="typeOfOptions()"
                                    (onValueChange)="changeTypeOf($event)"
                                    [noSelectionLabel]="'Choose Type'"></drop-down>
-                        <span class="as-label dropdowns-label" *ngIf="shouldShowFormattedAs()">as</span>
+                        <span class="as-label dropdowns-label" *ngIf="shouldShowFormattedAs()" i18n>as</span>
                         <drop-down *ngIf="shouldShowFormattedAs()"
                                    [id]="'api-prop-type-as'"
                                    [value]="typeAs()"
@@ -75,9 +75,9 @@
                                    [noSelectionLabel]="'Format'"></drop-down>
                     </div>
                     <div class="prop-enum" id="prop-enum" *ngIf="shouldShowEnumEditor()">
-                        <span class="enum-label">Enum Values: </span>
+                        <span class="enum-label" i18n>Enum Values: </span>
                         <inline-array-editor *ngIf="shouldShowEnumEditor()" [value]="model.type.enum_" (onChange)="changeTypeEnum($event)"
-                                             noValueMessage="Click to define enum values."></inline-array-editor>
+                                             i18n-noValueMessage noValueMessage="Click to define enum values."></inline-array-editor>
                     </div>
                 </div>
             </div>

@@ -2,7 +2,7 @@
     <div class="detail-label">
         <span class="fa fa-fw fa-reply-all"></span>
         <span>{{ responseName() }}</span>
-        <span class="imported label label-info" *ngIf="isImported()">Imported</span>
+        <span class="imported label label-info" *ngIf="isImported()" i18n>Imported</span>
     </div>
     <div class="detail-actions">
         <div class="dropdown">
@@ -13,33 +13,33 @@
                 <li>
                     <a href="#" onclick="return false" (click)="collapseAllSections()">
                         <span class="fa fa-compress"></span>
-                        <span>Collapse All Sections</span>
+                        <span i18n>Collapse All Sections</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" onclick="return false" (click)="expandAllSections()">
                         <span class="fa fa-expand"></span>
-                        <span>Expand All Sections</span>
+                        <span i18n>Expand All Sections</span>
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
                     <a href="#" onclick="return false" (click)="rename()">
                         <span class="fa fa-pencil-square-o"></span>
-                        <span>Rename Response</span>
+                        <span i18n>Rename Response</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" onclick="return false" (click)="clone()">
                         <span class="fa fa-clone"></span>
-                        <span>Clone Response</span>
+                        <span i18n>Clone Response</span>
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
                     <a href="#" onclick="return false" (click)="delete()">
                         <span class="pficon pficon-delete"></span>
-                        <span>Delete Response</span>
+                        <span i18n>Delete Response</span>
                     </a>
                 </li>
             </ul>
@@ -48,20 +48,20 @@
 </div>
 <div class="detail-tabs">
     <ul class="nav nav-tabs nav-tabs-pf">
-        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()">Design</a></li>
-        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()">Source</a></li>
+        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()" i18n>Design</a></li>
+        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()" i18n>Source</a></li>
     </ul>
 </div>
 
 <!-- Source Mode -->
 <div class="detail-actionbar" *ngIf="isSourceMode()">
-    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
-    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
-    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span i18n>Format</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span i18n>Revert</span></button>
+    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span i18n>Save</span></button>
     <button class="btn btn-default btn-xs" [disabled]="!canToggleSourceFormat()" (click)="toggleSourceFormat()">
         <span class="fa fa-fw fa-code"></span>
-        <span *ngIf="isSourceFormatYaml()">As JSON</span>
-        <span *ngIf="isSourceFormatJson()">As YAML</span>
+        <span *ngIf="isSourceFormatYaml()" i18n>As JSON</span>
+        <span *ngIf="isSourceFormatJson()" i18n>As YAML</span>
     </button>
 </div>
 <div class="detail-content" style="position: relative" *ngIf="isSourceMode()">
@@ -87,19 +87,19 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active">
                 <!-- Reference -->
-                <section type="respReference" label="REFERENCE"
-                         contextHelp="This section describes the externally referenced Response."
+                <section type="respReference" i18n-label label="REFERENCE"
+                         i18n-contextHelp contextHelp="This section describes the externally referenced Response."
                          [validationModels]="[ response ]"
                          [validationProperties]="['$ref']"
                          [validationShallow]="true">
                     <div body>
-                        <span>This Response is an external reference to: </span>
+                        <span i18n>This Response is an external reference to: </span>
                         <em><a [href]="refLink()" target="_blank"><span class="fa fa-fw fa-external-link"></span>{{ response.$ref }}</a></em>
                     </div>
                 </section>
                 <!-- Reference Details -->
-                <section type="respReferenceDetails" label="REFERENCE DETAILS"
-                         contextHelp="This section shows details about the externally referenced Response.">
+                <section type="respReferenceDetails" i18n-label label="REFERENCE DETAILS"
+                         i18n-contextHelp contextHelp="This section shows details about the externally referenced Response.">
                     <div body>
                         <pre>{{ referenceContent() }}</pre>
                     </div>
@@ -112,7 +112,7 @@
 <clone-response-definition-dialog #cloneResponseDialog (onClone)="clone($event)"></clone-response-definition-dialog>
 <rename-entity-dialog #renameResponseDialog
                       type="Response"
-                      title="Rename Response"
-                      warning="Renaming a Response will also update any references to the response elsewhere in the API (e.g. operations)."
+                      i18n-title title="Rename Response"
+                      i18n-warning warning="Renaming a Response will also update any references to the response elsewhere in the API (e.g. operations)."
                       validationPattern="[a-zA-Z0-9\.\-_]+"
                       (onRename)="rename($event)"></rename-entity-dialog>

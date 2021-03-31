@@ -8,7 +8,7 @@
             <!-- Summary -->
             <div class="section-field-label">
                 <validation-problem [model]="operation" [shallow]="true" [property]="'summary'"></validation-problem>
-                <span>Summary</span>
+                <span i18n>Summary</span>
             </div>
             <div class="section-field summary">
                 <pf-inline-text-editor [value]="operation.summary" [noValueMessage]="'No Summary'"
@@ -23,7 +23,7 @@
             <!-- Operation ID -->
             <div class="section-field-label">
                 <validation-problem [model]="operation" [shallow]="true" [property]="'operationId'"></validation-problem>
-                <span>Operation ID</span>
+                <span i18n>Operation ID</span>
             </div>
             <div class="section-field operationId">
                 <pf-inline-text-editor [value]="operation.operationId" [noValueMessage]="'No Operation ID'"
@@ -37,7 +37,7 @@
         <!-- Description -->
         <div class="section-field-label">
             <validation-problem [model]="operation" [shallow]="true" [property]="'description'"></validation-problem>
-            <span>Description</span>
+            <span i18n>Description</span>
         </div>
         <div class="section-field description">
             <inline-markdown-editor [value]="operation.description" [noValueMessage]="'No description.'"
@@ -51,7 +51,7 @@
         <!-- Tags -->
         <div class="section-field-label">
             <validation-problem [model]="operation" [shallow]="true" [property]="'tags'"></validation-problem>
-            <span>Tags</span>
+            <span i18n>Tags</span>
         </div>
         <div class="section-field tags">
             <inline-array-editor noValueMessage="No tags configured." [value]="operation.tags" [items]="tagDefs()"

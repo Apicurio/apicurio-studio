@@ -1,5 +1,5 @@
 <section type="info" label="INFO"
-         contextHelp="In this section you can easily edit the Summary and Description of the Channel Item."
+         i18n-contextHelp contextHelp="In this section you can easily edit the Summary and Description of the Channel Item."
          [collaborationNodePath]="channelInfoPaths()"
          [validationModels]="[channel]" [validationProperties]="['description']" [validationShallow]="true">
     <span actions></span>
@@ -7,7 +7,7 @@
         <!-- Description -->
         <div class="section-field-label">
             <validation-problem [model]="channel" property="description" [shallow]="true"></validation-problem>
-            <span>Description</span>
+            <span i18n>Description</span>
         </div>
         <div class="section-field description">
             <inline-markdown-editor [value]="channel.description"

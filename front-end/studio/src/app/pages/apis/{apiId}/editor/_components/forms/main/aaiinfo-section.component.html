@@ -5,7 +5,7 @@
         <!-- Version -->
         <div class="section-field-label">
             <validation-problem [model]="info()" property="version" [shallow]="true"></validation-problem>
-            <span>Version</span>
+            <span i18n>Version</span>
         </div>
         <div class="section-field version">
             <pf-inline-text-editor [value]="version()" [labelClass]="'api-version'" [formClass]="'api-title-editor-form'" [inputClass]="'api-item-editor api-version-editor api-version api-item-version'" [baseNode]="info()" nodePath="version" [noValueMessage]="'N/A'"
@@ -14,7 +14,7 @@
         <!-- Description -->
         <div class="section-field-label">
             <validation-problem [model]="info()" property="description" [shallow]="true"></validation-problem>
-            <span>Description</span>
+            <span i18n>Description</span>
         </div>
         <div class="section-field description">
             <inline-markdown-editor [value]="description()" [labelClass]="'api-description api-item-description'" [formClass]="'api-description-editor-form'" [inputClass]="'api-item-editor api-description-editor api-description api-item-description'" [baseNode]="info()"
@@ -23,7 +23,7 @@
         <!-- TermsOfService -->
         <div class="section-field-label">
             <validation-problem [model]="info()" property="termsOfService" [shallow]="true"></validation-problem>
-            <span>Terms of Service</span>
+            <span i18n>Terms of Service</span>
         </div>
         <div class="section-field termsOfService">
             <pf-inline-text-editor [value]="termsOfService()" [labelClass]="'api-termsOfService'" [formClass]="'api-title-editor-form'" [inputClass]="'api-item-editor api-termsOfService-editor api-termsOfService api-item-termsOfService'" [baseNode]="info()" nodePath="termsOfService"

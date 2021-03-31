@@ -15,36 +15,36 @@
                     <!-- Warning about what will happen -->
                     <div class="alert alert-info" *ngIf="shouldShowWarning()">
                         <span class="pficon pficon-info"></span>
-                        <strong>You should know!</strong>
+                        <strong i18n>You should know!</strong>
                         <span>{{ warning }}</span>
                     </div>
                     <!-- Form to enter the new name -->
                     <p *ngIf="shouldShowMessage()">{{ message }}</p>
                     <form id="renameentity-form" class="form-horizontal" #renameEntityForm="ngForm" data-dismiss="modal">
                         <div class="form-group currentNameGroup">
-                            <label class="col-sm-2 control-label" for="currentName">Current name</label>
+                            <label class="col-sm-2 control-label" for="currentName" i18n>Current name</label>
                             <div class="col-sm-10">
                                 <span id="currentName">{{ originalName }}</span>
                             </div>
                         </div>
                         <div class="form-group entityNameGroup">
-                            <label class="col-sm-2 control-label required" for="entityName">New name</label>
+                            <label class="col-sm-2 control-label required" for="entityName" i18n>New name</label>
                             <div class="col-sm-10">
                                 <input name="entityName" type="text" id="entityName" class="form-control" #renameEntityInput
-                                       placeholder="Enter a {{ type }} Name" pattern="{{ validationPattern }}" #defName="ngModel"
+                                       i18n-placeholder placeholder="Enter a {{ type }} Name" pattern="{{ validationPattern }}" #defName="ngModel"
                                        required [(ngModel)]="newName" (ngModelChange)="validateName($event)">
-                                <div class="form-error-message error" *ngIf="newName !== originalName && _alreadyExists">{{ type }} already exists.</div>
-                                <form-error-message [inputModel]="defName" [type]="'required'">Name is required.</form-error-message>
-                                <form-error-message [inputModel]="defName" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                                <div class="form-error-message error" *ngIf="newName !== originalName && _alreadyExists" i18n>{{ type }} already exists.</div>
+                                <form-error-message [inputModel]="defName" [type]="'required'" i18n>Name is required.</form-error-message>
+                                <form-error-message [inputModel]="defName" [type]="'customPattern'" [alwaysOn]="true" i18n>Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
                             </div>
                         </div>
                     </form>
                 </div>
-                <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                <div class="notice-of-required modal-notice-of-required" i18n>The fields marked with <span class="required-icon">*</span> are required.</div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" (click)="rename()"
-                            [disabled]="!renameEntityForm.form.valid || _alreadyExists">Rename</button>
-                    <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+                            [disabled]="!renameEntityForm.form.valid || _alreadyExists" i18n>Rename</button>
+                    <button type="button" class="btn btn-default" (click)="cancel()" i18n>Cancel</button>
                 </div>
             </div>
         </div>

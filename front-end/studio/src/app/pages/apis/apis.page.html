@@ -9,9 +9,9 @@
         <div class="col-sm-12">
             <form class="toolbar-pf-actions" (submit)="filterApis()" #filterForm="ngForm">
                 <div class="form-group toolbar-pf-filter">
-                    <label class="sr-only" for="filter">Name</label>
+                    <label class="sr-only" for="filter" i18n>Name</label>
                     <div class="input-group" style="width: 100%">
-                        <input autocomplete="off" name="name-filter" [(ngModel)]="filters.nameFilter" type="text" class="form-control name-filter" id="filter" placeholder="Filter by name or tag...">
+                        <input autocomplete="off" name="name-filter" [(ngModel)]="filters.nameFilter" type="text" class="form-control name-filter" id="filter" placeholder="Filter by name or tag..." i18n-placeholder="Filter by name or tag...">
                     </div>
                 </div>
                 <div class="form-group">
@@ -21,11 +21,11 @@
                     </button>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-danger" type="button" [disabled]="selectedApis.length == 0" (click)="confirmDeleteDialog.open()">Delete</button>
+                    <button class="btn btn-danger" type="button" [disabled]="selectedApis.length == 0" (click)="confirmDeleteDialog.open()" i18n>Delete</button>
                 </div>
                 <div class="form-group">
-                    <a class="btn btn-primary" [routerLink]="['create']"><span class="pficon pficon-add-circle-o"></span> Create New API</a>
-                    <a class="btn btn-default" [routerLink]="['import']"><span class="pficon pficon-import"></span> Import API</a>
+                    <a class="btn btn-primary" [routerLink]="['create']"><span class="pficon pficon-add-circle-o"></span> <ng-container i18n>Create New API</ng-container></a>
+                    <a class="btn btn-default" [routerLink]="['import']"><span class="pficon pficon-import"></span> <ng-container i18n>Import API</ng-container></a>
                 </div>
                 <div class="form-group toolbar-pf-view-selector">
                     <ul class="list-inline">
@@ -36,9 +36,9 @@
             </form>
             <div class="row toolbar-pf-results">
                 <div class="col-sm-12">
-                    <h5 *ngIf="numApisToDelete === 0">{{ filteredApis.length }} APIs found <a *ngIf="allApis.length != filteredApis.length"
-                                                                class="clear-filters" (click)="clearFilters()">(out of {{ allApis.length }} total)</a></h5>
-                    <h5 *ngIf="numApisToDelete > 0"><span class="spinner spinner-xs spinner-inline"></span> Deleting {{ numApisToDelete }} APIs, please wait...</h5>
+                    <h5 *ngIf="numApisToDelete === 0">{{ filteredApis.length }} <ng-container i18n>APIs found</ng-container> <a *ngIf="allApis.length != filteredApis.length"
+                                                                class="clear-filters" (click)="clearFilters()"><ng-container i18n>(out of</ng-container> {{ allApis.length }} <ng-container i18n>total)</ng-container></a></h5>
+                    <h5 *ngIf="numApisToDelete > 0"><span class="spinner spinner-xs spinner-inline"></span> <ng-container i18n>Deleting</ng-container> {{ numApisToDelete }} <ng-container i18n>APIs, please wait...</ng-container></h5>
                 </div>
             </div>
         </div>
@@ -49,24 +49,24 @@
                 <div class="blank-slate-pf-icon">
                     <span class="pficon pficon pficon-add-circle-o"></span>
                 </div>
-                <h1>No APIs Found</h1>
-                <p>
+                <h1 i18n>No APIs Found</h1>
+                <p i18n>
                     It seems you have no APIs in the Studio yet.  This is probably the first time you've used it and haven't
                     created or improted any APIs yet!
                 </p>
-                <p>
+                <p i18n>
                     Click below to either create a new API or import an existing API to the Studio.
                 </p>
                 <div class="blank-slate-pf-main-action">
                     <div class="btn-group">
-                        <a routerLink="/apis/create" class="btn btn-primary btn-lg"><span class="pficon pficon-add-circle-o"></span> Create New API</a>
+                        <a routerLink="/apis/create" class="btn btn-primary btn-lg"><span class="pficon pficon-add-circle-o"></span> <ng-container i18n>Create New API</ng-container></a>
                         <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
                             <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
+                            <span class="sr-only" i18n>Toggle Dropdown</span>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a routerLink="/apis/import"><span class="pficon pficon-import"></span> Import API</a></li>
+                            <li><a routerLink="/apis/import"><span class="pficon pficon-import"></span> <ng-container i18n>Import API</ng-container></a></li>
                         </ul>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
         <div class="col-md-8 none-matched-state" *ngIf="filteredApis.length === 0 && isFiltered()">
             <div class="alert alert-info">
                 <span class="pficon pficon-info"></span>
-                <strong>No APIs matched the filter!</strong> Try changing your filter criteria - there is definitely at least one API you can work on...
+                <strong i18n>No APIs matched the filter!</strong> <ng-container i18n>Try changing your filter criteria - there is definitely at least one API you can work on...</ng-container>
             </div>
         </div>
 
@@ -86,7 +86,7 @@
                     <div class="card-pf card-pf-accented">
                         <div class="card-pf-heading">
                             <h1 class="card-pf-title">
-                                <p><span class="spinner spinner-xs spinner-inline"></span> Loading API Designs...</p>
+                                <p><span class="spinner spinner-xs spinner-inline"></span> <ng-container i18n>Loading API Designs...</ng-container></p>
                             </h1>
                         </div>
                     </div>
@@ -106,12 +106,12 @@
     </div>
 </div>
 <confirm-delete-dialog #confirmDeleteDialog (onDelete)="deleteApis()">
-    <p *ngIf="selectedApis.length === 1">Do you really want to delete the selected API?</p>
-    <p *ngIf="selectedApis.length > 1">Do you really want to delete the <strong>{{ selectedApis.length }}</strong> selected APIs?</p>
+    <p *ngIf="selectedApis.length === 1" i18n>Do you really want to delete the selected API?</p>
+    <p *ngIf="selectedApis.length > 1"><ng-container i18n>Do you really want to delete the</ng-container> <strong>{{ selectedApis.length }}</strong> <ng-container i18n>selected APIs?</ng-container></p>
 
     <div class="alert alert-danger">
         <span class="pficon pficon-error-circle-o"></span>
-        <strong>NOTE:</strong>
-        <span>This will <strong>permanently</strong> delete the API definition from Apicurio Studio.  This operation cannot be undone.</span>
+        <strong i18n>NOTE:</strong>
+        <span><ng-container i18n>This will</ng-container> <strong i18n>permanently</strong> <ng-container i18n>delete the API definition from Apicurio Studio.  This operation cannot be undone.</ng-container></span>
     </div>
 </confirm-delete-dialog>

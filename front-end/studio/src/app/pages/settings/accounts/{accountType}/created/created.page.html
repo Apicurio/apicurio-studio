@@ -14,21 +14,21 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-exclamation"></span>
-                        <span>Account Linking Error</span>
+                        <span i18n>Account Linking Error</span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
                     <div [ngSwitch]="linkError">
-                        <p *ngSwitchCase="'not_logged_in'">
+                        <p *ngSwitchCase="'not_logged_in'" i18n>
                             Account linking has failed because you were not logged in.  This has caused
                             the process to fail, so you must go back to the Accounts page and try again.
                         </p>
-                        <p *ngSwitchCase="'unknown_identity_provider'">
+                        <p *ngSwitchCase="'unknown_identity_provider'" i18n>
                             Account linking has failed because no Identity Provider for accounts of type
                             <strong>{{ accountType }}</strong> has been configured.  Please contact your
                             system administrator to resolve this configuration problem.
                         </p>
-                        <p *ngSwitchDefault>
+                        <p *ngSwitchDefault i18n>
                             An unexpected error occurred while trying to create a linked account.  The process
                             has failed, so you must go back and try again.
                         </p>
@@ -44,11 +44,11 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-info"></span>
-                        <span>Finalizing Linked Account</span>
+                        <span i18n>Finalizing Linked Account</span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
-                    <p>
+                    <p i18n>
                         You've successfully authorized Apicurio Studio with
                         <span *ngIf="isGitHub()"><a href="https://www.github.com">GitHub</a></span>
                         <span *ngIf="isGitLab()"><a href="https://www.gitlab.com">GitLab</a></span>
@@ -57,7 +57,7 @@
                         moment, after which you will be redirected back to the
                         <a [routerLink]="['/settings/accounts']">Settings &gt;&gt; Accounts</a> page.
                     </p>
-                    <p class="in-progress"><span class="spinner spinner-xs spinner-inline"></span> Finalizing account link, please wait...</p>
+                    <p class="in-progress"><span class="spinner spinner-xs spinner-inline" i18n></span> Finalizing account link, please wait...</p>
                     <div class="actions">
                     </div>
                 </div>
@@ -68,16 +68,16 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-info-circle"></span>
-                        <span>Action Already Completed</span>
+                        <span i18n>Action Already Completed</span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
-                    <p>
+                    <p i18n>
                         This account has already been successfully linked.  Click the button below
                         to return to the Settings page.
                     </p>
                     <div class="actions">
-                        <a class="btn btn-default" routerLink="/settings/accounts">Back to Accounts</a>
+                        <a class="btn btn-default" routerLink="/settings/accounts" i18n>Back to Accounts</a>
                     </div>
                 </div>
             </div>

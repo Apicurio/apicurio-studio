@@ -18,6 +18,8 @@
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap";
 import {AaiDocument} from "apicurio-data-models";
+import {ConfigService} from "../../../../../../services/config.service";
+
 
 @Component({
     moduleId: module.id,
@@ -33,10 +35,15 @@ export class AddChannelDialogComponent {
 
     private _isOpen: boolean = false;
 
-    channel: string = "";
 
+    channelRegex: string = "";
+    channel: string = "";
     channels: string[] = [];
     channelExists: boolean = false;
+
+    constructor(configService: ConfigService){
+        this.channelRegex = configService.channelNameValidation();
+    }
 
     /**
      * Called to open the dialog.
@@ -110,5 +117,9 @@ export class AddChannelDialogComponent {
      */
     validateChannel(newChannel: string) {
         this.channelExists = this.channels.indexOf(newChannel) != -1;
+    }
+
+    channelValidation(): string{
+        return this.channelRegex;
     }
 }

@@ -41,6 +41,8 @@ spec:
             value: {{ .Values.ui.hub.api.url | default (print "https://" .Values.ui.hostname "/studio-api")  }}
           - name: APICURIO_UI_EDITING_URL
             value: {{ .Values.ui.editing.url | default (print "wss://" .Values.ui.hostname "/ws")  }}
+          - name: APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP
+            value: { { .values.ui.channelNameRegex } }
           - name: JAVA_TOOL_OPTIONS
             value: {{ .Values.ui.jvmArgs }}
           - name: APICURIO_MICROCKS_API_URL

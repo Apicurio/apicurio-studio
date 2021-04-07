@@ -28,6 +28,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class StudioConfigUi {
     
     private String url;
+
+    private String channelNameValidation;
     
     /**
      * Constructor.
@@ -48,5 +50,21 @@ public class StudioConfigUi {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    /**
+     * @return the channel Name Regex
+     */
+    public String getChannelNameValidation() {
+        return channelNameValidation;
+    }
+
+    /**
+     * @param channelNameRegex the channel Name Regex to set
+     */
+    public void setChannelNameValidation(String channelNameValidation) {
+        this.channelNameValidation = channelNameValidation;
+    }
+
+
 
 }

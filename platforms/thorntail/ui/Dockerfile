@@ -32,6 +32,8 @@ ENV APICURIO_UI_HUB_API_URL=https://localhost:8443/api
 ENV APICURIO_UI_EDITING_URL=https://localhost:8443/ws
 ENV APICURIO_MIN_HEAP=512m
 ENV APICURIO_MAX_HEAP=2048m
+ENV APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP='([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+'
+
 
 
 CMD java -jar /opt/apicurio/apicurio-studio-ui-thorntail.jar \

@@ -1,5 +1,5 @@
-<section type="info" label="INFO"
-         contextHelp="This section allows you to modify the Description of the Data Type."
+<section type="info" i18n-label label="INFO"
+         i18n-contextHelp contextHelp="This section allows you to modify the Description of the Data Type."
          [collaborationNodePath]="definitionInfoPaths()"
          [validationModels]="[definition]" [validationProperties]="['description']" [validationShallow]="true">
     <span actions></span>
@@ -7,7 +7,7 @@
         <!-- Description -->
         <div class="section-field-label">
             <validation-problem [model]="definition" property="description" [shallow]="true"></validation-problem>
-            <span>Description</span>
+            <span i18n>Description</span>
         </div>
         <div class="section-field description">
             <inline-markdown-editor [value]="description()"
@@ -20,12 +20,12 @@
 
         <!-- Type -->
         <div class="section-field type" *ngIf="isObject()">
-            <div>This data type is currently a complex object.</div>
-            <a (click)="switchToSimpleType()">Switch to simple type</a>
+            <div i18n>This data type is currently a complex object.</div>
+            <a (click)="switchToSimpleType()" i18n>Switch to simple type</a>
         </div>
         <div class="section-field type" *ngIf="!isObject()">
-            <div>This data type is currently a simple type.</div>
-            <a (click)="switchToObject()">Switch to complex (object) type</a>
+            <div i18n>This data type is currently a simple type.</div>
+            <a (click)="switchToObject()" i18n>Switch to complex (object) type</a>
         </div>
 
     </div>

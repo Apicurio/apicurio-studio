@@ -1,5 +1,5 @@
 <!-- Cookie Parameters Section -->
-<section type="cookie-parameters" label="COOKIE PARAMETERS"
+<section type="cookie-parameters" i18n-label label="COOKIE PARAMETERS"
          [counterItems]="cookieParameters()"
          [contextHelp]="contextHelp()" [expanded]="showSectionBody"
          [collaborationNodePath]="cookieParameterPaths()"
@@ -13,8 +13,8 @@
     </span>
     <div body>
         <signpost *ngIf="!hasCookieParameters()">
-            <span>No cookie parameters have been defined.</span>
-            <a (click)="openAddCookieParamEditor()">Add a cookie parameter</a>
+            <span i18n>No cookie parameters have been defined.</span>
+            <a (click)="openAddCookieParamEditor()" i18n>Add a cookie parameter</a>
         </signpost>
 
         <!-- The list of cookie parameters -->
@@ -27,7 +27,7 @@
 </section>
 <rename-entity-dialog #renameDialog
                       type="Cookie Parameter"
-                      title="Rename Cookie Parameter"
-                      warning="Renaming a Cookie Parameter may also update any cookie parameters with the same name depending on path and operation hierarchies."
+                      i18n-title title="Rename Cookie Parameter"
+                      i18n-warning warning="Renaming a Cookie Parameter may also update any cookie parameters with the same name depending on path and operation hierarchies."
                       validationPattern="[a-zA-Z0-9\.\-_\$]+"
                       (onRename)="rename($event)"></rename-entity-dialog>

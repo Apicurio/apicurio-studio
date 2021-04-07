@@ -16,7 +16,7 @@
                         <div class="card-pf card-pf-accented" *ngIf="!isLoaded('api')">
                             <div class="card-pf-heading">
                                 <h1 class="card-pf-title">
-                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading API information...</p>
+                                    <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Loading API information...</ng-container></p>
                                 </h1>
                             </div>
                         </div>
@@ -40,62 +40,62 @@
                                                 <li *ngIf="actionEnabled('edit-data-model')">
                                                     <a [routerLink]="[ 'editor' ]">
                                                         <span class="fa fa-fw fa-edit"></span>
-                                                        <span>Edit...</span>
+                                                        <span i18n>Edit...</span>
                                                     </a>
                                                 </li>
                                                 <li *ngIf="actionEnabled('edit-text')">
                                                     <a [routerLink]="[ 'teditor' ]">
                                                         <span class="fa fa-fw fa-edit"></span>
-                                                        <span>Edit...</span>
+                                                        <span i18n>Edit...</span>
                                                     </a>
                                                 </li>
                                                 <li *ngIf="actionEnabled('preview-docs')">
                                                     <a href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank">
                                                         <span class="fa fa-fw fa-eye"></span>
-                                                        <span>Preview Docs...</span>
+                                                        <span i18n>Preview Docs...</span>
                                                     </a>
                                                 </li>
                                                 <li *ngIf="actionEnabled('share-docs')">
                                                     <a (click)="sharingModal.open(api.id)">
                                                         <span class="fa fa-fw fa-share-alt"></span>
-                                                        <span>Share Docs</span>
+                                                        <span i18n>Share Docs</span>
                                                     </a>
                                                 </li>
                                                 <li *ngIf="actionEnabled('collaborate')">
                                                     <a [routerLink]="[ 'collaboration' ]">
                                                         <span class="fa fa-fw fa-users"></span>
-                                                        <span>Collaborate...</span>
+                                                        <span i18n>Collaborate...</span>
                                                     </a>
                                                 </li>
                                                 <li *ngIf="actionEnabled('copy')">
                                                     <a [routerLink]="[ 'copy' ]">
                                                         <span class="fa fa-fw fa-clone"></span>
-                                                        <span>Make a Copy...</span>
+                                                        <span i18n>Make a Copy...</span>
                                                     </a>
                                                 </li>
                                                 <li *ngIf="actionEnabled('publish')">
                                                     <a [routerLink]="[ 'publish' ]">
                                                         <span class="fa fa-fw fa-cloud-upload"></span>
-                                                        <span>Publish...</span>
+                                                        <span i18n>Publish...</span>
                                                     </a>
                                                 </li>
                                                 <li *ngIf="actionEnabled('mock')">
                                                     <a [routerLink]="[ 'mock' ]">
                                                         <span class="fa fa-fw fa-cloud-upload"></span>
-                                                        <span>Mock with Microcks...</span>
+                                                        <span i18n>Mock with Microcks...</span>
                                                     </a>
                                                 </li>
                                                 <li role="separator" class="divider"></li>
                                                 <li *ngIf="actionEnabled('download')">
                                                     <a (click)="downloadModal.open(api)">
                                                         <span class="fa fa-fw fa-download"></span>
-                                                        <span>Download</span>
+                                                        <span i18n>Download</span>
                                                     </a>
                                                 </li>
                                                 <li *ngIf="actionEnabled('generate-project')">
                                                     <a (click)="generateProjectModal.open()">
                                                         <span class="fa fa-fw fa-file-code-o"></span>
-                                                        <span>Generate Project</span>
+                                                        <span i18n>Generate Project</span>
                                                     </a>
                                                 </li>
 
@@ -103,7 +103,7 @@
                                                 <li *ngIf="actionEnabled('delete')">
                                                     <a (click)="confirmDeleteModal.open()">
                                                         <span class="fa fa-fw fa-trash"></span>
-                                                        <span>Delete</span>
+                                                        <span i18n>Delete</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -113,30 +113,30 @@
                             </div>
                             <div class="card-pf-body">
                                 <markdown [data]="api.description" emptyText="No description."></markdown>
-                                <h3 *ngIf="!api.description" class="no-description">No description available.</h3>
+                                <h3 *ngIf="!api.description" class="no-description" i18n>No description available.</h3>
                                 <div class="api-created-info">
                                     <div class="info-full">
                                         <span class="fa fa-fw fa-clock-o"></span>
-                                        <span>Created on <em>{{ api.createdOn | date }}</em></span>
+                                        <span><ng-container i18n> Created on </ng-container><em>{{ api.createdOn | date }}</em></span>
                                     </div>
                                     <div class="info-full">
                                         <span class="fa fa-fw fa-user"></span>
-                                        <span>Created by <em>{{ api.createdBy }}</em></span>
+                                        <span><ng-container i18n> Created by </ng-container><em>{{ api.createdBy }}</em></span>
                                     </div>
                                     <div class="info-full" *ngIf="actionEnabled('collaborate')">
                                         <span class="fa fa-fw fa-users"></span>
                                         <a [routerLink]="[ 'collaboration' ]">
                                             <span class="num-collaborators">{{ getNumberOfCollaborators() }}</span>
                                             <span>&nbsp;</span>
-                                            <span>Other Collaborator(s)</span>
+                                            <span i18n>Other Collaborator(s)</span>
                                         </a>
                                     </div>
                                 </div>
                                 <tag-list [tags]="api.tags" (tagSelected)="selectTag($event)" [maxWidth]="140"></tag-list>
                                 <div class="api-action-buttons">
-                                    <a *ngIf="actionEnabled('edit-data-model')" [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
-                                    <a *ngIf="actionEnabled('edit-text')" [routerLink]="[ 'teditor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
-                                    <a *ngIf="actionEnabled('preview-docs')" href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank" class="btn btn-default pull-right"><span class="fa fa-eye"></span> Preview Documentation</a>
+                                    <a *ngIf="actionEnabled('edit-data-model')" [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span><ng-container i18n> Edit API</ng-container></a>
+                                    <a *ngIf="actionEnabled('edit-text')" [routerLink]="[ 'teditor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span><ng-container i18n> Edit API</ng-container></a>
+                                    <a *ngIf="actionEnabled('preview-docs')" href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank" class="btn btn-default pull-right"><span class="fa fa-eye"></span><ng-container i18n> Preview Documentation</ng-container></a>
                                 </div>
                             </div>
                         </div>
@@ -145,18 +145,18 @@
                 <div class="row row-cards-pf">
                     <div class="card-pf">
                         <div class="card-pf-heading">
-                            <h2 style="height: 18px;" class="card-pf-title">Top Contributors</h2>
+                            <h2 style="height: 18px;" class="card-pf-title" i18n>Top Contributors</h2>
                         </div>
                         <div class="card-pf-body">
                             <div class="api-data-loading" *ngIf="!isLoaded('contributors')">
-                                <p><span class="spinner spinner-xs spinner-inline"></span> Loading contributors data...</p>
+                                <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Loading contributors data...</ng-container></p>
                             </div>
                             <div class="api-contributors" *ngIf="isLoaded('contributors')">
                                 <div class="progress-container progress-description-left" *ngFor="let c of contributors.contributors">
                                     <div class="progress-description">{{ c.name }}</div>
                                     <div class="progress">
                                         <div class="progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" [style.width]="((c.edits / contributors.totalEdits) * 100) + '%'">
-                                            <span><strong>{{ c.edits }} of {{ contributors.totalEdits }}</strong> edits</span>
+                                            <span><strong>{{ c.edits }} of {{ contributors.totalEdits }}</strong><ng-container i18n> edits</ng-container></span>
                                         </div>
                                     </div>
                                 </div>
@@ -168,46 +168,46 @@
                 <div class="row row-cards-pf" *ngIf="actionEnabled('mock')">
                     <div class="card-pf">
                         <div class="card-pf-heading">
-                            <h2 style="height: 18px;" class="card-pf-title">API Mocking</h2>
+                            <h2 style="height: 18px;" class="card-pf-title" i18n>API Mocking</h2>
                         </div>
                         <div class="card-pf-body">
                             <div class="api-data-loading" *ngIf="!isLoaded('mocks')">
-                                <p><span class="spinner spinner-xs spinner-inline"></span> Loading mock information...</p>
+                                <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Loading mock information...</ng-container> </p>
                             </div>
                             <div class="api-mocks" *ngIf="isLoaded('mocks')">
                                 <div *ngIf="!hasMicrocksMock()">
                                     <p>
-                                        This API has <strong>not yet been mocked in Microcks</strong>.
+                                        <ng-container i18n>This API has </ng-container><strong i18n>not yet been mocked in Microcks</strong>.
                                     </p>
                                     <div>
                                         <a [routerLink]="[ 'mock' ]" class="btn btn-primary">
                                             <span class="fa fa-fw fa-cloud-upload"></span>
-                                            <span>Mock with Microcks</span>
+                                            <span i18n>Mock with Microcks</span>
                                         </a>
                                     </div>
                                 </div>
                                 <div *ngIf="hasMicrocksMock()">
                                     <p>
-                                        This API is being mocked in <strong>Microcks</strong>!
+                                        <ng-container i18n>This API is being mocked in </ng-container><strong i18n>Microcks</strong>!
                                     </p>
                                     <div class="api-mocked-info">
                                         <div class="info-full">
                                             <span class="fa fa-fw fa-clock-o"></span>
-                                            <span>Mock created on <em>{{ mock.on | date }}</em></span>
+                                            <span><ng-container i18n>Mock created on </ng-container><em>{{ mock.on | date }}</em></span>
                                         </div>
                                         <div class="info-full">
                                             <span class="fa fa-fw fa-user"></span>
-                                            <span>Mock created by <em>{{ api.createdBy }}</em></span>
+                                            <span><ng-container i18n>Mock created by </ng-container> <em>{{ api.createdBy }}</em></span>
                                         </div>
                                     </div>
                                     <div class="api-mocked-actions">
                                         <a href="{{ mockRef.mockURL }}" target="_blank" class="btn btn-default">
                                             <span class="fa fa-external-link"></span>
-                                            <span>View in Microcks</span>
+                                            <span i18n>View in Microcks</span>
                                         </a>
                                         <a [routerLink]="[ 'mock' ]" class="btn btn-primary" *ngIf="isMockStale()">
                                             <span class="fa fa-fw fa-cloud-upload"></span>
-                                            <span>Update Mock in Microcks</span>
+                                            <span i18n>Update Mock in Microcks</span>
                                         </a>
                                     </div>
                                 </div>
@@ -226,7 +226,7 @@
                     <div class="card-pf card-pf-accented" *ngIf="!isLoaded('activity')">
                         <div class="card-pf-heading">
                             <h1 class="card-pf-title">
-                                <p><span class="spinner spinner-xs spinner-inline"></span> Loading API activity...</p>
+                                <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Loading API activity...</ng-container></p>
                             </h1>
                         </div>
                     </div>
@@ -236,7 +236,7 @@
                         <div class="card-pf-heading">
                             <h1 class="card-pf-title">
                                 <span class="fa fa-fw fa-list"></span>
-                                <span>Activity Log</span>
+                                <span i18n>Activity Log</span>
                             </h1>
                         </div>
                         <div class="card-pf-body container-fluid">
@@ -245,11 +245,11 @@
                                 <button class="btn btn-default"
                                         *ngIf="hasMoreActivity"
                                         [disabled]="gettingMoreActivity"
-                                        (click)="showMoreActivity()">Show More</button>
+                                        (click)="showMoreActivity()" i18n>Show More</button>
                             </div>
                             <div class="alert alert-info" *ngIf="activity.length === 0">
                                 <span class="pficon pficon-info"></span>
-                                <strong>No Activity Found!</strong> No changes have been made to this API yet.
+                                <strong i18n>No Activity Found!</strong><ng-container i18n> No changes have been made to this API yet.</ng-container>
                             </div>
                         </div>
                     </div>
@@ -259,11 +259,11 @@
     </div>
 </div>
 <confirm-delete-dialog #confirmDeleteModal (onDelete)="deleteApi()">
-    <p>Do you really want to delete this API?</p>
+    <p i18n>Do you really want to delete this API?</p>
     <div class="alert alert-danger">
         <span class="pficon pficon-error-circle-o"></span>
-        <strong>NOTE:</strong>
-        <span>This will <strong>permanently</strong> delete the API definition from Apicurio Studio.  This operation cannot be undone.</span>
+        <strong i18n>NOTE:</strong>
+        <span><ng-container i18n>This will </ng-container><strong i18n>permanently</strong><ng-container i18n> delete the API definition from Apicurio Studio.  This operation cannot be undone.</ng-container></span>
     </div>
 </confirm-delete-dialog>
 <sharing-dialog #sharingModal></sharing-dialog>

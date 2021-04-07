@@ -1,8 +1,8 @@
 <div *ngIf="!editorOpen">
     <div id="api-breadcrumb-bar">
         <breadcrumbs>
-            <li breadcrumb label="Settings" [route]="[ '/settings' ]"></li>
-            <li breadcrumb label="Validation" class="active"></li>
+            <li breadcrumb i18n-label label="Settings" [route]="[ '/settings' ]"></li>
+            <li breadcrumb i18n-label label="Validation" class="active"></li>
         </breadcrumbs>
     </div>
     <page-error [error]="pageError" *ngIf="pageError"></page-error>
@@ -13,14 +13,14 @@
                 <settings-nav tab="validation"></settings-nav>
             </div>
             <div class="col-xs-12 col-sm-8 validation-profiles">
-                <h1>Validation Profiles</h1>
-                <p>
+                <h1 i18n>Validation Profiles</h1>
+                <p i18n>
                     Validation profiles provide a way ot group validation rules, for issues, allowing different
                     severity assignments for rules in each validation profile.
                 </p>
                 <div class="subheader">
-                    <span>Validation Profiles</span>
-                    <button class="icon-button pull-right" title="Create a new validation profile" (click)="editProfile()"><span class="pficon pficon-add-circle-o"></span></button>
+                    <span i18n>Validation Profiles</span>
+                    <button class="icon-button pull-right" i18n-title title="Create a new validation profile" (click)="editProfile()"><span class="pficon pficon-add-circle-o"></span></button>
                 </div>
                 <div class="profiles" *ngIf="isLoaded('builtInProfiles') && isLoaded('profiles')">
                     <div class="validation-profile" *ngFor="let profile of allProfiles()">
@@ -35,14 +35,14 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-right">
                                         <li *ngIf="!profile.builtIn">
-                                            <a (click)="editProfile(profile)"><span class="fa fa-fw fa-pencil-square-o"></span><span>Edit</span></a>
+                                            <a (click)="editProfile(profile)"><span class="fa fa-fw fa-pencil-square-o"></span><span i18n>Edit</span></a>
                                         </li>
                                         <li>
-                                            <a (click)="cloneProfile(profile)"><span class="fa fa-fw fa-copy"></span><span>Clone</span></a>
+                                            <a (click)="cloneProfile(profile)"><span class="fa fa-fw fa-copy"></span><span i18n>Clone</span></a>
                                         </li>
                                         <li class="divider" role="separator" *ngIf="!profile.builtIn"></li>
                                         <li *ngIf="!profile.builtIn">
-                                            <a (click)="deleteProfile(profile)"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a>
+                                            <a (click)="deleteProfile(profile)"><span class="fa fa-fw fa-trash"></span><span i18n>Delete</span></a>
                                         </li>
                                     </ul>
                                 </div>

@@ -1,8 +1,8 @@
 <div id="api-breadcrumb-bar">
     <breadcrumbs>
-        <li breadcrumb label="APIs" [route]="[ '/apis' ]"></li>
+        <li breadcrumb i18n-label label="APIs" [route]="[ '/apis' ]"></li>
         <li breadcrumb [label]="apiDefinition.name" [route]="[ '/apis', apiDefinition.id ]"></li>
-        <li breadcrumb label="Editor" class="active"></li>
+        <li breadcrumb i18n-label label="Editor" class="active"></li>
     </breadcrumbs>
     <div class="right-of-breadcrumbs">
         <div class="activeCollaboratorIcons">
@@ -15,7 +15,7 @@
         </div>
         <div class="unsaved-changes" *ngIf="hasFailedActions || isOffline">
             <span class="fa fa-fw fa-warning pulse" (click)="showOfflineModeMessage = !showOfflineModeMessage"
-                  title="Offline/disconnected mode enabled - click for details."></span>
+                  i18n-title title="Offline/disconnected mode enabled - click for details."></span>
             <div class="unsaved-message" *ngIf="showOfflineModeMessage">
                 <button class="close" type="button" (click)="showOfflineModeMessage = false"><span class="pficon pficon-close"></span></button>
                 <h2>
@@ -23,9 +23,9 @@
                         <i class="fa fa-pencil fa-stack-1x"></i>
                         <i class="fa fa-ban fa-stack-2x fa-flip-vertical text-danger"></i>
                     </span>
-                    Disconnected/Offline Mode
+                    <ng-container i18n>Disconnected/Offline Mode</ng-container>
                 </h2>
-                <p>
+                <p i18n>
                     You have changes that have not been saved (either because of a server error or disconnect).  You can
                     continue to edit the document locally (offline mode).  Your changes will be sent to the server the
                     next time it is available.  If you navigate away or close this browser tab, your changes will be lost!
@@ -33,24 +33,24 @@
                 <div class="reconnect-info">
                     <hr />
                     <div class="changes-count">
-                        You have <em>{{ pendingActions.size() }}</em> unsaved change(s).
+                        <ng-container i18n>You have </ng-container> <em>{{ pendingActions.size() }}</em><ng-container i18n> unsaved change(s).</ng-container>
                     </div>
                     <div class="reconnect-time">
-                        Will attempt to re-connect <em>{{ retryTimerOn() }}</em>.
+                        <ng-container i18n>Will attempt to re-connect </ng-container> <em>{{ retryTimerOn() }}</em>.
                     </div>
                     <hr />
                     <div class="reconnect-actions">
-                        <button type="button" class="btn btn-default" title="Try to reconnect to the server right now (no waiting)."
+                        <button type="button" class="btn btn-default" i18n-title title="Try to reconnect to the server right now (no waiting)."
                                 (click)="reconnectNow()" [disabled]="reconnecting">
                             <span class="fa fa-fw fa-plug"></span>
-                            <span>Reconnect Now</span>
+                            <span i18n>Reconnect Now</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
         <div class="api-actions">
-            <a class="btn btn-default" (click)="openLivePreview()"><span class="fa fa-eye"></span> Live Documentation</a>
+            <a class="btn btn-default" (click)="openLivePreview()"><span class="fa fa-eye"></span><ng-container i18n> Live Documentation</ng-container></a>
         </div>
     </div>
 </div>
@@ -64,7 +64,7 @@
                 <div class="card-pf card-pf-accented">
                     <div class="card-pf-heading">
                         <h1 class="card-pf-title">
-                            <p><span class="spinner spinner-xs spinner-inline"></span> Loading API definition...</p>
+                            <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Loading API definition...</ng-container></p>
                         </h1>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                 <div class="card-pf card-pf-accented">
                     <div class="card-pf-heading">
                         <h1 class="card-pf-title">
-                            <p><span class="spinner spinner-xs spinner-inline"></span> Opening an API Design editing session...</p>
+                            <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n></ng-container></p>
                         </h1>
                     </div>
                 </div>

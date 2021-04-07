@@ -10,19 +10,19 @@
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-comment"></span>
-                        <span>Welcome to <strong>Apicurio</strong>!</span>
+                        <span><ng-container i18n>Welcome to </ng-container> <strong i18n>Apicurio</strong><ng-container i18n>!</ng-container></span>
                     </h2>
                 </div>
                 <div class="card-pf-body">
                     <p>
-                        Hey <strong>{{ user().name }}</strong>, thanks for logging into <strong>Apicurio</strong>.  Use
-                        this tool to create, modify and collaborate on new and existing APIs (with just a few clicks).
+                        <ng-container i18n>Hey </ng-container> <strong>{{ user().name }}</strong><ng-container i18n>, thanks for logging into </ng-container><strong i18n>Apicurio</strong><ng-container i18n>.  Use
+                        this tool to create, modify and collaborate on new and existing APIs (with just a few clicks).</ng-container>
                     </p>
                     <div>
                         <ul>
-                            <li><a href="https://www.apicur.io" target="_blank">Learn more about the Apicurio project</a></li>
-                            <li><a href="https://www.apicur.io/studio/roadmap" target="_blank">View our Roadmap</a></li>
-                            <li><a href="https://www.apicur.io/contact" target="_blank">Question or Ideas?  Contact our development team!</a></li>
+                            <li><a href="https://www.apicur.io" target="_blank" i18n>Learn more about the Apicurio project</a></li>
+                            <li><a href="https://www.apicur.io/studio/roadmap" target="_blank" i18n>View our Roadmap</a></li>
+                            <li><a href="https://www.apicur.io/contact" target="_blank" i18n>Question or Ideas?  Contact our development team!</a></li>
                         </ul>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
             <div class="card-pf" *ngIf="!isLoaded('recentApis')">
                 <div class="card-pf-heading">
                     <h1 class="card-pf-title">
-                        <p><span class="spinner spinner-xs spinner-inline"></span> Loading Recent APIs...</p>
+                        <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Loading Recent APIs...</ng-container></p>
                     </h1>
                 </div>
             </div>
@@ -42,22 +42,22 @@
                         <div class="blank-slate-pf-icon">
                             <span class="pficon pficon pficon-add-circle-o"></span>
                         </div>
-                        <h1>No APIs Found</h1>
-                        <p>
+                        <h1 i18n>No APIs Found</h1>
+                        <p i18n>
                             We couldn't find any APIs for you - it's possible that you have not yet created/imported any APIs to the studio.
                             Or perhaps you have some APIs but haven't worked on them recently.  Pick an action below that makes sense
                             for you!
                         </p>
                         <div class="blank-slate-pf-main-action">
                             <div class="btn-group">
-                                <a routerLink="/apis/create" class="btn btn-primary btn-lg"><span class="pficon pficon-add-circle-o"></span> Create New API</a>
+                                <a routerLink="/apis/create" class="btn btn-primary btn-lg"><span class="pficon pficon-add-circle-o"></span><ng-container i18n> Create New API</ng-container></a>
                                 <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown"
                                         aria-haspopup="true" aria-expanded="false">
                                     <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
+                                    <span class="sr-only" i18n>Toggle Dropdown</span>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a routerLink="/apis/import"><span class="pficon pficon-import"></span> Import API</a></li>
+                                    <li><a routerLink="/apis/import"><span class="pficon pficon-import"></span><ng-container i18n> Import API</ng-container></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -67,7 +67,7 @@
                 <!-- Recent APIs -->
                 <div class="card-pf" *ngIf="isLoaded('recentApis') && recentApis.length > 0">
                     <div class="card-pf-heading">
-                        <h2 class="card-pf-title">Your Recent APIs</h2>
+                        <h2 class="card-pf-title" i18n>Your Recent APIs</h2>
                     </div>
                     <div class="card-pf-body api-recent-apis">
                         <div class="api-item" *ngFor="let api of recentApis">
@@ -79,20 +79,20 @@
                                       [class.graphql-icon16]="isGraphQL(api)"
                                       [class.aai2-icon16]="isAsyncApi20(api)"></span><span>{{ api.name }}</span>
                             </a>
-                            <p><markdown-summary [data]="api.description" emptyText="No description available."></markdown-summary></p>
+                            <p><markdown-summary [data]="api.description" i18n-emptyText emptyText="No description available."></markdown-summary></p>
                         </div>
                     </div>
                     <div style="font-size: 14px" class="card-pf-footer">
                         <p>
                             <a routerLink="/apis" class="">
-                                <span class="fa fa-list"></span><span>View All APIs</span>
+                                <span class="fa fa-list"></span><span i18n>View All APIs</span>
                             </a>
                             <span></span>
                             <a routerLink="/apis/import" class="pull-right" style="margin-left: 15px">
-                                <span class="pficon pficon-import"></span><span>Import API</span>
+                                <span class="pficon pficon-import"></span><span i18n>Import API</span>
                             </a>
                             <a routerLink="/apis/create" class="pull-right" style="margin-left: 15px">
-                                <span class="pficon pficon-add-circle-o"></span><span>Create New API</span>
+                                <span class="pficon pficon-add-circle-o"></span><span i18n>Create New API</span>
                             </a>
                         </p>
                     </div>
@@ -107,7 +107,7 @@
             <div class="card-pf card-pf-accented" *ngIf="!isLoaded('activity')">
                 <div class="card-pf-heading">
                     <h1 class="card-pf-title">
-                        <p><span class="spinner spinner-xs spinner-inline"></span> Loading User activity...</p>
+                        <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Loading User activity...</ng-container> </p>
                     </h1>
                 </div>
             </div>
@@ -117,7 +117,7 @@
                 <div class="card-pf-heading">
                     <h1 class="card-pf-title">
                         <span class="fa fa-fw fa-list"></span>
-                        <span>Your Most Recent Activity</span>
+                        <span i18n>Your Most Recent Activity</span>
                     </h1>
                 </div>
                 <div class="card-pf-body container-fluid">
@@ -126,11 +126,11 @@
                         <button class="btn btn-default show-more"
                                 *ngIf="hasMoreActivity"
                                 [disabled]="gettingMoreActivity"
-                                (click)="showMoreActivity()">Show More</button>
+                                (click)="showMoreActivity()" i18n>Show More</button>
                     </div>
                     <div class="alert alert-info" *ngIf="activity.length === 0">
                         <span class="pficon pficon-info"></span>
-                        <strong>No Activity Found!</strong> You haven't made any API changes yet.
+                        <strong i18n>No Activity Found!</strong><ng-container i18n> You haven't made any API changes yet.</ng-container>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,5 @@
 <div class="form-group">
-    <label class="col-sm-2 control-label required" for="gl-group">Group</label>
+    <label class="col-sm-2 control-label required" for="gl-group" i18n>Group</label>
     <div class="col-sm-10">
         <drop-down id="gl-group" [id]="'gl-group'" [value]="model.group" [options]="groupOptions()"
                    [loading]="gettingGroups"
@@ -7,7 +7,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label class="col-sm-2 control-label required" for="gl-project">Project</label>
+    <label class="col-sm-2 control-label required" for="gl-project" i18n>Project</label>
     <div class="col-sm-10">
         <drop-down id="gl-project" [id]="'gl-project'" [value]="model.project" [options]="projectOptions()"
                    [loading]="gettingProjects"
@@ -15,7 +15,7 @@
     </div>
 </div>
 <div class="form-group">
-    <label class="col-sm-2 control-label required" for="gl-branch">Branch</label>
+    <label class="col-sm-2 control-label required" for="gl-branch" i18n>Branch</label>
     <div class="col-sm-10">
         <drop-down id="gl-branch" [id]="'gl-branch'" [value]="model.branch" [options]="branchOptions()"
                    [loading]="gettingBranches"

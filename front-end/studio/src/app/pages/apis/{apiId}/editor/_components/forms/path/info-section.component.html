@@ -1,5 +1,5 @@
-<section type="info" label="INFO"
-         contextHelp="In this section you can easily edit the Summary and Description of the Path Item."
+<section type="info" i18n-label label="INFO"
+         i18n-contextHelp contextHelp="In this section you can easily edit the Summary and Description of the Path Item."
          [collaborationNodePath]="pathInfoPaths()"
          [validationModels]="[path]" [validationProperties]="['description']" [validationShallow]="true">
     <span actions></span>
@@ -7,7 +7,7 @@
         <!-- Summary -->
         <div class="section-field-label">
             <validation-problem [model]="path" [shallow]="true" [property]="'summary'"></validation-problem>
-            <span>Summary</span>
+            <span i18n>Summary</span>
         </div>
         <div class="section-field summary">
             <pf-inline-text-editor [value]="path.summary" [noValueMessage]="'No Summary'"
@@ -20,7 +20,7 @@
         <!-- Description -->
         <div class="section-field-label">
             <validation-problem [model]="path" property="description" [shallow]="true"></validation-problem>
-            <span>Description</span>
+            <span i18n>Description</span>
         </div>
         <div class="section-field description">
             <inline-markdown-editor [value]="path.description"

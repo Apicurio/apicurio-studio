@@ -7,11 +7,11 @@
             </div>
             <div class="context" *ngIf="contextIs === 'operation' || contextIs === 'pathItem'">
                 <div class="col-md-6 path">
-                    <div class="context-label">Path</div>
+                    <div class="context-label" i18n>Path</div>
                     <div path-item class="context-value" [path]="pathItem().getPath()"></div>
                 </div>
                 <div class="col-md-6 operation" *ngIf="contextIs === 'operation'">
-                    <span class="context-label">Operation</span>
+                    <span class="context-label" i18n>Operation</span>
                     <span class="label"
                           [class.label-info]="operation().getMethod() !== 'get' && operation().getMethod() !== 'post' && operation().getMethod() !== 'delete'"
                           [class.label-success]="operation().getMethod() === 'get'"
@@ -21,7 +21,7 @@
             </div>
             <div class="context" *ngIf="contextIs === 'dataType'">
                 <div class="col-md-6 dataType">
-                    <div class="context-label">Data Type</div>
+                    <div class="context-label" i18n>Data Type</div>
                     <div class="context-value">
                         <span class="fa fa-code"></span>
                         <span>{{ dataTypeName() }}</span>
@@ -33,11 +33,11 @@
             <div class="col-md-12">
                 <div class="action-header">
                     <div class="notice">
-                        <div *ngIf="showRequiredFieldsMessage" class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                        <div *ngIf="showRequiredFieldsMessage" class="notice-of-required modal-notice-of-required"><ng-container i18n>The fields marked with </ng-container><span class="required-icon" i18n>*</span><ng-container i18n> are required.</ng-container></div>
                     </div>
                     <div class="actions">
-                        <button class="btn btn-default" (click)="onClose.emit()">Cancel</button>
-                        <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid || !entityEditorForm.valid">Save</button>
+                        <button class="btn btn-default" (click)="onClose.emit()" i18n>Cancel</button>
+                        <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid || !entityEditorForm.valid" i18n>Save</button>
                     </div>
                 </div>
                 <hr />
@@ -54,8 +54,8 @@
         <div class="row-fluid actions-section">
             <div class="col-md-12">
                 <div class="actions">
-                    <button class="btn btn-default" (click)="onClose.emit()">Cancel</button>
-                    <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid || !entityEditorForm.valid">Save</button>
+                    <button class="btn btn-default" (click)="onClose.emit()" i18n>Cancel</button>
+                    <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid || !entityEditorForm.valid" i18n>Save</button>
                 </div>
             </div>
         </div>

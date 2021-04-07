@@ -3,7 +3,7 @@
     <div class="modal-dialog editor-disconnected-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="editorDisconnectedModalLabel">Editor Disconnected</h4>
+                <h4 class="modal-title" id="editorDisconnectedModalLabel" i18n>Editor Disconnected</h4>
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
@@ -12,12 +12,12 @@
                             <span class="fa fa-plug icon"></span>
                         </div>
                         <div class="col-md-10">
-                            <div class="title"><strong>Lost Connection</strong></div>
-                            <div class="message">
+                            <div class="title"><strong i18n>Lost Connection</strong></div>
+                            <div class="message"><ng-container i18n>
                                 Connection to the server has been lost.  Any changes you make to this API will
                                 only be saved once a connection to the server can be re-established.  However,
-                                you may continue working in <em>Offline Mode</em> - just don't close this browser
-                                window!
+                                you may continue working in </ng-container><em i18n>Offline Mode</em><ng-container i18n> - just don't close this browser
+                                window!</ng-container>
                             </div>
                         </div>
                     </div>
@@ -27,7 +27,7 @@
                 <button type="button" class="btn btn-primary" (click)="workOffline()">
                     <span class="fa fa-fw fa-pencil-square-o"></span>
                     <span>&nbsp;</span>
-                    <span>Work Offline</span>
+                    <span i18n>Work Offline</span>
                 </button>
             </div>
         </div>

@@ -1,5 +1,5 @@
 <!-- Header Parameters Section -->
-<section type="header-parameters" label="HEADER PARAMETERS"
+<section type="header-parameters" i18n-label label="HEADER PARAMETERS"
          [counterItems]="headerParameters()"
          [contextHelp]="contextHelp()" [expanded]="showSectionBody"
          [collaborationNodePath]="headerParameterPaths()"
@@ -13,8 +13,8 @@
     </span>
     <div body>
         <signpost *ngIf="!hasHeaderParameters()">
-            <span>No header parameters have been defined.</span>
-            <a (click)="openAddHeaderParamEditor()">Add a header parameter</a>
+            <span i18n>No header parameters have been defined.</span>
+            <a (click)="openAddHeaderParamEditor()" i18n>Add a header parameter</a>
         </signpost>
 
         <!-- The list of header parameters -->
@@ -27,7 +27,7 @@
 </section>
 <rename-entity-dialog #renameDialog
                       type="Header"
-                      title="Rename Header"
-                      warning="Renaming a Header may also update any headers with the same name depending on path and operation hierarchies."
+                      i18n-title title="Rename Header"
+                      i18n-warning warning="Renaming a Header may also update any headers with the same name depending on path and operation hierarchies."
                       validationPattern="[a-zA-Z0-9\.\-_\$]+"
                       (onRename)="rename($event)"></rename-entity-dialog>

@@ -7,19 +7,19 @@
                 <button type="button" class="close" aria-hidden="true" (click)="close()">
                     <span class="pficon pficon-close"></span>
                 </button>
-                <h4 class="modal-title" id="sharingModalLabel">Sharing Documentation</h4>
+                <h4 class="modal-title" id="sharingModalLabel" i18n>Sharing Documentation</h4>
             </div>
             <div class="modal-body">
                 <div class="loading" *ngIf="loading">
-                    <p><span class="spinner spinner-sm spinner-inline"></span> Loading...</p>
+                    <p><span class="spinner spinner-sm spinner-inline"></span><ng-container i18n> Loading...</ng-container></p>
                 </div>
                 <div *ngIf="!loading && config.level === 'NONE'">
-                    <p>Documentation is not currently being shared.</p>
-                    <p *ngIf="!sharing"><a (click)="enableSharing()"><span class="fa fa-share-alt"></span> Click here to enable sharing</a></p>
-                    <p *ngIf="sharing"><a class="sharing"><span class="spinner spinner-xs spinner-inline"></span> Sharing, please wait...</a></p>
+                    <p i18n>Documentation is not currently being shared.</p>
+                    <p *ngIf="!sharing"><a (click)="enableSharing()"><span class="fa fa-share-alt"></span><ng-container i18n> Click here to enable sharing</ng-container></a></p>
+                    <p *ngIf="sharing"><a class="sharing"><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Sharing, please wait...</ng-container></a></p>
                 </div>
                 <div *ngIf="!loading && config.level === 'DOCUMENTATION'">
-                    <p>Documentation is being shared!  Copy the link below and share it freely.</p>
+                    <p i18n>Documentation is being shared!  Copy the link below and share it freely.</p>
                     <div class="form-control-apicurio-copybox">
                         <input id="copy-url" type="text" class="form-control" autocomplete="off" name="copy-url-url" readonly [value]="sharingLink()">
                         <button (click)="copyToClipboard()" class="btn btn-default" title="Copy link to clipboard." type="button"><span class="fa fa-copy"></span></button>
@@ -27,13 +27,13 @@
                     <div class="copybox-success" *ngIf="copied">
                         <span class="fa fa-info-circle"></span>
                         <span>&nbsp;</span>
-                        <span>Link successfully copied to the clipboard!</span>
+                        <span i18n>Link successfully copied to the clipboard!</span>
                     </div>
-                    <p style="margin-top: 5px"><a (click)="disableSharing()"><span class="fa fa-ban"></span> Disable sharing</a></p>
+                    <p style="margin-top: 5px"><a (click)="disableSharing()"><span class="fa fa-ban"></span><ng-container i18n> Disable sharing</ng-container></a></p>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="close()">Close</button>
+                <button type="button" class="btn btn-default" (click)="close()" i18n>Close</button>
             </div>
         </div>
     </div>

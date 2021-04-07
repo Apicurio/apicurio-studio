@@ -9,7 +9,7 @@
             <span server-url [url]="item.url"></span>
         </div>
         <div class="description" (click)="toggle()">
-            <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>
+            <markdown-summary [data]="description()" i18n-emptyText emptyText="No description."></markdown-summary>
         </div>
         <div class="actions">
             <div class="dropdown dropdown-kebab-pf">
@@ -18,9 +18,9 @@
                     <span class="fa fa-ellipsis-v"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a (click)="edit()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Edit</span></a></li>
+                    <li><a (click)="edit()"><span class="fa fa-fw fa-pencil-square-o"></span><span i18n>Edit</span></a></li>
                     <li role="separator" class="divider"></li>
-                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span i18n>Delete</span></a></li>
                 </ul>
             </div>
         </div>
@@ -30,7 +30,7 @@
             <form  class="form-horizontal">
                 <div class="col-md-11">
                     <div class="server-description">
-                        <div class="form-label">Description</div>
+                        <div class="form-label" i18n>Description</div>
                         <inline-markdown-editor [value]="item.description" [noValueMessage]="'Enter description here.'"
                                                 [baseNode]="item" nodePath="description"
                                                 (onChange)="setDescription($event)"></inline-markdown-editor>

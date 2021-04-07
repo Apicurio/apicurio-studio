@@ -1,5 +1,5 @@
-<section type="security" label="SECURITY SCHEMES" [counterItems]="securitySchemes()"
-         contextHelp="Use this section to configure your API's security options.  There are several schemes you can choose from, for example OAuth2."
+<section type="security" i18n-label label="SECURITY SCHEMES" [counterItems]="securitySchemes()"
+         i18n-contextHelp contextHelp="Use this section to configure your API's security options.  There are several schemes you can choose from, for example OAuth2."
          [collaborationNodePath]="securitySchemesPath()"
          [validationModels]="securitySchemes()">
     <span actions>
@@ -7,12 +7,12 @@
                      [title]="'Add a security scheme to the API.'"></icon-button>
         <icon-button (onClick)="deleteAllSecuritySchemes()" [disabled]="!hasSecuritySchemes()"
                      [pullRight]="true" type="delete"
-                     title="Delete all security schemes."></icon-button>
+                     i18n-title title="Delete all security schemes."></icon-button>
     </span>
     <div body>
         <signpost *ngIf="!hasSecuritySchemes()">
-            <span>No security options have been configured.</span>
-            <a (click)="openSecuritySchemeModal()">Add a security scheme</a>
+            <span i18n>No security options have been configured.</span>
+            <a (click)="openSecuritySchemeModal()" i18n>Add a security scheme</a>
         </signpost>
 
         <!-- The list of schemes -->
@@ -27,7 +27,7 @@
 </section>
 <rename-entity-dialog #renameDialog
                       type="Security Scheme"
-                      title="Rename Security Scheme"
-                      warning="Renaming a Security Scheme will also update any references to that scheme elsewhere in the API (e.g. security requirements in operations)."
+                      i18n-title title="Rename Security Scheme"
+                      i18n-warning warning="Renaming a Security Scheme will also update any references to that scheme elsewhere in the API (e.g. security requirements in operations)."
                       validationPattern="[a-zA-Z0-9\.\-_]+"
                       (onRename)="rename($event)"></rename-entity-dialog>

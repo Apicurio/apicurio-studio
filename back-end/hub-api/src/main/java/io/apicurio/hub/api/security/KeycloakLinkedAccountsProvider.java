@@ -98,6 +98,7 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
         String provider = accountType.alias();
 
         KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+
         AccessToken token = session.getToken();
 
         String clientId = token.getIssuedFor();

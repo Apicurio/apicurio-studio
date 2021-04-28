@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
->
+<project xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.apicurio</groupId>
@@ -54,8 +53,8 @@
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
         <timestamp>${maven.build.timestamp}</timestamp>
 
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
 
         <!-- Wildfly Version -->
         <version.wildfly>17.0.1.Final</version.wildfly>
@@ -81,15 +80,14 @@
         <version.compiler.plugin>3.8.1</version.compiler.plugin>
         <version.dependency.plugin>3.1.2</version.dependency.plugin>
         <version.deploy.plugin>2.8.2</version.deploy.plugin>
-        <version.enforcer.plugin>1.4.1</version.enforcer.plugin>
         <version.gatling.plugin>3.1.2</version.gatling.plugin>
         <version.install.plugin>2.5.2</version.install.plugin>
         <version.jar.plugin>3.2.0</version.jar.plugin>
-        <version.javadoc.plugin>2.10.4</version.javadoc.plugin>
+        <version.javadoc.plugin>3.2.0</version.javadoc.plugin>
         <version.maven-gpg-plugin.plugin>1.6</version.maven-gpg-plugin.plugin>
         <version.nexus-staging-maven-plugin.plugin>1.6.8</version.nexus-staging-maven-plugin.plugin>
         <version.resources.plugin>3.2.0</version.resources.plugin>
-        <version.source.plugin>2.4</version.source.plugin>
+        <version.source.plugin>3.2.1</version.source.plugin>
         <version.surefire.plugin>2.22.2</version.surefire.plugin>
         <version.surefire-report.plugin>2.22.2</version.surefire-report.plugin>
         <version.war.plugin>3.3.1</version.war.plugin>
@@ -451,53 +449,6 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>${version.enforcer.plugin}</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>de.is24.maven.enforcer.rules</groupId>
-                            <artifactId>illegal-transitive-dependency-check</artifactId>
-                            <version>1.7.4</version>
-                            <exclusions>
-                                <exclusion>
-                                    <groupId>org.ow2.asm</groupId>
-                                    <artifactId>asm-analysis</artifactId>
-                                </exclusion>
-                            </exclusions>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.ow2.asm</groupId>
-                            <artifactId>asm-analysis</artifactId>
-                            <version>9.1</version>
-                        </dependency>
-                    </dependencies>
-                    <executions>
-                        <execution>
-                            <id>enforcer-transitives-check</id>
-                            <goals>
-                                <goal>enforce</goal>
-                            </goals>
-                            <phase>process-classes</phase>
-                            <configuration>
-                                <fail>true</fail>
-                                <rules>
-                                    <illegalTransitiveDependencyCheck
-                                        implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                                        <reportOnly>false</reportOnly>
-                                        <regexIgnoredClasses>
-                                            <regexIgnoredClass>javax\..+</regexIgnoredClass>
-                                            <regexIgnoredClass>org.w3c.dom\..+</regexIgnoredClass>
-                                            <regexIgnoredClass>org.apache.kafka\..+</regexIgnoredClass>
-                                        </regexIgnoredClasses>
-                                        <useClassesFromLastBuild>true</useClassesFromLastBuild>
-                                    </illegalTransitiveDependencyCheck>
-                                </rules>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>${version.antrun.plugin}</version>
                 </plugin>
@@ -609,10 +560,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-            </plugin>
             <!-- Include the maven-compiler-plugin settings here so that Eclipse/m2e will properly import the projects. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -655,6 +602,9 @@
                             <version>1.0.1.Final</version>
                         </additionalDependency>
                     </additionalDependencies>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
+                    <source>${maven.compiler.source}</source>
                 </configuration>
             </plugin>
             <plugin>

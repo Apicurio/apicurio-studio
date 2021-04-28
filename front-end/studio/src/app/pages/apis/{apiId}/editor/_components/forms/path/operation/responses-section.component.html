@@ -1,5 +1,5 @@
-<section type="responses" label="RESPONSES" [counterItems]="responses()"
-         contextHelp="Use this section to configure the operation's Responses (e.g. 200, 404, 500)."
+<section type="responses" i18n-label label="RESPONSES" [counterItems]="responses()"
+         i18n-contextHelp contextHelp="Use this section to configure the operation's Responses (e.g. 200, 404, 500)."
          [collaborationNodePath]="responsesPath()"
          [validationModels]="responses()">
     <span actions>
@@ -14,8 +14,8 @@
         <signpost *ngIf="!hasResponses()">
             <validation-problem [model]="operation" [code]="'OP-007'" *ngIf="is20Document()"></validation-problem>
             <validation-problem [model]="operation" [code]="'OP-3-004'" *ngIf="is30Document()"></validation-problem>
-            <span>No responses have been defined.</span>
-            <a (click)="openAddResponseModal()">Add a response</a>
+            <span i18n>No responses have been defined.</span>
+            <a (click)="openAddResponseModal()" i18n>Add a response</a>
         </signpost>
 
         <!-- The list of responses -->
@@ -35,8 +35,8 @@
                         <span class="fa fa-ellipsis-v"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a (click)="deleteResponse(currentResponse())"><span class="fa fa-fw fa-trash"></span><span>Delete Response</span></a></li>
-                        <li><a (click)="openCloneResponseModal(currentResponse())"><span class="fa fa-fw fa-clone"></span><span>Clone Response</span></a></li>
+                        <li><a (click)="deleteResponse(currentResponse())"><span class="fa fa-fw fa-trash"></span><span i18n>Delete Response</span></a></li>
+                        <li><a (click)="openCloneResponseModal(currentResponse())"><span class="fa fa-fw fa-clone"></span><span i18n>Clone Response</span></a></li>
                     </ul>
                 </div>
             </div>

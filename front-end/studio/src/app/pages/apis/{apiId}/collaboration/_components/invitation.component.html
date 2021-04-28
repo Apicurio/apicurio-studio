@@ -6,37 +6,37 @@
                 <button type="button" class="close" aria-hidden="true" (click)="cancel()">
                     <span class="pficon pficon-close"></span>
                 </button>
-                <h4 class="modal-title" id="invitationModalLabel">Invitation to Collaborate</h4>
+                <h4 class="modal-title" id="invitationModalLabel" i18n>Invitation to Collaborate</h4>
             </div>
             <div class="modal-body">
-                <h1>Collaborate on "{{ api.name }}"</h1>
-                <p>
+                <h1><ng-container i18n>Collaborate on </ng-container> "{{ api.name }}"</h1>
+                <p i18n>
                     This link is unique to this invitation and so can only be used once for another user to join
                     you on this API as a collaborator.  Copy and share this link with just one other user - if you
                     would like to collaborate with additional users you must create more invitations.
                 </p>
-                <p>Collaboration allows:</p>
+                <p i18n>Collaboration allows:</p>
                 <ul>
-                    <li>Editing the API Content (at the same time!)</li>
-                    <li>Downloading the API</li>
-                    <li>Publishing the API</li>
-                    <li>Generating an Implementation Project</li>
+                    <li i18n>Editing the API Content (at the same time!)</li>
+                    <li i18n>Downloading the API</li>
+                    <li i18n>Publishing the API</li>
+                    <li i18n>Generating an Implementation Project</li>
                 </ul>
                 <div>
-                    <div class="form-label">Invitation Link</div>
+                    <div class="form-label" i18n>Invitation Link</div>
                     <div class="form-control-apicurio-copybox">
                         <input id="copy-url" type="text" class="form-control" autocomplete="off" name="copy-url-url" readonly [value]="link">
-                        <button (click)="copyToClipboard()" class="btn btn-default" title="Copy link to clipboard." type="button"><span class="fa fa-copy"></span></button>
+                        <button (click)="copyToClipboard()" class="btn btn-default" i18n-title title="Copy link to clipboard." type="button"><span class="fa fa-copy"></span></button>
                     </div>
                 </div>
                 <div class="copybox-success" *ngIf="copied">
                     <span class="fa fa-info-circle"></span>
                     <span>&nbsp;</span>
-                    <span>URL successfully copied to the clipboard!</span>
+                    <span i18n>URL successfully copied to the clipboard!</span>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" (click)="cancel()">Close</button>
+                <button type="button" class="btn btn-default" (click)="cancel()" i18n>Close</button>
             </div>
         </div>
     </div>

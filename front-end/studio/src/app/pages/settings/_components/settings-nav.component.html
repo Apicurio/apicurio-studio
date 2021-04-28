@@ -1,12 +1,12 @@
 <div class="panel panel-default panel-settings">
     <div class="panel-heading">
-        <h3 class="panel-title">Settings</h3>
+        <h3 class="panel-title" i18n>Settings</h3>
     </div>
     <div class="panel-body">
         <ul class="nav nav-settings">
-            <li role="presentation" [class.active]="tab === 'profile'"><a [routerLink]="['/settings/profile']">User Profile</a></li>
-            <li role="presentation" [class.active]="tab === 'accounts'"><a [routerLink]="['/settings/accounts']">Linked Accounts</a></li>
-            <li role="presentation" [class.active]="tab === 'validation'"><a [routerLink]="['/settings/validation']">Validation</a></li>
+            <li role="presentation" [class.active]="tab === 'profile'"><a [routerLink]="['/settings/profile']" i18n>User Profile</a></li>
+            <li role="presentation" [class.active]="tab === 'accounts'"><a [routerLink]="['/settings/accounts']" i18n>Linked Accounts</a></li>
+            <li role="presentation" [class.active]="tab === 'validation'"><a [routerLink]="['/settings/validation']" i18n>Validation</a></li>
         </ul>
     </div>
 </div>

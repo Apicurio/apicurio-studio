@@ -1,7 +1,7 @@
 <div id="api-breadcrumb-bar">
     <breadcrumbs>
-        <li breadcrumb label="Settings" [route]="[ '/settings' ]"></li>
-        <li breadcrumb label="Profile" class="active"></li>
+        <li breadcrumb i18n-label label="Settings" [route]="[ '/settings' ]"></li>
+        <li breadcrumb i18n-label label="Profile" class="active"></li>
     </breadcrumbs>
 </div>
 <page-error [error]="pageError" *ngIf="pageError"></page-error>
@@ -22,15 +22,15 @@
                 <div class="card-pf-body">
                     <div class="user-info">
                         <div>
-                            <span class="user-info-label">Name:</span>
+                            <span class="user-info-label" i18n>Name:</span>
                             <span>{{ user().name }}</span>
                         </div>
                         <div>
-                            <span class="user-info-label">Login:</span>
+                            <span class="user-info-label" i18n>Login:</span>
                             <span>{{ user().login }}</span>
                         </div>
                         <div>
-                            <span class="user-info-label">Email:</span>
+                            <span class="user-info-label" i18n>Email:</span>
                             <span>{{ user().email }}</span>
                         </div>
                     </div>

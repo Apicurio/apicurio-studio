@@ -1,29 +1,29 @@
 <entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="response" *ngIf="isOpen()"
-               [showRequiredFieldsMessage]="true" heading="Define a New Response" [valid]="isValid() && nameInput.valid">
+               [showRequiredFieldsMessage]="true" i18n-heading heading="Define a New Response" [valid]="isValid() && nameInput.valid">
 
     <div class="row-fluid body-section">
         <div class="col-md-12">
-            <h3>1. Enter Basic Information</h3>
+            <h3 i18n>1. Enter Basic Information</h3>
             <p class="explanation">
-                <span>
+                <span i18n>
                     Enter a name and description for the new response.
                 </span>
             </p>
         </div>
         <div class="col-md-12">
             <div class="form-group">
-                <label class="control-label required" for="rsp_name">Name</label>
+                <label class="control-label required" for="rsp_name" i18n>Name</label>
                 <div>
                     <input name="name" type="text" id="rsp_name" class="form-control" required #nameInput="ngModel"
-                           [(ngModel)]="model.name" placeholder="Enter a unique response name." pattern="[a-zA-Z0-9\.\-_]+"
+                           [(ngModel)]="model.name" i18n-placeholder placeholder="Enter a unique response name." pattern="[a-zA-Z0-9\.\-_]+"
                            (ngModelChange)="respExists = responses.indexOf($event) != -1" autocomplete="off">
-                    <form-error-message [inputModel]="nameInput" type="required">Name is required.</form-error-message>
-                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
-                    <div class="form-error-message error" *ngIf="respExists">Response named <strong>{{ model.name }}</strong> already exists.</div>
+                    <form-error-message [inputModel]="nameInput" type="required" i18n>Name is required.</form-error-message>
+                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true" i18n>Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                    <div class="form-error-message error" *ngIf="respExists"><ng-container i18n>Response named </ng-container><strong>{{ model.name }}</strong><ng-container i18n> already exists.</ng-container></div>
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label" for="description">Description</label>
+                <label class="control-label" for="description" i18n>Description</label>
                 <div>
                     <markdown-editor [(value)]="model.description" id="description"
                                      [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc', width: '100%' }"></markdown-editor>

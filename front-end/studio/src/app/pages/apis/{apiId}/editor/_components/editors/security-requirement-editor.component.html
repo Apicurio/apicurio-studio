@@ -1,14 +1,14 @@
 <entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="security-requirement" *ngIf="isOpen()"
-               [showRequiredFieldsMessage]="false" heading="Define the Security Requirement" [valid]="isValid()">
+               [showRequiredFieldsMessage]="false" i18n-heading heading="Define the Security Requirement" [valid]="isValid()">
     <div class="row-fluid body-section">
         <div class="col-md-12">
-            <h3>Configure a Security Requirement</h3>
+            <h3 i18n>Configure a Security Requirement</h3>
             <p class="explanation">
                 <span>
-                    Choose which combination of security schemes are required by clients accessing
-                    <span class="strong" *ngIf="!isGlobalContext()">this operation.</span>
-                    <span class="strong" *ngIf="isGlobalContext()">any operation in this API.</span>
-                    When necessary (depending on the type of scheme) also configure required scopes for each enabled scheme.
+                    <ng-container i18n>Choose which combination of security schemes are required by clients accessing</ng-container>
+                    <span class="strong" *ngIf="!isGlobalContext()" i18n>this operation.</span>
+                    <span class="strong" *ngIf="isGlobalContext()" i18n>any operation in this API.</span>
+                    <ng-container i18n>When necessary (depending on the type of scheme) also configure required scopes for each enabled scheme.</ng-container>
                 </span>
             </p>
         </div>
@@ -20,11 +20,11 @@
                     <div class="blank-slate-pf-icon">
                         <span class="pficon pficon pficon-warning-triangle-o"></span>
                     </div>
-                    <h1>No Security Schemes Found</h1>
+                    <h1 i18n>No Security Schemes Found</h1>
                     <p>
-                        There are currently no <strong>Security Schemes</strong> defined for this API.  Before you can
-                        configure the <strong>security requirements</strong>, you must first configure the possible schemes.
-                        Security schemes are configured at the root/global of the API.
+                        <ng-container i18n>There are currently no </ng-container><strong i18n>Security Schemes</strong><ng-container i18n> defined for this API.  Before you can
+                        configure the </ng-container><strong i18n>security requirements</strong><ng-container i18n>, you must first configure the possible schemes.
+                        Security schemes are configured at the root/global of the API.</ng-container>
                     </p>
                 </div>
 
@@ -41,12 +41,12 @@
                             <div class="list-view-pf-body">
                                 <div class="list-view-pf-description">
                                     <div class="list-group-item-heading">
-                                        <span class="name">No Security</span>
-                                        <span class="type">anonymous</span>
+                                        <span class="name" i18n>No Security</span>
+                                        <span class="type" i18n>anonymous</span>
                                     </div>
                                 </div>
                                 <div class="list-view-pf-additional-info">
-                                    <div class="list-group-item-text">Allow access to the API without authentication (cannot be <strong>combined</strong> with other security).</div>
+                                    <div class="list-group-item-text"><ng-container i18n>Allow access to the API without authentication (cannot be </ng-container><strong i18n>combined</strong><ng-container i18n> with other security).</ng-container></div>
                                 </div>
                             </div>
                         </div>
@@ -82,12 +82,12 @@
                         </div>
                         <div class="row scopes-row">
                             <td class="col-md-12 scopes-section">
-                                <div class="instructions" *ngIf="scopes(scheme).length > 0 && isGlobalContext()">Specify scopes to define the permissions necessary for users to access operations in this API.</div>
-                                <div class="instructions" *ngIf="scopes(scheme).length > 0 && !isGlobalContext()">Specify scopes to define the permissions necessary for a user to access the operation.</div>
+                                <div class="instructions" *ngIf="scopes(scheme).length > 0 && isGlobalContext()" i18n>Specify scopes to define the permissions necessary for users to access operations in this API.</div>
+                                <div class="instructions" *ngIf="scopes(scheme).length > 0 && !isGlobalContext()" i18n>Specify scopes to define the permissions necessary for a user to access the operation.</div>
                                 <div class="no-scopes" *ngIf="scopes(scheme).length === 0">
                                     <div class="alert alert-warning">
                                         <span class="pficon pficon-warning-triangle-o"></span>
-                                        <strong>No Available Scopes</strong> No scopes have been configured for this Security Scheme.
+                                        <strong i18n>No Available Scopes</strong><ng-container i18n> No scopes have been configured for this Security Scheme.</ng-container>
                                     </div>
                                 </div>
                                 <div class="scopes" *ngIf="scopes(scheme).length > 0">

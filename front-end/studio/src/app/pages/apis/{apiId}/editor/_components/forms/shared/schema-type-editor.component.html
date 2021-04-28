@@ -6,14 +6,14 @@
                [options]="typeOptions()"
                (onValueChange)="changeType($event)"
                [noSelectionLabel]="'Choose Type'"></drop-down>
-    <span class="dropdowns-label" *ngIf="isArray()">of</span>
+    <span class="dropdowns-label" *ngIf="isArray()" i18n>of</span>
     <drop-down *ngIf="isArray()"
                [id]="'api-property-type-of'"
                [value]="typeOf()"
                [options]="typeOfOptions()"
                (onValueChange)="changeTypeOf($event)"
                [noSelectionLabel]="'Choose Type'"></drop-down>
-    <span class="dropdowns-label" *ngIf="shouldShowFormattedAs()">as</span>
+    <span class="dropdowns-label" *ngIf="shouldShowFormattedAs()" i18n>as</span>
     <drop-down *ngIf="shouldShowFormattedAs()"
                [id]="'api-property-type-as'"
                [value]="typeAs()"
@@ -22,7 +22,7 @@
                [noSelectionLabel]="'Format'"></drop-down>
 </div>
 <div class="schema-type-enum" *ngIf="shouldShowEnumEditor()">
-    <span class="enum-label">Enum Values:</span>
+    <span class="enum-label" i18n>Enum Values:</span>
     <inline-array-editor [value]="value.enum_" (onChange)="changeTypeEnum($event)"
-                         noValueMessage="Click to define enum values."></inline-array-editor>
+                         i18n-noValueMessage noValueMessage="Click to define enum values."></inline-array-editor>
 </div>

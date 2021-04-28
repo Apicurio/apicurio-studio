@@ -9,39 +9,39 @@
                 <li>
                     <a href="#" onclick="return false" (click)="collapseAllSections()">
                         <span class="fa fa-compress"></span>
-                        <span>Collapse All Sections</span>
+                        <span i18n>Collapse All Sections</span>
                     </a>
                 </li>
                 <li>
                     <a href="#" onclick="return false" (click)="expandAllSections()">
                         <span class="fa fa-expand"></span>
-                        <span>Expand All Sections</span>
+                        <span i18n>Expand All Sections</span>
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
                     <a href="#" onclick="return false" (click)="newPath()">
                         <span class="pficon pficon-add-circle-o"></span>
-                        <span>New Sub-Path</span>
+                        <span i18n>New Sub-Path</span>
                     </a>
                 </li>
                 <li>
                     <a href="javascript:return false" (click)="rename()">
                         <span class="fa fa-pencil-square-o"></span>
-                        <span>Rename Path</span>
+                        <span i18n>Rename Path</span>
                     </a>
                 </li>
                 <li>
                     <a href="javascript:return false" (click)="clone()">
                         <span class="fa fa-clone"></span>
-                        <span>Clone Path</span>
+                        <span i18n>Clone Path</span>
                     </a>
                 </li>
                 <li class="divider"></li>
                 <li>
                     <a href="javascript:return false" (click)="delete()">
                         <span class="pficon pficon-delete"></span>
-                        <span>Delete Path</span>
+                        <span i18n>Delete Path</span>
                     </a>
                 </li>
             </ul>
@@ -50,20 +50,20 @@
 </div>
 <div class="detail-tabs">
     <ul class="nav nav-tabs nav-tabs-pf">
-        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()">Design</a></li>
-        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()">Source</a></li>
+        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()" i18n>Design</a></li>
+        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()" i18n>Source</a></li>
     </ul>
 </div>
 
 <!-- Source Mode -->
 <div class="detail-actionbar" *ngIf="isSourceMode()">
-    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
-    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
-    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span i18n>Format</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span i18n>Revert</span></button>
+    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span i18n>Save</span></button>
     <button class="btn btn-default btn-xs" [disabled]="!canToggleSourceFormat()" (click)="toggleSourceFormat()">
         <span class="fa fa-fw fa-code"></span>
-        <span *ngIf="isSourceFormatYaml()">As JSON</span>
-        <span *ngIf="isSourceFormatJson()">As YAML</span>
+        <span *ngIf="isSourceFormatYaml()" i18n>As JSON</span>
+        <span *ngIf="isSourceFormatJson()" i18n>As YAML</span>
     </button>
 </div>
 <div class="detail-content" style="position: relative" *ngIf="isSourceMode()">

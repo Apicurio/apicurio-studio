@@ -1,4 +1,4 @@
-<section type="security-requirements" label="SECURITY REQUIREMENTS"
+<section type="security-requirements" i18n-label label="SECURITY REQUIREMENTS"
          [counterItems]="securityRequirements()"
          [collaborationNodePath]="securityRequirementsPath()"
          [contextHelp]="contextHelp()" [validationModels]="securityRequirements()">
@@ -7,17 +7,17 @@
                      [title]="global ? 'Add a security requirement to the API.' : 'Add a security requirement for the operation.'"></icon-button>
         <icon-button (onClick)="deleteAllSecurityRequirements()" [disabled]="!hasSecurityRequirements()"
                      [pullRight]="true" type="delete"
-                     title="Delete all security requirements."></icon-button>
+                     i18n-title title="Delete all security requirements."></icon-button>
     </span>
     <div body>
         <signpost *ngIf="!hasSecurityRequirements()">
-            <span>No security requirements have been configured.</span>
-            <a (click)="openSecurityRequirementEditor()">Add security requirement</a>
+            <span i18n>No security requirements have been configured.</span>
+            <a (click)="openSecurityRequirementEditor()" i18n>Add security requirement</a>
         </signpost>
 
         <div *ngIf="hasSecurityRequirements()">
-            <div *ngIf="global" class="api-label">Security Requirements needed to access <strong>Operations in this API</strong> (clients must choose one combination):</div>
-            <div *ngIf="!global" class="api-label">Security Requirements needed to access <strong>this Operation</strong> (clients must choose one combination):</div>
+            <div *ngIf="global" class="api-label"><ng-container i18n>Security Requirements needed to access </ng-container><strong i18n>Operations in this API</strong><ng-container i18n> (clients must choose one combination):</ng-container></div>
+            <div *ngIf="!global" class="api-label"><ng-container i18n>Security Requirements needed to access </ng-container><strong i18n>this Operation</strong><ng-container i18n> (clients must choose one combination):</ng-container></div>
             <div class="security-requirement" *ngFor="let requirement of securityRequirements()">
                 <div class="name">
                     <validation-problem [model]="requirement" [shallow]="true"></validation-problem>
@@ -33,9 +33,9 @@
                             <span class="fa fa-ellipsis-v"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            <li><a (click)="openSecurityRequirementEditor(requirement)"><span class="fa fa-fw fa-pencil-square-o"></span><span>Edit</span></a></li>
+                            <li><a (click)="openSecurityRequirementEditor(requirement)"><span class="fa fa-fw fa-pencil-square-o"></span><span i18n>Edit</span></a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a (click)="deleteSecurityRequirement(requirement)"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                            <li><a (click)="deleteSecurityRequirement(requirement)"><span class="fa fa-fw fa-trash"></span><span i18n>Delete</span></a></li>
                         </ul>
                     </div>
                 </div>

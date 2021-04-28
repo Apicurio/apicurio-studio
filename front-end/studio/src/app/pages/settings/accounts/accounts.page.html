@@ -1,7 +1,7 @@
 <div id="api-breadcrumb-bar">
     <breadcrumbs>
-        <li breadcrumb label="Settings" [route]="[ '/settings' ]"></li>
-        <li breadcrumb label="Linked Accounts" class="active"></li>
+        <li breadcrumb i18n-label label="Settings" [route]="[ '/settings' ]"></li>
+        <li breadcrumb i18n-label label="Linked Accounts" class="active"></li>
     </breadcrumbs>
 </div>
 <page-error [error]="pageError" *ngIf="pageError"></page-error>
@@ -17,7 +17,7 @@
                 <div class="card-pf card-pf-accented">
                     <div class="card-pf-heading">
                         <h1 class="card-pf-title">
-                            <p><span class="spinner spinner-xs spinner-inline"></span> Loading linked accounts...</p>
+                            <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Loading linked accounts...</ng-container></p>
                         </h1>
                     </div>
                 </div>
@@ -30,9 +30,9 @@
                      [class.not-created]="isAccountMissing('GitHub')"
                      [class.initiated]="isAccountInitiated('GitHub')">
                     <div class="list-view-pf-actions">
-                        <button *ngIf="isAccountMissing('GitHub')" class="btn btn-primary" (click)="createLinkedAccount('GitHub')">Link</button>
-                        <button *ngIf="isAccountCreated('GitHub')" class="btn btn-danger" (click)="deleteLinkedAccount('GitHub')">Unlink</button>
-                        <button *ngIf="isAccountInitiated('GitHub')" class="btn btn-danger" (click)="deleteLinkedAccount('GitHub')">Cancel</button>
+                        <button *ngIf="isAccountMissing('GitHub')" class="btn btn-primary" (click)="createLinkedAccount('GitHub')" i18n>Link</button>
+                        <button *ngIf="isAccountCreated('GitHub')" class="btn btn-danger" (click)="deleteLinkedAccount('GitHub')" i18n>Unlink</button>
+                        <button *ngIf="isAccountInitiated('GitHub')" class="btn btn-danger" (click)="deleteLinkedAccount('GitHub')" i18n>Cancel</button>
                     </div>
                     <div class="list-view-pf-main-info">
                         <div class="list-view-pf-left account-link-icon">
@@ -40,23 +40,23 @@
                         </div>
                         <div class="list-view-pf-body">
                             <div class="list-view-pf-description">
-                                <div class="list-group-item-heading">GitHub</div>
+                                <div class="list-group-item-heading" i18n>GitHub</div>
                                 <div class="list-group-item-text">
-                                    <span *ngIf="isAccountMissing('GitHub')">Link to your <a href="https://github.com/" target="_blank">GitHub</a> account.</span>
-                                    <span *ngIf="isAccountCreated('GitHub')">A link has been established to your <a href="https://github.com/" target="_blank">GitHub</a> account!</span>
-                                    <span *ngIf="isAccountInitiated('GitHub')">We're linking your <a href="https://github.com/" target="_blank">GitHub</a> account now.</span>
+                                    <span *ngIf="isAccountMissing('GitHub')"><ng-container i18n>Link to your </ng-container><a href="https://github.com/" target="_blank" i18n>GitHub</a><ng-container i18n> account.</ng-container></span>
+                                    <span *ngIf="isAccountCreated('GitHub')"><ng-container i18n>A link has been established to your </ng-container><a href="https://github.com/" target="_blank" i18n>GitHub</a><ng-container i18n> account!</ng-container></span>
+                                    <span *ngIf="isAccountInitiated('GitHub')"><ng-container i18n>We're linking your </ng-container><a href="https://github.com/" target="_blank" i18n>GitHub</a><ng-container i18n> account now.</ng-container></span>
                                 </div>
                             </div>
                             <div class="list-view-pf-additional-info" *ngIf="isAccountMissing('GitHub')">
                             </div>
                             <div class="list-view-pf-additional-info" *ngIf="isAccountCreated('GitHub')">
                                 <span class="fa fa-fw fa-clock-o"></span>
-                                <span>Linked on</span>
+                                <span i18n>Linked on</span>
                                 <span class="account-link-date">{{ account('GitHub').linkedOn | date }}</span>
                             </div>
                             <div class="list-view-pf-additional-info" *ngIf="isAccountInitiated('GitHub')">
                                 <span class="fa fa-fw fa-info"></span>
-                                <span>Link initiated, awaiting completion...</span>
+                                <span i18n>Link initiated, awaiting completion...</span>
                             </div>
                         </div>
                     </div>
@@ -67,9 +67,9 @@
                      [class.not-created]="isAccountMissing('GitLab')"
                      [class.initiated]="isAccountInitiated('GitLab')">
                     <div class="list-view-pf-actions">
-                        <button *ngIf="isAccountMissing('GitLab')" class="btn btn-primary" (click)="createLinkedAccount('GitLab')">Link</button>
-                        <button *ngIf="isAccountCreated('GitLab')" class="btn btn-danger" (click)="deleteLinkedAccount('GitLab')">Unlink</button>
-                        <button *ngIf="isAccountInitiated('GitLab')" class="btn btn-danger" (click)="deleteLinkedAccount('GitLab')">Cancel</button>
+                        <button *ngIf="isAccountMissing('GitLab')" class="btn btn-primary" (click)="createLinkedAccount('GitLab')" i18n>Link</button>
+                        <button *ngIf="isAccountCreated('GitLab')" class="btn btn-danger" (click)="deleteLinkedAccount('GitLab')" i18n>Unlink</button>
+                        <button *ngIf="isAccountInitiated('GitLab')" class="btn btn-danger" (click)="deleteLinkedAccount('GitLab')" i18n>Cancel</button>
                     </div>
                     <div class="list-view-pf-main-info">
                         <div class="list-view-pf-left account-link-icon">
@@ -77,23 +77,23 @@
                         </div>
                         <div class="list-view-pf-body">
                             <div class="list-view-pf-description">
-                                <div class="list-group-item-heading">GitLab</div>
+                                <div class="list-group-item-heading" i18n>GitLab</div>
                                 <div class="list-group-item-text">
-                                    <span *ngIf="isAccountMissing('GitLab')">Link to your <a href="https://gitlab.com/" target="_blank">GitLab</a> account.</span>
-                                    <span *ngIf="isAccountCreated('GitLab')">A link has been established to your <a href="https://gitlab.com/" target="_blank">GitLab</a> account!</span>
-                                    <span *ngIf="isAccountInitiated('GitLab')">We're linking your <a href="https://gitlab.com/" target="_blank">GitLab</a> account now.</span>
+                                    <span *ngIf="isAccountMissing('GitLab')"><ng-container i18n>Link to your </ng-container><a href="https://gitlab.com/" target="_blank" i18n>GitLab</a><ng-container i18n> account.</ng-container></span>
+                                    <span *ngIf="isAccountCreated('GitLab')"><ng-container i18n>A link has been established to your </ng-container><a href="https://gitlab.com/" target="_blank" i18n>GitLab</a><ng-container i18n> account!</ng-container></span>
+                                    <span *ngIf="isAccountInitiated('GitLab')"><ng-container i18n>We're linking your </ng-container><a href="https://gitlab.com/" target="_blank" i18n>GitLab</a><ng-container i18n> account now.</ng-container></span>
                                 </div>
                             </div>
                             <div class="list-view-pf-additional-info" *ngIf="isAccountMissing('GitLab')">
                             </div>
                             <div class="list-view-pf-additional-info" *ngIf="isAccountCreated('GitLab')">
                                 <span class="fa fa-fw fa-clock-o"></span>
-                                <span>Linked on</span>
+                                <span i18n>Linked on</span>
                                 <span class="account-link-date">{{ account('GitLab').linkedOn | date }}</span>
                             </div>
                             <div class="list-view-pf-additional-info" *ngIf="isAccountInitiated('GitLab')">
                                 <span class="fa fa-fw fa-info"></span>
-                                <span>Link initiated, awaiting completion...</span>
+                                <span i18n>Link initiated, awaiting completion...</span>
                             </div>
                         </div>
                     </div>
@@ -104,9 +104,9 @@
                      [class.not-created]="isAccountMissing('Bitbucket')"
                      [class.initiated]="isAccountInitiated('Bitbucket')">
                     <div class="list-view-pf-actions">
-                        <button *ngIf="isAccountMissing('Bitbucket')" class="btn btn-primary" (click)="createLinkedAccount('Bitbucket')">Link</button>
-                        <button *ngIf="isAccountCreated('Bitbucket')" class="btn btn-danger" (click)="deleteLinkedAccount('Bitbucket')">Unlink</button>
-                        <button *ngIf="isAccountInitiated('Bitbucket')" class="btn btn-danger" (click)="deleteLinkedAccount('Bitbucket')">Cancel</button>
+                        <button *ngIf="isAccountMissing('Bitbucket')" class="btn btn-primary" (click)="createLinkedAccount('Bitbucket')" i18n>Link</button>
+                        <button *ngIf="isAccountCreated('Bitbucket')" class="btn btn-danger" (click)="deleteLinkedAccount('Bitbucket')" i18n>Unlink</button>
+                        <button *ngIf="isAccountInitiated('Bitbucket')" class="btn btn-danger" (click)="deleteLinkedAccount('Bitbucket')" i18n>Cancel</button>
                     </div>
                     <div class="list-view-pf-main-info">
                         <div class="list-view-pf-left account-link-icon">
@@ -114,23 +114,23 @@
                         </div>
                         <div class="list-view-pf-body">
                             <div class="list-view-pf-description">
-                                <div class="list-group-item-heading">Bitbucket</div>
+                                <div class="list-group-item-heading" i18n>Bitbucket</div>
                                 <div class="list-group-item-text">
-                                    <span *ngIf="isAccountMissing('Bitbucket')">Link to your <a href="https://bitbucket.org/" target="_blank">Bitbucket</a> account.</span>
-                                    <span *ngIf="isAccountCreated('Bitbucket')">A link has been established to your <a href="https://bitbucket.org/" target="_blank">Bitbucket</a> account!</span>
-                                    <span *ngIf="isAccountInitiated('Bitbucket')">We're linking your <a href="https://bitbucket.org/" target="_blank">Bitbucket</a> account now.</span>
+                                    <span *ngIf="isAccountMissing('Bitbucket')"><ng-container i18n>Link to your </ng-container><a href="https://bitbucket.org/" target="_blank" i18n>Bitbucket</a><ng-container i18n> account.</ng-container></span>
+                                    <span *ngIf="isAccountCreated('Bitbucket')"><ng-container i18n>A link has been established to your </ng-container><a href="https://bitbucket.org/" target="_blank" i18n>Bitbucket</a><ng-container i18n> account!</ng-container></span>
+                                    <span *ngIf="isAccountInitiated('Bitbucket')"><ng-container i18n>We're linking your </ng-container><a href="https://bitbucket.org/" target="_blank" i18n>Bitbucket</a><ng-container i18n> account now.</ng-container></span>
                                 </div>
                             </div>
                             <div class="list-view-pf-additional-info" *ngIf="isAccountMissing('Bitbucket')">
                             </div>
                             <div class="list-view-pf-additional-info" *ngIf="isAccountCreated('Bitbucket')">
                                 <span class="fa fa-fw fa-clock-o"></span>
-                                <span>Linked on</span>
+                                <span i18n>Linked on</span>
                                 <span class="account-link-date">{{ account('Bitbucket').linkedOn | date }}</span>
                             </div>
                             <div class="list-view-pf-additional-info" *ngIf="isAccountInitiated('Bitbucket')">
                                 <span class="fa fa-fw fa-info"></span>
-                                <span>Link initiated, awaiting completion...</span>
+                                <span i18n>Link initiated, awaiting completion...</span>
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,5 @@
-<section type="properties" label="PROPERTIES"
-         contextHelp="Use this section to define the properties that make up this data type."
+<section type="properties" i18n-label label="PROPERTIES"
+         i18n-contextHelp contextHelp="Use this section to define the properties that make up this data type."
          [counterItems]="properties()"
          [collaborationNodePath]="propertiesNodePath()"
          [validationModels]="properties()">
@@ -12,8 +12,8 @@
     <div body>
         <!-- Warning when no properties exist -->
         <signpost *ngIf="!hasProperties()">
-            <span>No schema properties have been defined.</span>
-            <a (click)="openAddSchemaPropertyEditor()">Add a property</a>
+            <span i18n>No schema properties have been defined.</span>
+            <a (click)="openAddSchemaPropertyEditor()" i18n>Add a property</a>
         </signpost>
 
         <!-- The list of schema properties -->
@@ -25,7 +25,7 @@
     </div>
 </section>
 <rename-entity-dialog #renamePropertyDialog
-                      type="Property"
-                      title="Rename Property"
+                      i18n-type type="Property"
+                      i18n-title title="Rename Property"
                       validationPattern="[a-zA-Z0-9\.\-_]+"
                       (onRename)="renameProperty($event)"></rename-entity-dialog>

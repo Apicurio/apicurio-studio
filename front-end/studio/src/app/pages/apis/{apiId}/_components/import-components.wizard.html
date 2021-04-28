@@ -14,22 +14,22 @@
 
                         <li class="wizard-pf-step" [class.active]="currentPage === 'resources'">
                             <a (click)="goTo('resources')">
-                                <span class="wizard-pf-step-number">1</span>
-                                <span class="wizard-pf-step-title">Select Resource(s)</span>
+                                <span class="wizard-pf-step-number" i18n>1</span>
+                                <span class="wizard-pf-step-title" i18n>Select Resource(s)</span>
                             </a>
                         </li>
 
                         <li class="wizard-pf-step" [class.active]="currentPage === 'components'">
                             <a (click)="goTo('components')">
-                                <span class="wizard-pf-step-number">2</span>
-                                <span class="wizard-pf-step-title">Choose {{ displayType() }}</span>
+                                <span class="wizard-pf-step-number" i18n>2</span>
+                                <span class="wizard-pf-step-title"><ng-container i18n>Choose </ng-container> {{ displayType() }}</span>
                             </a>
                         </li>
 
                         <li class="wizard-pf-step" [class.active]="currentPage === 'summary'">
                             <a (click)="goTo('summary')">
-                                <span class="wizard-pf-step-number">3</span>
-                                <span class="wizard-pf-step-title">Review</span>
+                                <span class="wizard-pf-step-number" i18n>3</span>
+                                <span class="wizard-pf-step-title" i18n>Review</span>
                             </a>
                         </li>
                     </ul>
@@ -38,16 +38,16 @@
                     <div class="wizard-pf-main">
                         <!-- Resources -->
                         <div class="wizard-pf-contents" *ngIf="currentPage === 'resources'">
-                            <p>Choose one or more component source from the list below.</p>
+                            <p i18n>Choose one or more component source from the list below.</p>
                             <data-table *ngIf="!loadingApis" [pageSize]="10" [columns]="apiColumns" [rows]="apiRows"
                                         [(selectedValues)]="selectedApis" (onChange)="mustLoadComponents=true"></data-table>
                             <p *ngIf="loadingApis">
-                                <loading message="Please wait, loading list of resources..."></loading>
+                                <loading  i18n-message message="Please wait, loading list of resources..."></loading>
                             </p>
                         </div>
                         <!-- Components -->
                         <div class="wizard-pf-contents" *ngIf="currentPage === 'components'">
-                            <p>Choose one or more {{ displayType() }} from the list below.</p>
+                            <p><ng-container i18n>Choose one or more </ng-container>{{ displayType() }}<ng-container i18n> from the list below.</ng-container> </p>
                             <data-table *ngIf="!loadingComponents" [pageSize]="10" [columns]="componentColumns" [rows]="componentRows" [(selectedValues)]="selectedComponents"></data-table>
                             <p *ngIf="loadingComponents">
                                 <loading message="Please wait, loading list of {{ displayType() }}(s)..."></loading>
@@ -56,9 +56,9 @@
                         <!-- Summary/Review -->
                         <div class="wizard-pf-contents" *ngIf="currentPage === 'summary'">
                             <p>
-                                Please review your {{ displayType() }} selections below and then click <em>Import</em>.  Note
+                                <ng-container i18n>Please review your </ng-container> {{ displayType() }}<ng-container i18n> selections below and then click </ng-container><em i18n>Import</em><ng-container i18n>.  Note
                                 that if you already have components with the same name in your API Design, then the new components
-                                will not be imported.
+                                will not be imported.</ng-container>
                             </p>
                             <ul class="review">
                                 <li *ngFor="let ic of componentsForReview()">
@@ -82,7 +82,7 @@
                                 <div class="wizard-pf-failure-icon"><span class="glyphicon glyphicon-warning-sign"></span></div>
                                 <h3 class="blank-slate-pf-main-action">{{ errorMessage }}</h3>
                                 <p class="blank-slate-pf-secondary-action">
-                                    <span>
+                                    <span i18n>
                                         Uh oh!  It seems we have encountered an error while trying to import from
                                         other resources.  Please close the wizard and try again.
                                     </span>
@@ -95,21 +95,21 @@
             <div class="modal-footer wizard-pf-footer">
                 <button type="button" class="btn btn-default btn-cancel wizard-pf-cancel wizard-pf-dismiss" (click)="cancel()"
                         *ngIf="showCancelButton()">
-                    <span>Cancel</span>
+                    <span i18n>Cancel</span>
                 </button>
                 <button type="button" class="btn btn-default wizard-pf-back" [disabled]="!isBackButtonEnabled()" (click)="goBack()"
                         *ngIf="showBackButton()">
                     <span class="i fa fa-angle-left"></span>
-                    <span>Back</span>
+                    <span i18n>Back</span>
                 </button>
                 <button type="button" class="btn btn-primary wizard-pf-next" *ngIf="showNextButton()"
                         [disabled]="!isNextButtonEnabled()" (click)="goNext()">
-                    <span>Next</span>
+                    <span i18n>Next</span>
                     <span class="i fa fa-angle-right"></span>
                 </button>
                 <button type="button" class="btn btn-primary wizard-pf-finish" *ngIf="showFinishButton()"
                         [disabled]="!isFinishButtonEnabled()" (click)="finish()">
-                    <span class="pficon pficon-import"></span><span>&nbsp;</span><span>Import</span>
+                    <span class="pficon pficon-import"></span><span>&nbsp;</span><span i18n>Import</span>
                 </button>
             </div>
         </div>

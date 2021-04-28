@@ -17,7 +17,7 @@
                         <div class="card-pf card-pf-accented">
                             <div class="card-pf-heading">
                                 <h1 class="card-pf-title">
-                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading API information...</p>
+                                    <p><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Loading API information...</ng-container></p>
                                 </h1>
                             </div>
                         </div>
@@ -31,8 +31,8 @@
         <div class="form-instructions col-md-3">
             <div class="alert alert-info">
                 <span class="pficon pficon-info"></span>
-                <strong>What is this page?</strong>
-                <p style="line-height: 18px">
+                <strong i18n>What is this page?</strong>
+                <p style="line-height: 18px" i18n>
                     Use this page to make a copy of an existing API.  If the API is in the OpenAPI/Swagger 2.0 format,
                     you can also optionally convert it to OpenAPI 3.0 when making a copy.
                 </p>
@@ -41,15 +41,15 @@
         <div class="col-md-7">
             <div class="copyapi-panel panel panel-default">
                 <div class="panel-body" *ngIf="!copied">
-                    <h2>Copy API "{{ api.name }}"?</h2>
+                    <h2><ng-container i18n>Copy API </ng-container>"{{ api.name }}"?</h2>
                     <form id="copy-form" class="form-horizontal" (submit)="copyApi()" #copyForm="ngForm">
                         <div class="form-group">
-                            <label class="col-sm-2 control-label required" for="title">Title</label>
+                            <label class="col-sm-2 control-label required" for="title" i18n>Title</label>
                             <div class="col-sm-10">
                                 <input name="title" type="text" id="title" class="form-control"
-                                       placeholder="Enter a title for the API..." required #apiTitle="ngModel"
+                                       i18n-placeholder placeholder="Enter a title for the API..." required #apiTitle="ngModel"
                                        [(ngModel)]="title">
-                                <form-error-message [inputModel]="apiTitle" [type]="'required'">Title is required.</form-error-message>
+                                <form-error-message [inputModel]="apiTitle" [type]="'required'" i18n>Title is required.</form-error-message>
                             </div>
                         </div>
 
@@ -58,18 +58,18 @@
                             <div class="col-sm-10">
                                 <input type="checkbox" [checked]="convertApi" (change)="convertApi = $event.target['checked']" id="apiConvert">
                                 <span>&nbsp;</span>
-                                <label for="apiConvert">Convert from OpenAPI/Swagger 2.0 to OpenAPI 3.0.x</label>
+                                <label for="apiConvert" i18n>Convert from OpenAPI/Swagger 2.0 to OpenAPI 3.0.x</label>
                             </div>
                         </div>
 
-                        <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                        <div class="notice-of-required"><ng-container i18n>The fields marked with </ng-container><span class="required-icon" i18n>*</span><ng-container i18n> are required.</ng-container></div>
                         <hr />
 
                         <div class="form-group" >
                             <div class="col-sm-offset-2 col-sm-10">
                                 <button type="submit" class="btn btn-primary pull-right" [disabled]="!isValid() || copying">
-                                    <span *ngIf="!copying">Copy API</span>
-                                    <span *ngIf="copying"><span class="spinner spinner-xs spinner-inline"></span> Copying...</span>
+                                    <span *ngIf="!copying" i18n>Copy API</span>
+                                    <span *ngIf="copying"><span class="spinner spinner-xs spinner-inline"></span><ng-container i18n> Copying...</ng-container></span>
                                 </button>
                             </div>
                         </div>

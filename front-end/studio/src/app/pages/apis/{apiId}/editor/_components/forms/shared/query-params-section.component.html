@@ -1,5 +1,5 @@
 <!-- Query Parameters Section -->
-<section type="query-parameters" label="QUERY PARAMETERS"
+<section type="query-parameters" i18n-label label="QUERY PARAMETERS"
          [counterItems]="queryParameters()"
          [contextHelp]="contextHelp()" [expanded]="showSectionBody"
          [collaborationNodePath]="queryParameterPaths()"
@@ -13,8 +13,8 @@
     </span>
     <div body>
         <signpost *ngIf="!hasQueryParameters()">
-            <span>No query parameters have been defined.</span>
-            <a (click)="openAddQueryParamEditor()">Add a query parameter</a>
+            <span i18n>No query parameters have been defined.</span>
+            <a (click)="openAddQueryParamEditor()" i18n>Add a query parameter</a>
         </signpost>
 
         <!-- The list of query parameters -->
@@ -27,7 +27,7 @@
 </section>
 <rename-entity-dialog #renameDialog
                       type="Query Parameter"
-                      title="Rename Query Parameter"
-                      warning="Renaming a Query Parameter may also update any query parameters with the same name depending on path and operation hierarchies."
+                      i18n-title title="Rename Query Parameter"
+                      i18n-warning warning="Renaming a Query Parameter may also update any query parameters with the same name depending on path and operation hierarchies."
                       validationPattern="[a-zA-Z0-9\.\-_\$]+"
                       (onRename)="rename($event)"></rename-entity-dialog>

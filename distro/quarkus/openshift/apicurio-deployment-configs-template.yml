@@ -245,7 +245,7 @@ objects:
                   protocol: TCP
               env:
                 - name: APICURIO_KC_AUTH_URL
-                  value: http://${AUTH_ROUTE}:8080/auth/realms/${KC_REALM}
+                  value: http://${AUTH_ROUTE}:8080
                 - name: APICURIO_KC_REALM
                   value: ${KC_REALM}
                 - name: APICURIO_KC_CLIENT_ID
@@ -451,7 +451,7 @@ objects:
                   protocol: TCP
               env:
                 - name: APICURIO_KC_AUTH_URL
-                  value: http://${AUTH_ROUTE}:8080/auth/realms/${KC_REALM}
+                  value: http://${AUTH_ROUTE}:8080
                 - name: APICURIO_KC_REALM
                   value: ${KC_REALM}
                 - name: APICURIO_KC_CLIENT_ID

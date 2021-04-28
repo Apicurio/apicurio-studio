@@ -1,5 +1,7 @@
+package io.apicurio.hub.api.security;
+
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2021 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +16,10 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.security;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.net.ssl.SSLContext;
-import javax.servlet.http.HttpServletRequest;
-
+import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
+import io.apicurio.hub.core.beans.LinkedAccountType;
+import io.apicurio.hub.core.config.HubConfiguration;
+import io.smallrye.jwt.auth.principal.JWTCallerPrincipal;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -39,28 +30,43 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.RSATokenVerifier;
+import org.keycloak.common.VerificationException;
 import org.keycloak.common.util.Base64Url;
 import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.representations.AccessToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
-import io.apicurio.hub.core.beans.LinkedAccountType;
-import io.apicurio.hub.core.config.HubConfiguration;
+import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.net.ssl.SSLContext;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * An implementation of {@link ILinkedAccountsProvider} that used Keycloak to manage
  * the account links.  This uses the Identity Provider support built into Keycloak to
  * create and manage the account links.  Keycloak also stores the external token needed
  * to access the external services.
- * 
- * @author eric.wittmann@gmail.com
+ *
+ * @author carles.arnal@redhat.com
  */
 @ApplicationScoped
-public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
+@Alternative
+@Priority(1)
+public class QuarkusLinkedAccountsProvider
+        implements ILinkedAccountsProvider {
 
-    private static Logger logger = LoggerFactory.getLogger(KeycloakLinkedAccountsProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(QuarkusLinkedAccountsProvider.class);
 
     @Inject
     private ISecurityContext security;
@@ -76,8 +82,10 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
     protected void postConstruct() {
         try {
             if (config.isDisableKeycloakTrustManager()) {
-                SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build();
-                SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE);
+                SSLContext sslContext = SSLContexts.custom()
+                        .loadTrustMaterial(null, new TrustSelfSignedStrategy()).build();
+                SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext,
+                        NoopHostnameVerifier.INSTANCE);
                 httpClient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
             } else {
                 httpClient = HttpClients.createSystem();
@@ -86,52 +94,57 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.security.ILinkedAccountsProvider#initiateLinkedAccount(io.apicurio.hub.core.beans.LinkedAccountType, java.lang.String, java.lang.String)
      */
     @Override
-    public InitiatedLinkedAccount initiateLinkedAccount(LinkedAccountType accountType, String redirectUri,
-            String nonce) {
+    public InitiatedLinkedAccount initiateLinkedAccount(LinkedAccountType accountType,
+                                                        String redirectUri, String nonce) {
         String authServerRootUrl = config.getKeycloakAuthUrl();
         String realm = config.getKeycloakRealm();
         String provider = accountType.alias();
 
-        KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+        JWTCallerPrincipal principal = (JWTCallerPrincipal) request.getUserPrincipal();
 
-        AccessToken token = session.getToken();
-
-        String clientId = token.getIssuedFor();
-        MessageDigest md = null;
         try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            AccessToken token = RSATokenVerifier.create(principal.getRawToken()).getToken();
+            String clientId = token.getIssuedFor();
+            MessageDigest md = null;
+            try {
+                md = MessageDigest.getInstance("SHA-256");
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+            String input = nonce + token.getSessionState() + clientId + provider;
+            byte[] check = md.digest(input.getBytes(StandardCharsets.UTF_8));
+            String hash = Base64Url.encode(check);
+            String accountLinkUrl = KeycloakUriBuilder.fromUri(authServerRootUrl)
+                    .path("/realms/{realm}/broker/{provider}/link").queryParam("nonce", nonce)
+                    .queryParam("hash", hash).queryParam("client_id", clientId)
+                    .queryParam("redirect_uri", redirectUri).build(realm, provider).toString();
+
+            logger.debug("Account Link URL: {}", accountLinkUrl);
+
+            // Return the URL that the browser should use to initiate the account linking
+            InitiatedLinkedAccount rval = new InitiatedLinkedAccount();
+            rval.setAuthUrl(accountLinkUrl);
+            rval.setNonce(nonce);
+            return rval;
+
+        } catch (VerificationException e) {
+            throw new IllegalStateException();
         }
-        String input = nonce + token.getSessionState() + clientId + provider;
-        byte[] check = md.digest(input.getBytes(StandardCharsets.UTF_8));
-        String hash = Base64Url.encode(check);
-        String accountLinkUrl = KeycloakUriBuilder.fromUri(authServerRootUrl)
-            .path("/realms/{realm}/broker/{provider}/link").queryParam("nonce", nonce)
-            .queryParam("hash", hash).queryParam("client_id", clientId)
-            .queryParam("redirect_uri", redirectUri).build(realm, provider).toString();
-
-        logger.debug("Account Link URL: {}", accountLinkUrl);
-
-        // Return the URL that the browser should use to initiate the account linking
-        InitiatedLinkedAccount rval = new InitiatedLinkedAccount();
-        rval.setAuthUrl(accountLinkUrl);
-        rval.setNonce(nonce);
-        return rval;
     }
-    
+
     /**
      * @see io.apicurio.hub.api.security.ILinkedAccountsProvider#deleteLinkedAccount(io.apicurio.hub.core.beans.LinkedAccountType)
      */
     @Override
     public void deleteLinkedAccount(LinkedAccountType type) throws IOException {
         try {
-            KeycloakSecurityContext session = (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+            KeycloakSecurityContext session = (KeycloakSecurityContext) request
+                    .getAttribute(KeycloakSecurityContext.class.getName());
 
             String authServerRootUrl = config.getKeycloakAuthUrl();
             String realm = config.getKeycloakRealm();
@@ -140,21 +153,20 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
             session.getToken().getSessionState();
 
             String url = KeycloakUriBuilder.fromUri(authServerRootUrl)
-                .path("/realms/{realm}/account/federated-identity-update")
-                .queryParam("action", "REMOVE").queryParam("provider_id", provider).build(realm)
-                .toString();
+                    .path("/realms/{realm}/account/federated-identity-update").queryParam("action", "REMOVE")
+                    .queryParam("provider_id", provider).build(realm).toString();
             logger.debug("Deleting identity provider using URL: {}", url);
 
             HttpGet get = new HttpGet(url);
             get.addHeader("Accept", "application/json");
             get.addHeader("Authorization", "Bearer " + session.getTokenString());
-            
+
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 if (response.getStatusLine().getStatusCode() != 200) {
                     logger.debug("HTTP Response Status Code when deleting identity provider: {}",
-                        response.getStatusLine().getStatusCode());
+                            response.getStatusLine().getStatusCode());
                 }
-            }            
+            }
         } catch (Exception e) {
             throw new IOException("Error deleting linked account.", e);
         }
@@ -171,8 +183,7 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
 
         try {
             String externalTokenUrl = KeycloakUriBuilder.fromUri(authServerRootUrl)
-                    .path("/realms/{realm}/broker/{provider}/token")
-                    .build(realm, provider).toString();
+                    .path("/realms/{realm}/broker/{provider}/token").build(realm, provider).toString();
             String token = this.security.getToken();
 
             HttpGet get = new HttpGet(externalTokenUrl);
@@ -181,21 +192,23 @@ public class KeycloakLinkedAccountsProvider implements ILinkedAccountsProvider {
 
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 if (response.getStatusLine().getStatusCode() != 200) {
-                    logger.error("Failed to access External IDP Access Token from Keycloak: {} - {}", 
-                            response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+                    logger.error("Failed to access External IDP Access Token from Keycloak: {} - {}",
+                            response.getStatusLine().getStatusCode(),
+                            response.getStatusLine().getReasonPhrase());
                     throw new IOException(
-                            "Unexpected response from Keycloak: " + response.getStatusLine().getStatusCode() + "::"
-                                    + response.getStatusLine().getReasonPhrase());
+                            "Unexpected response from Keycloak: " + response.getStatusLine().getStatusCode()
+                                    + "::" + response.getStatusLine().getReasonPhrase());
                 }
-                
+
                 try (InputStream contentStream = response.getEntity().getContent()) {
                     String content = IOUtils.toString(contentStream, Charset.forName("UTF-8"));
                     return content;
                 }
-            }            
+            }
         } catch (IllegalArgumentException e) {
             throw new IOException("Error getting linked account token.", e);
         }
     }
 
 }
+

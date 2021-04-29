@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,6 +38,7 @@ import io.apicurio.registry.types.ArtifactType;
     "properties",
     "groupId"
 })
+@Generated("jsonschema2pojo")
 public class ArtifactMetaData {
 
     @JsonProperty("name")

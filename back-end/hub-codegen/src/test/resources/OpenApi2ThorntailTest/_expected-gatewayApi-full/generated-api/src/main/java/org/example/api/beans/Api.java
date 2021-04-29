@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,6 +33,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
     "parsePayload",
     "apiPolicies"
 })
+@Generated("jsonschema2pojo")
 public class Api {
 
     /**

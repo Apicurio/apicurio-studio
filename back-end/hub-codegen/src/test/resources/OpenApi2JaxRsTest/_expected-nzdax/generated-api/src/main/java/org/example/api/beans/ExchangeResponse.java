@@ -3,6 +3,7 @@ package org.example.api.beans;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "has",
     "urls"
 })
+@Generated("jsonschema2pojo")
 public class ExchangeResponse {
 
     /**

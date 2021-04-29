@@ -1,6 +1,7 @@
 
 package org.example.api.beans;
 
+import javax.annotation.processing.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
@@ -18,6 +19,7 @@ import io.apicurio.registry.types.ArtifactState;
 @JsonPropertyOrder({
     "state"
 })
+@Generated("jsonschema2pojo")
 public class UpdateState {
 
     /**

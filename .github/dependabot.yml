@@ -1,0 +1,73 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: io.rest-assured:rest-assured
+    versions:
+    - ">= 4.a, < 5"
+  - dependency-name: mysql:mysql-connector-java
+    versions:
+    - "< 7, >= 6.a"
+  - dependency-name: org.apache.maven.plugins:maven-shade-plugin
+    versions:
+    - ">= 3.a, < 4"
+  - dependency-name: org.jboss.threads:jboss-threads
+    versions:
+    - ">= 3.a, < 4"
+  - dependency-name: org.keycloak:keycloak-adapter-core
+    versions:
+    - ">= 6.a, < 7"
+  - dependency-name: org.keycloak:keycloak-adapter-spi
+    versions:
+    - ">= 6.a, < 7"
+  - dependency-name: org.keycloak:keycloak-common
+    versions:
+    - ">= 6.a, < 7"
+  - dependency-name: org.keycloak:keycloak-core
+    versions:
+    - ">= 6.a, < 7"
+  - dependency-name: org.ow2.asm:asm-analysis
+    versions:
+    - "< 8, >= 7.a"
+  - dependency-name: org.postgresql:postgresql
+    versions:
+    - "< 43, >= 42.a"
+  - dependency-name: com.codeborne:selenide
+    versions:
+    - 5.20.2
+    - 5.20.3
+  - dependency-name: org.jsonschema2pojo:jsonschema2pojo-core
+    versions:
+    - 1.1.0
+  - dependency-name: io.quarkus:quarkus-maven-plugin
+    versions:
+    - 1.11.1.Final
+    - 1.11.2.Final
+    - 1.12.1.Final
+    - 1.12.2.Final
+  - dependency-name: io.quarkus:quarkus-bom
+    versions:
+    - 1.11.1.Final
+    - 1.11.2.Final
+    - 1.12.1.Final
+    - 1.12.2.Final
+  - dependency-name: org.keycloak:keycloak-adapter-spi
+    versions:
+    - 12.0.2
+    - 12.0.3
+  - dependency-name: org.keycloak:keycloak-adapter-core
+    versions:
+    - 12.0.2
+    - 12.0.3
+  - dependency-name: org.keycloak:keycloak-common
+    versions:
+    - 12.0.2
+    - 12.0.3
+  - dependency-name: org.keycloak:keycloak-core
+    versions:
+    - 12.0.2
+    - 12.0.3

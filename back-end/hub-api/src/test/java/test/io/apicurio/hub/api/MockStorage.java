@@ -223,9 +223,9 @@ public class MockStorage implements IStorage {
             if (row.designId.equals(designId)) {
                 Integer editCount = collabCounters.get(row.createdBy);
                 if (editCount == null) {
-                    editCount = new Integer(0);
+                    editCount = 0;
                 }
-                editCount = new Integer(editCount.intValue() + 1);
+                editCount = editCount.intValue() + 1;
                 collabCounters.put(row.createdBy, editCount);
             }
         }

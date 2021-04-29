@@ -102,7 +102,7 @@ public class ValidationProfilesResource implements IValidationProfilesResource {
             String user = this.security.getCurrentUser().getLogin();
             logger.debug("Updating an existing validaton profile for {} named: {}", user, update.getName());
             ValidationProfile profile = new ValidationProfile();
-            profile.setId(new Long(profileId));
+            profile.setId(Long.parseLong(profileId));
             profile.setName(update.getName());
             profile.setDescription(update.getDescription());
             if (update.getSeverities() != null) {
@@ -124,7 +124,7 @@ public class ValidationProfilesResource implements IValidationProfilesResource {
         try {
             String user = this.security.getCurrentUser().getLogin();
             logger.debug("Deleting validation profile for {} with ID: ", user, profileId);
-            this.storage.deleteValidationProfile(user, new Long(profileId));
+            this.storage.deleteValidationProfile(user, Long.parseLong(profileId));
         } catch (StorageException e) {
             throw new ServerError(e);
         }

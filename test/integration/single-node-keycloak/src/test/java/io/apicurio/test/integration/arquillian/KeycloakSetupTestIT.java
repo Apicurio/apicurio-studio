@@ -40,7 +40,6 @@ import static com.codeborne.selenide.Selenide.$;
 /**
  * @author Jakub Senko <jsenko@redhat.com>
  */
-@SuppressWarnings("ArquillianTooManyDeployment")
 @RunWith(Arquillian.class)
 @RunAsClient
 public class KeycloakSetupTestIT {

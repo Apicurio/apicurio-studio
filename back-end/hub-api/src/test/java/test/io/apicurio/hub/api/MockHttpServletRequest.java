@@ -399,7 +399,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     @Override
     public int getIntHeader(String name) {
-        return new Integer(getHeader(name));
+        return Integer.parseInt(getHeader(name));
     }
 
     /**

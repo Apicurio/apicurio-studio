@@ -48,7 +48,6 @@ import io.apicurio.hub.api.connectors.AbstractSourceConnector.Endpoint;
 /**
  * @author eric.wittmann@gmail.com
  */
-@SuppressWarnings("restriction")
 public class HttpClientTest {
     
     static int HTTP_PORT;

@@ -17,6 +17,7 @@
 package io.apicurio.hub.core.storage.jdbc;
 
 import java.io.StringReader;
+import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -221,7 +222,8 @@ public class JdbcStorage implements IStorage {
         try {
             @SuppressWarnings("unchecked")
             Class<IDbUpgrader> upgraderClass = (Class<IDbUpgrader>) Class.forName(cname);
-            IDbUpgrader upgrader = upgraderClass.newInstance();
+            Constructor<IDbUpgrader> constructor = upgraderClass.getConstructor();
+            IDbUpgrader upgrader = constructor.newInstance();
             upgrader.upgrade(handle);
         } catch (Exception e) {
             throw new RuntimeException(e);

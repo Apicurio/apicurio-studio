@@ -65,7 +65,7 @@ public class KeycloakAuthenticationFilter implements Filter {
             auth.setType(StudioConfigAuthType.token);
             auth.setLogoutUrl(((HttpServletRequest) request).getContextPath() + "/logout");
             auth.setToken(session.getTokenString());
-            auth.setTokenRefreshPeriod(expirationToRefreshPeriod(session.getToken().getExpiration()));
+            auth.setTokenRefreshPeriod(expirationToRefreshPeriod(session.getToken().getExp()));
             httpSession.setAttribute(RequestAttributeKeys.AUTH_KEY, auth);
             
             // Fabricate a User object from information in the access token and store it in the request.
@@ -86,14 +86,14 @@ public class KeycloakAuthenticationFilter implements Filter {
      * refresh period is simply the # of seconds to wait until a refresh is needed.
      * @param expiration
      */
-    private int expirationToRefreshPeriod(int expiration) {
-        int nowInSeconds = org.keycloak.common.util.Time.currentTime();
-        int expiresInSeconds = expiration;
+    private int expirationToRefreshPeriod(long expiration) {
+        long nowInSeconds = org.keycloak.common.util.Time.currentTime();
+        long expiresInSeconds = expiration;
 
         if (expiresInSeconds <= nowInSeconds) {
             return 1;
         } else {
-            return expiresInSeconds - nowInSeconds;
+            return (int) (expiresInSeconds - nowInSeconds);
         }
     }
 

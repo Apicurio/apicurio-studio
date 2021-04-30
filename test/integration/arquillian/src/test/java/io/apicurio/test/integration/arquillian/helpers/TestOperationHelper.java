@@ -58,6 +58,7 @@ public class TestOperationHelper {
 
     private static void add(Class<? extends ITestOperationProcessor> clazz) {
         try {
+            @SuppressWarnings("deprecation")
             ITestOperationProcessor instance = clazz.newInstance();
             String name = instance.getOperationName();
             processorMap.put(name, instance);

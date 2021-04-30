@@ -52,7 +52,6 @@ import io.apicurio.datamodels.openapi.v3.models.Oas30SchemaDefinition;
 /**
  * @author eric.wittmann@gmail.com
  */
-@SuppressWarnings("restriction")
 public class AbsoluteReferenceResolverTest {
     
     private static TestHttpServer testHttpServer;

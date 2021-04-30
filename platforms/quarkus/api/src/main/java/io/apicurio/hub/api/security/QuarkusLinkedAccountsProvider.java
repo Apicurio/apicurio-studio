@@ -63,18 +63,19 @@ import java.security.NoSuchAlgorithmException;
 @ApplicationScoped
 @Alternative
 @Priority(1)
+@SuppressWarnings("deprecation")
 public class QuarkusLinkedAccountsProvider
         implements ILinkedAccountsProvider {
 
     private static Logger logger = LoggerFactory.getLogger(QuarkusLinkedAccountsProvider.class);
 
     @Inject
-    private ISecurityContext security;
+    ISecurityContext security;
     @Inject
-    private HubConfiguration config;
+    HubConfiguration config;
 
     @Inject
-    private HttpServletRequest request;
+    HttpServletRequest request;
 
     private CloseableHttpClient httpClient;
 

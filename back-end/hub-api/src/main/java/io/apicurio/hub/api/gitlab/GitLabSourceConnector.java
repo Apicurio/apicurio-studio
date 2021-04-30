@@ -386,7 +386,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
             // Get the user's personal group
-            String gitLabUsername = null;
+//            String gitLabUsername = null;
             String gitLabUserId = null;
             HttpGet get = new HttpGet(this.endpoint("/api/v4/user").toString());
             get.addHeader("Accept", "application/json");
@@ -398,7 +398,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 try (InputStream contentStream = response.getEntity().getContent()) {
                     JsonNode node = mapper.readTree(contentStream);
                     if (node.isObject()) {
-                        gitLabUsername = node.get("username").asText();
+//                        gitLabUsername = node.get("username").asText();
                         gitLabUserId = node.get("id").asText();
                     }
                 }

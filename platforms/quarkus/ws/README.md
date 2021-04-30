@@ -11,6 +11,13 @@ You can run your application in dev mode that enables live coding using:
 mvn quarkus:dev
 ```
 
+## Running the application from an IDE
+
+Another option is to run the app directly from your IDE.  This can be done by opening
+the `StudioWsQuarkusMain` class in your idea and running (or debugging) it as a
+java application.
+
+
 ## Packaging and running the application
 
 By default, `mvn clean install` produces an executable JAR with the dev Quarkus configuration profile enabled, and in-memory persistence implementation.

@@ -39,10 +39,10 @@ docker run -v $(pwd):/apicurio carnalca/apicurio-setup-image:latest bash /apicur
 ```
 On Windows:
 
-docker run -v ${PWD}:/apicurio carnalca/apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST}
+docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST}
 
 For example:
-docker run -v ${PWD}:/apicurio carnalca/apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231
+docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231
 ```
 
 This command will pull a minimal alpine linux based image, mount the current folder to it, and it will run the setup script. At the end of the run, it will print the admin password for Keycloak, and the URLs for the services. Like this:
@@ -97,12 +97,14 @@ For PostgreSQL config:
 ./start-postgresql-environment.sh
 ```
 
-If you want to do it manually, here are the commands:
+### Recommended Approach due to a bug in Quarkus
+
+If you want to do it manually, here are the commands. You will need to start Keycloak, then wait and then start the Quarkus apps:
 
 ```
-docker-compose -f docker-compose.keycloak.yml build
+docker-compose -f docker-compose.keycloak.yml build && docker-compose -f docker-compose.keycloak.yml up
 
-docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-postgre.yml up
+docker-compose -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-postgre.yml up
 
 ```
 

@@ -20,7 +20,6 @@ services:
     depends_on:
       - mongo
       - postman
-      - jboss-keycloak
     image: microcks/microcks:latest
     container_name: microcks
     volumes:

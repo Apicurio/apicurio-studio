@@ -14,7 +14,7 @@
 # docker run -i --rm -p 8080:8080 apicurio/apicurio-studio-ui
 #
 ###
-FROM fabric8/java-alpine-openjdk8-jre
+FROM fabric8/java-alpine-openjdk11-jre
 LABEL authors="Carles Arnal <carnalca@redhat.com>"
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'

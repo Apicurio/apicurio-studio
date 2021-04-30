@@ -7,7 +7,6 @@ services:
 
   apicurio-studio-db:
 
-  jboss-keycloak:
 
   apicurio-studio-ws:
     image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
@@ -33,7 +32,6 @@ services:
     image: 'apicurio/apicurio-studio-api:${APICURIO_API_VERSION}'
     restart: on-failure
     depends_on:
-      - jboss-keycloak
       - apicurio-studio-db
       - apicurio-studio-ws
     ports:
@@ -68,7 +66,6 @@ services:
     image: 'apicurio/apicurio-studio-ui:${APICURIO_UI_VERSION}'
     restart: on-failure
     depends_on:
-      - jboss-keycloak
       - apicurio-studio-api
       - apicurio-studio-ws
     ports:

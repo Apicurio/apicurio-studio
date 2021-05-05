@@ -56,7 +56,7 @@ public interface IdsResource {
    */
   @Path("/contentHashes/{contentHash}/")
   @GET
-  @Produces({"application/json", "application/x-protobuf", "application/x-protobuffer"})
+  @Produces("*/*")
   Response getContentByHash(@PathParam("contentHash") int contentHash,
       @QueryParam("canonical") Boolean canonical);
 }

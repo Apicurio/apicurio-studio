@@ -129,7 +129,11 @@
                 "requestBody": {
                     "description": "The content to search for.",
                     "content": {
-                        "*/*": {}
+                        "*/*": {
+		                    "schema": {
+		                        "$ref": "#/components/schemas/FileContent"
+		                    }
+		                }
                     },
                     "required": true
                 },
@@ -337,35 +341,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "content": {
-                            "application/json": {
-                                "examples": {
-                                    "OpenAPI Example": {
-                                        "value": {
-                                            "openapi": "3.0.2",
-                                            "info": {
-                                                "title": "Empty API",
-                                                "version": "1.0.0",
-                                                "description": "An example API design using OpenAPI."
-                                            }
-                                        }
-                                    }
-                                }
-                            },
-                            "application/x-protobuf": {
-                                "examples": {
-                                    "Protobuf Example": {
-                                        "value": "message SearchResponse {\n  repeated Result result = 1;\n}\n\nmessage Result {\n  required string url = 1;\n  optional string title = 2;\n  repeated string snippets = 3;\n}"
-                                    }
-                                }
-                            },
-                            "application/x-protobuffer": {
-                                "examples": {
-                                    "Protobuffer Example": {
-                                        "value": "message SearchResponse {\n  repeated Result result = 1;\n}\n\nmessage Result {\n  required string url = 1;\n  optional string title = 2;\n  repeated string snippets = 3;\n}"
-                                    }
-                                }
-                            }
+		                "content": {
+		                    "*/*": {
+		                        "schema": {
+		                            "$ref": "#/components/schemas/FileContent"
+		                        },
+		                        "examples": {
+		                            "OpenAPI": {
+		                                "value": {
+		                                    "openapi": "3.0.2",
+		                                    "info": {
+		                                        "title": "Empty API",
+		                                        "version": "1.0.0",
+		                                        "description": "An example API design using OpenAPI."
+		                                    }
+		                                }
+		                            }
+		                        }
+		                    }
                         },
                         "description": "The content of the artifact version."
                     }
@@ -2696,6 +2689,11 @@
                 "x-codegen-inline": true,
                 "x-codegen-type": "StringMap"
             },
+            "FileContent": {
+			    "format": "binary",
+			    "type": "string",
+			    "x-codegen-inline": true
+			},
             "IfExists": {
                 "description": "",
                 "enum": [

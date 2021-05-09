@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 
 /**
  * Shared base class for all sql statements.
@@ -33,13 +32,13 @@ public abstract class CommonSqlStatements implements ISqlStatements {
 
     private boolean shareForEveryone;
 
-    @Inject
     private HubConfiguration config;
 
     /**
      * Constructor.
      */
     public CommonSqlStatements(HubConfiguration config) {
+        this.config = config;
         this.shareForEveryone = config.isShareForEveryone();
     }
     

@@ -29,6 +29,9 @@ import java.util.List;
  */
 public abstract class CommonSqlStatements implements ISqlStatements {
 
+    @Inject
+    private HubConfiguration config;
+
     private boolean shareForEveryone;
     
     /**
@@ -160,6 +163,24 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     
     @Override
     public String selectRecentApiDesigns() {
+        // If datasource is Azure SQL
+        if(config.getJdbcType().equals("azuresql")) {
+            if (shareForEveryone) {
+                return "SELECT TOP 5 c.design_id, MAX(c.version) AS version "
+                        + "FROM api_content c "
+                        + "WHERE c.created_by = ? "
+                        + "GROUP BY c.design_id "
+                        + "ORDER BY version DESC ";
+            } else {
+                return "SELECT TOP 5 c.design_id, MAX(c.version) AS version "
+                        + "FROM api_content c "
+                        + "JOIN acl a ON a.design_id = c.design_id "
+                        + "WHERE a.user_id = ? AND c.created_by = ? "
+                        + "GROUP BY c.design_id "
+                        + "ORDER BY version DESC ";
+            }
+        }
+
         if (shareForEveryone) {
             return "SELECT c.design_id, MAX(c.version) AS version "
                     + "FROM api_content c "
@@ -322,8 +343,24 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectLatestContentDocument() {
-    	if (shareForEveryone) {
-    		return "SELECT c.* "
+        // If datasource is Azure SQL
+        if (config.getJdbcType().equals("azuresql")) {
+            if (shareForEveryone) {
+                return "SELECT TOP 1 c.* "
+                        + "FROM api_content c "
+                        + "WHERE c.design_id = ? AND c.type = 0 "
+                        + "ORDER BY c.version DESC";
+            }
+            return "SELECT TOP 1 c.* "
+                    + "FROM api_content c "
+                    + "JOIN acl a ON a.design_id = c.design_id "
+                    + "WHERE c.design_id = ? AND c.type = 0 AND a.user_id = ? "
+                    + "ORDER BY c.version DESC";
+
+        }
+
+        if (shareForEveryone) {
+            return "SELECT c.* "
                     + "FROM api_content c "
                     + "WHERE c.design_id = ? AND c.type = 0 "
                     + "ORDER BY c.version DESC LIMIT 1";
@@ -340,6 +377,15 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectLatestContentDocumentForSharing() {
+        // If datasource is AzureSQL
+        if (config.getJdbcType().equals("azuresql")) {
+            return "SELECT TOP 1 c.* "
+                    + "FROM api_content c "
+                    + "JOIN sharing s ON s.design_id = c.design_id "
+                    + "WHERE s.uuid = ? AND s.level = 'DOCUMENTATION' AND c.type = 0 "
+                    + "ORDER BY c.version DESC";
+        }
+
         return "SELECT c.* "
                 + "FROM api_content c "
                 + "JOIN sharing s ON s.design_id = c.design_id "
@@ -352,6 +398,14 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectLatestContentCommand() {
+        // If datasource is AzureSQL
+        if (config.getJdbcType().equals("azuresql")) {
+            return "SELECT TOP 1 c.* "
+                    + "FROM api_content c "
+                    + "WHERE c.design_id = ? AND c.type = 1 "
+                    + "ORDER BY c.version DESC";
+        }
+
         return "SELECT c.* "
                 + "FROM api_content c "
                 + "WHERE c.design_id = ? AND c.type = 1 "
@@ -463,6 +517,17 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectApiDesignActivity() {
+        // If datasource is AzureSQL
+        if(config.getJdbcType().equals("azuresql")) {
+            return "SELECT c.*, d.name "
+                    + "FROM api_content c "
+                    + "JOIN api_designs d ON d.id = c.design_id "
+                    + "WHERE c.design_id = ? "
+                    + "  AND (c.type = 1 OR c.type = 2 OR c.type = 3) "
+                    + "  AND c.reverted = 0 "
+                    + "ORDER BY created_on DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+        }
+
         return "SELECT c.*, d.name "
         		+ "FROM api_content c "
                 + "JOIN api_designs d ON d.id = c.design_id "
@@ -474,6 +539,17 @@ public abstract class CommonSqlStatements implements ISqlStatements {
 
     @Override
     public String selectUserActivity() {
+        // If datasource is AzureSQL
+        if(config.getJdbcType().equals("azuresql")) {
+            return "SELECT c.*, d.name "
+                    + "FROM api_content c "
+                    + "JOIN api_designs d ON d.id = c.design_id "
+                    + "WHERE c.created_by = ? "
+                    + "  AND (c.type = 1 OR c.type = 2 OR c.type = 3) "
+                    + "  AND c.reverted = 0 "
+                    + "ORDER BY created_on DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        }
+
         return "SELECT c.*, d.name "
         		+ "FROM api_content c "
                 + "JOIN api_designs d ON d.id = c.design_id "
@@ -488,6 +564,11 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectApiPublicationActivity() {
+        // If datasource is AzureSQL
+        if(config.getJdbcType().equals("azuresql")) {
+            return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.type = 2 ORDER BY created_on DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        }
+
         return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.type = 2 ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
     
@@ -496,6 +577,11 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectApiPublicationActivityByUser() {
+        // If datasource is AzureSQL
+        if(config.getJdbcType().equals("azuresql")) {
+            return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.created_by = ? AND c.type = 2 ORDER BY created_on DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        }
+
         return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.created_by = ? AND c.type = 2 ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
 
@@ -504,6 +590,11 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectApiMockActivity() {
+        // If datasource is AzureSQL
+        if(config.getJdbcType().equals("azuresql")) {
+            return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.type = 3 ORDER BY created_on DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        }
+
         return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.type = 3 ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
 

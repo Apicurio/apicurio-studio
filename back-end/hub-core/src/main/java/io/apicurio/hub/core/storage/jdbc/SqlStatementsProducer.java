@@ -48,6 +48,8 @@ public class SqlStatementsProducer {
                 return new MySQL5SqlStatements(config);
             case "postgresql9":
                 return new PostgreSQL9SqlStatements(config);
+            case "azuresql":
+                return new AzureSQLSqlStatements(config);
             default:
                 throw new RuntimeException("Unsupported JDBC type: " + config.getJdbcType());
         }

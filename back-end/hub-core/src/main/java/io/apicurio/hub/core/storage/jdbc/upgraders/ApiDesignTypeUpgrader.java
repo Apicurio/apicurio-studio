@@ -33,6 +33,9 @@ import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.storage.jdbc.IDbUpgrader;
 
+import io.apicurio.hub.core.config.HubConfiguration;
+import javax.inject.Inject;
+
 /**
  * A DB upgrader that populates the new "api_type" column that was introduces in version 8 of the
  * database schema.  The value of this field is derived from the spec version of the content
@@ -41,6 +44,9 @@ import io.apicurio.hub.core.storage.jdbc.IDbUpgrader;
 public class ApiDesignTypeUpgrader implements IDbUpgrader {
     
     private static Logger logger = LoggerFactory.getLogger(ApiDesignTypeUpgrader.class);
+
+    @Inject
+    private HubConfiguration config;
 
     /**
      * @see io.apicurio.hub.core.storage.jdbc.IDbUpgrader#upgrade(org.jdbi.v3.core.Handle)
@@ -77,7 +83,16 @@ public class ApiDesignTypeUpgrader implements IDbUpgrader {
      * @param designId
      */
     private ApiDesignType getApiType(Handle dbHandle, String designId) {
-        String query = "SELECT c.data FROM api_content c WHERE c.type = 0 AND c.design_id = ? LIMIT 1";
+        String query;
+
+        //If datasource is Azure SQL
+        if(config.getJdbcType().equals("azuresql")) {
+            query = "SELECT TOP 1 c.data FROM api_content c WHERE c.type = 0 AND c.design_id = ?";
+        }
+        else {
+            query = "SELECT c.data FROM api_content c WHERE c.type = 0 AND c.design_id = ? LIMIT 1";
+        }
+
         String content = dbHandle.createQuery(query)
             .bind(0, Long.parseLong(designId))
             .map(new RowMapper<String>() {

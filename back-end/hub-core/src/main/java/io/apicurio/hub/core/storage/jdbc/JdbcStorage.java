@@ -1159,6 +1159,18 @@ public class JdbcStorage implements IStorage {
     public Collection<ApiDesignChange> listApiDesignActivity(String designId, int from, int to) throws StorageException {
         logger.debug("Selecting activity for API Design: {} from {} to {}", designId, from, to);
         try {
+            if(config.getJdbcType().equals("azuresql")) {
+                return this.jdbi.withHandle( handle -> {
+                    String statement = sqlStatements.selectApiDesignActivity();
+                    return handle.createQuery(statement)
+                            .bind(0, Long.valueOf(designId))
+                            .bind(1, from)
+                            .bind(2, to - from)
+                            .map(ApiDesignChangeRowMapper.instance)
+                            .list();
+                });
+            }
+
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectApiDesignActivity();
                 return handle.createQuery(statement)
@@ -1180,6 +1192,18 @@ public class JdbcStorage implements IStorage {
     public Collection<ApiDesignChange> listUserActivity(String user, int from, int to) throws StorageException {
         logger.debug("Selecting activity for User: {} from {} to {}", user, from, to);
         try {
+            if(config.getJdbcType().equals("azuresql")) {
+                return this.jdbi.withHandle( handle -> {
+                    String statement = sqlStatements.selectUserActivity();
+                    return handle.createQuery(statement)
+                            .bind(0, user)
+                            .bind(1, from)
+                            .bind(2, to - from)
+                            .map(ApiDesignChangeRowMapper.instance)
+                            .list();
+                });
+            }
+
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectUserActivity();
                 return handle.createQuery(statement)
@@ -1201,6 +1225,18 @@ public class JdbcStorage implements IStorage {
     public Collection<ApiPublication> listApiDesignPublications(String designId, int from, int to) throws StorageException {
         logger.debug("Selecting publication activity for API Design: {} from {} to {}", designId, from, to);
         try {
+            if(config.getJdbcType().equals("azuresql")) {
+                return this.jdbi.withHandle( handle -> {
+                    String statement = sqlStatements.selectApiPublicationActivity();
+                    return handle.createQuery(statement)
+                            .bind(0, Long.valueOf(designId))
+                            .bind(1, from)
+                            .bind(2, to - from)
+                            .map(ApiPublicationRowMapper.instance)
+                            .list();
+                });
+            }
+
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectApiPublicationActivity();
                 return handle.createQuery(statement)
@@ -1222,6 +1258,19 @@ public class JdbcStorage implements IStorage {
     public Collection<ApiPublication> listApiDesignPublicationsBy(String designId, String user, int from, int to) throws StorageException {
         logger.debug("Selecting publication activity for API Design: {} from {} to {} and by {}", designId, from, to, user);
         try {
+            if(config.getJdbcType().equals("azuresql")) {
+                return this.jdbi.withHandle( handle -> {
+                    String statement = sqlStatements.selectApiPublicationActivityByUser();
+                    return handle.createQuery(statement)
+                            .bind(0, Long.valueOf(designId))
+                            .bind(1, user)
+                            .bind(2, from)
+                            .bind(3, to - from)
+                            .map(ApiPublicationRowMapper.instance)
+                            .list();
+                });
+            }
+
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectApiPublicationActivityByUser();
                 return handle.createQuery(statement)
@@ -1244,6 +1293,18 @@ public class JdbcStorage implements IStorage {
     public Collection<ApiMock> listApiDesignMocks(String designId, int from, int to) throws StorageException {
         logger.debug("Selecting mock activity for API Design: {} from {} to {}", designId, from, to);
         try {
+            if(config.getJdbcType().equals("azuresql")) {
+                return this.jdbi.withHandle( handle -> {
+                    String statement = sqlStatements.selectApiMockActivity();
+                    return handle.createQuery(statement)
+                            .bind(0, Long.valueOf(designId))
+                            .bind(1, from)
+                            .bind(2, to - from)
+                            .map(ApiMockRowMapper.instance)
+                            .list();
+                });
+            }
+
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectApiMockActivity();
                 return handle.createQuery(statement)

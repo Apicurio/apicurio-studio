@@ -88,7 +88,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 @ApplicationScoped
 @Default
 public class JdbcStorage implements IStorage {
-    
+
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
     private static int DB_VERSION = 11;
     private static final Object dbMutex = new Object();
@@ -102,17 +102,17 @@ public class JdbcStorage implements IStorage {
     private DataSource dataSource;
 
     private Jdbi jdbi;
-    
+
     private boolean shareForEveryone;
-    
+
     @PostConstruct
     public void postConstruct() {
         logger.debug("JDBC Storage constructed successfully.");
 
         jdbi = Jdbi.create(dataSource);
-        
+
         this.shareForEveryone = config.isShareForEveryone();
-        
+
         if (config.isJdbcInit()) {
             synchronized (dbMutex) {
                 if (!isDatabaseInitialized()) {
@@ -121,7 +121,7 @@ public class JdbcStorage implements IStorage {
                 } else {
                     logger.debug("Database was already initialized, skipping.");
                 }
-                
+
                 if (!isDatabaseCurrent()) {
                     logger.debug("Old database version detected, upgrading.");
                     upgradeDatabase();
@@ -132,7 +132,7 @@ public class JdbcStorage implements IStorage {
                 logger.error("Database not initialized.  Please use the DDL scripts to initialize the database before starting the application.");
                 throw new RuntimeException("Database not initialized.");
             }
-            
+
             if (!isDatabaseCurrent()) {
                 logger.error("Detected an old version of the database.  Please use the DDL upgrade scripts to bring your database up to date.");
                 throw new RuntimeException("Database not upgraded.");
@@ -166,7 +166,7 @@ public class JdbcStorage implements IStorage {
     private void initializeDatabase() {
         logger.info("Initializing the Apicurio Hub API database.");
         logger.info("\tDatabase type: " + config.getJdbcType());
-        
+
         final List<String> statements = this.sqlStatements.databaseInitialization();
         logger.debug("---");
         this.jdbi.withHandle( handle -> {
@@ -185,7 +185,7 @@ public class JdbcStorage implements IStorage {
      */
     private void upgradeDatabase() {
         logger.info("Upgrading the Apicurio Hub API database.");
-        
+
         int fromVersion = this.getDatabaseVersion();
         int toVersion = DB_VERSION;
 
@@ -198,7 +198,7 @@ public class JdbcStorage implements IStorage {
         this.jdbi.withHandle( handle -> {
             statements.forEach( statement -> {
                 logger.debug(statement);
-                
+
                 if (statement.startsWith("UPGRADER:")) {
                     String cname = statement.substring(9).trim();
                     applyUpgrader(handle, cname);
@@ -210,10 +210,10 @@ public class JdbcStorage implements IStorage {
         });
         logger.debug("---");
     }
-    
+
     /**
      * Instantiates an instance of the given upgrader class and then invokes it.  Used to perform
-     * advanced upgrade logic when upgrading the DB (logic that cannot be handled in simple SQL 
+     * advanced upgrade logic when upgrading the DB (logic that cannot be handled in simple SQL
      * statements).
      * @param handle
      * @param cname
@@ -247,7 +247,7 @@ public class JdbcStorage implements IStorage {
             }
         });
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#hasOwnerPermission(java.lang.String, java.lang.String)
      */
@@ -259,16 +259,16 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.hasOwnerPermission();
                 Long did = Long.valueOf(designId);
                 int count = handle.createQuery(statement)
-                    .bind(0, did)
-                    .bind(1, userId)
-                    .mapTo(Integer.class).one();
+                        .bind(0, did)
+                        .bind(1, userId)
+                        .mapTo(Integer.class).one();
                 return count == 1;
             });
         } catch (Exception e) {
             throw new StorageException("Error checking permission.", e);
-        }        
+        }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#hasWritePermission(java.lang.String, java.lang.String)
      */
@@ -283,16 +283,16 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.hasWritePermission();
                 Long did = Long.valueOf(designId);
                 int count = handle.createQuery(statement)
-                    .bind(0, did)
-                    .bind(1, userId)
-                    .mapTo(Integer.class).one();
+                        .bind(0, did)
+                        .bind(1, userId)
+                        .mapTo(Integer.class).one();
                 return count == 1;
             });
         } catch (Exception e) {
             throw new StorageException("Error checking permission.", e);
-        }        
+        }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listPermissions(java.lang.String)
      */
@@ -323,17 +323,17 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.insertAcl();
                 Long did = Long.valueOf(designId);
                 handle.createUpdate(statement)
-                      .bind(0, userId)
-                      .bind(1, did)
-                      .bind(2, permission)
-                      .execute();
+                        .bind(0, userId)
+                        .bind(1, did)
+                        .bind(2, permission)
+                        .execute();
                 return null;
             });
         } catch (Exception e) {
             throw new StorageException("Error inserting ACL row.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#deletePermission(java.lang.String, java.lang.String)
      */
@@ -345,16 +345,16 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.deleteAcl();
                 Long did = Long.valueOf(designId);
                 handle.createUpdate(statement)
-                      .bind(0, userId)
-                      .bind(1, did)
-                      .execute();
+                        .bind(0, userId)
+                        .bind(1, did)
+                        .execute();
                 return null;
             });
         } catch (Exception e) {
             throw new StorageException("Error deleting ACL row.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#updatePermission(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -366,17 +366,17 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.updateAcl();
                 Long did = Long.valueOf(designId);
                 handle.createUpdate(statement)
-                      .bind(0, permission)
-                      .bind(1, userId)
-                      .bind(2, did)
-                      .execute();
+                        .bind(0, permission)
+                        .bind(1, userId)
+                        .bind(2, did)
+                        .execute();
                 return null;
             });
         } catch (Exception e) {
             throw new StorageException("Error deleting ACL row.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#createLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccount)
      */
@@ -388,12 +388,12 @@ public class JdbcStorage implements IStorage {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.insertLinkedAccount();
                 handle.createUpdate(statement)
-                      .bind(0, userId)
-                      .bind(1, account.getType().name())
-                      .bind(2, account.getLinkedOn())
-                      .bind(3, account.getUsedOn())
-                      .bind(4, account.getNonce())
-                      .execute();
+                        .bind(0, userId)
+                        .bind(1, account.getType().name())
+                        .bind(2, account.getLinkedOn())
+                        .bind(3, account.getUsedOn())
+                        .bind(4, account.getNonce())
+                        .execute();
                 return null;
             });
         } catch (Exception e) {
@@ -404,7 +404,7 @@ public class JdbcStorage implements IStorage {
             }
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#getLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccountType)
      */
@@ -427,9 +427,9 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting linked account.");
         }
     }
-    
+
     /**
-     * 
+     *
      * @see io.apicurio.hub.core.storage.IStorage#listLinkedAccounts(java.lang.String)
      */
     @Override
@@ -447,7 +447,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error listing linked accounts.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#deleteLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccountType)
      */
@@ -459,9 +459,9 @@ public class JdbcStorage implements IStorage {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.deleteLinkedAccount();
                 int rowCount = handle.createUpdate(statement)
-                      .bind(0, userId)
-                      .bind(1, type.name())
-                      .execute();
+                        .bind(0, userId)
+                        .bind(1, type.name())
+                        .execute();
                 if (rowCount == 0) {
                     throw new NotFoundException();
                 }
@@ -473,7 +473,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error deleting a Linked Account", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#deleteLinkedAccounts(java.lang.String)
      */
@@ -484,15 +484,15 @@ public class JdbcStorage implements IStorage {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.deleteLinkedAccounts();
                 handle.createUpdate(statement)
-                      .bind(0, userId)
-                      .execute();
+                        .bind(0, userId)
+                        .execute();
                 return null;
             });
         } catch (Exception e) {
             throw new StorageException("Error deleting Linked Accounts", e);
-        }        
+        }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#updateLinkedAccount(java.lang.String, io.apicurio.hub.core.beans.LinkedAccount)
      */
@@ -520,7 +520,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error updating a Linked Account.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listContributors(java.lang.String, java.lang.String)
      */
@@ -544,7 +544,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting contributors.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#addContent(java.lang.String, java.lang.String, io.apicurio.hub.core.beans.ApiContentType, java.lang.String)
      */
@@ -557,21 +557,21 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.insertContent();
                 CharacterStreamArgument contentClob = new CharacterStreamArgument(new StringReader(data), data.length());
                 Long contentVersion = handle.createUpdate(statement)
-                      .bind(0, Long.parseLong(designId))
-                      .bind(1, type.getId())
-                      .bind(2, contentClob)
-                      .bind(3, userId)
-                      .bind(4, new Date())
-                      .executeAndReturnGeneratedKeys("version")
-                      .mapTo(Long.class)
-                      .one();
+                        .bind(0, Long.parseLong(designId))
+                        .bind(1, type.getId())
+                        .bind(2, contentClob)
+                        .bind(3, userId)
+                        .bind(4, new Date())
+                        .executeAndReturnGeneratedKeys("version")
+                        .mapTo(Long.class)
+                        .one();
                 return contentVersion;
             });
         } catch (Exception e) {
             throw new StorageException("Error adding content entry for API design.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#undoContent(java.lang.String, java.lang.String, long)
      */
@@ -593,7 +593,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error undoing content entry for API design.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#redoContent(java.lang.String, java.lang.String, long)
      */
@@ -638,7 +638,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting API design.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#getLatestContentDocument(java.lang.String, java.lang.String)
      */
@@ -663,7 +663,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting content document.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#getLatestContentDocumentForSharing(java.lang.String)
      */
@@ -684,7 +684,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting content document.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listContentCommands(java.lang.String, java.lang.String, long)
      */
@@ -695,7 +695,7 @@ public class JdbcStorage implements IStorage {
         try {
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.selectContentCommands();
-                
+
                 Query query = handle.createQuery(statement)
                         .bind(0, Long.valueOf(designId));
                 if (!shareForEveryone) {
@@ -707,7 +707,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting content commands.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listAllContentCommands(java.lang.String, java.lang.String, long)
      */
@@ -749,37 +749,37 @@ public class JdbcStorage implements IStorage {
                 // Insert a row in the api_designs table first.  Retrieve the ID.
                 String statement = sqlStatements.insertApiDesign();
                 String designId = handle.createUpdate(statement)
-                      .bind(0, design.getName())
-                      .bind(1, trimTo255(design.getDescription()))
-                      .bind(2, design.getCreatedBy())
-                      .bind(3, design.getCreatedOn())
-                      .bind(4, asCsv(design.getTags(), 2048))
-                      .bind(5, design.getType().name())
-                      .executeAndReturnGeneratedKeys("id")
-                      .mapTo(String.class)
-                      .one();
-                
+                        .bind(0, design.getName())
+                        .bind(1, trimTo255(design.getDescription()))
+                        .bind(2, design.getCreatedBy())
+                        .bind(3, design.getCreatedOn())
+                        .bind(4, asCsv(design.getTags(), 2048))
+                        .bind(5, design.getType().name())
+                        .executeAndReturnGeneratedKeys("id")
+                        .mapTo(String.class)
+                        .one();
+
                 long did = Long.parseLong(designId);
-                
+
                 // Insert a row in the ACL table with role 'owner' for this API
                 statement = sqlStatements.insertAcl();
                 handle.createUpdate(statement)
-                      .bind(0, userId)
-                      .bind(1, did)
-                      .bind(2, "owner")
-                      .execute();
-                
+                        .bind(0, userId)
+                        .bind(1, did)
+                        .bind(2, "owner")
+                        .execute();
+
                 // Insert a row in the api_content table (initial value)
                 statement = sqlStatements.insertContent();
                 CharacterStreamArgument contentClob = new CharacterStreamArgument(new StringReader(initialContent), initialContent.length());
                 handle.createUpdate(statement)
-                      .bind(0, did)
-                      .bind(1, ApiContentType.Document.getId())
-                      .bind(2, contentClob)
-                      .bind(3, userId)
-                      .bind(4, design.getCreatedOn())
-                      .execute();
-                
+                        .bind(0, did)
+                        .bind(1, ApiContentType.Document.getId())
+                        .bind(2, contentClob)
+                        .bind(3, userId)
+                        .bind(4, design.getCreatedOn())
+                        .execute();
+
                 return designId;
             });
         } catch (Exception e) {
@@ -819,9 +819,9 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.hasOwnerPermission();
                 Long did = Long.valueOf(designId);
                 int count = handle.createQuery(statement)
-                    .bind(0, did)
-                    .bind(1, userId)
-                    .mapTo(Integer.class).one();
+                        .bind(0, did)
+                        .bind(1, userId)
+                        .mapTo(Integer.class).one();
                 if (count == 0) {
                     throw new NotFoundException();
                 }
@@ -849,8 +849,8 @@ public class JdbcStorage implements IStorage {
                 // Then delete the api design itself
                 statement = sqlStatements.deleteApiDesign();
                 int rowCount = handle.createUpdate(statement)
-                      .bind(0, did)
-                      .execute();
+                        .bind(0, did)
+                        .execute();
                 if (rowCount == 0) {
                     throw new NotFoundException();
                 }
@@ -862,7 +862,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error deleting an API design.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#updateApiDesign(java.lang.String, io.apicurio.hub.core.beans.ApiDesign)
      */
@@ -875,9 +875,9 @@ public class JdbcStorage implements IStorage {
                 if (!shareForEveryone) {
                     String statementPerms = sqlStatements.hasWritePermission();
                     int count = handle.createQuery(statementPerms)
-                        .bind(0, Long.valueOf(design.getId()))
-                        .bind(1, userId)
-                        .mapTo(Integer.class).one();
+                            .bind(0, Long.valueOf(design.getId()))
+                            .bind(1, userId)
+                            .mapTo(Integer.class).one();
                     if (count == 0) {
                         throw new NotFoundException();
                     }
@@ -933,7 +933,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error listing API designs.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#getRecentApiDesigns(java.lang.String)
      */
@@ -976,32 +976,32 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error listing API designs.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#createEditingSessionUuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, long)
      */
     @Override
     public void createEditingSessionUuid(String uuid, String designId, String userId, String hash, long contentVersion,
-            long expiresOn) throws StorageException {
+                                         long expiresOn) throws StorageException {
         logger.debug("Inserting an Editing Session UUID row: {}", uuid);
         try {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.insertEditingSessionUuid();
                 handle.createUpdate(statement)
-                      .bind(0, uuid)
-                      .bind(1, Long.valueOf(designId))
-                      .bind(2, userId)
-                      .bind(3, hash)
-                      .bind(4, contentVersion)
-                      .bind(5, expiresOn)
-                      .execute();
+                        .bind(0, uuid)
+                        .bind(1, Long.valueOf(designId))
+                        .bind(2, userId)
+                        .bind(3, hash)
+                        .bind(4, contentVersion)
+                        .bind(5, expiresOn)
+                        .execute();
                 return null;
             });
         } catch (Exception e) {
             throw new StorageException("Error inserting editing session UUID row.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#lookupEditingSessionUuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
@@ -1031,7 +1031,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting Editing Session UUID.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#consumeEditingSessionUuid(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
@@ -1058,34 +1058,34 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error deleting a Linked Account", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#createCollaborationInvite(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public void createCollaborationInvite(String inviteId, String designId, String userId, String username, String role,
-            String subject) throws StorageException {
+                                          String subject) throws StorageException {
         logger.debug("Inserting a collaboration invitation row: {}  for design: {}", inviteId, designId);
         try {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.insertCollaborationInvitation();
                 handle.createUpdate(statement)
-                      .bind(0, userId)
-                      .bind(1, new Date())
-                      .bind(2, username)
-                      .bind(3, Long.valueOf(designId))
-                      .bind(4, role)
-                      .bind(5, inviteId)
-                      .bind(6, "pending")
-                      .bind(7, subject)
-                      .execute();
+                        .bind(0, userId)
+                        .bind(1, new Date())
+                        .bind(2, username)
+                        .bind(3, Long.valueOf(designId))
+                        .bind(4, role)
+                        .bind(5, inviteId)
+                        .bind(6, "pending")
+                        .bind(7, subject)
+                        .execute();
                 return null;
             });
         } catch (Exception e) {
             throw new StorageException("Error inserting editing session UUID row.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#updateCollaborationInviteStatus(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
@@ -1112,7 +1112,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error updating an invitation status.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listCollaborationInvites(java.lang.String, java.lang.String)
      */
@@ -1132,7 +1132,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting invitations.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#getCollaborationInvite(java.lang.String, java.lang.String)
      */
@@ -1153,7 +1153,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting invitations.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listApiDesignActivity(java.lang.String, int, int)
      */
@@ -1186,7 +1186,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting contributors.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listUserActivity(java.lang.String, int, int)
      */
@@ -1287,7 +1287,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting publications.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listApiDesignMocks(java.lang.String, int, int)
      */
@@ -1320,7 +1320,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting mocks.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listCodegenProjects(java.lang.String, java.lang.String)
      */
@@ -1340,7 +1340,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting codegen projects.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#createCodegenProject(java.lang.String, io.apicurio.hub.core.beans.CodegenProject)
      */
@@ -1353,16 +1353,16 @@ public class JdbcStorage implements IStorage {
                 String attrs = CodegenProjectRowMapper.toString(project.getAttributes());
                 CharacterStreamArgument attributesClob = new CharacterStreamArgument(new StringReader(attrs), attrs.length());
                 String projectId = handle.createUpdate(statement)
-                      .bind(0, project.getCreatedBy())
-                      .bind(1, project.getCreatedOn())
-                      .bind(2, project.getCreatedBy())
-                      .bind(3, project.getCreatedOn())
-                      .bind(4, Long.valueOf(project.getDesignId()))
-                      .bind(5, project.getType().toString())
-                      .bind(6, attributesClob)
-                      .executeAndReturnGeneratedKeys("id")
-                      .mapTo(String.class)
-                      .one();
+                        .bind(0, project.getCreatedBy())
+                        .bind(1, project.getCreatedOn())
+                        .bind(2, project.getCreatedBy())
+                        .bind(3, project.getCreatedOn())
+                        .bind(4, Long.valueOf(project.getDesignId()))
+                        .bind(5, project.getType().toString())
+                        .bind(6, attributesClob)
+                        .executeAndReturnGeneratedKeys("id")
+                        .mapTo(String.class)
+                        .one();
                 return projectId;
             });
         } catch (Exception e) {
@@ -1420,7 +1420,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error updating an API design.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#deleteCodegenProject(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -1432,16 +1432,16 @@ public class JdbcStorage implements IStorage {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.deleteCodegenProject();
                 handle.createUpdate(statement)
-                      .bind(0, Long.valueOf(projectId))
-                      .bind(1, Long.valueOf(designId))
-                      .execute();
+                        .bind(0, Long.valueOf(projectId))
+                        .bind(1, Long.valueOf(designId))
+                        .execute();
                 return null;
             });
         } catch (Exception e) {
             throw new StorageException("Error deleting a codegen project.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#deleteCodegenProjects(java.lang.String, java.lang.String)
      */
@@ -1453,8 +1453,8 @@ public class JdbcStorage implements IStorage {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.deleteCodegenProjects();
                 handle.createUpdate(statement)
-                      .bind(0, Long.valueOf(designId))
-                      .execute();
+                        .bind(0, Long.valueOf(designId))
+                        .execute();
                 return null;
             });
         } catch (Exception e) {
@@ -1499,7 +1499,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error listing linked accounts.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#createValidationProfile(java.lang.String, io.apicurio.hub.core.beans.ValidationProfile)
      */
@@ -1512,20 +1512,20 @@ public class JdbcStorage implements IStorage {
                 String severities = ValidationProfileRowMapper.toString(profile.getSeverities());
                 CharacterStreamArgument severitiesClob = new CharacterStreamArgument(new StringReader(severities), severities.length());
                 Long profileId = handle.createUpdate(statement)
-                      .bind(0, userId)
-                      .bind(1, profile.getName())
-                      .bind(2, profile.getDescription())
-                      .bind(3, severitiesClob)
-                      .executeAndReturnGeneratedKeys("id")
-                      .mapTo(Long.class)
-                      .one();
+                        .bind(0, userId)
+                        .bind(1, profile.getName())
+                        .bind(2, profile.getDescription())
+                        .bind(3, severitiesClob)
+                        .executeAndReturnGeneratedKeys("id")
+                        .mapTo(Long.class)
+                        .one();
                 return profileId;
             });
         } catch (Exception e) {
             throw new StorageException("Error inserting codegen project.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#updateValidationProfile(java.lang.String, io.apicurio.hub.core.beans.ValidationProfile)
      */
@@ -1555,7 +1555,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error updating an API design.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#deleteValidationProfile(java.lang.String, long)
      */
@@ -1566,9 +1566,9 @@ public class JdbcStorage implements IStorage {
             this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.deleteValidationProfile();
                 int rowCount = handle.createUpdate(statement)
-                      .bind(0, profileId)
-                      .bind(1, userId)
-                      .execute();
+                        .bind(0, profileId)
+                        .bind(1, userId)
+                        .execute();
                 if (rowCount == 0) {
                     throw new NotFoundException();
                 }
@@ -1600,7 +1600,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting sharing config.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#getSharingInfo(java.lang.String)
      */
@@ -1618,7 +1618,7 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting sharing info.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#setSharingConfig(java.lang.String, java.lang.String, io.apicurio.hub.core.beans.SharingLevel)
      */
@@ -1647,7 +1647,7 @@ public class JdbcStorage implements IStorage {
             });
         } catch (Exception e) {
             throw new StorageException("Error updating sharing config.", e);
-        }        
+        }
     }
 
 }

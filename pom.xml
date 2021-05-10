@@ -84,7 +84,7 @@
         <version.install.plugin>2.5.2</version.install.plugin>
         <version.jar.plugin>3.2.0</version.jar.plugin>
         <version.javadoc.plugin>3.2.0</version.javadoc.plugin>
-        <version.maven-gpg-plugin.plugin>1.6</version.maven-gpg-plugin.plugin>
+        <version.maven-gpg-plugin.plugin>3.0.1</version.maven-gpg-plugin.plugin>
         <version.nexus-staging-maven-plugin.plugin>1.6.8</version.nexus-staging-maven-plugin.plugin>
         <version.resources.plugin>3.2.0</version.resources.plugin>
         <version.source.plugin>3.2.1</version.source.plugin>

@@ -1,0 +1,140 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "TEST - CodeGen API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/widgets": {
+            "summary": "Path used to manage the list of widgets.",
+            "description": "The REST endpoint/path used to list and create zero or more `Widget` entities.  This path contains a `GET` and `POST` operation to perform the list and create tasks, respectively.",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Widget"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful response - returns an array of `Widget` entities."
+                    }
+                },
+                "operationId": "getWidgets",
+                "summary": "List All Widgets",
+                "description": "Gets a list of all `Widget` entities."
+            },
+            "post": {
+                "requestBody": {
+                    "description": "A new `Widget` to be created.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Widget"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "createWidget",
+                "summary": "Create a Widget",
+                "description": "Creates a new instance of a `Widget`."
+            }
+        },
+        "/widgets/{widgetId}": {
+            "summary": "Path used to manage a single Widget.",
+            "description": "The REST endpoint/path used to get, update, and delete single instances of an `Widget`.  This path contains `GET`, `PUT`, and `DELETE` operations used to perform the get, update, and delete tasks, respectively.",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Widget"
+                                },
+                                "x-codegen-returnType": "javax.ws.rs.core.Response"
+                            }
+                        },
+                        "description": "Successful response - returns a single `Widget`."
+                    }
+                },
+                "operationId": "getWidget",
+                "summary": "Get a Widget",
+                "description": "Gets the details of a single instance of a `Widget`."
+            },
+            "put": {
+                "requestBody": {
+                    "description": "Updated `Widget` information.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Widget"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "202": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "updateWidget",
+                "summary": "Update a Widget",
+                "description": "Updates an existing `Widget`."
+            },
+            "delete": {
+                "responses": {
+                    "204": {
+                        "description": "Successful response."
+                    }
+                },
+                "operationId": "deleteWidget",
+                "summary": "Delete a Widget",
+                "description": "Deletes an existing `Widget`."
+            },
+            "parameters": [
+                {
+                    "name": "widgetId",
+                    "description": "A unique identifier for a `Widget`.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        }
+    },
+    "components": {
+        "schemas": {
+            "Widget": {
+                "title": "Root Type for Widget",
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "name": "Foo",
+                    "size": 17
+                }
+            }
+        }
+    }
+}

@@ -327,14 +327,22 @@ public class OpenApi2CodegenVisitor extends CombinedVisitorAdapter {
         List<Oas30MediaType> mediaTypes = node.getMediaTypes();
         if (mediaTypes != null && mediaTypes.size() > 0) {
             Oas30MediaType mediaType = mediaTypes.get(0);
-            this._currentMethod.setReturn(this.returnFromSchema(mediaType.schema));
+            Extension returnTypeExt = mediaType.getExtension("x-codegen-returnType");
+            if (returnTypeExt != null) {
+                String returnType = (String) returnTypeExt.value;
+                CodegenJavaReturn customReturn = new CodegenJavaReturn();
+                customReturn.setType(returnType);
+                this._currentMethod.setReturn(customReturn);
+            } else {
+                this._currentMethod.setReturn(this.returnFromSchema(mediaType.schema));
+            }
             // If no return was created, it was because we couldn't figure it out from the
             // schema (likely no schema declared) so we should create something to
             // indicate that we DO want a return value, but we don't know what it is.
             if (this._currentMethod.getReturn() == null) {
                 CodegenJavaReturn unknownReturn = new CodegenJavaReturn();
                 unknownReturn.setType("javax.ws.rs.core.Response");
-                this._currentMethod.setReturn(unknownReturn );
+                this._currentMethod.setReturn(unknownReturn);
             }
         }
         // Push all of the media types onto the "produces" array for the method.

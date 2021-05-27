@@ -63,7 +63,7 @@
         <version.io.thorntail>2.7.0.Final</version.io.thorntail>
 
         <!-- Quarkus Version -->
-        <version.io.quarkus>1.13.4.Final</version.io.quarkus>
+        <version.io.quarkus>1.13.5.Final</version.io.quarkus>
 
         <!-- Apicurio Data Models -->
         <version.apicurio-data-models>1.1.10</version.apicurio-data-models>

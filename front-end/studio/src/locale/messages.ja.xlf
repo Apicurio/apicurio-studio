@@ -452,17 +452,9 @@
         <source>anonymous</source>
         <target>anonymous(TBD)</target>
       </trans-unit>
-      <trans-unit id="a5d4d19f4015258474d01fe42b12ed349ad97eac" datatype="html">
-        <source>Allow access to the API without authentication (cannot be </source>
-        <target>Allow access to the API without authentication (cannot be (TBD)</target>
-      </trans-unit>
-      <trans-unit id="d16dce402f6e13146265ef322115853d3af5d3da" datatype="html">
-        <source>combined</source>
-        <target>combined(TBD)</target>
-      </trans-unit>
-      <trans-unit id="a0f3fe5283b83e40fb730e04a59470a3484ae8dd" datatype="html">
-        <source> with other security).</source>
-        <target> with other security).(TBD)</target>
+      <trans-unit id="4a7881c4f6ea8b1eb8b294a9db22267185c27d6e" datatype="html">
+        <source>Allow access to the API without authentication (cannot be <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>combined<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> with other security).</source>
+        <target>Allow access to the API without authentication (cannot be <x id="START_TAG_STRONG" ctype="x-strong" equiv-text="&lt;strong&gt;"/>combined<x id="CLOSE_TAG_STRONG" ctype="x-strong" equiv-text="&lt;/strong&gt;"/> with other security).(TBD)</target>
       </trans-unit>
       <trans-unit id="f7f8fdfe13ca8fef82c3f65b517300a41456090c" datatype="html">
         <source>Specify scopes to define the permissions necessary for users to access operations in this API.</source>

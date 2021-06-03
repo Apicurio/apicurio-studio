@@ -93,7 +93,7 @@
         <version.war.plugin>3.3.1</version.war.plugin>
         <version.frontend-maven.plugin>1.12.0</version.frontend-maven.plugin>
         <version.scala-maven.plugin>4.5.2</version.scala-maven.plugin>
-        <version.jandex-maven.plugin>1.0.8</version.jandex-maven.plugin>
+        <version.jandex-maven.plugin>1.1.0</version.jandex-maven.plugin>
         <version.properties-maven-plugin>1.0.0</version.properties-maven-plugin>
 
         <!-- Dependency Versions -->

@@ -2,7 +2,7 @@ FROM centos:7
 LABEL authors="Eric Wittmann <eric.wittmann@redhat.com>"
 ENV RELEASE_PATH target/apicurio-studio-ui-thorntail.jar
 RUN yum install -y \
-    java-1.8.0-openjdk-headless \
+    java-11-openjdk-headless \
   && yum clean all
 
 WORKDIR /opt/apicurio

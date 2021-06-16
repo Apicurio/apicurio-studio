@@ -471,7 +471,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      */
     public deleteDefinition(): void {
         let definition: Aai20SchemaDefinition = this.contextMenuSelection.resolve(this.document) as Aai20SchemaDefinition;
-        let command: ICommand = CommandFactory.createDeleteSchemaDefinitionCommand(this.document.getDocumentType(), definition.getName()); // FIXME Handle Aai20 in data-models
+        let command: ICommand = CommandFactory.createDeleteSchemaDefinitionCommand(this.document.getDocumentType(), definition.getName());
         this.commandService.emit(command);
         this.closeContextMenu();
     }

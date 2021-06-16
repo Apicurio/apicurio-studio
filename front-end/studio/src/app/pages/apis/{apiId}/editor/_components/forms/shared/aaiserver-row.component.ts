@@ -117,6 +117,7 @@ export class AaiServerRowComponent extends AbstractRowComponent<Aai20Server, str
     }
 
     public setDescription(description: string): void {
+        // TODO create a new ChangeServerDescription command as it's a special case when used in a multi-user editing environment (why?)
         let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "description", description);
         this.commandService.emit(command);
     }

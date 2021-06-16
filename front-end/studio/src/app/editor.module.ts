@@ -145,6 +145,11 @@ import {InheritanceSchemasSectionComponent} from "./pages/apis/{apiId}/editor/_c
 import {SchemaRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/schema-row.component";
 import {AddSchemaDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema.component";
 import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catalog.service";
+import {AaiServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/aaiservers-section.component";
+import {AaiServerEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/aaiserver-editor.component";
+import {AaiServerRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/aaiserver-row.component";
+import {AaiSecuritySchemesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/aaisecurity-schemes-section.component";
+import {AaiSecurityRequirementRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/aaisecurity-requirement-row.component";
 
 @NgModule({
     imports: [
@@ -168,9 +173,9 @@ import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catal
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,
         SecurityRequirementEditorComponent, InfoSectionComponent, AsyncApiInfoSectionComponent, ValidationProblemComponent,
         ValidationAggregateComponent, ContactSectionComponent, AsyncApiContactSectionComponent, LicenseSectionComponent,
-        AsyncApiLicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
-        SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
-        PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
+        AsyncApiLicenseSectionComponent, TagsSectionComponent, AaiServersSectionComponent, ServersSectionComponent, AaiSecurityRequirementRowComponent, SecurityRequirementsSectionComponent,
+        SecuritySchemesSectionComponent, AaiSecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
+        PfInlineTextEditorComponent, TagRowComponent, AaiServerEditorComponent, ServerEditorComponent, AaiServerRowComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,

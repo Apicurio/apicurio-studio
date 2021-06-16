@@ -103,8 +103,8 @@ export class ChannelOperationsSectionComponent extends AbstractBaseComponent {
     }
 
     private refresh(): void {
-        this._operations = this.pathOperations();
-        this._allOperations = this.allPathOperations();
+        this._operations = this.channelOperations();
+        this._allOperations = this.allChannelOperations();
         this._collaborationPaths = this.allCollaborationPaths();
         this._nodePath = ModelUtils.nodeToPath(this.channel);
     }
@@ -140,11 +140,11 @@ export class ChannelOperationsSectionComponent extends AbstractBaseComponent {
         this.__changeDetectorRef.markForCheck();
     }
 
-    private pathOperations(): AaiOperation[] {
-        return this.allPathOperations().filter( operation => operation !== null && operation !== undefined);
+    private channelOperations(): AaiOperation[] {
+        return this.allChannelOperations().filter( operation => operation !== null && operation !== undefined);
     }
 
-    private allPathOperations(): AaiOperation[] {
+    private allChannelOperations(): AaiOperation[] {
         let ops: AaiOperation[] = [
             this.channel.publish,
             this.channel.subscribe
@@ -167,12 +167,12 @@ export class ChannelOperationsSectionComponent extends AbstractBaseComponent {
         return null;
     }
 
-    public operationPath(method: string): string {
-        return this._nodePath + "/" + method;
+    public operationPath(operationType: string): string {
+        return this._nodePath + "/" + operationType;
     }
 
-    public isDefined(method: string): boolean {
-        let operation: AaiOperation = this.channel[method] as AaiOperation;
+    public isDefined(operationType: string): boolean {
+        let operation: AaiOperation = this.channel[operationType] as AaiOperation;
         if (operation) {
             return true;
         }
@@ -183,8 +183,8 @@ export class ChannelOperationsSectionComponent extends AbstractBaseComponent {
         return ModelUtils.isSelected(operation);
     }
 
-    public selectTab(method: string): void {
-        this.__selectionService.select(this._nodePath + "/" + method);
+    public selectTab(operationType: string): void {
+        this.__selectionService.select(this._nodePath + "/" + operationType);
     }
 
     public hasSelectedOperation(): boolean {
@@ -209,8 +209,8 @@ export class ChannelOperationsSectionComponent extends AbstractBaseComponent {
     }
 
     public deleteAllOperations(): void {
-        //let command: ICommand = CommandFactory.createDeleteAllOperationsCommand(this.path);
-        //this.commandService.emit(command);
+        let command: ICommand = CommandFactory.createDeleteAllOperationsCommand_Aai20(this.channel);
+        this.commandService.emit(command);
     }
 
 }

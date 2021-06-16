@@ -26,10 +26,12 @@ import {PropertyEditorComponent} from "../_components/editors/property-editor.co
 import {ResponseEditorComponent} from "../_components/editors/response-editor.component";
 import { OperationTraitEditorComponent } from "../_components/editors/operationtrait-editor.component";
 import { MessageTraitEditorComponent } from "../_components/editors/messagetrait-editor.component";
+import {AaiServerEditorComponent} from "../_components/editors/aaiserver-editor.component";
 
 export interface IEditorsProvider {
 
     getServerEditor(): ServerEditorComponent;
+    getAaiServerEditor(): AaiServerEditorComponent;
     getSecuritySchemeEditor(): SecuritySchemeEditorComponent;
     getSecurityRequirementEditor(): SecurityRequirementEditorComponent;
     getDataTypeEditor(): DataTypeEditorComponent;
@@ -60,6 +62,10 @@ export class EditorsService implements IEditorsProvider {
 
     public getServerEditor(): ServerEditorComponent {
         return this.provider.getServerEditor();
+    }
+
+    public getAaiServerEditor(): AaiServerEditorComponent {
+        return this.provider.getAaiServerEditor();
     }
 
     public getSecuritySchemeEditor(): SecuritySchemeEditorComponent {

@@ -75,6 +75,7 @@ import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
 import { OperationTraitEditorComponent } from "./_components/editors/operationtrait-editor.component";
 import { MessageTraitEditorComponent } from "./_components/editors/messagetrait-editor.component";
+import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 
 
 @Component({
@@ -607,6 +608,10 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
 
     public getServerEditor(): ServerEditorComponent {
         return this.serverEditor;
+    }
+
+    public getAaiServerEditor(): AaiServerEditorComponent {
+        return null;
     }
 
     public getSecuritySchemeEditor(): SecuritySchemeEditorComponent {

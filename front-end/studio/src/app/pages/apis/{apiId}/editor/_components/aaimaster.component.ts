@@ -316,7 +316,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     public addChannel(channel: string): void {
         let command: ICommand = CommandFactory.createNewChannelCommand(channel);
         this.commandService.emit(command);
-        console.log("this.document.channels: " + JSON.stringify(this.document.channels));
+        console.log("this.document.channels: " + JSON.stringify(this.document.channels, (k,v) =>  ["_ownerDocument", "_parent"].includes(k) && !!v ? "<<circular reference>>" : v));
         this.selectChannel(this.document.channels.get(channel) as AaiChannelItem);
     }
 

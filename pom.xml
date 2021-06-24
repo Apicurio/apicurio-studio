@@ -78,7 +78,7 @@
         <version.buildnumber.plugin>1.4</version.buildnumber.plugin>
         <version.clean.plugin>3.1.0</version.clean.plugin>
         <version.compiler.plugin>3.8.1</version.compiler.plugin>
-        <version.dependency.plugin>3.1.2</version.dependency.plugin>
+        <version.dependency.plugin>3.2.0</version.dependency.plugin>
         <version.deploy.plugin>2.8.2</version.deploy.plugin>
         <version.gatling.plugin>3.1.2</version.gatling.plugin>
         <version.install.plugin>2.5.2</version.install.plugin>

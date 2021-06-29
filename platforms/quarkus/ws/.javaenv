@@ -1,9 +1,7 @@
-#apicurio.share.for.everyone=true
-
-# the debugger attachment port for the API
-debug=5091
-# the exposed port for the API
-quarkus.http.port=8091
+# the debugger attachment port for the WS
+debug=5092
+# the exposed port for the WS
+quarkus.http.port=8092
 
 # jvm proxy settings if needed
 #http.proxyHost=<corporate proxy setting>

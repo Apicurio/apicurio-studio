@@ -9,13 +9,13 @@ Make sure the KC's apicurio client lists the UI's (at least?) address as a valid
 To start the API
 ```bash
 qApiPath=platforms/quarkus/api
-HTTP_PORT=8091 mvn $(test -f "$qApiPath/.javaenv" && sed -e "/^$/d" -e "/^#/d" $qApiPath/.javaenv | while read line; do printf "-D%s " "$line"; done) -f $qApiPath/pom.xml quarkus:dev -Ddebug=5091
+mvn $(test -f "$qApiPath/.javaenv" && sed -e "/^$/d" -e "/^#/d" $qApiPath/.javaenv | while read line; do printf "-D%s " "$line"; done) -f $qApiPath/pom.xml quarkus:dev
 ```
 
 To start the WS
 ```bash
 qWsPath=platforms/quarkus/ws
-HTTP_PORT=8092 mvn -f $qWsPath/pom.xml quarkus:dev -Ddebug=5092
+mvn $(test -f "$qWsPath/.javaenv" && sed -e "/^$/d" -e "/^#/d" $qWsPath/.javaenv | while read line; do printf "-D%s " "$line"; done) -f $qWsPath/pom.xml quarkus:dev
 ```
 
 To start the UI (Tested with node 10)

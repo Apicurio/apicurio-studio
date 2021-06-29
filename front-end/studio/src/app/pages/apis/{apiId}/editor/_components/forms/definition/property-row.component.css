@@ -61,6 +61,22 @@
   filter: brightness(120%);
 }
 
+.property .header .minmax {
+  flex-basis: 41%;
+}
+.property .header .minmax:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.property .header .minmax .property-required {
+  font-weight: 600;
+  margin-right: 3px;
+}
+.property .header .minmax .property-required:hover {
+  filter: brightness(120%);
+}
+
 .property .header .actions {
   flex-basis: 2%;
   text-align: center;
@@ -100,6 +116,15 @@
   margin-bottom: 10px;
 }
 
+.property .body .property-minmax {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.property .body .property-pattern {
+  margin-bottom: 10px;
+}
+
 .property .body .property-required .dropdown {
   display: inline-block;
   margin-left: 3px;
@@ -112,5 +137,13 @@
 }
 
 .property .summary .parameter-required {
+  margin-right: 3px;
+}
+
+.property .header .minmax > .fa {
+  margin-right: 2px;
+}
+
+.property .minmax .parameter-required {
   margin-right: 3px;
 }

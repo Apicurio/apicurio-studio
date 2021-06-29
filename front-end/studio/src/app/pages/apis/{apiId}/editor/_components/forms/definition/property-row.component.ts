@@ -85,6 +85,14 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         return this.item.description
     }
 
+    public minimum(): number {
+        return this.item.minimum
+    }
+
+    public maximum(): number {
+        return this.item.maximum
+    }
+
     public isRequired(): boolean {
         let required: string[] = this.item.parent()["required"];
         if (required && required.length > 0) {
@@ -104,12 +112,36 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         ];
     }
 
+    public minimumIsSet(): string | null {
+        return  this.item.minimum ? this.item.minimum.toString() : null;
+    }
+
+    public maximumIsSet(): string | null {
+        return this.item.maximum ? this.item.maximum.toString() : null;
+    }
+
+    public minLengthIsSet(): string | null {
+        return  this.item.minLength ? this.item.minLength.toString() : null;
+    }
+
+    public maxLengthIsSet(): string | null {
+        return this.item.maxLength ? this.item.maxLength.toString() : null;
+    }
+
     public isEditingDescription(): boolean {
         return this.isEditingTab("description");
     }
 
     public isEditingSummary(): boolean {
         return this.isEditingTab("summary");
+    }
+
+    public isMinMaxEligible(): boolean  {
+        return this.item.type === "integer" || this.item.type === "float"
+    }
+
+    public isStringEligible(): boolean  {
+        return this.item.type === "string"
     }
 
     public toggleDescription(): void {
@@ -119,6 +151,15 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
     public toggleSummary(): void {
         this.toggleTab("summary");
     }
+
+    public toggleMinimum(): void {
+        this.toggleTab("minimum");
+    }
+
+    public toggleMaximum(): void {
+        this.toggleTab("maximum");
+    }
+
 
     public delete(): void {
         this.onDelete.emit();
@@ -137,6 +178,16 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         this.commandService.emit(command);
     }
 
+    public setNumValue(val: string, name: string): void {
+        let command: ICommand = CommandFactory.createChangePropertyCommand<number>(this.item, name, Number(val));
+        this.commandService.emit(command);
+    }
+
+    public setPattern(pattern: string): void {
+            let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "pattern", pattern);
+            this.commandService.emit(command);
+    }
+
     public changeRequired(newValue: string): void {
         this.model().required = newValue === "required";
         let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.item);
@@ -144,6 +195,15 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         let command: ICommand = CommandFactory.createChangePropertyTypeCommand(this.item, nt);
         this.commandService.emit(command);
     }
+
+    public changeMinMax(newValue: string): void {
+        // this.model().required = newValue === "required";
+        let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.item);
+        // nt.required = this.model().required;
+        let command: ICommand = CommandFactory.createChangePropertyTypeCommand(this.item, nt);
+        this.commandService.emit(command);
+    }
+
 
     public changeType(newType: SimplifiedType): void {
         let nt: SimplifiedPropertyType = new SimplifiedPropertyType();
@@ -156,5 +216,4 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         this.commandService.emit(command);
         this._model = nt;
     }
-
 }

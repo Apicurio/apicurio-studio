@@ -17,6 +17,7 @@
 
 import {Component, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
 import {
+    Aai20SecurityScheme, AaiDocument,
     CombinedVisitorAdapter,
     DocumentType,
     Oas20Scopes,
@@ -77,8 +78,19 @@ export interface SecurityScheme30Data extends SecuritySchemeData {
     flows: Flows;
 }
 
+export interface SecuritySchemeAai20Data extends SecuritySchemeData {
+    // *http* - Basic, Bearer, Digest
+    scheme: string;
+    // *http* - JWT, OAuth
+    bearerFormat: string;
+    // *openIdConnect*
+    openIdConnectUrl: string;
+    // *oauth2* - implicit, password, clientCredentials, authorizationCode
+    flows: Flows;
+}
+
 export interface SecuritySchemeEditorEvent extends EntityEditorEvent<SecurityScheme> {
-    data: SecurityScheme20Data | SecurityScheme30Data;
+    data: SecurityScheme20Data | SecurityScheme30Data | SecuritySchemeAai20Data;
 }
 
 export interface ISecuritySchemeEditorHandler extends IEntityEditorHandler<SecurityScheme, SecuritySchemeEditorEvent> {
@@ -110,7 +122,7 @@ export class SecuritySchemeEditorComponent extends EntityEditor<SecurityScheme, 
      * @param context
      * @param server
      */
-    public open(handler: ISecuritySchemeEditorHandler, context: OasDocument, scheme?: SecurityScheme): void {
+    public open(handler: ISecuritySchemeEditorHandler, context: OasDocument | AaiDocument, scheme?: SecurityScheme): void {
         super.open(handler, context, scheme);
     }
 
@@ -120,6 +132,10 @@ export class SecuritySchemeEditorComponent extends EntityEditor<SecurityScheme, 
 
     public is3x(): boolean {
         return this.context.ownerDocument().getDocumentType() == DocumentType.openapi3;
+    }
+
+    public isAai2x(): boolean {
+        return this.context.ownerDocument().getDocumentType() == DocumentType.asyncapi2;
     }
 
     /**
@@ -223,7 +239,7 @@ export class SecuritySchemeEditorComponent extends EntityEditor<SecurityScheme, 
                         scopes: []
                     }
                 }
-            } as SecurityScheme30Data;
+            } as SecurityScheme30Data | SecuritySchemeAai20Data;
         }
 
         if (scheme) {
@@ -238,7 +254,7 @@ export class SecuritySchemeEditorComponent extends EntityEditor<SecurityScheme, 
                 this.model.authorizationUrl = scheme20.authorizationUrl;
                 this.model.tokenUrl = scheme20.tokenUrl;
                 this.model.scopes = this.toScopesArray(scheme20.scopes);
-            } else {
+            } else if (this.context.ownerDocument().getDocumentType() == DocumentType.openapi3) {
                 let scheme30: Oas30SecurityScheme = scheme as Oas30SecurityScheme;
                 let model: SecurityScheme30Data = this.model as SecurityScheme30Data;
                 model.schemeName = scheme30.getSchemeName();
@@ -264,6 +280,32 @@ export class SecuritySchemeEditorComponent extends EntityEditor<SecurityScheme, 
                         this.oauthTab = "implicit";
                     }
                 }
+            } else {
+                let aai20SecurityScheme: Aai20SecurityScheme = scheme as Aai20SecurityScheme;
+                let model: SecuritySchemeAai20Data = this.model as SecuritySchemeAai20Data;
+                model.schemeName = aai20SecurityScheme.getSchemeName();
+                model.description = aai20SecurityScheme.description;
+                model.type = aai20SecurityScheme.type;
+                model.in = aai20SecurityScheme.in;
+                model.name = aai20SecurityScheme.name;
+                model.scheme = aai20SecurityScheme.scheme;
+                model.bearerFormat = aai20SecurityScheme.bearerFormat;
+                model.openIdConnectUrl = aai20SecurityScheme.openIdConnectUrl;
+                this.readFlows(aai20SecurityScheme);
+                if (!ObjectUtils.isNullOrUndefined(aai20SecurityScheme.flows)) {
+                    if (!ObjectUtils.isNullOrUndefined(aai20SecurityScheme.flows.authorizationCode)) {
+                        this.oauthTab = "authorizationCode";
+                    }
+                    if (!ObjectUtils.isNullOrUndefined(aai20SecurityScheme.flows.clientCredentials)) {
+                        this.oauthTab = "clientCredentials";
+                    }
+                    if (!ObjectUtils.isNullOrUndefined(aai20SecurityScheme.flows.password)) {
+                        this.oauthTab = "password";
+                    }
+                    if (!ObjectUtils.isNullOrUndefined(aai20SecurityScheme.flows.implicit)) {
+                        this.oauthTab = "implicit";
+                    }
+                }
             }
         }
     }
@@ -272,19 +314,19 @@ export class SecuritySchemeEditorComponent extends EntityEditor<SecurityScheme, 
      * Reads the flow information from the security scheme and copies it to the model.
      * @param scheme
      */
-    private readFlows(scheme: Oas30SecurityScheme) {
+    private readFlows(scheme: Oas30SecurityScheme | Aai20SecurityScheme) {
         if (!ObjectUtils.isNullOrUndefined(scheme.flows)) {
             if (!ObjectUtils.isNullOrUndefined(scheme.flows.implicit)) {
-                this.readFlowInto(scheme.flows.implicit, (this.model as SecurityScheme30Data).flows.implicit);
+                this.readFlowInto(scheme.flows.implicit, (this.model as SecurityScheme30Data | SecuritySchemeAai20Data).flows.implicit);
             }
             if (!ObjectUtils.isNullOrUndefined(scheme.flows.password)) {
-                this.readFlowInto(scheme.flows.password, (this.model as SecurityScheme30Data).flows.password);
+                this.readFlowInto(scheme.flows.password, (this.model as SecurityScheme30Data | SecuritySchemeAai20Data).flows.password);
             }
             if (!ObjectUtils.isNullOrUndefined(scheme.flows.authorizationCode)) {
-                this.readFlowInto(scheme.flows.authorizationCode, (this.model as SecurityScheme30Data).flows.authorizationCode);
+                this.readFlowInto(scheme.flows.authorizationCode, (this.model as SecurityScheme30Data | SecuritySchemeAai20Data).flows.authorizationCode);
             }
             if (!ObjectUtils.isNullOrUndefined(scheme.flows.clientCredentials)) {
-                this.readFlowInto(scheme.flows.clientCredentials, (this.model as SecurityScheme30Data).flows.clientCredentials);
+                this.readFlowInto(scheme.flows.clientCredentials, (this.model as SecurityScheme30Data | SecuritySchemeAai20Data).flows.clientCredentials);
             }
         }
     }
@@ -307,7 +349,7 @@ export class SecuritySchemeEditorComponent extends EntityEditor<SecurityScheme, 
      * @param scopes
      */
     private toScopesArray(scopes: any): Scope[] {
-        if (scopes && this.is3x()) {
+        if (scopes && (this.is3x() || this.isAai2x())) {
             let rval: Scope[] = [];
             for (let sk in scopes) {
                 let sd: string = scopes[sk]
@@ -382,6 +424,13 @@ export class SecuritySchemeEditorComponent extends EntityEditor<SecurityScheme, 
      */
     public model30(): SecurityScheme30Data {
         return this.model as SecurityScheme30Data;
+    }
+
+    /**
+     * Gets the Aai 2.0 version of the data model.
+     */
+    public modelAai20(): SecuritySchemeAai20Data {
+        return this.model as SecuritySchemeAai20Data;
     }
 
 }

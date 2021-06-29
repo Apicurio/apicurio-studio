@@ -901,7 +901,7 @@
 
 #channel-context-menu,
 #definition-context-menu,
-#message-context-menu
+#message-context-menu,
 #operationtrait-context-menu,
 #messagetrait-context-menu {
     display: block;

@@ -102,9 +102,9 @@
                 <icon-button (onClick)="addChannelDialog.open(document, getCurrentChannelSelection())" [pullRight]="true" type="add"></icon-button>
             </span>
             <div body tabindex="0" class="channel-list master-entity-list" (keydown)="onChannelsKeypress($event)" #channelList>
-                <signpost *ngIf="channels().length === 0">
+                <signpost *ngIf="!hasChannels()">
                     <span>No channels have been created.</span>
-                    <a (click)="addChannelDialog.open(document, '/')">Add a channel</a>
+                    <a (click)="addChannelDialog.open(document, '')">Add a channel</a>
                 </signpost>
 
                 <div class="api-channel {{ channelClasses(channel) }}" *ngFor="let channel of channels()">
@@ -123,7 +123,7 @@
                 <icon-button *ngIf="importsEnabled()" (onClick)="importDataTypes()" [pullRight]="true" type="import" title="Import Data Type"></icon-button>
             </span>
             <div body tabindex="0" class="definition-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #defList>
-                <signpost *ngIf="definitions().length === 0">
+                <signpost *ngIf="!hasDefinitions()">
                     <span>No reusable types have been created.</span>
                     <a (click)="openAddDefinitionEditor()">Add a data type</a>
                 </signpost>
@@ -142,7 +142,7 @@
                 <icon-button *ngIf="importsEnabled()" (onClick)="importMessageTraits()" [pullRight]="true" type="import" title="Import Message Traits"></icon-button>
             </span>
             <div body tabindex="0" class="operationtrait-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #opTraitList>
-                <signpost *ngIf="operationTraits().length === 0">
+                <signpost *ngIf="!hasOperationTraits()">
                     <span>No operation traits have been created.</span>
                     <a (click)="openAddOperationTraitEditor()">Add an operation trait</a>
                 </signpost>
@@ -164,7 +164,7 @@
                 <icon-button *ngIf="importsEnabled()" (onClick)="importMessageTraits()" [pullRight]="true" type="import" title="Import Message Traits"></icon-button>
             </span>
             <div body tabindex="0" class="messagetrait-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #msgTraitList>
-                <signpost *ngIf="messageTraits().length === 0">
+                <signpost *ngIf="!hasMessageTraits()">
                     <span>No message traits have been created.</span>
                     <a (click)="openAddMessageTraitEditor()">Add a message trait</a>
                 </signpost>
@@ -180,6 +180,13 @@
 
     <!-- Dialogs -->
     <add-channel-dialog #addChannelDialog (onAdd)="addChannel($event)"></add-channel-dialog>
+    <rename-entity-dialog #renameChannelDialog
+                          type="Channel"
+                          title="Rename Channel"
+                          warning="Renaming a Channel will also update its parameters."
+                          validationPattern="([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+"
+                          (onRename)="renameChannel($event)"></rename-entity-dialog>
+
     <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
     <rename-entity-dialog #renameDefinitionDialog
                           type="Data Type"

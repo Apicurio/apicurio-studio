@@ -1,0 +1,78 @@
+<div class="server" [class.expanded]="isEditing()">
+    <div class="header">
+        <div class="expand" (click)="toggle()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>
+        </div>
+        <div class="url" (click)="toggle()">
+            <validation-problem [model]="item"></validation-problem>
+            <span class="pficon pficon-server entity-icon"></span>
+            <span>{{ item.getName() }}</span>
+        </div>
+        <div class="protocol" (click)="toggle()">
+            <span>{{ item.protocol }}</span>
+            <span *ngIf="item.protocolVersion"> ({{ item.protocolVersion }}) </span>
+        </div>
+        <div class="description" (click)="toggle()">
+            <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>
+        </div>
+        <div class="security-summary" (click)="toggle()">
+            <span *ngIf="! item.security || item.security.length == 0">No Security Requirements</span>
+            <span *ngIf="item.security && item.security.length > 0">{{ item.security.length }} Security Requirement{{ item.security.length == 1 ? "" : "s" }}</span>
+        </div>
+        <div class="actions">
+            <div class="dropdown dropdown-kebab-pf">
+                <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a (click)="edit()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Edit</span></a></li>
+                    <li><a (click)="rename()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Rename</span></a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-11">
+                    <div class="server-description">
+                        <div class="form-label">Description</div>
+                        <inline-markdown-editor [value]="item.description" [noValueMessage]="'Enter description here.'"
+                                                [baseNode]="item" nodePath="description"
+                                                (onChange)="setDescription($event)"></inline-markdown-editor>
+                    </div>
+                    <div class="server-security">
+                        <div class="server-security-header">
+                            <div class="form-label">Security requirements</div>
+                            <div class="actions pull-right">
+                                <icon-button (onClick)="onAddSecurityRequirement()" [pullRight]="true" type="add"
+                                             [title]="'Add a security requirement.'"></icon-button>
+                                <icon-button (onClick)="deleteAllSecurityRequirements()" [disabled]="!hasSecurityRequirements()"
+                                             [pullRight]="true" type="delete"
+                                             [title]="'Delete all security requirements.'"></icon-button>
+                            </div>
+                        </div>
+                        <div class="server-security-body">
+                            <signpost *ngIf="!hasSecurityRequirements()">
+                                <span>No security requirement have been configured.</span>
+                                <a (click)="onAddSecurityRequirement()">Add a security requirement</a>
+                            </signpost>
+
+                            <!-- The list of security requirements -->
+                            <div class="tags" *ngIf="hasSecurityRequirements()">
+                                <aaisecurity-requirement-row *ngFor="let requirement of securityRequirements()"
+                                                             [item]="requirement"
+                                                             [parent]="item"
+                                                             (onEdit)="changeSecurityRequirement($event)"
+                                                             (onDelete)="deleteSecurityRequirement(requirement)"></aaisecurity-requirement-row>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

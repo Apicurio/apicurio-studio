@@ -65,12 +65,14 @@ import {MessageTraitEditorComponent} from "./_components/editors/messagetrait-ed
 import {ApiEditorComponentFeatures} from "./_models/features.model";
 import {FeaturesService} from "./_services/features.service";
 import {CollaboratorService} from "./_services/collaborator.service";
+import {ApiCatalogService} from "./_services/api-catalog.service";
 import {ArrayUtils, TopicSubscription} from "apicurio-ts-core";
 import {AbstractApiEditorComponent} from "./editor.base";
 import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
 import * as YAML from 'js-yaml';
+import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 
 
 @Component({
@@ -86,6 +88,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     @Input() embedded: boolean;
     @Input() features: ApiEditorComponentFeatures;
     @Input() validationRegistry: IValidationSeverityRegistry;
+    @Input() contentFetcher: (externalReference: string) => Promise<any>;
     @Input() componentImporter: (componentType: ComponentType) => Promise<ImportedComponent[]>;
 
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
@@ -113,8 +116,12 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
 
     private _selectionSubscription: TopicSubscription<string>;
     private _commandSubscription: TopicSubscription<ICommand>;
+    private _catalogSubscription: TopicSubscription<any>;
 
     @ViewChild("master") master: AsyncApiEditorMasterComponent;
+    @ViewChild("aaiServerEditor") aaiServerEditor: AaiServerEditorComponent;
+    @ViewChild("securitySchemeEditor") securitySchemeEditor: SecuritySchemeEditorComponent;
+    @ViewChild("securityRequirementEditor") securityRequirementEditor: SecurityRequirementEditorComponent;
     @ViewChild("dataTypeEditor") dataTypeEditor: DataTypeEditorComponent;
     @ViewChild("operationTraitEditor") operationTraitEditor: OperationTraitEditorComponent;
     @ViewChild("messageTraitEditor") messageTraitEditor: MessageTraitEditorComponent;
@@ -133,8 +140,18 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
      */
     constructor(private selectionService: SelectionService, private commandService: CommandService,
                 private documentService: DocumentService, private editorsService: EditorsService,
-                private featuresService: FeaturesService, private collaboratorService: CollaboratorService) {
+                private featuresService: FeaturesService, private collaboratorService: CollaboratorService,
+                private catalog: ApiCatalogService) {
         super();
+
+        console.debug("[AsyncApiEditorComponent] Subscribing to API Catalog changes.");
+        this._catalogSubscription = this.catalog.changes().subscribe( () => {
+            console.debug("[AsyncApiEditorComponent] Re-validating model due to API Catalog change.");
+            // Re-validate whenever the contents of the API catalog change
+            this.validateModel();
+            // Make sure any validation widgets refresh themselves
+            this.documentService.emitChange();
+        });
     }
 
     /**
@@ -162,6 +179,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     public ngOnDestroy(): void {
         this._selectionSubscription.unsubscribe();
         this._commandSubscription.unsubscribe();
+        this._catalogSubscription.unsubscribe();
     }
 
     /**
@@ -169,6 +187,10 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
      * @param changes
      */
     ngOnChanges(changes: SimpleChanges): void {
+        if (changes["contentFetcher"]) {
+            this.catalog.setFetcher(this.contentFetcher);
+        }
+
         if (changes["api"]) {
             this.selectionService.reset();
             this.collaboratorService.reset();
@@ -185,6 +207,8 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
             // Fire an event in the doc service indicating that there is a new document.
             this.documentService.setDocument(this.document());
             this.selectionService.selectRoot();
+
+            this.catalog.reset(this.document());
         }
 
         if (changes["features"]) {
@@ -500,6 +524,9 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         // Update the form being displayed (this might change if the thing currently selected was deleted)
         this.updateFormDisplay(this.selectionService.currentSelection());
 
+        // Potentially update the API catalog
+        this.catalog.update(this.documentService.currentDocument());
+
         // Set the current state
         this.sourceOriginal = this.sourceValue;
         this.sourceIsValid = true;
@@ -577,12 +604,16 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         return null;
     }
 
+    public getAaiServerEditor(): AaiServerEditorComponent {
+        return this.aaiServerEditor;
+    }
+
     public getSecuritySchemeEditor(): SecuritySchemeEditorComponent {
-        return null;
+        return this.securitySchemeEditor;
     }
 
     public getSecurityRequirementEditor(): SecurityRequirementEditorComponent {
-        return null;
+        return this.securityRequirementEditor;
     }
 
     public getDataTypeEditor(): DataTypeEditorComponent {

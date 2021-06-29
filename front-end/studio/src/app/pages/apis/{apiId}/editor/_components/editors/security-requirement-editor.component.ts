@@ -17,7 +17,13 @@
 
 import {Component, ViewEncapsulation} from "@angular/core";
 import {
+    Aai20AuthorizationCodeOAuthFlow,
+    Aai20ClientCredentialsOAuthFlow,
+    Aai20ImplicitOAuthFlow,
+    Aai20PasswordOAuthFlow,
+    AaiServer,
     CombinedVisitorAdapter,
+    Document,
     Oas20Scopes,
     Oas30AuthorizationCodeOAuthFlow,
     Oas30ClientCredentialsOAuthFlow,
@@ -25,8 +31,8 @@ import {
     Oas30PasswordOAuthFlow,
     OasDocument,
     OasOperation,
-    OasSecurityRequirement,
     OAuthFlow,
+    SecurityRequirement,
     SecurityScheme,
     TraverserDirection,
     VisitorUtil
@@ -40,7 +46,7 @@ export interface SecurityRequirementData {
     [key: string]: string[];
 }
 
-export interface SecurityRequirementEditorEvent extends EntityEditorEvent<OasSecurityRequirement> {
+export interface SecurityRequirementEditorEvent extends EntityEditorEvent<SecurityRequirement> {
     data: SecurityRequirementData;
 }
 
@@ -49,7 +55,7 @@ export interface ScopeInfo {
     description: string;
 }
 
-export interface ISecurityRequirementEditorHandler extends IEntityEditorHandler<OasSecurityRequirement, SecurityRequirementEditorEvent> {
+export interface ISecurityRequirementEditorHandler extends IEntityEditorHandler<SecurityRequirement, SecurityRequirementEditorEvent> {
     onSave(event: SecurityRequirementEditorEvent): void;
     onCancel(event: SecurityRequirementEditorEvent): void;
 }
@@ -62,7 +68,7 @@ export interface ISecurityRequirementEditorHandler extends IEntityEditorHandler<
     styleUrls: ["security-requirement-editor.component.css"],
     encapsulation: ViewEncapsulation.None
 })
-export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurityRequirement, SecurityRequirementEditorEvent> {
+export class SecurityRequirementEditorComponent extends EntityEditor<SecurityRequirement, SecurityRequirementEditorEvent> {
 
     public _expanded: any;
 
@@ -85,12 +91,12 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param context
      * @param server
      */
-    public open(handler: ISecurityRequirementEditorHandler, context: OasDocument | OasOperation, requirement?: OasSecurityRequirement): void {
+    public open(handler: ISecurityRequirementEditorHandler, context: OasDocument | OasOperation | AaiServer, requirement?: SecurityRequirement): void {
         this._expanded = {};
         this.model = {};
         this.anonEnabled = false;
         this.scopeCache = {};
-        this.schemes = this.findSchemes(<OasDocument> context.ownerDocument());
+        this.schemes = this.findSchemes(context.ownerDocument());
         super.open(handler, context, requirement);
 
         if (requirement) {
@@ -104,7 +110,7 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * Initializes the editor's data model from a provided entity.
      * @param entity
      */
-    public initializeModelFromEntity(entity: OasSecurityRequirement): void {
+    public initializeModelFromEntity(entity: SecurityRequirement): void {
         let names: string[] = entity.getSecurityRequirementNames();
         if (names.length === 0) {
             this.anonEnabled = true;
@@ -303,7 +309,7 @@ export class SecurityRequirementEditorComponent extends EntityEditor<OasSecurity
      * @param document
      * @return
      */
-    public findSchemes(document: OasDocument): SecurityScheme[] {
+    public findSchemes(document: Document): SecurityScheme[] {
         let visitor: SecuritySchemeFinder = new SecuritySchemeFinder();
         VisitorUtil.visitTree(document, visitor, TraverserDirection.down);
         return visitor.schemes();
@@ -366,9 +372,9 @@ class ScopeFinder extends CombinedVisitorAdapter {
         }
     }
 
-    public visitImplicitOAuthFlow(node: Oas30ImplicitOAuthFlow): void { this.visitOAuthFlow(node); }
-    public visitPasswordOAuthFlow(node: Oas30PasswordOAuthFlow): void { this.visitOAuthFlow(node); }
-    public visitClientCredentialsOAuthFlow(node: Oas30ClientCredentialsOAuthFlow): void { this.visitOAuthFlow(node); }
-    public visitAuthorizationCodeOAuthFlow(node: Oas30AuthorizationCodeOAuthFlow): void { this.visitOAuthFlow(node); }
+    public visitImplicitOAuthFlow(node: Oas30ImplicitOAuthFlow | Aai20ImplicitOAuthFlow): void { this.visitOAuthFlow(node); }
+    public visitPasswordOAuthFlow(node: Oas30PasswordOAuthFlow | Aai20PasswordOAuthFlow): void { this.visitOAuthFlow(node); }
+    public visitClientCredentialsOAuthFlow(node: Oas30ClientCredentialsOAuthFlow | Aai20ClientCredentialsOAuthFlow): void { this.visitOAuthFlow(node); }
+    public visitAuthorizationCodeOAuthFlow(node: Oas30AuthorizationCodeOAuthFlow | Aai20AuthorizationCodeOAuthFlow): void { this.visitOAuthFlow(node); }
 
 }

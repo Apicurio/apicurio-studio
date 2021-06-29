@@ -23,7 +23,7 @@ import {
     AaiDocument,
     Node,
     OasOperation,
-    OasPathItem, IDefinition, OasSchema, AaiSchema
+    OasPathItem, IDefinition, OasSchema, AaiSchema, AaiServer
 } from "apicurio-data-models";
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
 import {KeypressUtils} from "../../_util/keypress.util";
@@ -48,7 +48,7 @@ export abstract class EntityEditor<T extends Node, E extends EntityEditorEvent<T
     public _mode: string = "create";
 
     public handler: IEntityEditorHandler<T, E>;
-    public context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition | AaiDocument | Aai20SchemaDefinition;
+    public context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition | AaiDocument | Aai20SchemaDefinition | AaiServer;
     public entity: T;
 
     /**
@@ -58,7 +58,7 @@ export abstract class EntityEditor<T extends Node, E extends EntityEditorEvent<T
      * @param entity
      */
     public open(handler: IEntityEditorHandler<T, E>,
-                context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition | AaiDocument | Aai20SchemaDefinition,
+                context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition | AaiDocument | Aai20SchemaDefinition | AaiServer,
                 entity?: T): void {
         this.context = context;
         this.handler = handler;

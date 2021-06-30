@@ -239,6 +239,22 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         }
     }
 
+    public isOpenApi20(): boolean {
+        return this.apiDefinition.type === "OpenAPI20";
+    }
+
+    public isOpenApi30(): boolean {
+        return this.apiDefinition.type === "OpenAPI30";
+    }
+
+    public isAsyncApi20(): boolean {
+        return this.apiDefinition.type === "AsyncAPI20";
+    }
+
+    public isGraphQL(): boolean {
+        return this.apiDefinition.type === "GraphQL";
+    }
+
     /**
      * The page title.
      * 
@@ -461,9 +477,9 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     public loadingState(): string {
         if (this.isLoaded("session")) {
-            if (this.apiDefinition.type === "OpenAPI20" || this.apiDefinition.type === "OpenAPI30") {
+            if (this.isOpenApi20() || this.isOpenApi30()) {
                 return "loaded-oai";
-            } else if (this.apiDefinition.type === "AsyncAPI20") {
+            } else if (this.isAsyncApi20()) {
                 return "loaded-aai";
             } else {
                 return "loaded-graphql";
@@ -855,6 +871,14 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         this.isOffline = true;
         this.editorDisconnectedModal.close();
         this.startRetryTimer();
+    }
+
+    public actionEnabled(action: string): boolean {
+        if (action == "preview-docs") {
+            return this.isOpenApi20() || this.isOpenApi30();
+        }
+
+        return true;
     }
 
 }

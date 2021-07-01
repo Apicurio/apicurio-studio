@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="api-actions">
-            <a class="btn btn-default" (click)="openLivePreview()"><span class="fa fa-eye"></span> Live Documentation</a>
+            <a class="btn btn-default" *ngIf="actionEnabled('preview-docs')" (click)="openLivePreview()"><span class="fa fa-eye"></span> Live Documentation</a>
         </div>
     </div>
 </div>

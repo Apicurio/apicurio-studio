@@ -646,6 +646,9 @@
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>${version.frontend-maven.plugin}</version>
+                <configuration>
+                    <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
+                </configuration>
             </plugin>
         </plugins>
     </build>

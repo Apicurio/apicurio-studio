@@ -268,7 +268,7 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             return this.canDelete;
         }
         if (action == "collaborate") {
-            return !this.config.isShareWithEveryoneEnabled() && !this.isAsyncApi20() && !this.isGraphQL();
+            return !this.config.isShareWithEveryoneEnabled() && !this.isGraphQL();
         }
         if (action == "generate-project") {
             return this.isOpenApi20() || this.isOpenApi30();

@@ -50,6 +50,37 @@
                             <schema-type-editor [document]="document()" [value]="model()" [isParameter]="isParameter()"
                                                 (onChange)="changeType($event)"></schema-type-editor>
                         </div>
+
+                        <div class="property-minmax" *ngIf="isMinMaxEligible()">
+                            <div class="form-label">Minimum</div>
+                            <inline-markdown-editor [value]="minimumIsSet()" [noValueMessage]="'No minimum.'"
+                                                    [baseNode]="item" nodePath="minimum"
+                                                    (onChange)="setNumValue($event,'minimum')"></inline-markdown-editor>
+
+                            <div class="form-label">Maximum</div>
+                            <inline-markdown-editor [value]="maximumIsSet()" [noValueMessage]="'No maximum.'"
+                                                    [baseNode]="item" nodePath="maximum"
+                                                    (onChange)="setNumValue($event,'maximum')"></inline-markdown-editor>
+                        </div>
+
+                        <div class="property-minmax" *ngIf="isStringEligible()">
+                            <div class="form-label">MinLength</div>
+                            <inline-markdown-editor [value]="minLengthIsSet()" [noValueMessage]="'No minLength.'"
+                                                    [baseNode]="item" nodePath="minLength"
+                                                    (onChange)="setNumValue($event,'minLength')"></inline-markdown-editor>
+
+                            <div class="form-label">MaxLength</div>
+                            <inline-markdown-editor [value]="maxLengthIsSet()" [noValueMessage]="'No maxLength.'"
+                                                    [baseNode]="item" nodePath="maxLength"
+                                                    (onChange)="setNumValue($event,'maxLength')"></inline-markdown-editor>
+                        </div>
+
+                        <div class="property-pattern" *ngIf="isStringEligible()">
+                            <div class="form-label">Pattern</div>
+                            <inline-markdown-editor [value]="item.pattern" [noValueMessage]="'No pattern.'"
+                                                    [baseNode]="item" nodePath="pattern"
+                                                    (onChange)="setPattern($event)"></inline-markdown-editor>
+                        </div>
                     </div>
                 </div>
             </form>

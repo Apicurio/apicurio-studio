@@ -6216,20 +6216,20 @@ ngx-bootstrap@5.6.2:
   resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-5.6.2.tgz#e648f826d303c29255c16772676efd30695740d1"
   integrity sha512-6YHXtdXkGH3w0NQoaUgNYAcrj064Lv5RTO284ha/hvpNTrh55yQz2cVh0VvwBk3MjyY2tdmLH4SuCJDszYdYiw==
 
-ngx-clipboard@12.3.1:
-  version "12.3.1"
-  resolved "https://registry.yarnpkg.com/ngx-clipboard/-/ngx-clipboard-12.3.1.tgz#565d73b946b10719242e532e748ad912cf8bc97a"
-  integrity sha512-qrUmkfYXEBQZQ4wNKno8yw5eOSxtdkzCPFFPil/XVVc93MNIKUme8aLbS3TEMB4PGsxopjbuTAzV7fptiSOIww==
+ngx-clipboard@14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-clipboard/-/ngx-clipboard-14.0.1.tgz#fe977ee115f50f6a589487f6f99fa5eef5203763"
+  integrity sha512-y6fDrvAso1cbM+VvHgB2kJ3dcQ/EBPol33nLaqqKB1jNO/Kd3l17EHdXNW/oKY0wUKCHk7ZCuiinREgUHEYfXg==
   dependencies:
-    ngx-window-token "^2.0.0"
-    tslib "^1.9.0"
+    ngx-window-token ">=4.0.0"
+    tslib "^2.0.0"
 
-ngx-window-token@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/ngx-window-token/-/ngx-window-token-2.0.1.tgz#8f91221af4116aa9f49bb3f7a6f1111639884fba"
-  integrity sha512-rvqdqJEfnWXQFU5fyfYt06E10tR/UtFOYdF3QebfcOh5VIJhnTKiprX8e4B9OrX7WEVFm9BT8uV72xXcEgsaKA==
+ngx-window-token@>=4.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-window-token/-/ngx-window-token-5.0.0.tgz#ca63a25038c9fdd73159857276ff67ec7f5b730b"
+  integrity sha512-DhigCrm9QO8R29lqJYzBC9aaTU0KiWgdnt8RNcTN/DvMaS7shfzAqyvUtxSIm/+JR4gW5JKqR/JODU8760nJMw==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 nice-try@^1.0.4:
   version "1.0.5"

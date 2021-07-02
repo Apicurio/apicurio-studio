@@ -59,7 +59,7 @@
     "marked": "0.7.0",
     "moment": "2.23.0",
     "ng-packagr": "^11.2.4",
-    "ngx-bootstrap": "6.2.0",
+    "ngx-bootstrap": "^7.0.0-rc.1",
     "ngx-clipboard": "^15.0.0-beta01",
     "patternfly": "3.59.1",
     "pluralize": "7.0.0",

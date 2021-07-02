@@ -6285,10 +6285,12 @@ ng-packagr@^11.2.4:
     sync-rpc "^1.3.6"
     terser "^5.5.1"
 
-ngx-bootstrap@6.2.0:
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-6.2.0.tgz#678b274dabfda31411eb1234c981d1967750d890"
-  integrity sha512-5WKHo6/ltkenw4UyXZwED8rODCgp2RGbWurzYzZsF/gH1JO5SN7TJ+AL6kXYk6XM42sDA2WhN9Db+ZPNjiyHnA==
+ngx-bootstrap@^7.0.0-rc.1:
+  version "7.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-7.0.0-rc.1.tgz#fc38d7a7c7ae78db3d6c404995da4e85773bfec0"
+  integrity sha512-ZwKzbzO3wp9mDojV5pXi6VhKhPmzIiJoQW5aRleUGGjYwEkzDtdlaAv9NdA6KnCH+WpZBma/pbjPgcisEkfH4w==
+  dependencies:
+    tslib "^2.0.0"
 
 ngx-clipboard@^15.0.0-beta01:
   version "15.0.0-beta01"

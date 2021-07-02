@@ -16,12 +16,13 @@
  */
 
 import {AbstractBaseComponent} from "./base-component";
-import {ChangeDetectorRef, Input, SimpleChanges} from "@angular/core";
+import { ChangeDetectorRef, Input, SimpleChanges, Directive } from "@angular/core";
 import {OasDocument, Node} from "apicurio-data-models";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
 import {ModelUtils} from "../../_util/model.util";
 
+@Directive()
 export abstract class AbstractRowComponent<T extends Node, M> extends AbstractBaseComponent {
 
     @Input() item: T;

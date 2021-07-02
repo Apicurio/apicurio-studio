@@ -98,7 +98,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     @ViewChild("cloneDefinitionDialog", { static: true }) cloneDefinitionDialog: CloneDefinitionDialogComponent;
     @ViewChild("renameDefinitionDialog", { static: true }) renameDefinitionDialog: RenameEntityDialogComponent;
 
-    @ViewChild("renameOperationTraitDialog", { static: false }) renameOperationTraitDialog: RenameEntityDialogComponent;
+    @ViewChild("renameOperationTraitDialog") renameOperationTraitDialog: RenameEntityDialogComponent;
     @ViewChild("renameMessageTraitDialog", { static: true }) renameMessageTraitDialog: RenameEntityDialogComponent;
 
     filterCriteria: string = null;

@@ -115,7 +115,7 @@ export class DropDownComponent {
         }
     }
 
-    @ViewChild("filter", { static: false }) filter: ElementRef;
+    @ViewChild("filter") filter: ElementRef;
     criteria: string;
     filteredOptions: DropDownOption[];
 

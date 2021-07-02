@@ -5723,18 +5723,18 @@ ngx-bootstrap@5.5.0:
   resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-5.5.0.tgz#29646053a7ff8c4b1d51704c841f926d74e3a7ea"
   integrity sha512-BJeghbkKFQl49sg3GIYQyjvwaHn64xFOsinBVD8HWKOVpRJSnuafrjXByGDtfq35jGY4R+7iBLksM1IYLUPshg==
 
-ngx-clipboard@11.1.9:
-  version "11.1.9"
-  resolved "https://registry.yarnpkg.com/ngx-clipboard/-/ngx-clipboard-11.1.9.tgz#a391853dc49e436de407260863a2c814d73a9332"
-  integrity sha512-xF54Ibt/04g2B5SnYylNz7ESP1/thuC7odo+0bKkgbCC873NaqP1VTVx/umh/cnezlXKu8zuWNzzg05tvfgaJg==
+ngx-clipboard@12.3.1:
+  version "12.3.1"
+  resolved "https://registry.yarnpkg.com/ngx-clipboard/-/ngx-clipboard-12.3.1.tgz#565d73b946b10719242e532e748ad912cf8bc97a"
+  integrity sha512-qrUmkfYXEBQZQ4wNKno8yw5eOSxtdkzCPFFPil/XVVc93MNIKUme8aLbS3TEMB4PGsxopjbuTAzV7fptiSOIww==
   dependencies:
-    ngx-window-token "^1.0.2"
+    ngx-window-token "^2.0.0"
     tslib "^1.9.0"
 
-ngx-window-token@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/ngx-window-token/-/ngx-window-token-1.0.2.tgz#2ebadd300fee1f61eb8b851b0ad97b1f46f5e4cc"
-  integrity sha512-bFgvi7MYSK1p4b3Mqvn9+biXaO8QDEbpP2sEMSwr0Zgrwh6zCO3F92a6SIIzusqpZBAhxyfVSqj3mO5qIxlM5Q==
+ngx-window-token@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/ngx-window-token/-/ngx-window-token-2.0.1.tgz#8f91221af4116aa9f49bb3f7a6f1111639884fba"
+  integrity sha512-rvqdqJEfnWXQFU5fyfYt06E10tR/UtFOYdF3QebfcOh5VIJhnTKiprX8e4B9OrX7WEVFm9BT8uV72xXcEgsaKA==
   dependencies:
     tslib "^1.9.0"
 

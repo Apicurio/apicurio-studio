@@ -6211,10 +6211,10 @@ ng-packagr@^10.1.0:
     stylus "^0.54.7"
     terser "^5.0.0"
 
-ngx-bootstrap@5.6.2:
-  version "5.6.2"
-  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-5.6.2.tgz#e648f826d303c29255c16772676efd30695740d1"
-  integrity sha512-6YHXtdXkGH3w0NQoaUgNYAcrj064Lv5RTO284ha/hvpNTrh55yQz2cVh0VvwBk3MjyY2tdmLH4SuCJDszYdYiw==
+ngx-bootstrap@6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-6.2.0.tgz#678b274dabfda31411eb1234c981d1967750d890"
+  integrity sha512-5WKHo6/ltkenw4UyXZwED8rODCgp2RGbWurzYzZsF/gH1JO5SN7TJ+AL6kXYk6XM42sDA2WhN9Db+ZPNjiyHnA==
 
 ngx-clipboard@14.0.1:
   version "14.0.1"

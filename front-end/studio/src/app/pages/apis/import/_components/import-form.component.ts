@@ -97,7 +97,7 @@ export class ImportApiFormComponent {
                 let reader: FileReader = new FileReader();
                 reader.onload = (fileLoadedEvent) => {
                     console.info("[ImportApiFormComponent] JSON/YAML file read.");
-                    let content: string = fileLoadedEvent.target["result"];
+                    let content = fileLoadedEvent.target["result"] as string; // guaranteed to be string as `readAsText` is used bellow
                     this.model.data = content;
                     this.model.url = null;
                     this.importType = "from-text";

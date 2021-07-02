@@ -6290,10 +6290,10 @@ ngx-bootstrap@6.2.0:
   resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-6.2.0.tgz#678b274dabfda31411eb1234c981d1967750d890"
   integrity sha512-5WKHo6/ltkenw4UyXZwED8rODCgp2RGbWurzYzZsF/gH1JO5SN7TJ+AL6kXYk6XM42sDA2WhN9Db+ZPNjiyHnA==
 
-ngx-clipboard@14.0.1:
-  version "14.0.1"
-  resolved "https://registry.yarnpkg.com/ngx-clipboard/-/ngx-clipboard-14.0.1.tgz#fe977ee115f50f6a589487f6f99fa5eef5203763"
-  integrity sha512-y6fDrvAso1cbM+VvHgB2kJ3dcQ/EBPol33nLaqqKB1jNO/Kd3l17EHdXNW/oKY0wUKCHk7ZCuiinREgUHEYfXg==
+ngx-clipboard@^15.0.0-beta01:
+  version "15.0.0-beta01"
+  resolved "https://registry.yarnpkg.com/ngx-clipboard/-/ngx-clipboard-15.0.0-beta01.tgz#cbf12bc624a356ec382b3e9e8856d55f680ae595"
+  integrity sha512-JFmuiR0cjDu+oCvo3sAfI8SiSSNPVKkOQZNsFQ6m6d3dxOsp/AQenVzkkEMkLFdStR0/d+oY3FQg6qZz/EYj2A==
   dependencies:
     ngx-window-token ">=4.0.0"
     tslib "^2.0.0"

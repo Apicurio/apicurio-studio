@@ -6255,10 +6255,10 @@ ng-packagr@^9.0.0:
     terser "^4.3.8"
     update-notifier "^4.0.0"
 
-ngx-bootstrap@3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-3.2.0.tgz#ece7c48af0bc260462c3f77de14f22d4b3dde149"
-  integrity sha512-oLSLIWZgRiIfcuxyXLMZUOhX3wZtg6lpuMbdo/0UzMDg2bSOe1XPskcKZ/iuOa3FOlU9rjuYMzswHYYV5f/QCA==
+ngx-bootstrap@5.6.2:
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/ngx-bootstrap/-/ngx-bootstrap-5.6.2.tgz#e648f826d303c29255c16772676efd30695740d1"
+  integrity sha512-6YHXtdXkGH3w0NQoaUgNYAcrj064Lv5RTO284ha/hvpNTrh55yQz2cVh0VvwBk3MjyY2tdmLH4SuCJDszYdYiw==
 
 ngx-clipboard@12.3.1:
   version "12.3.1"

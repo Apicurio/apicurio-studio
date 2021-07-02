@@ -118,14 +118,14 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     private _commandSubscription: TopicSubscription<ICommand>;
     private _catalogSubscription: TopicSubscription<any>;
 
-    @ViewChild("master") master: AsyncApiEditorMasterComponent;
-    @ViewChild("aaiServerEditor") aaiServerEditor: AaiServerEditorComponent;
-    @ViewChild("securitySchemeEditor") securitySchemeEditor: SecuritySchemeEditorComponent;
-    @ViewChild("securityRequirementEditor") securityRequirementEditor: SecurityRequirementEditorComponent;
-    @ViewChild("dataTypeEditor") dataTypeEditor: DataTypeEditorComponent;
-    @ViewChild("operationTraitEditor") operationTraitEditor: OperationTraitEditorComponent;
-    @ViewChild("messageTraitEditor") messageTraitEditor: MessageTraitEditorComponent;
-    @ViewChild("propertyEditor") propertyEditor: PropertyEditorComponent;
+    @ViewChild("master", { static: true }) master: AsyncApiEditorMasterComponent;
+    @ViewChild("aaiServerEditor", { static: true }) aaiServerEditor: AaiServerEditorComponent;
+    @ViewChild("securitySchemeEditor", { static: true }) securitySchemeEditor: SecuritySchemeEditorComponent;
+    @ViewChild("securityRequirementEditor", { static: true }) securityRequirementEditor: SecurityRequirementEditorComponent;
+    @ViewChild("dataTypeEditor", { static: true }) dataTypeEditor: DataTypeEditorComponent;
+    @ViewChild("operationTraitEditor", { static: true }) operationTraitEditor: OperationTraitEditorComponent;
+    @ViewChild("messageTraitEditor", { static: true }) messageTraitEditor: MessageTraitEditorComponent;
+    @ViewChild("propertyEditor", { static: true }) propertyEditor: PropertyEditorComponent;
 
     formType: string;
 

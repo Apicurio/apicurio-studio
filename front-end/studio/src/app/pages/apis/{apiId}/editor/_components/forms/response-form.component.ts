@@ -78,8 +78,8 @@ export class ResponseFormComponent extends SourceFormComponent<OasResponse> {
         return this._response;
     }
 
-    @ViewChild("cloneResponseDialog") cloneResponseDialog: CloneResponseDefinitionDialogComponent;
-    @ViewChild("renameResponseDialog") renameResponseDialog: RenameEntityDialogComponent;
+    @ViewChild("cloneResponseDialog", { static: true }) cloneResponseDialog: CloneResponseDefinitionDialogComponent;
+    @ViewChild("renameResponseDialog", { static: true }) renameResponseDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

@@ -65,7 +65,7 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
     @Input() parent: IOasParameterParent;
     @Input() path: OasPathItem;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     private _headerParameters: OasParameter[] = null;
 

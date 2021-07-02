@@ -72,7 +72,7 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
 
     @Input() operation: Oas20Operation | Oas30Operation;
 
-    @ViewChild("renameFormDataDialog") renameFormDataDialog: RenameEntityDialogComponent;
+    @ViewChild("renameFormDataDialog", { static: true }) renameFormDataDialog: RenameEntityDialogComponent;
 
     public showRequestBody: boolean;
 

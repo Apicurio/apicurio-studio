@@ -118,14 +118,14 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     private _commandSubscription: TopicSubscription<ICommand>;
     private _catalogSubscription: TopicSubscription<any>;
 
-    @ViewChild("master") master: EditorMasterComponent;
-    @ViewChild("serverEditor") serverEditor: ServerEditorComponent;
-    @ViewChild("securitySchemeEditor") securitySchemeEditor: SecuritySchemeEditorComponent;
-    @ViewChild("securityRequirementEditor") securityRequirementEditor: SecurityRequirementEditorComponent;
-    @ViewChild("dataTypeEditor") dataTypeEditor: DataTypeEditorComponent;
-    @ViewChild("responseEditor") responseEditor: ResponseEditorComponent;
-    @ViewChild("parameterEditor") parameterEditor: ParameterEditorComponent;
-    @ViewChild("propertyEditor") propertyEditor: PropertyEditorComponent;
+    @ViewChild("master", { static: true }) master: EditorMasterComponent;
+    @ViewChild("serverEditor", { static: true }) serverEditor: ServerEditorComponent;
+    @ViewChild("securitySchemeEditor", { static: true }) securitySchemeEditor: SecuritySchemeEditorComponent;
+    @ViewChild("securityRequirementEditor", { static: true }) securityRequirementEditor: SecurityRequirementEditorComponent;
+    @ViewChild("dataTypeEditor", { static: true }) dataTypeEditor: DataTypeEditorComponent;
+    @ViewChild("responseEditor", { static: true }) responseEditor: ResponseEditorComponent;
+    @ViewChild("parameterEditor", { static: true }) parameterEditor: ParameterEditorComponent;
+    @ViewChild("propertyEditor", { static: true }) propertyEditor: PropertyEditorComponent;
 
     formType: string;
 

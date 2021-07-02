@@ -34,7 +34,7 @@ import {Base64} from "js-base64";
 })
 export class CreateApiPageComponent extends AbstractPageComponent {
 
-    @ViewChild("createApiForm") form: CreateApiFormComponent;
+    @ViewChild("createApiForm", { static: false }) form: CreateApiFormComponent;
 
     /**
      * Constructor.

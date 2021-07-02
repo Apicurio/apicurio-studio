@@ -54,7 +54,7 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
 
     @Input() definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
-    @ViewChild("renamePropertyDialog") renamePropertyDialog: RenameEntityDialogComponent;
+    @ViewChild("renamePropertyDialog", { static: true }) renamePropertyDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

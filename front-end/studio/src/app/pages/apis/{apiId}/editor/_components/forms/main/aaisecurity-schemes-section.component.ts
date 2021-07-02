@@ -61,7 +61,7 @@ export class AaiSecuritySchemesSectionComponent extends AbstractBaseComponent {
 
     @Input() document: AaiDocument;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

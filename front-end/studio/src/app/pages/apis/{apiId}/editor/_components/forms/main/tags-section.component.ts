@@ -52,7 +52,7 @@ export class TagsSectionComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

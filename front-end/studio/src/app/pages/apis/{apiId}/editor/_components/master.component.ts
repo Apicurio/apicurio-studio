@@ -97,15 +97,15 @@ export class EditorMasterComponent extends AbstractBaseComponent {
         top: "0px"
     };
 
-    @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
-    @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
-    @ViewChild("renamePathDialog") renamePathDialog: RenamePathDialogComponent;
+    @ViewChild("addPathDialog", { static: true }) addPathDialog: AddPathDialogComponent;
+    @ViewChild("clonePathDialog", { static: true }) clonePathDialog: ClonePathDialogComponent;
+    @ViewChild("renamePathDialog", { static: true }) renamePathDialog: RenamePathDialogComponent;
 
-    @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
-    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameEntityDialogComponent;
+    @ViewChild("cloneDefinitionDialog", { static: true }) cloneDefinitionDialog: CloneDefinitionDialogComponent;
+    @ViewChild("renameDefinitionDialog", { static: true }) renameDefinitionDialog: RenameEntityDialogComponent;
 
-    @ViewChild("cloneResponseDialog") cloneResponseDialog: CloneResponseDefinitionDialogComponent;
-    @ViewChild("renameResponseDialog") renameResponseDialog: RenameEntityDialogComponent;
+    @ViewChild("cloneResponseDialog", { static: true }) cloneResponseDialog: CloneResponseDefinitionDialogComponent;
+    @ViewChild("renameResponseDialog", { static: true }) renameResponseDialog: RenameEntityDialogComponent;
 
     filterCriteria: string = null;
     _paths: OasPathItem[];

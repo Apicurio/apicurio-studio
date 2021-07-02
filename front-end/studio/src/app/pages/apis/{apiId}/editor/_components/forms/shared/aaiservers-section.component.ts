@@ -45,7 +45,7 @@ export class AaiServersSectionComponent extends AbstractBaseComponent {
     @Input() collapsed: boolean;
     @Input() description: string;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     public showSectionBody: boolean;
 

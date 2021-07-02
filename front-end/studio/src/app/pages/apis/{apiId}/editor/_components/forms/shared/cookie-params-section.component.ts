@@ -64,7 +64,7 @@ export class CookieParamsSectionComponent extends AbstractBaseComponent {
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
     @Input() path: OasPathItem;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     private _cookieParameters: OasParameter[] = null;
 

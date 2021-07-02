@@ -85,8 +85,8 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         return this._definition;
     }
 
-    @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
-    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameEntityDialogComponent;
+    @ViewChild("cloneDefinitionDialog", { static: true }) cloneDefinitionDialog: CloneDefinitionDialogComponent;
+    @ViewChild("renameDefinitionDialog", { static: true }) renameDefinitionDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

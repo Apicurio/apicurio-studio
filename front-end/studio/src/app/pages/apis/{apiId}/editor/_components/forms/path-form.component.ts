@@ -68,9 +68,9 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
         return this._path;
     }
 
-    @ViewChild("clonePathDialog") clonePathDialog: ClonePathDialogComponent;
-    @ViewChild("addPathDialog") addPathDialog: AddPathDialogComponent;
-    @ViewChild("renamePathDialog") renamePathDialog: RenamePathDialogComponent;
+    @ViewChild("clonePathDialog", { static: true }) clonePathDialog: ClonePathDialogComponent;
+    @ViewChild("addPathDialog", { static: true }) addPathDialog: AddPathDialogComponent;
+    @ViewChild("renamePathDialog", { static: true }) renamePathDialog: RenamePathDialogComponent;
 
     public constructor(protected changeDetectorRef: ChangeDetectorRef,
                        protected selectionService: SelectionService,

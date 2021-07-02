@@ -186,8 +186,8 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     protected isSaving: boolean = false;
 
     @ViewChildren("apiEditor") _apiEditor: QueryList<AbstractApiEditorComponent>;
-    @ViewChild("editorDisconnectedModal") editorDisconnectedModal: EditorDisconnectedDialogComponent;
-    @ViewChild("importComponentsWizard") importComponentsWizard: ImportComponentsWizard;
+    @ViewChild("editorDisconnectedModal", { static: true }) editorDisconnectedModal: EditorDisconnectedDialogComponent;
+    @ViewChild("importComponentsWizard", { static: true }) importComponentsWizard: ImportComponentsWizard;
     private editorAvailable: boolean;
 
     private editingSession: IApiEditingSession;

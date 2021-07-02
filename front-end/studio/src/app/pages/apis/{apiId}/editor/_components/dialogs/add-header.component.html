@@ -1,0 +1,34 @@
+<!-- Add Header Dialog -->
+<div bsModal #addHeaderModal="bs-modal" class="modal fade" id="addHeaderModal" tabindex="-1"
+     aria-labelledby="addHeaderModalLabel" role="dialog" (onHidden)="close()" *ngIf="isOpen()" [config]="{ backdrop: true }">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addHeaderModalLabel">Add Header</h4>
+            </div>
+            <div class="modal-body">
+                <p>Type a Header (e.g. application/json) below and then click Add.</p>
+                <form id="addHeader-form" class="form-horizontal" (submit)="add()" #addHeaderForm="ngForm" data-dismiss="modal">
+                    <div class="form-group" >
+                        <label class="col-sm-3 control-label required" for="header">Custom Header</label>
+                        <div class="col-sm-9">
+                            <input #customHeaderInput name="header" type="text" id="header" class="form-control"
+                                   placeholder="Enter a custom Header"
+                                   required [(ngModel)]="customHeader" #mheader="ngModel">
+                            <form-error-message [inputModel]="mheader" [type]="'required'">Custom header is required.</form-error-message>
+                            <div class="form-error-message error" *ngIf="isHeaderAlreadyAdded()">Selected header already exists.</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!addHeaderForm.form.valid || !isValid()">Add</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

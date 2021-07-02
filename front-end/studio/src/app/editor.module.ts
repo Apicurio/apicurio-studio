@@ -150,6 +150,9 @@ import {AaiServerEditorComponent} from "./pages/apis/{apiId}/editor/_components/
 import {AaiServerRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/aaiserver-row.component";
 import {AaiSecuritySchemesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/aaisecurity-schemes-section.component";
 import {AaiSecurityRequirementRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/aaisecurity-requirement-row.component";
+import {HttpHeadersComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/http-headers.component";
+import {HeaderRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/header-row.component";
+import {AddHeaderDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-header.component";
 
 @NgModule({
     imports: [
@@ -161,13 +164,13 @@ import {AaiSecurityRequirementRowComponent} from "./pages/apis/{apiId}/editor/_c
         ChannelOperationInfoSectionComponent, MessageSectionComponent, PayloadTabComponent, HeadersTabComponent,
         SetLicenseDialogComponent, ClonePathDialogComponent,
         CloneDefinitionDialogComponent, ScopesInputComponent, AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent,
-        NoOperationComponent, ContentComponent, PropertyRowComponent, PathFormComponent, ChannelFormComponent,
+        NoOperationComponent, ContentComponent, HttpHeadersComponent, PropertyRowComponent, PathFormComponent, ChannelFormComponent,
         MessageTraitFormComponent, MessageTraitItemComponent, OperationTraitFormComponent, OperationTraitItemComponent,
         QueryParamRowComponent, SectionComponent, RequestBodySectionComponent, DefinitionItemComponent, DefinitionFormComponent,
         FormDataParamRowComponent, ResponseTab30Component, EditorMasterComponent, AsyncApiEditorMasterComponent, ApiEditorComponent,
         AddPathDialogComponent, AddChannelDialogComponent, ParameterEditorComponent, AddResponseDialogComponent,
         CloneResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, OperationTraitEditorComponent,
-        ChannelInfoSectionComponent, ResponseTabComponent, AddMediaTypeDialogComponent, MainFormComponent, AsyncApiMainFormComponent,
+        ChannelInfoSectionComponent, ResponseTabComponent, AddMediaTypeDialogComponent, AddHeaderDialogComponent, MainFormComponent, AsyncApiMainFormComponent,
         RenameEntityDialogComponent, AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent,
         AddAsyncApiExampleDialogComponent, EditAsyncApiExampleDialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,
@@ -180,7 +183,7 @@ import {AaiSecurityRequirementRowComponent} from "./pages/apis/{apiId}/editor/_c
         DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
         HeaderParamsSectionComponent, OperationsSectionComponent, ChannelOperationsSectionComponent, MediaTypeRowComponent,
-        CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,
+        HeaderRowComponent, CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,
         ResponseEditorComponent, MessageTraitEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
         AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
         SchemaRowComponent, AddSchemaDialogComponent

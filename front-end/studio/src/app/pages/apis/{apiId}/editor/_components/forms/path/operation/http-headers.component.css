@@ -1,0 +1,6 @@
+div.httpHeaders > div.actions {
+  padding-left: 10px;
+}
+div.httpHeaders > div.actions > a {
+  cursor: pointer;
+}

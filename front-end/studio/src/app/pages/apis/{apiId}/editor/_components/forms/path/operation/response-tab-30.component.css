@@ -25,6 +25,10 @@
   margin-bottom: 5px;
 }
 
+.response .response-header div.form-label {
+  margin-bottom: 5px;
+}
+
 .response .response-ref em {
   font-style: normal;
 }

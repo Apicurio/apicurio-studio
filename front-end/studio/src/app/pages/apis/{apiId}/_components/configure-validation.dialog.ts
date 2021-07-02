@@ -21,7 +21,6 @@ import {ValidationProfileExt, ValidationService} from "../../../../services/vali
 
 
 @Component({
-    moduleId: module.id,
     selector: "configure-validation-dialog",
     templateUrl: "configure-validation.dialog.html",
     styleUrls: [ "configure-validation.dialog.css" ]

@@ -28,7 +28,6 @@ import {FindResponseDefinitionsVisitor} from "../../_visitors/response-definitio
 
 
 @Component({
-    moduleId: module.id,
     selector: "clone-response-definition-dialog",
     templateUrl: "clone-response-definition.component.html"
 })

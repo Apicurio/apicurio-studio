@@ -29,7 +29,6 @@ import * as marked from "./markdown-summary.component";
 
 
 @Component({
-    moduleId: module.id,
     selector: "tag-list",
     templateUrl: "tag-list.component.html",
     styleUrls: ["tag-list.component.css"],

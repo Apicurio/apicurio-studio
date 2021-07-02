@@ -23,7 +23,6 @@ import {HttpCodeService} from "../../_services/httpcode.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "clone-response-dialog",
     templateUrl: "clone-response.component.html"
 })

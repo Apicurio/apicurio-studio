@@ -42,7 +42,6 @@ import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "tags-section",
     templateUrl: "tags-section.component.html",
     encapsulation: ViewEncapsulation.None,

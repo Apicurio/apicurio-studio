@@ -45,7 +45,6 @@ import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "path-params-section",
     templateUrl: "path-params-section.component.html",
     encapsulation: ViewEncapsulation.None,

@@ -47,7 +47,6 @@ import {ModelUtils} from "../../../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "responses-section",
     templateUrl: "responses-section.component.html",
     styleUrls: [ "responses-section.component.css" ],

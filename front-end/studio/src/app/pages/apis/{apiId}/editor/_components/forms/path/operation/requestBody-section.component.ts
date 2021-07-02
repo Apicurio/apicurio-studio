@@ -61,7 +61,6 @@ import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "requestBody-section",
     templateUrl: "requestBody-section.component.html",
     styleUrls: [ "requestBody-section.component.css" ],

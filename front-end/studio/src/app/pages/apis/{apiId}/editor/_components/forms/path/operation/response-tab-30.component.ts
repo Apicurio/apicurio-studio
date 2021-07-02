@@ -24,7 +24,6 @@ import {SelectionService} from "../../../../_services/selection.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "response-tab-30",
     templateUrl: "response-tab-30.component.html",
     styleUrls: ["response-tab-30.component.css"],

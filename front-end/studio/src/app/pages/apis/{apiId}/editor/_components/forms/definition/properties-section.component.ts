@@ -44,7 +44,6 @@ import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
 
 
 @Component({
-    moduleId: module.id,
     selector: "properties-section",
     templateUrl: "properties-section.component.html",
     encapsulation: ViewEncapsulation.None,

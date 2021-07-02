@@ -24,7 +24,6 @@ import {ImportApi} from "../../../models/import-api.model";
 import {Title} from "@angular/platform-browser";
 
 @Component({
-    moduleId: module.id,
     selector: "importapi-page",
     templateUrl: "import.page.html",
     styleUrls: ["import.page.css"]

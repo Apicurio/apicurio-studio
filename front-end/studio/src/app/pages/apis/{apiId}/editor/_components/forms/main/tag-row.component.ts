@@ -31,7 +31,6 @@ import {AbstractRowComponent} from "../../common/item-row.abstract";
 
 
 @Component({
-    moduleId: module.id,
     selector: "tag-row",
     templateUrl: "tag-row.component.html",
     styleUrls: ["tag-row.component.css"],

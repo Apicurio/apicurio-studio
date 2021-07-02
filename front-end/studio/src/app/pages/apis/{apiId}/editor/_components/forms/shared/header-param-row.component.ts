@@ -46,7 +46,6 @@ import {AbstractRowComponent} from "../../common/item-row.abstract";
 import { EditExampleEvent } from "../../dialogs/edit-example.component";
 
 @Component({
-    moduleId: module.id,
     selector: "header-param-row",
     templateUrl: "header-param-row.component.html",
     styleUrls: [ "header-param-row.component.css" ],

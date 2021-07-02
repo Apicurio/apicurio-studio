@@ -62,7 +62,6 @@ const INHERITANCE_TYPES_20: DropDownOption[] = [
 
 
 @Component({
-    moduleId: module.id,
     selector: "definition-form",
     templateUrl: "definition-form.component.html",
     encapsulation: ViewEncapsulation.None,

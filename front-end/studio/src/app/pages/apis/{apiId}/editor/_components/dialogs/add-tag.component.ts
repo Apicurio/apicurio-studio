@@ -21,7 +21,6 @@ import {OasDocument} from "apicurio-data-models";
 
 
 @Component({
-    moduleId: module.id,
     selector: "add-tag-dialog",
     templateUrl: "add-tag.component.html",
     styleUrls: ["add-tag.component.css"]

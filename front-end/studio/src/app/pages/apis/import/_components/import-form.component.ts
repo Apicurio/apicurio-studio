@@ -24,7 +24,6 @@ import {Base64} from "js-base64";
 
 
 @Component({
-    moduleId: module.id,
     selector: "importapi-form",
     templateUrl: "import-form.component.html",
     styleUrls: ["import-form.component.css"]

@@ -27,7 +27,6 @@ import {TextEditorComponent} from "./graphql-editor.component";
 
 
 @Component({
-    moduleId: module.id,
     selector: "api-teditor-page",
     templateUrl: "api-teditor.page.html",
     styleUrls: ["api-teditor.page.css"]

@@ -172,7 +172,6 @@ class PendingActions {
 
 
 @Component({
-    moduleId: module.id,
     selector: "api-editor-page",
     templateUrl: "api-editor.page.html",
     styleUrls: ["api-editor.page.css"]

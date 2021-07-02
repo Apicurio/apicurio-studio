@@ -43,7 +43,6 @@ import {DropDownOptionValue as Value} from "../../../../../../../../components/c
 
 
 @Component({
-    moduleId: module.id,
     selector: "operation-info-section",
     templateUrl: "info-section.component.html",
     styleUrls: [ "info-section.component.css" ],

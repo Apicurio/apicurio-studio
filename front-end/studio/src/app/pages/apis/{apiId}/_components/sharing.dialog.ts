@@ -24,7 +24,6 @@ import {ConfigService} from "../../../../services/config.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "sharing-dialog",
     templateUrl: "sharing.dialog.html",
     styleUrls: [ "sharing.dialog.css" ]

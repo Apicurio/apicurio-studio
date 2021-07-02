@@ -55,7 +55,6 @@ import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rena
 
 
 @Component({
-    moduleId: module.id,
     selector: "security-schemes-section",
     templateUrl: "security-schemes-section.component.html",
     encapsulation: ViewEncapsulation.None,

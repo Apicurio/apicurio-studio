@@ -20,7 +20,6 @@ import {ModalDirective} from "ngx-bootstrap";
 
 
 @Component({
-    moduleId: module.id,
     selector: "confirm-delete-dialog",
     templateUrl: "confirm-delete.component.html"
 })

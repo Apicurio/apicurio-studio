@@ -52,7 +52,6 @@ import {ObjectUtils} from "apicurio-ts-core";
  * Component to select a "SimplifiedType" value
  */
 @Component({
-    moduleId: module.id,
     selector: "schema-type-editor",
     templateUrl: "schema-type-editor.component.html",
     styleUrls: [ "schema-type-editor.component.css" ],

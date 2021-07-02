@@ -34,7 +34,6 @@ import {
 
 
 @Component({
-    moduleId: module.id,
     selector: "import-components-wizard",
     templateUrl: "import-components.wizard.html",
     styleUrls: [ "import-components.wizard.css" ]

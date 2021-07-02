@@ -46,7 +46,6 @@ import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "aaisecurity-requirement-row",
     templateUrl: "aaisecurity-requirement-row.component.html",
     styleUrls: [ "security-requirements-section.component.css" ],

@@ -23,7 +23,6 @@ import {Api} from "../../../../../models/api.model";
 
 
 @Component({
-    moduleId: module.id,
     selector: "invitation-dialog",
     templateUrl: "invitation.component.html",
     styleUrls: [ "invitation.component.css" ]

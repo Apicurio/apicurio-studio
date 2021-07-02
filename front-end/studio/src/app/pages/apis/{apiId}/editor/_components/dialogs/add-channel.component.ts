@@ -22,7 +22,6 @@ import {ConfigService} from "../../../../../../services/config.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "add-channel-dialog",
     templateUrl: "add-channel.component.html"
 })

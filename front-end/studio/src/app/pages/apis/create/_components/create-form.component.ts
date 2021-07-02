@@ -32,7 +32,6 @@ export interface CreateApiFormData {
 }
 
 @Component({
-    moduleId: module.id,
     selector: "createapi-form",
     templateUrl: "create-form.component.html",
     styleUrls: ["create-form.component.css"]

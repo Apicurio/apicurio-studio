@@ -123,7 +123,6 @@ export abstract class AbstractCollaboratorComponent extends AbstractBaseComponen
 
 
 @Component({
-    moduleId: module.id,
     selector: "collaborator-overlay",
     templateUrl: "collaborator-overlay.component.html",
     styleUrls: [ "collaborator-overlay.component.css" ],

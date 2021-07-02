@@ -36,7 +36,6 @@ export interface EditExampleEvent {
 }
 
 @Component({
-    moduleId: module.id,
     selector: "edit-aai-example-dialog",
     templateUrl: "edit-aai-example.component.html",
     styleUrls: [ "edit-aai-example.component.css" ]

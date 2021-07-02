@@ -49,7 +49,6 @@ export interface IDataTypeEditorHandler extends IEntityEditorHandler<Oas20Schema
 
 
 @Component({
-    moduleId: module.id,
     selector: "data-type-editor",
     templateUrl: "data-type-editor.component.html",
     styleUrls: ["data-type-editor.component.css"]

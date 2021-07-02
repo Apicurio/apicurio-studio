@@ -53,7 +53,6 @@ import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rena
 
 // TODO combine with Query Params Section (and Header Params Section) to share code/logic
 @Component({
-    moduleId: module.id,
     selector: "cookie-params-section",
     templateUrl: "cookie-params-section.component.html",
     encapsulation: ViewEncapsulation.None,

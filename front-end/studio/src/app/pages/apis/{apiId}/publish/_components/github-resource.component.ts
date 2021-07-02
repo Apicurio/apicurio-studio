@@ -22,7 +22,6 @@ import {GitHubRepository} from "../../../../../models/github-repository.model";
 
 
 @Component({
-    moduleId: module.id,
     selector: "github-resource",
     templateUrl: "github-resource.component.html"
 })

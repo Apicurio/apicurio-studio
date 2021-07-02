@@ -77,7 +77,6 @@ import {ComponentType} from "../_models/component-type.model";
  * being displayed in the detail panel.
  */
 @Component({
-    moduleId: module.id,
     selector: "master",
     templateUrl: "master.component.html",
     styleUrls: [ "master.component.css" ],

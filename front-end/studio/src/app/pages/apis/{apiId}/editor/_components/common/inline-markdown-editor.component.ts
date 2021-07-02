@@ -21,7 +21,6 @@ import {CodeEditorComponent, CodeEditorMode} from "../../../../../../components/
 import {SelectionService} from "../../_services/selection.service";
 
 @Component({
-    moduleId: module.id,
     selector: "inline-markdown-editor",
     templateUrl: "inline-markdown-editor.component.html",
     styleUrls: [ "inline-markdown-editor.component.css" ],

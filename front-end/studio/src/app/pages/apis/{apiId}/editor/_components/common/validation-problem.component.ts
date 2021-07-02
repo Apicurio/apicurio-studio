@@ -31,7 +31,6 @@ import {SelectionService} from "../../_services/selection.service";
 import {KeypressUtils} from "../../_util/keypress.util";
 
 @Component({
-    moduleId: module.id,
     selector: "validation-problem",
     templateUrl: "validation-problem.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush

@@ -52,7 +52,6 @@ import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rena
 
 
 @Component({
-    moduleId: module.id,
     selector: "query-params-section",
     templateUrl: "query-params-section.component.html",
     encapsulation: ViewEncapsulation.None,

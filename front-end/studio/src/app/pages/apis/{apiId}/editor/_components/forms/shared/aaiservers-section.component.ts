@@ -33,7 +33,6 @@ import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rena
 
 
 @Component({
-    moduleId: module.id,
     selector: "aaiservers-section",
     templateUrl: "aaiservers-section.component.html",
     encapsulation: ViewEncapsulation.None,

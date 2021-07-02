@@ -31,7 +31,6 @@ import {LinkedAccountsService} from "../../../../services/accounts.service";
 import {ApiPublication} from "../../../../models/api-publication.model";
 
 @Component({
-    moduleId: module.id,
     selector: "publish-page",
     templateUrl: "publish.page.html",
     styleUrls: ["publish.page.css"]

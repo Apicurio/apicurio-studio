@@ -29,7 +29,6 @@ export class AddResponseDialogData {
 
 
 @Component({
-    moduleId: module.id,
     selector: "add-response-dialog",
     templateUrl: "add-response.component.html"
 })

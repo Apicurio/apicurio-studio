@@ -41,7 +41,6 @@ import {SelectionService} from "../../../../_services/selection.service";
 import { EditExampleEvent } from "../../../dialogs/edit-aai-example.component";
 
 @Component({
-    moduleId: module.id,
     selector: "payload-tab",
     templateUrl: "payload-tab.component.html",
     styleUrls: [ "payload-tab.component.css" ],

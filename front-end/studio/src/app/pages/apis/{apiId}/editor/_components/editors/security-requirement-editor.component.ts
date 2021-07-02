@@ -62,7 +62,6 @@ export interface ISecurityRequirementEditorHandler extends IEntityEditorHandler<
 
 
 @Component({
-    moduleId: module.id,
     selector: "security-requirement-editor",
     templateUrl: "security-requirement-editor.component.html",
     styleUrls: ["security-requirement-editor.component.css"],

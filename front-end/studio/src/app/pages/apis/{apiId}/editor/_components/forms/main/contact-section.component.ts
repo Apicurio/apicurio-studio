@@ -24,7 +24,6 @@ import {SelectionService} from "../../../_services/selection.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "contact-section",
     templateUrl: "contact-section.component.html",
     encapsulation: ViewEncapsulation.None,

@@ -28,7 +28,6 @@ export enum VerticalNavSubMenuType {
 
 
 @Component({
-    moduleId: module.id,
     selector: "vertical-nav",
     templateUrl: "vertical-nav.component.html",
     styleUrls: ["vertical-nav.component.css"]

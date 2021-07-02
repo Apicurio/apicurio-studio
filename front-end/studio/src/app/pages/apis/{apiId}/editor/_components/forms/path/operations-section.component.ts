@@ -41,7 +41,6 @@ import {TopicSubscription} from "apicurio-ts-core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "operations-section",
     templateUrl: "operations-section.component.html",
     styleUrls: [ "operations-section.component.css" ],

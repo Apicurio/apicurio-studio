@@ -24,7 +24,6 @@ import {SelectionService} from "../../../_services/selection.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "aaiinfo-section",
     templateUrl: "aaiinfo-section.component.html",
     encapsulation: ViewEncapsulation.None,

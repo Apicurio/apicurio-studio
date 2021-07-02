@@ -33,7 +33,6 @@ import {KeypressUtils} from "../../../_util/keypress.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "security-scheme-row",
     templateUrl: "security-scheme-row.component.html",
     styleUrls: ["security-scheme-row.component.css"],

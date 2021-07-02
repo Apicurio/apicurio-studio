@@ -35,7 +35,6 @@ export interface EditExample20Event {
 }
 
 @Component({
-    moduleId: module.id,
     selector: "edit-example-20-dialog",
     templateUrl: "edit-example-20.component.html",
     styleUrls: [ "edit-example.component.css" ]

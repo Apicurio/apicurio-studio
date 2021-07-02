@@ -25,7 +25,6 @@ import {DropDownOption, DropDownOptionValue} from "../../../../components/common
 
 
 @Component({
-    moduleId: module.id,
     selector: "download-dialog",
     templateUrl: "download.dialog.html",
     styleUrls: [ "download.dialog.css" ]

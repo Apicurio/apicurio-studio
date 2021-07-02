@@ -30,7 +30,6 @@ import {StringUtils} from "apicurio-ts-core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "add-example-20-dialog",
     templateUrl: "add-example-20.component.html",
     styleUrls: [ "add-example.component.css" ]

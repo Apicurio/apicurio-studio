@@ -25,7 +25,6 @@ const STANDARD_TYPES = [ "application/json", "text/xml", "multipart/form-data" ]
 
 
 @Component({
-    moduleId: module.id,
     selector: "add-media-type-dialog",
     templateUrl: "add-media-type.component.html"
 })

@@ -22,7 +22,6 @@ import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../..
 const STANDARD_HEADERS = ["string", "integer"];
 
 @Component({
-    moduleId: module.id,
     selector: "add-header-dialog",
     templateUrl: "add-header.component.html"
 })

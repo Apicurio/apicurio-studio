@@ -72,7 +72,6 @@ import { IMessageTraitEditorHandler, MessageTraitData, MessageTraitEditorCompone
  * being displayed in the detail panel.
 */
 @Component({
-    moduleId: module.id,
     selector: "aaimaster",
     templateUrl: "aaimaster.component.html",
     styleUrls: [ "aaimaster.component.css" ],

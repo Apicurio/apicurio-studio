@@ -24,7 +24,6 @@ import {ModelUtils} from "../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "[definition-item]",
     templateUrl: "definition-item.component.html",
     styleUrls: [ "definition-item.component.css" ],

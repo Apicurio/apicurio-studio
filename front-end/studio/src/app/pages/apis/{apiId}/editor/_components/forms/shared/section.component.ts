@@ -35,7 +35,6 @@ import {KeypressUtils} from "../../../_util/keypress.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "section",
     templateUrl: "section.component.html",
     styleUrls: ["section.component.css"],

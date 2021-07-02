@@ -26,7 +26,6 @@ import {StringUtils} from "apicurio-ts-core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "definition-example-section",
     templateUrl: "example-section.component.html",
     encapsulation: ViewEncapsulation.None,

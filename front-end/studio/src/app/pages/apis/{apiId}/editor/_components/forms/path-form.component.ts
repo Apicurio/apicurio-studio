@@ -48,7 +48,6 @@ import {AbstractBaseComponent} from "../common/base-component";
 
 
 @Component({
-    moduleId: module.id,
     selector: "path-form",
     templateUrl: "path-form.component.html",
     styleUrls: [ "path-form.component.css" ],

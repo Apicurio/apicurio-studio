@@ -31,7 +31,6 @@ import {ConfigService} from "../../../services/config.service";
 import {ApiMock, MockReference} from "../../../models/mock-api.model";
 
 @Component({
-    moduleId: module.id,
     selector: "api-detail-page",
     templateUrl: "api-detail.page.html",
     styleUrls: ["api-detail.page.css"]

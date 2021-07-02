@@ -24,7 +24,6 @@ import {ModelUtils} from "../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "[operationtrait-item]",
     templateUrl: "operationtrait-item.component.html",
     styleUrls: [ "operationtrait-item.component.css" ],

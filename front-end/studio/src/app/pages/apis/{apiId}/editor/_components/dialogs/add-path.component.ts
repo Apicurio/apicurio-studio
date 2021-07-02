@@ -20,7 +20,6 @@ import {ModalDirective} from "ngx-bootstrap";
 import {OasDocument} from "apicurio-data-models";
 
 @Component({
-    moduleId: module.id,
     selector: "add-path-dialog",
     templateUrl: "add-path.component.html"
 })

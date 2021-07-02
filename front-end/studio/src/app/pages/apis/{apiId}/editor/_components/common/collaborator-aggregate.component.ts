@@ -22,7 +22,6 @@ import {CollaboratorService} from "../../_services/collaborator.service";
 import {AbstractCollaboratorComponent} from "./collaborator-overlay.component";
 
 @Component({
-    moduleId: module.id,
     selector: "collaborator-aggregate",
     templateUrl: "collaborator-aggregate.component.html",
     styleUrls: [ "collaborator-aggregate.component.css" ],

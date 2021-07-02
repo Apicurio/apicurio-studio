@@ -58,7 +58,6 @@ import {ApiCatalogService} from "../../_services/api-catalog.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "response-form",
     templateUrl: "response-form.component.html",
     encapsulation: ViewEncapsulation.None,

@@ -33,7 +33,6 @@ import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "response-tab",
     templateUrl: "response-tab.component.html",
     styleUrls: [ "response-tab.component.css" ],

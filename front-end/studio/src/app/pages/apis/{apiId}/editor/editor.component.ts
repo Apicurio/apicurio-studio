@@ -79,7 +79,6 @@ import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.c
 
 
 @Component({
-    moduleId: module.id,
     selector: "api-editor",
     templateUrl: "editor.component.html",
     styleUrls: ["editor.component.css"],

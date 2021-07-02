@@ -47,7 +47,6 @@ var PROJECT_TYPES: DropDownOption[] = [
 
 
 @Component({
-    moduleId: module.id,
     selector: "generate-project-wizard",
     templateUrl: "generate-project.wizard.html",
     styleUrls: [ "generate-project.wizard.css" ]

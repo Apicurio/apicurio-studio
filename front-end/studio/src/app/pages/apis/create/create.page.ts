@@ -27,7 +27,6 @@ import {ImportApi} from "../../../models/import-api.model";
 import {Base64} from "js-base64";
 
 @Component({
-    moduleId: module.id,
     selector: "createapi-page",
     templateUrl: "create.page.html",
     styleUrls: ["create.page.css"]

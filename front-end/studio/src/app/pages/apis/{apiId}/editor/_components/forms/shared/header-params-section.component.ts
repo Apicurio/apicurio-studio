@@ -54,7 +54,6 @@ import {ModelUtils} from "../../../_util/model.util";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
 
 @Component({
-    moduleId: module.id,
     selector: "header-params-section",
     templateUrl: "header-params-section.component.html",
     encapsulation: ViewEncapsulation.None,

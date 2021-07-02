@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges} from "@angular/core";
+import { ChangeDetectorRef, OnChanges, OnDestroy, OnInit, SimpleChanges, Directive } from "@angular/core";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";
 import {TopicSubscription} from "apicurio-ts-core";
 
+@Directive()
 export abstract class AbstractBaseComponent implements OnInit, OnChanges, OnDestroy {
 
     private _docSub: TopicSubscription<void>;

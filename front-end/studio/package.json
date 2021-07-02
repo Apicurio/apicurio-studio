@@ -31,19 +31,19 @@
     "pluralize": "7.0.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.901.15",
-    "@angular-devkit/build-ng-packagr": "~0.901.15",
-    "@angular/animations": "9.1.13",
-    "@angular/cli": "9.1.15",
-    "@angular/common": "9.1.13",
-    "@angular/compiler": "9.1.13",
-    "@angular/compiler-cli": "9.1.13",
-    "@angular/core": "9.1.13",
-    "@angular/forms": "9.1.13",
-    "@angular/language-service": "9.1.13",
-    "@angular/platform-browser": "9.1.13",
-    "@angular/platform-browser-dynamic": "9.1.13",
-    "@angular/router": "9.1.13",
+    "@angular-devkit/build-angular": "~0.1002.3",
+    "@angular-devkit/build-ng-packagr": "~0.1002.3",
+    "@angular/animations": "10.2.5",
+    "@angular/cli": "10.2.3",
+    "@angular/common": "10.2.5",
+    "@angular/compiler": "10.2.5",
+    "@angular/compiler-cli": "10.2.5",
+    "@angular/core": "10.2.5",
+    "@angular/forms": "10.2.5",
+    "@angular/language-service": "10.2.5",
+    "@angular/platform-browser": "10.2.5",
+    "@angular/platform-browser-dynamic": "10.2.5",
+    "@angular/router": "10.2.5",
     "@patternfly/patternfly": "1.0.250",
     "@types/js-base64": "2.3.1",
     "@types/marked": "0.6.1",
@@ -58,17 +58,17 @@
     "js-yaml": "3.13.1",
     "marked": "0.7.0",
     "moment": "2.23.0",
-    "ng-packagr": "^9.0.0",
+    "ng-packagr": "^10.1.0",
     "ngx-bootstrap": "5.6.2",
     "ngx-clipboard": "12.3.1",
     "patternfly": "3.59.1",
     "pluralize": "7.0.0",
     "rxjs": "6.6.7",
     "ts-node": "8.0.2",
-    "typescript": "3.8.3",
+    "typescript": "4.0.8",
     "zone.js": "~0.10.2"
   },
   "dependencies": {
-    "tslib": "^1.10.0"
+    "tslib": "^2.0.0"
   }
 }

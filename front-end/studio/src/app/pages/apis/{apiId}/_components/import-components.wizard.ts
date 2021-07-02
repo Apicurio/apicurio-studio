@@ -16,7 +16,7 @@
  */
 
 import {Component, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {ApisService} from "../../../../services/apis.service";
 import {ImportedComponent} from "../editor/_models/imported-component.model";
 import {Api, ApiDefinition} from "../../../../models/api.model";

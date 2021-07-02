@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {
     Oas20SchemaDefinition,
     Oas30SchemaDefinition,

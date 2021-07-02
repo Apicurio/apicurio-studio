@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {
     CodeEditorComponent,
     CodeEditorMode,

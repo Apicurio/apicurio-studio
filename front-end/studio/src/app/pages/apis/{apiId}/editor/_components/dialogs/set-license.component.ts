@@ -16,7 +16,7 @@
  */
 
 import {Component, Output, EventEmitter, ViewChildren, QueryList} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {LicenseService, ILicense} from "../../_services/license.service";
 import {SelectionService} from "../../_services/selection.service";
 

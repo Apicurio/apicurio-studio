@@ -16,7 +16,7 @@
  */
 
 import {Component, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {ApisService} from "../../../../services/apis.service";
 import {SharingConfiguration} from "../../../../models/sharing-config.model";
 import {ClipboardService} from "ngx-clipboard";

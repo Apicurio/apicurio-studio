@@ -16,7 +16,7 @@
  */
 
 import {Component, ElementRef, Input, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
 import {NgForm} from "@angular/forms";
 import {LinkedAccount} from "../../../../models/linked-account.model";

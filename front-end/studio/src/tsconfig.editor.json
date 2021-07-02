@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "../out-tsc/editor",
+    "declarationMap": true,
     "target": "es2015",
     "module": "es2015",
     "declaration": true,

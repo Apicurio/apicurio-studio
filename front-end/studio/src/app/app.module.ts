@@ -16,6 +16,7 @@
  */
 
 import {ClipboardModule} from "ngx-clipboard";
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
@@ -81,7 +82,7 @@ import {LoadingComponent} from "./components/common/loading.component";
 
 @NgModule({
     imports: [
-        BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot(),
+        BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot(),
         ApicurioCommonComponentsModule, ApicurioEditorModule, ClipboardModule
     ],
     declarations: [

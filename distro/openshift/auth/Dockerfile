@@ -14,10 +14,14 @@ ENV PROXY_ADDRESS_FORWARDING=true
 
 USER jboss
 
+ADD realm.json /tmp/apicurio-realm.json
+ADD auth-entrypoint.sh /opt/jboss/auth-entrypoint.sh
 COPY themes/apicurio /opt/jboss/keycloak/themes/apicurio
 
 ENV APICURIO_KEYCLOAK_USER=admin
 ENV APICURIO_KEYCLOAK_PASSWORD=password123!
 ENV APICURIO_UI_URL=http://localhost:8080/
+
+ENTRYPOINT [ "/opt/jboss/auth-entrypoint.sh" ]
 
 CMD ["-b", "0.0.0.0"]

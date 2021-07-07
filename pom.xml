@@ -97,7 +97,7 @@
         <version.properties-maven-plugin>1.0.0</version.properties-maven-plugin>
 
         <!-- Dependency Versions -->
-        <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
+        <version.com.fasterxml.jackson>2.12.4</version.com.fasterxml.jackson>
         <version.com.google.inject>4.1.0</version.com.google.inject>
         <version.com.graphql-java>16.2</version.com.graphql-java>
         <version.com.h2database>1.4.200</version.com.h2database>

@@ -24,4 +24,4 @@ ENV APICURIO_UI_URL=http://localhost:8080/
 
 ENTRYPOINT [ "/opt/jboss/auth-entrypoint.sh" ]
 
-CMD ["-b", "0.0.0.0"]
+CMD ["-b", "0.0.0.0", "-Dkeycloak.migration.action=import", "-Dkeycloak.migration.provider=singleFile", "-Dkeycloak.migration.strategy=IGNORE_EXISTING", "-Dkeycloak.migration.file=/tmp/apicurio-realm.configured.json"]

@@ -46,7 +46,6 @@ import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "aaiserver-row",
     templateUrl: "aaiserver-row.component.html",
     styleUrls: ["server-row.component.css", "aaiserver-row.component.css"],

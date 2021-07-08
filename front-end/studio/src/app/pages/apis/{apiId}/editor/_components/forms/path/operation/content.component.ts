@@ -53,7 +53,6 @@ export interface ExamplePropertyChangeEvent {
 
 
 @Component({
-    moduleId: module.id,
     selector: "content",
     templateUrl: "content.component.html",
     styleUrls: [ "content.component.css" ],

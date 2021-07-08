@@ -52,7 +52,6 @@ import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rena
 
 
 @Component({
-    moduleId: module.id,
     selector: "query-params-section",
     templateUrl: "query-params-section.component.html",
     encapsulation: ViewEncapsulation.None,
@@ -63,7 +62,7 @@ export class QueryParamsSectionComponent extends AbstractBaseComponent {
     @Input() parent: Oas20Operation | Oas30Operation | Oas20PathItem | Oas30PathItem;
     @Input() path: OasPathItem;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     private _queryParameters: OasParameter[] = null;
 

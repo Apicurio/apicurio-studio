@@ -42,7 +42,6 @@ export interface IOperationTraitEditorHandler extends IEntityEditorHandler<AaiOp
 
 
 @Component({
-    moduleId: module.id,
     selector: "operationtrait-editor",
     templateUrl: "operationtrait-editor.component.html",
     styleUrls: ["operationtrait-editor.component.css"]

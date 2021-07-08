@@ -15,16 +15,7 @@
  * limitations under the License.
  */
 
-import {
-    AfterViewInit,
-    ElementRef,
-    EventEmitter,
-    Input, OnChanges,
-    Output,
-    QueryList,
-    SimpleChanges,
-    ViewChildren
-} from "@angular/core";
+import { AfterViewInit, ElementRef, EventEmitter, Input, OnChanges, Output, QueryList, SimpleChanges, ViewChildren, Directive } from "@angular/core";
 import {SelectionService} from "../../_services/selection.service";
 import {Node} from "apicurio-data-models";
 import {ModelUtils} from "../../_util/model.util";
@@ -34,6 +25,7 @@ import {KeypressUtils} from "../../_util/keypress.util";
 /**
  * Base class for all inline editors.
  */
+@Directive()
 export abstract class AbstractInlineEditor<T> {
 
     static s_activeEditor: any = null;
@@ -140,6 +132,7 @@ export abstract class AbstractInlineEditor<T> {
 /**
  * Base class for any inline editor that edits a single value of an arbitrary type.
  */
+@Directive()
 export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<T> implements OnChanges {
 
     @Input() value: T;
@@ -179,6 +172,7 @@ export abstract class AbstractInlineValueEditor<T> extends AbstractInlineEditor<
  * Base class for any inline editor that is built on a single text input element.  The template
  * must include an 'input' element named #newvalue.
  */
+@Directive()
 export abstract class TextInputEditorComponent extends AbstractInlineValueEditor<string> implements AfterViewInit {
 
     @ViewChildren("newvalue") input: QueryList<ElementRef>;
@@ -229,6 +223,7 @@ export abstract class TextInputEditorComponent extends AbstractInlineValueEditor
  * Base class for any inline editor that is built on a single textarea element.  The template
  * must include a 'textarea' element named #newvalue.
  */
+@Directive()
 export abstract class TextAreaEditorComponent extends TextInputEditorComponent {
 
     /**

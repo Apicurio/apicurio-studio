@@ -36,7 +36,6 @@ import {ModelUtils} from "../../../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "channel-operation-info-section",
     templateUrl: "info-section.component.html",
     styleUrls: [ "info-section.component.css" ],

@@ -16,7 +16,7 @@
  */
 
 import {Component, ElementRef, Input, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
 import {NgForm} from "@angular/forms";
 import {LinkedAccount} from "../../../../models/linked-account.model";
@@ -47,7 +47,6 @@ var PROJECT_TYPES: DropDownOption[] = [
 
 
 @Component({
-    moduleId: module.id,
     selector: "generate-project-wizard",
     templateUrl: "generate-project.wizard.html",
     styleUrls: [ "generate-project.wizard.css" ]

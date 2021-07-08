@@ -21,7 +21,6 @@ import {SelectionService} from "../../_services/selection.service";
 import {KeypressUtils} from "../../_util/keypress.util";
 
 @Component({
-    moduleId: module.id,
     selector: "pf-inline-text-editor",
     templateUrl: "pf-inline-text-editor.component.html",
     styleUrls: [ "pf-inline-text-editor.component.css" ],

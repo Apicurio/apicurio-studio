@@ -32,7 +32,6 @@ import {ArrayUtils} from "apicurio-ts-core";
 import {KeypressUtils} from "../../_util/keypress.util";
 
 @Component({
-    moduleId: module.id,
     selector: "validation-aggregate",
     templateUrl: "validation-aggregate.component.html",
     styleUrls: [ "validation-aggregate.component.css" ],

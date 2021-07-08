@@ -22,7 +22,6 @@ import {SelectionService} from "../../_services/selection.service";
 import {Debouncer} from "apicurio-ts-core";
 
 @Component({
-    moduleId: module.id,
     selector: "search",
     templateUrl: "search.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush

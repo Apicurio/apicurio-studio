@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {Library, Oas20Operation, Oas30Operation, OasDocument, TraverserDirection} from "apicurio-data-models";
 import {DropDownOption, DropDownOptionValue} from "../../../../../../components/common/drop-down.component";
 import {HttpCodeService} from "../../_services/httpcode.service";
@@ -29,7 +29,6 @@ export class AddResponseDialogData {
 
 
 @Component({
-    moduleId: module.id,
     selector: "add-response-dialog",
     templateUrl: "add-response.component.html"
 })

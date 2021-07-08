@@ -24,7 +24,6 @@ import {SelectionService} from "../../_services/selection.service";
 import {StringUtils} from "apicurio-ts-core";
 
 @Component({
-    moduleId: module.id,
     selector: "inline-example-editor",
     templateUrl: "inline-example-editor.component.html",
     styleUrls: [ "inline-example-editor.component.css" ],

@@ -47,7 +47,6 @@ import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
-    moduleId: module.id,
     selector: "path-param-row",
     templateUrl: "path-param-row.component.html",
     styleUrls: [ "path-param-row.component.css" ],

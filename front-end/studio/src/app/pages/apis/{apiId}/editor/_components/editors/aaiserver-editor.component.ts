@@ -48,7 +48,6 @@ export interface IAaiServerEditorHandler extends IEntityEditorHandler<Aai20Serve
 
 
 @Component({
-    moduleId: module.id,
     selector: "aaiserver-editor",
     templateUrl: "aaiserver-editor.component.html",
     styleUrls: ["server-editor.component.css", "aaiserver-editor.component.css"]

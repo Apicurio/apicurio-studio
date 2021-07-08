@@ -23,7 +23,6 @@ import {SelectionService} from "../../_services/selection.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "[server-url]",
     templateUrl: "server-url.component.html",
     encapsulation: ViewEncapsulation.None,

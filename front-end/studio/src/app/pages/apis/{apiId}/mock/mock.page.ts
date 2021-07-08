@@ -27,7 +27,6 @@ import {OasDocument, Library} from "apicurio-data-models";
 
 
 @Component({
-    moduleId: module.id,
     selector: "mock-page",
     templateUrl: "mock.page.html",
     styleUrls: ["mock.page.css"]

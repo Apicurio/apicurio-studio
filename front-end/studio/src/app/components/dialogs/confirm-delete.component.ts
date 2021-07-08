@@ -16,11 +16,10 @@
  */
 
 import {Component, Output, EventEmitter, ViewChildren, QueryList} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 
 
 @Component({
-    moduleId: module.id,
     selector: "confirm-delete-dialog",
     templateUrl: "confirm-delete.component.html"
 })

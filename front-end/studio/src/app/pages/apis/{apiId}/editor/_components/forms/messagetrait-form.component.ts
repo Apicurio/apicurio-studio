@@ -44,7 +44,6 @@ import {EditorsService} from "../../_services/editors.service";
 import {ApiCatalogService} from "../../_services/api-catalog.service";
 
 @Component({
-    moduleId: module.id,
     selector: "messagetrait-form",
     templateUrl: "messagetrait-form.component.html",
     encapsulation: ViewEncapsulation.None,

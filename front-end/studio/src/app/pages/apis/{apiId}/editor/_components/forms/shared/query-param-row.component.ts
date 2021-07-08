@@ -47,7 +47,6 @@ import { EditExampleEvent } from "../../dialogs/edit-example.component";
 
 
 @Component({
-    moduleId: module.id,
     selector: "query-param-row",
     templateUrl: "query-param-row.component.html",
     styleUrls: [ "query-param-row.component.css" ],

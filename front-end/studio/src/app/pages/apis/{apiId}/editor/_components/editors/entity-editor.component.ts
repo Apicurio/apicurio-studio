@@ -157,7 +157,6 @@ export abstract class EntityEditor<T extends Node, E extends EntityEditorEvent<T
 
 
 @Component({
-    moduleId: module.id,
     selector: "entity-editor",
     templateUrl: "entity-editor.component.html",
     styleUrls: ["entity-editor.component.css"],

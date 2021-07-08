@@ -54,7 +54,6 @@ import {ModelUtils} from "../../../_util/model.util";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
 
 @Component({
-    moduleId: module.id,
     selector: "header-params-section",
     templateUrl: "header-params-section.component.html",
     encapsulation: ViewEncapsulation.None,
@@ -65,7 +64,7 @@ export class HeaderParamsSectionComponent extends AbstractBaseComponent {
     @Input() parent: IOasParameterParent;
     @Input() path: OasPathItem;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     private _headerParameters: OasParameter[] = null;
 

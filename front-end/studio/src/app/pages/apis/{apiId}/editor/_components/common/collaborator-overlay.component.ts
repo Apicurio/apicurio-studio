@@ -15,14 +15,7 @@
  * limitations under the License.
  */
 
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    SimpleChanges,
-    ViewEncapsulation
-} from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, SimpleChanges, ViewEncapsulation, Directive } from "@angular/core";
 import {DocumentService} from "../../_services/document.service";
 import {AbstractBaseComponent} from "./base-component";
 import {SelectionService} from "../../_services/selection.service";
@@ -33,6 +26,7 @@ import {TopicSubscription} from "apicurio-ts-core";
 /**
  * Common base class for collaboration components (overlay and aggregate icon).
  */
+@Directive()
 export abstract class AbstractCollaboratorComponent extends AbstractBaseComponent {
 
     @Input() nodePath: string | string[];
@@ -129,7 +123,6 @@ export abstract class AbstractCollaboratorComponent extends AbstractBaseComponen
 
 
 @Component({
-    moduleId: module.id,
     selector: "collaborator-overlay",
     templateUrl: "collaborator-overlay.component.html",
     styleUrls: [ "collaborator-overlay.component.css" ],

@@ -30,7 +30,6 @@ import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
 
 @Component({
-    moduleId: module.id,
     selector: "undo-icon",
     templateUrl: "undo-icon.component.html",
     styleUrls: ["undo-icon.component.css"],

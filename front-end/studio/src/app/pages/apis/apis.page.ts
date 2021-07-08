@@ -69,7 +69,6 @@ class Filters {
 
 
 @Component({
-    moduleId: module.id,
     selector: "apis-page",
     templateUrl: "apis.page.html",
     styleUrls: ["apis.page.css"]

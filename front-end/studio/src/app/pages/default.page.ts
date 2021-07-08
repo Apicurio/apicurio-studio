@@ -24,7 +24,6 @@ import {AbstractPageComponent} from "../components/page-base.component";
  * The Settings Page component.
  */
 @Component({
-    moduleId: module.id,
     selector: "default-page",
     template: "<div></div>"
 })

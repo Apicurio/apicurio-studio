@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {Library, Document, TraverserDirection, OasDocument} from "apicurio-data-models";
 import {DropDownOption, DropDownOptionValue} from "../../../../../../components/common/drop-down.component";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
@@ -27,7 +27,6 @@ export class AddSchemaDialogData {
 
 
 @Component({
-    moduleId: module.id,
     selector: "add-schema-dialog",
     templateUrl: "add-schema.component.html"
 })

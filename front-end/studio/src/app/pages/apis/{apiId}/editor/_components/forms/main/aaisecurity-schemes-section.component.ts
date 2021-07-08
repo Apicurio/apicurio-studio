@@ -51,7 +51,6 @@ import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rena
 
 
 @Component({
-    moduleId: module.id,
     selector: "aaisecurity-schemes-section",
     templateUrl: "security-schemes-section.component.html",
     encapsulation: ViewEncapsulation.None,
@@ -61,7 +60,7 @@ export class AaiSecuritySchemesSectionComponent extends AbstractBaseComponent {
 
     @Input() document: AaiDocument;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

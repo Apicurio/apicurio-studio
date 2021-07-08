@@ -16,6 +16,7 @@
  */
 
 import {ClipboardModule} from "ngx-clipboard";
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {AppComponent} from './app.component';
@@ -31,7 +32,8 @@ import {PageErrorComponent} from './components/page-error.component';
 import {VerticalNavComponent} from './components/vertical-nav.component';
 import {AppRoutingModule} from './app-routing.module';
 import {ConfirmDeleteDialogComponent} from './components/dialogs/confirm-delete.component';
-import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
+import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
+import {ModalModule} from 'ngx-bootstrap/modal';
 import {NotFoundPageComponent} from './pages/404.page';
 import {SettingsNavComponent} from './pages/settings/_components/settings-nav.component';
 import {CreatedLinkedAccountPageComponent} from './pages/settings/accounts/{accountType}/created/created.page';
@@ -80,7 +82,7 @@ import {LoadingComponent} from "./components/common/loading.component";
 
 @NgModule({
     imports: [
-        BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot(),
+        BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, AppRoutingModule, ModalModule.forRoot(), BsDropdownModule.forRoot(),
         ApicurioCommonComponentsModule, ApicurioEditorModule, ClipboardModule
     ],
     declarations: [

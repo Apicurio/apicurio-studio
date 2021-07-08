@@ -100,7 +100,6 @@ export interface ISecuritySchemeEditorHandler extends IEntityEditorHandler<Secur
 
 
 @Component({
-    moduleId: module.id,
     selector: "security-scheme-editor",
     templateUrl: "security-scheme-editor.component.html",
     styleUrls: ["security-scheme-editor.component.css"],

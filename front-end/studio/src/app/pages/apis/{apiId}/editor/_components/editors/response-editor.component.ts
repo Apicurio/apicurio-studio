@@ -43,7 +43,6 @@ export interface IResponseEditorHandler extends IEntityEditorHandler<Oas20Respon
 
 
 @Component({
-    moduleId: module.id,
     selector: "response-editor",
     templateUrl: "response-editor.component.html",
     styleUrls: ["response-editor.component.css"]

@@ -42,7 +42,6 @@ import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "tags-section",
     templateUrl: "tags-section.component.html",
     encapsulation: ViewEncapsulation.None,
@@ -52,7 +51,7 @@ export class TagsSectionComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

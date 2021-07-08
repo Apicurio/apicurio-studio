@@ -59,7 +59,8 @@ import {LicenseService} from "./pages/apis/{apiId}/editor/_services/license.serv
 import {IconButtonComponent} from "./pages/apis/{apiId}/editor/_components/common/icon-button.component";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {BsDropdownModule, ModalModule} from "ngx-bootstrap";
+import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
+import {ModalModule} from 'ngx-bootstrap/modal';
 import {ApicurioCommonComponentsModule} from "./common-components.module";
 import {SignpostComponent} from "./pages/apis/{apiId}/editor/_components/common/signpost.component";
 import {EditorTitleBarComponent} from "./pages/apis/{apiId}/editor/_components/title-bar.component";

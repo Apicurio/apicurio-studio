@@ -32,7 +32,6 @@ import {AbstractRowComponent} from "../../../common/item-row.abstract";
 
 
 @Component({
-    moduleId: module.id,
     selector: "formData-param-row",
     templateUrl: "formData-param-row.component.html",
     styleUrls: [ "formData-param-row.component.css" ],

@@ -38,7 +38,6 @@ import {DocumentService} from "../../_services/document.service";
 import {EditorsService} from "../../_services/editors.service";
 
 @Component({
-    moduleId: module.id,
     selector: "channel-form",
     templateUrl: "channel-form.component.html",
     styleUrls: [ "channel-form.component.css" ],

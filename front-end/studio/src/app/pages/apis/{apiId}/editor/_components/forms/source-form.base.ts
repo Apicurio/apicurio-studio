@@ -23,7 +23,7 @@ import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
 import {AbstractBaseComponent} from "../common/base-component";
-import {ChangeDetectorRef} from "@angular/core";
+import { ChangeDetectorRef, Directive } from "@angular/core";
 import {SectionComponent} from "./shared/section.component";
 import {ObjectUtils} from "apicurio-ts-core";
 
@@ -31,6 +31,7 @@ import {ObjectUtils} from "apicurio-ts-core";
 /**
  * Base class for all forms that support a "Source" tab.
  */
+@Directive()
 export abstract class SourceFormComponent<T extends Node> extends AbstractBaseComponent {
 
     private _mode: string = "design";

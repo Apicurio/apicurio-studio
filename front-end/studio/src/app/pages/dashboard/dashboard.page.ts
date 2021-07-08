@@ -33,7 +33,6 @@ import {CurrentUserService} from "../../services/current-user.service";
  * The Dashboard Page component - models the logical root path of the application.
  */
 @Component({
-    moduleId: module.id,
     selector: "dashboard-page",
     templateUrl: "dashboard.page.html",
     styleUrls: ["dashboard.page.css"]

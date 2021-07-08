@@ -33,7 +33,6 @@ import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rena
 
 
 @Component({
-    moduleId: module.id,
     selector: "aaiservers-section",
     templateUrl: "aaiservers-section.component.html",
     encapsulation: ViewEncapsulation.None,
@@ -45,7 +44,7 @@ export class AaiServersSectionComponent extends AbstractBaseComponent {
     @Input() collapsed: boolean;
     @Input() description: string;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     public showSectionBody: boolean;
 

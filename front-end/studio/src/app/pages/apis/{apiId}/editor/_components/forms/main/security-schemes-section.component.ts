@@ -55,7 +55,6 @@ import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rena
 
 
 @Component({
-    moduleId: module.id,
     selector: "security-schemes-section",
     templateUrl: "security-schemes-section.component.html",
     encapsulation: ViewEncapsulation.None,
@@ -65,7 +64,7 @@ export class SecuritySchemesSectionComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
 
-    @ViewChild("renameDialog") renameDialog: RenameEntityDialogComponent;
+    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

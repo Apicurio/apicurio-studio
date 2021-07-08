@@ -16,13 +16,12 @@
  */
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren, Input} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {DropDownOption, DropDownOptionValue as Value, DIVIDER} from "../../../../../../components/common/drop-down.component";
 
 const STANDARD_HEADERS = ["string", "integer"];
 
 @Component({
-    moduleId: module.id,
     selector: "add-header-dialog",
     templateUrl: "add-header.component.html"
 })

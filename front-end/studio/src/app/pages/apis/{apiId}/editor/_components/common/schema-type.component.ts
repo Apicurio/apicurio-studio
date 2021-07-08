@@ -23,7 +23,6 @@ import {SelectionService} from "../../_services/selection.service";
 import {ObjectUtils} from "apicurio-ts-core";
 
 @Component({
-    moduleId: module.id,
     selector: "schema-type",
     templateUrl: "schema-type.component.html",
     changeDetection: ChangeDetectionStrategy.OnPush

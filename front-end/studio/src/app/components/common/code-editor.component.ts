@@ -29,7 +29,6 @@ export enum CodeEditorMode {
 }
 
 @Component({
-    moduleId: module.id,
     selector: "code-editor",
     templateUrl: "code-editor.component.html",
     encapsulation: ViewEncapsulation.None
@@ -38,7 +37,7 @@ export class CodeEditorComponent {
 
     private static DEFAULT_DEBOUNCE_TIME: number = 200;
 
-    @ViewChild("editor") public editor: AceEditorComponent;
+    @ViewChild("editor", { static: true }) public editor: AceEditorComponent;
 
     private _textValueDebouncer: Debouncer<string> = new Debouncer<string>({ period: 200 }, value => {
         this.textChange.emit(value);

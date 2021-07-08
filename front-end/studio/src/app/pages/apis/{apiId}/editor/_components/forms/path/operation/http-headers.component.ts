@@ -51,7 +51,6 @@ export interface ExamplePropertyChangeEvent {
 
 
 @Component({
-    moduleId: module.id,
     selector: "httpHeaders",
     templateUrl: "http-headers.component.html",
     styleUrls: [ "http-headers.component.css" ],

@@ -25,7 +25,6 @@ import {SelectionService} from "../../../_services/selection.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "license-section",
     templateUrl: "license-section.component.html",
     encapsulation: ViewEncapsulation.None,

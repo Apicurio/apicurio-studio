@@ -32,7 +32,6 @@ import {UpdateCollaborator} from "../../../../models/update-collaborator.model";
 import {InvitationDialogComponent} from "./_components/invitation.component";
 
 @Component({
-    moduleId: module.id,
     selector: "api-collaboration-page",
     templateUrl: "api-collaboration.page.html",
     styleUrls: ["api-collaboration.page.css"]

@@ -55,8 +55,8 @@
                             <goal>install-node-and-yarn</goal>
                         </goals>
                         <configuration>
-                            <nodeVersion>v8.15.0</nodeVersion>
-                            <yarnVersion>v1.13.0</yarnVersion>
+                            <nodeVersion>v14.17.2</nodeVersion>
+                            <yarnVersion>v1.22.5</yarnVersion>
                         </configuration>
                     </execution>
                     <!-- Install npm/yarn dependencies -->

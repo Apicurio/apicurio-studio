@@ -16,8 +16,9 @@
  */
 
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {BsDropdownModule, ModalModule} from 'ngx-bootstrap';
+import { FormsModule } from '@angular/forms';
+import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
+import {ModalModule} from 'ngx-bootstrap/modal';
 import {CommonModule} from "@angular/common";
 
 import {DropDownComponent} from './components/common/drop-down.component';

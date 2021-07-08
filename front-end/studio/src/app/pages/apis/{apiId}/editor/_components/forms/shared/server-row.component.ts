@@ -40,7 +40,6 @@ import {AbstractRowComponent} from "../../common/item-row.abstract";
 
 
 @Component({
-    moduleId: module.id,
     selector: "server-row",
     templateUrl: "server-row.component.html",
     styleUrls: ["server-row.component.css"],

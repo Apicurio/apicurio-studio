@@ -25,7 +25,6 @@ import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "path-info-section",
     templateUrl: "info-section.component.html",
     encapsulation: ViewEncapsulation.None,

@@ -37,7 +37,6 @@ export class TextEditorComponent {
 
 
 @Component({
-    moduleId: module.id,
     selector: "graphql-editor",
     templateUrl: "graphql-editor.component.html",
     styleUrls: ["graphql-editor.component.css"],

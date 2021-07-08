@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {
     CodeEditorComponent,
     CodeEditorMode,
@@ -36,7 +36,6 @@ export interface EditExampleEvent {
 }
 
 @Component({
-    moduleId: module.id,
     selector: "edit-aai-example-dialog",
     templateUrl: "edit-aai-example.component.html",
     styleUrls: [ "edit-aai-example.component.css" ]

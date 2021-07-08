@@ -58,7 +58,6 @@ import {ApiCatalogService} from "../../_services/api-catalog.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "response-form",
     templateUrl: "response-form.component.html",
     encapsulation: ViewEncapsulation.None,
@@ -78,8 +77,8 @@ export class ResponseFormComponent extends SourceFormComponent<OasResponse> {
         return this._response;
     }
 
-    @ViewChild("cloneResponseDialog") cloneResponseDialog: CloneResponseDefinitionDialogComponent;
-    @ViewChild("renameResponseDialog") renameResponseDialog: RenameEntityDialogComponent;
+    @ViewChild("cloneResponseDialog", { static: true }) cloneResponseDialog: CloneResponseDefinitionDialogComponent;
+    @ViewChild("renameResponseDialog", { static: true }) renameResponseDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

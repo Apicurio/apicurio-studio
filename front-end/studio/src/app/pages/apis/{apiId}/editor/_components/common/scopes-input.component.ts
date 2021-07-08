@@ -22,7 +22,6 @@ import {SelectionService} from "../../_services/selection.service";
 import {Scope} from "../../_models/scope.model";
 
 @Component({
-    moduleId: module.id,
     selector: "scopes-input",
     templateUrl: "scopes-input.component.html",
     styleUrls: [ "scopes-input.component.css" ],

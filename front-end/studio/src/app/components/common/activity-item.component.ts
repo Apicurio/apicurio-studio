@@ -25,7 +25,6 @@ import {componentTypeToString} from "../../pages/apis/{apiId}/editor/_models/com
 
 
 @Component({
-    moduleId: module.id,
     selector: "activity-item",
     templateUrl: "activity-item.component.html",
     styleUrls: ["activity-item.component.css"]

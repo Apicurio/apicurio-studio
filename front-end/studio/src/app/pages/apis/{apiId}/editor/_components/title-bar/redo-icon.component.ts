@@ -30,7 +30,6 @@ import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
 
 @Component({
-    moduleId: module.id,
     selector: "redo-icon",
     templateUrl: "redo-icon.component.html",
     styleUrls: ["redo-icon.component.css"],

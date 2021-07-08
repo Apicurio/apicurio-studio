@@ -44,7 +44,6 @@ import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
 
 
 @Component({
-    moduleId: module.id,
     selector: "properties-section",
     templateUrl: "properties-section.component.html",
     encapsulation: ViewEncapsulation.None,
@@ -54,7 +53,7 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
 
     @Input() definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
-    @ViewChild("renamePropertyDialog") renamePropertyDialog: RenameEntityDialogComponent;
+    @ViewChild("renamePropertyDialog", { static: true }) renamePropertyDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

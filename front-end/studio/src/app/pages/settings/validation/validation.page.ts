@@ -28,7 +28,6 @@ import {ValidationProblemSeverity, ValidationRuleSet} from "apicurio-data-models
  * The Settings/Profile Page component.
  */
 @Component({
-    moduleId: module.id,
     selector: "validation-page",
     templateUrl: "validation.page.html",
     styleUrls: ["validation.page.css"]

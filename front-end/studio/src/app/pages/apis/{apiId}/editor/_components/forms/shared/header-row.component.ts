@@ -32,7 +32,6 @@ import {AbstractRowComponent} from "../../common/item-row.abstract";
 
 
 @Component({
-    moduleId: module.id,
     selector: "header-row",
     templateUrl: "header-row.component.html",
     styleUrls: [ "header-row.component.css" ],

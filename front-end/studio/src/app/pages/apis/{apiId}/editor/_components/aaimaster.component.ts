@@ -72,7 +72,6 @@ import { IMessageTraitEditorHandler, MessageTraitData, MessageTraitEditorCompone
  * being displayed in the detail panel.
 */
 @Component({
-    moduleId: module.id,
     selector: "aaimaster",
     templateUrl: "aaimaster.component.html",
     styleUrls: [ "aaimaster.component.css" ],
@@ -92,14 +91,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         top: "0px"
     };
 
-    @ViewChild("addChannelDialog") addChannelDialog: AddChannelDialogComponent;
-    @ViewChild("renameChannelDialog") renameChannelDialog: RenameEntityDialogComponent;
+    @ViewChild("addChannelDialog", { static: true }) addChannelDialog: AddChannelDialogComponent;
+    @ViewChild("renameChannelDialog", { static: true }) renameChannelDialog: RenameEntityDialogComponent;
 
-    @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
-    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameEntityDialogComponent;
+    @ViewChild("cloneDefinitionDialog", { static: true }) cloneDefinitionDialog: CloneDefinitionDialogComponent;
+    @ViewChild("renameDefinitionDialog", { static: true }) renameDefinitionDialog: RenameEntityDialogComponent;
 
     @ViewChild("renameOperationTraitDialog") renameOperationTraitDialog: RenameEntityDialogComponent;
-    @ViewChild("renameMessageTraitDialog") renameMessageTraitDialog: RenameEntityDialogComponent;
+    @ViewChild("renameMessageTraitDialog", { static: true }) renameMessageTraitDialog: RenameEntityDialogComponent;
 
     filterCriteria: string = null;
     _channels: AaiChannelItem[];

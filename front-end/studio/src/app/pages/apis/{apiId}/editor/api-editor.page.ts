@@ -172,7 +172,6 @@ class PendingActions {
 
 
 @Component({
-    moduleId: module.id,
     selector: "api-editor-page",
     templateUrl: "api-editor.page.html",
     styleUrls: ["api-editor.page.css"]
@@ -186,8 +185,8 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     protected isSaving: boolean = false;
 
     @ViewChildren("apiEditor") _apiEditor: QueryList<AbstractApiEditorComponent>;
-    @ViewChild("editorDisconnectedModal") editorDisconnectedModal: EditorDisconnectedDialogComponent;
-    @ViewChild("importComponentsWizard") importComponentsWizard: ImportComponentsWizard;
+    @ViewChild("editorDisconnectedModal", { static: true }) editorDisconnectedModal: EditorDisconnectedDialogComponent;
+    @ViewChild("importComponentsWizard", { static: true }) importComponentsWizard: ImportComponentsWizard;
     private editorAvailable: boolean;
 
     private editingSession: IApiEditingSession;

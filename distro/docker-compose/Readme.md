@@ -60,6 +60,15 @@ Microcks URL: 192.168.1.231:8900
 
 Please copy these values somewhere where you can find them easily!
 
+
+**Note**: if you have git configured to automatically convert between Windows and Unix line endings, then the above docker run is likely to fail.  Instead, you can try this alternative (example) docker command:
+
+```
+docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest /bin/bash -c "cp /apicurio/setup.sh /tmp/apicurio-setup.sh ; dos2unix /tmp/apicurio-setup.sh ; bash /tmp/apicurio-setup.sh 192.168.1.231 mysql"
+```
+
+This alternative command will use the `dos2unix` utility to convert the script's line endings before evaluating/executing it.
+
 ### Script based setup
 
 If you're using NIX based OS, you can run the setup script without the docker wrapper. The only dependency is "util-linux" package which contains a tool called uuidgen.

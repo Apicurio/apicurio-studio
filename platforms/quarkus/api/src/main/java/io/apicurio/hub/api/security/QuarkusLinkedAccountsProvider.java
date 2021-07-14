@@ -29,14 +29,13 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
+import org.jboss.logmanager.Level;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.RSATokenVerifier;
 import org.keycloak.common.VerificationException;
 import org.keycloak.common.util.Base64Url;
 import org.keycloak.common.util.KeycloakUriBuilder;
 import org.keycloak.representations.AccessToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Priority;
@@ -51,6 +50,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Logger;
 
 /**
  * An implementation of {@link ILinkedAccountsProvider} that used Keycloak to manage
@@ -67,7 +67,7 @@ import java.security.NoSuchAlgorithmException;
 public class QuarkusLinkedAccountsProvider
         implements ILinkedAccountsProvider {
 
-    private static Logger logger = LoggerFactory.getLogger(QuarkusLinkedAccountsProvider.class);
+    private static final Logger logger = Logger.getLogger(QuarkusLinkedAccountsProvider.class.getName());
 
     @Inject
     ISecurityContext security;
@@ -125,7 +125,7 @@ public class QuarkusLinkedAccountsProvider
                     .queryParam("hash", hash).queryParam("client_id", clientId)
                     .queryParam("redirect_uri", redirectUri).build(realm, provider).toString();
 
-            logger.debug("Account Link URL: {}", accountLinkUrl);
+            logger.log(Level.DEBUG, "Account Link URL: {}", accountLinkUrl);
 
             // Return the URL that the browser should use to initiate the account linking
             InitiatedLinkedAccount rval = new InitiatedLinkedAccount();
@@ -156,7 +156,7 @@ public class QuarkusLinkedAccountsProvider
             String url = KeycloakUriBuilder.fromUri(authServerRootUrl)
                     .path("/realms/{realm}/account/federated-identity-update").queryParam("action", "REMOVE")
                     .queryParam("provider_id", provider).build(realm).toString();
-            logger.debug("Deleting identity provider using URL: {}", url);
+            logger.log(Level.DEBUG, "Deleting identity provider using URL: {}", url);
 
             HttpGet get = new HttpGet(url);
             get.addHeader("Accept", "application/json");
@@ -164,7 +164,7 @@ public class QuarkusLinkedAccountsProvider
 
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 if (response.getStatusLine().getStatusCode() != 200) {
-                    logger.debug("HTTP Response Status Code when deleting identity provider: {}",
+                    logger.log(Level.DEBUG,"HTTP Response Status Code when deleting identity provider: {}",
                             response.getStatusLine().getStatusCode());
                 }
             }
@@ -193,9 +193,9 @@ public class QuarkusLinkedAccountsProvider
 
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 if (response.getStatusLine().getStatusCode() != 200) {
-                    logger.error("Failed to access External IDP Access Token from Keycloak: {} - {}",
+                    logger.log(Level.DEBUG, String.format("Failed to access External IDP Access Token from Keycloak: %s - %s",
                             response.getStatusLine().getStatusCode(),
-                            response.getStatusLine().getReasonPhrase());
+                            response.getStatusLine().getReasonPhrase()));
                     throw new IOException(
                             "Unexpected response from Keycloak: " + response.getStatusLine().getStatusCode()
                                     + "::" + response.getStatusLine().getReasonPhrase());

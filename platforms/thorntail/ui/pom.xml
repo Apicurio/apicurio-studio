@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.apicurio</groupId>
         <artifactId>apicurio-studio-platforms-thorntail</artifactId>
-        <version>0.2.49.Final</version>
+        <version>0.2.50-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>apicurio-studio-platforms-thorntail-ui</artifactId>

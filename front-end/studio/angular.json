@@ -92,13 +92,13 @@
           "options": {
             "tsConfig": "src/tsconfig.editor.json",
             "project": "ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
-              "tsConfig": "tsconfig.lib.prod.json"
+              "tsConfig": "src/tsconfig.editor.prod.json"
             }
           }
-}
+        }
       }
     }
   },

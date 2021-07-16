@@ -76,7 +76,7 @@ export class CreateApiPageComponent extends AbstractPageComponent {
             });
         } else {
             let importApi: ImportApi = new ImportApi();
-            let spec: any = JSON.parse(JSON.stringify(eventData.template.content));
+            let spec: any = JSON.parse(eventData.template.content);
             this.updateSpec(spec, eventData);
             importApi.data = Base64.encode(JSON.stringify(spec));
 

@@ -24,7 +24,7 @@ public class ApiTemplate {
     private ApiDesignType type;
     private String name;
     private String description;
-    private Object document;
+    private String document;
 
     /**
      * Constructor.
@@ -32,7 +32,7 @@ public class ApiTemplate {
     public ApiTemplate() {
     }
 
-    public ApiTemplate(ApiDesignType type, String name, String description, Object document) {
+    public ApiTemplate(ApiDesignType type, String name, String description, String document) {
         this.type = type;
         this.name = name;
         this.description = description;
@@ -84,14 +84,14 @@ public class ApiTemplate {
     /**
      * @return the document
      */
-    public Object getDocument() {
+    public String getDocument() {
         return document;
     }
 
     /**
      * @param document the document to set
      */
-    public void setDocument(Object document) {
+    public void setDocument(String document) {
         this.document = document;
     }
 

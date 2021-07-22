@@ -17,6 +17,7 @@
 package io.apicurio.hub.api.microcks;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
@@ -25,6 +26,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import io.apicurio.hub.api.content.ContentDereferencer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +41,7 @@ import io.apicurio.hub.core.config.HubConfiguration;
 
 /**
  * Default implementation of a Microcks connector.
- * 
+ *
  * @author laurent.broudoux@gmail.com
  */
 @ApplicationScoped
@@ -50,6 +52,8 @@ public class MicrocksConnector implements IMicrocksConnector {
 
     @Inject
     private HubConfiguration config;
+    @Inject
+    private ContentDereferencer dereferencer;
 
     /** Microcks API URL (should ends with /api). */
     private String apiURL;
@@ -73,7 +77,7 @@ public class MicrocksConnector implements IMicrocksConnector {
 
     /**
      * Returns the OAuth token to use when accessing Microcks.
-     * 
+     *
      * @throws MicrocksConnectorException
      */
     private String getKeycloakOAuthToken() throws MicrocksConnectorException {
@@ -135,12 +139,18 @@ public class MicrocksConnector implements IMicrocksConnector {
     /**
      * Upload an OAS v3 specification content to Microcks. This will trigger service discovery and mock
      * endpoint publication on the Microcks side.
-     * 
+     *
      * @param content OAS v3 specification content
      * @throws MicrocksConnectorException if upload fails for many reasons
      */
     public String uploadResourceContent(String content) throws MicrocksConnectorException {
         String oauthToken = this.getKeycloakOAuthToken();
+        try {
+            content = dereferencer.dereference(content);
+        } catch (IOException e) {
+            logger.error("Could not dereference imports in specification content", e);
+            throw new MicrocksConnectorException("Could not dereference imports before sending to Microcks");
+        }
         MultipartBody uploadRequest = Unirest.post(this.apiURL + "/artifact/upload")
                 .header("Authorization", "Bearer " + oauthToken)
                 .field("file", new ByteArrayInputStream(content.getBytes(Charset.forName("UTF-8"))), "open-api-contract.yml");
@@ -178,7 +188,7 @@ public class MicrocksConnector implements IMicrocksConnector {
 
     /**
      * Reserved for future usage.
-     * 
+     *
      * @return List of repository secrets managed by Microcks server
      * @throws MicrocksConnectorException if connection fails for any reasons
      */
@@ -188,7 +198,7 @@ public class MicrocksConnector implements IMicrocksConnector {
 
     /**
      * Reserved for future usage.
-     * 
+     *
      * @return List of import jobs managed by Microcks server
      * @throws MicrocksConnectorException if connection fails for any reasons
      */
@@ -198,7 +208,7 @@ public class MicrocksConnector implements IMicrocksConnector {
 
     /**
      * Reserved for future usage.
-     * 
+     *
      * @param job Import job to create in Microcks server.
      * @throws MicrocksConnectorException if connection fails for any reasons
      */
@@ -208,7 +218,7 @@ public class MicrocksConnector implements IMicrocksConnector {
 
     /**
      * Reserved for future usage.
-     * 
+     *
      * @param job Import job to force import in Microcks server.
      * @throws MicrocksConnectorException if connection fails for any reasons
      */

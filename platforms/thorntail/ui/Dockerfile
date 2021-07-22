@@ -8,10 +8,12 @@ RUN yum install -y \
 WORKDIR /opt/apicurio
 
 ADD ${RELEASE_PATH} /opt/apicurio
+ADD entrypoint.sh /opt/apicurio
 
 RUN groupadd -r apicurio -g 1001 \
     && useradd -u 1001 -r -g apicurio -d /opt/apicurio/ -s /sbin/nologin -c "Docker image user" apicurio \
     && chown -R apicurio:apicurio /opt/apicurio/ \
+    && chmod 554 /opt/apicurio/entrypoint.sh \
     && chgrp -R 0 /opt/apicurio && chmod -R g=u /opt/apicurio
 
 USER 1001
@@ -36,12 +38,4 @@ ENV APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP='([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]
 
 
 
-CMD java -jar /opt/apicurio/apicurio-studio-ui-thorntail.jar \
-    -Xms${APICURIO_MIN_HEAP} \
-    -Xmx${APICURIO_MAX_HEAP} \
-    -Dthorntail.port.offset=${APICURIO_PORT_OFFSET} \
-    -Dapicurio-ui.hub-api.url=${APICURIO_UI_HUB_API_URL} \
-    -Dapicurio-ui.editing.url=${APICURIO_UI_EDITING_URL} \
-    -Dapicurio.kc.auth.rootUrl=${APICURIO_KC_AUTH_URL} \
-    -Dapicurio.kc.auth.realm=${APICURIO_KC_REALM} \
-    -Dthorntail.logging=${APICURIO_LOGGING_LEVEL}
+ENTRYPOINT ["/opt/apicurio/entrypoint.sh"]

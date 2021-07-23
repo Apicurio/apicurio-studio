@@ -44,7 +44,6 @@ export interface IPropertiesEditorHandler extends IEntityEditorHandler<Oas20Sche
 
 
 @Component({
-    moduleId: module.id,
     selector: "properties-editor",
     templateUrl: "properties-editor.component.html",
     styleUrls: ["properties-editor.component.css"]

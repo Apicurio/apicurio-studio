@@ -8,7 +8,6 @@ import {SelectionService} from "../../_services/selection.service";
 import {AbstractInlineEditor} from "./inline-editor.base";
 
 @Component({
-    moduleId: module.id,
     selector: "checkbox-input",
     templateUrl: "checkbox-input.component.html",
     styleUrls: ["checkbox-input.component.css"],

@@ -41,7 +41,6 @@ import {SelectionService} from "../../../../_services/selection.service";
 import { EditExampleEvent } from "../../../dialogs/edit-aai-example.component";
 
 @Component({
-    moduleId: module.id,
     selector: "payload-tab",
     templateUrl: "payload-tab.component.html",
     styleUrls: [ "payload-tab.component.css" ],
@@ -143,19 +142,17 @@ export class PayloadTabComponent extends AbstractBaseComponent {
     }
 
     public exampleName(example: any): string {
-        return Object.keys(example)[0] as string;
+        return example.name as string;
     }
     public examplePayloadValue(example: any): string {
-        let name: string = Object.keys(example)[0];
-        let evalue: any = example[name].payload;
+        let evalue: any = example.payload;
         if (typeof evalue === "object" || Array.isArray(evalue)) {
             evalue = JSON.stringify(evalue);
         }
         return evalue;
     }
     public exampleHeadersValue(example: any): string {
-        let name: string = Object.keys(example)[0];
-        let evalue: any = example[name].headers;
+        let evalue: any = example.headers;
         if (typeof evalue === "object" || Array.isArray(evalue)) {
             evalue = JSON.stringify(evalue);
         }
@@ -164,10 +161,14 @@ export class PayloadTabComponent extends AbstractBaseComponent {
 
     public addExample(exampleData: any): void {
         let example: any = {};
-        example[exampleData.name] = { 'payload': exampleData.payloadValue };
+        example.name = exampleData.name;
+        // Add payload if provided.
+        if (exampleData.payloadValue != null) {
+            example.payload = exampleData.payloadValue
+        }
         // Add headers if provided.
         if (exampleData.headersValue != null) {
-            example[exampleData.name].headers = exampleData.headersValue;
+            example.headers = exampleData.headersValue;
         }
         let command: ICommand = CommandFactory.createAddMessageExampleCommand_Aai20(this.message.parent() as AaiOperation, example);
         this.commandService.emit(command);

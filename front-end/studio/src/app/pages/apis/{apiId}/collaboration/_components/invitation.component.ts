@@ -16,14 +16,13 @@
  */
 
 import {Component, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {Invitation} from "../../../../../models/invitation.model";
 import {ClipboardService} from "ngx-clipboard";
 import {Api} from "../../../../../models/api.model";
 
 
 @Component({
-    moduleId: module.id,
     selector: "invitation-dialog",
     templateUrl: "invitation.component.html",
     styleUrls: [ "invitation.component.css" ]

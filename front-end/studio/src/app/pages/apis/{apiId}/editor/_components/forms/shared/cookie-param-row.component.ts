@@ -41,7 +41,6 @@ import {AbstractRowComponent} from "../../common/item-row.abstract";
 
 // TODO combine with Query Param Row (and Header Param Row) to share code/logic
 @Component({
-    moduleId: module.id,
     selector: "cookie-param-row",
     templateUrl: "cookie-param-row.component.html",
     styleUrls: [ "cookie-param-row.component.css" ],

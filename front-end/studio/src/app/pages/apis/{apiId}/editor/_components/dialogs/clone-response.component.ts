@@ -16,14 +16,13 @@
  */
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {Oas20Operation, Oas30Operation} from "apicurio-data-models";
 import {DropDownOption} from "../../../../../../components/common/drop-down.component";
 import {HttpCodeService} from "../../_services/httpcode.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "clone-response-dialog",
     templateUrl: "clone-response.component.html"
 })

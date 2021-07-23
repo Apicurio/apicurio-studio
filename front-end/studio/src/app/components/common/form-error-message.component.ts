@@ -20,7 +20,6 @@ import {NgModel} from "@angular/forms";
 
 
 @Component({
-    moduleId: module.id,
     selector: "form-error-message",
     templateUrl: "form-error-message.component.html"
 })

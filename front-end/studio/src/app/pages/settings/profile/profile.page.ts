@@ -26,7 +26,6 @@ import {Title} from "@angular/platform-browser";
  * The Settings/Profile Page component.
  */
 @Component({
-    moduleId: module.id,
     selector: "profile-page",
     templateUrl: "profile.page.html",
     styleUrls: ["profile.page.css"]

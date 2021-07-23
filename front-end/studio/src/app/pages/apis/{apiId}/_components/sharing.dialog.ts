@@ -16,7 +16,7 @@
  */
 
 import {Component, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {ApisService} from "../../../../services/apis.service";
 import {SharingConfiguration} from "../../../../models/sharing-config.model";
 import {ClipboardService} from "ngx-clipboard";
@@ -24,7 +24,6 @@ import {ConfigService} from "../../../../services/config.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "sharing-dialog",
     templateUrl: "sharing.dialog.html",
     styleUrls: [ "sharing.dialog.css" ]

@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {Node} from "apicurio-data-models";
 
 
@@ -29,7 +29,6 @@ export interface RenameEntityEvent {
 
 
 @Component({
-    moduleId: module.id,
     selector: "rename-entity-dialog",
     templateUrl: "rename-entity.component.html",
     styleUrls: [ "rename-entity.component.css" ]

@@ -10,6 +10,10 @@
             </div>
         </div>
     </div>
+    <div class="response-header" *ngIf="!isRef()">
+        <div class="form-label">Response Headers</div>
+        <httpHeaders [parent]="response"></httpHeaders>
+    </div>
     <div class="response-content" *ngIf="!isRef()">
         <div class="form-label">Response Body</div>
         <content [parent]="response"></content>

@@ -41,7 +41,6 @@ import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
 
 
 @Component({
-    moduleId: module.id,
     selector: "property-row",
     templateUrl: "property-row.component.html",
     styleUrls: [ "property-row.component.css" ],

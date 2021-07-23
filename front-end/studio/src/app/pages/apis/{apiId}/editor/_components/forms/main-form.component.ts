@@ -26,7 +26,6 @@ import {EditorsService} from "../../_services/editors.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "main-form",
     templateUrl: "main-form.component.html",
     encapsulation: ViewEncapsulation.None,

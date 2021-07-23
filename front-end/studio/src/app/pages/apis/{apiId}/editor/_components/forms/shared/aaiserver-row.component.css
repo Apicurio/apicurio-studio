@@ -1,0 +1,27 @@
+
+.server .header .security-summary {
+    flex-basis: 56%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 25px;
+}
+
+.server .header .protocol {
+    flex-basis: 56%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    padding-right: 25px;
+}
+
+.server .body .server-security {
+    margin-top: 5px;
+}
+.server .body .server-security .form-label {
+    font-weight: 600;
+}
+
+.server-security-header > div.form-label,
+.server-security-header > div.actions {
+    display: inline-block;
+}

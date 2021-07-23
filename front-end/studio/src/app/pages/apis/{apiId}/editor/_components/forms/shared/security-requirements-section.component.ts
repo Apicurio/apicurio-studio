@@ -38,7 +38,6 @@ import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "security-requirements-section",
     templateUrl: "security-requirements-section.component.html",
     styleUrls: [ "security-requirements-section.component.css" ],

@@ -19,7 +19,6 @@ import {Component, Input} from "@angular/core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "page-error",
     templateUrl: "page-error.component.html",
     styleUrls: [ "page-error.component.css" ]

@@ -1,0 +1,17 @@
+<div class="httpHeaders" *ngIf="hasHttpHeaders()">
+    <div class="container-fluid media-types typed-item-list">
+        <header-row *ngFor="let header of httpHeaders()" [item]="httpHeaderByName(header)"></header-row>
+    </div>
+    <div class="actions">
+        <a (click)="addHttpHeaderDialog.open(httpHeaderNames())">Add a http header</a>
+    </div>
+</div>
+
+<div class="httpHeaders" *ngIf="!hasHttpHeaders()">
+    <signpost>
+        <span>No http headers have been defined.</span>
+        <a (click)="addHttpHeaderDialog.open(httpHeaderNames())">Add a http header</a>
+    </signpost>
+</div>
+
+<add-header-dialog #addHttpHeaderDialog (onAdd)="addHttpHeader($event)"></add-header-dialog>

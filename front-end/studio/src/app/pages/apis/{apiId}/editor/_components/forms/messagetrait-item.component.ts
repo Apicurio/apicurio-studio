@@ -24,7 +24,6 @@ import {ModelUtils} from "../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "[messagetrait-item]",
     templateUrl: "messagetrait-item.component.html",
     styleUrls: [ "messagetrait-item.component.css" ],

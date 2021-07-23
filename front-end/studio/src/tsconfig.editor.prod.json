@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.editor.json",
+  "compilerOptions": {
+    "declarationMap": false
+  },
+  "angularCompilerOptions": {
+    "enableIvy": false
+  }
+}

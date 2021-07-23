@@ -172,7 +172,6 @@ class PendingActions {
 
 
 @Component({
-    moduleId: module.id,
     selector: "api-editor-page",
     templateUrl: "api-editor.page.html",
     styleUrls: ["api-editor.page.css"]
@@ -186,8 +185,8 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     protected isSaving: boolean = false;
 
     @ViewChildren("apiEditor") _apiEditor: QueryList<AbstractApiEditorComponent>;
-    @ViewChild("editorDisconnectedModal") editorDisconnectedModal: EditorDisconnectedDialogComponent;
-    @ViewChild("importComponentsWizard") importComponentsWizard: ImportComponentsWizard;
+    @ViewChild("editorDisconnectedModal", { static: true }) editorDisconnectedModal: EditorDisconnectedDialogComponent;
+    @ViewChild("importComponentsWizard", { static: true }) importComponentsWizard: ImportComponentsWizard;
     private editorAvailable: boolean;
 
     private editingSession: IApiEditingSession;
@@ -237,6 +236,22 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         if (this.config.uiUrl()) {
             this.uiUrl = this.config.uiUrl();
         }
+    }
+
+    public isOpenApi20(): boolean {
+        return this.apiDefinition.type === "OpenAPI20";
+    }
+
+    public isOpenApi30(): boolean {
+        return this.apiDefinition.type === "OpenAPI30";
+    }
+
+    public isAsyncApi20(): boolean {
+        return this.apiDefinition.type === "AsyncAPI20";
+    }
+
+    public isGraphQL(): boolean {
+        return this.apiDefinition.type === "GraphQL";
     }
 
     /**
@@ -461,9 +476,9 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
 
     public loadingState(): string {
         if (this.isLoaded("session")) {
-            if (this.apiDefinition.type === "OpenAPI20" || this.apiDefinition.type === "OpenAPI30") {
+            if (this.isOpenApi20() || this.isOpenApi30()) {
                 return "loaded-oai";
-            } else if (this.apiDefinition.type === "AsyncAPI20") {
+            } else if (this.isAsyncApi20()) {
                 return "loaded-aai";
             } else {
                 return "loaded-graphql";
@@ -855,6 +870,14 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
         this.isOffline = true;
         this.editorDisconnectedModal.close();
         this.startRetryTimer();
+    }
+
+    public actionEnabled(action: string): boolean {
+        if (action == "preview-docs") {
+            return this.isOpenApi20() || this.isOpenApi30();
+        }
+
+        return true;
     }
 
 }

@@ -31,7 +31,6 @@ import {ConfigService} from "../../../services/config.service";
 import {ApiMock, MockReference} from "../../../models/mock-api.model";
 
 @Component({
-    moduleId: module.id,
     selector: "api-detail-page",
     templateUrl: "api-detail.page.html",
     styleUrls: ["api-detail.page.css"]
@@ -268,7 +267,7 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
             return this.canDelete;
         }
         if (action == "collaborate") {
-            return !this.config.isShareWithEveryoneEnabled() && !this.isAsyncApi20() && !this.isGraphQL();
+            return !this.config.isShareWithEveryoneEnabled() && !this.isGraphQL();
         }
         if (action == "generate-project") {
             return this.isOpenApi20() || this.isOpenApi30();

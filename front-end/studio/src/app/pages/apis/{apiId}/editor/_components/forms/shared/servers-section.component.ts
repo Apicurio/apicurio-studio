@@ -36,7 +36,6 @@ import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "servers-section",
     templateUrl: "servers-section.component.html",
     encapsulation: ViewEncapsulation.None,

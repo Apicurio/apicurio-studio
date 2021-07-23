@@ -31,7 +31,6 @@ import {DocumentType, NodePath, OasSchema} from "apicurio-data-models";
 
 
 @Component({
-    moduleId: module.id,
     selector: "schema-row",
     templateUrl: "schema-row.component.html",
     styleUrls: [ "schema-row.component.css" ],

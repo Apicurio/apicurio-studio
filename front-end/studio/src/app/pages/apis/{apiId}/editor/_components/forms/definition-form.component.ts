@@ -62,7 +62,6 @@ const INHERITANCE_TYPES_20: DropDownOption[] = [
 
 
 @Component({
-    moduleId: module.id,
     selector: "definition-form",
     templateUrl: "definition-form.component.html",
     encapsulation: ViewEncapsulation.None,
@@ -85,8 +84,8 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         return this._definition;
     }
 
-    @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
-    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameEntityDialogComponent;
+    @ViewChild("cloneDefinitionDialog", { static: true }) cloneDefinitionDialog: CloneDefinitionDialogComponent;
+    @ViewChild("renameDefinitionDialog", { static: true }) renameDefinitionDialog: RenameEntityDialogComponent;
 
     /**
      * C'tor.

@@ -16,11 +16,10 @@
  */
 
 import {Component, ViewChildren, QueryList, Output, EventEmitter} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 
 
 @Component({
-    moduleId: module.id,
     selector: "editor-disconnected-dialog",
     templateUrl: "editor-disconnected.component.html",
     styleUrls: [ "editor-disconnected-dialog.css" ]

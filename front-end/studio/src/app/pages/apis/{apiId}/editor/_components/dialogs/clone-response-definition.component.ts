@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {
     Oas20ResponseDefinition,
     Oas30ResponseDefinition,
@@ -28,7 +28,6 @@ import {FindResponseDefinitionsVisitor} from "../../_visitors/response-definitio
 
 
 @Component({
-    moduleId: module.id,
     selector: "clone-response-definition-dialog",
     templateUrl: "clone-response-definition.component.html"
 })

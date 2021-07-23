@@ -1,0 +1,23 @@
+<div class="security-requirement">
+    <div class="name">
+        <validation-problem [model]="item" [shallow]="true"></validation-problem>
+        <span class="fa fa-lock fa-fw" *ngIf="!isAnonSecurity(item)"></span>
+        <span class="fa fa-unlock fa-fw" *ngIf="isAnonSecurity(item)"></span>
+        <span class="requirement-label" *ngIf="!isAnonSecurity(item)">{{ item.getSecurityRequirementNames().join(", ") }}</span>
+        <span class="requirement-label no-security" *ngIf="isAnonSecurity(item)">No Security</span>
+    </div>
+    <div class="actions">
+        <div class="dropdown dropdown-kebab-pf">
+            <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="fa fa-ellipsis-v"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li><a (click)="openSecurityRequirementEditor(item)"><span class="fa fa-fw fa-pencil-square-o"></span><span>Edit</span></a></li>
+                <li role="separator" class="divider"></li>
+                <li><a (click)="deleteSecurityRequirement(item)"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+

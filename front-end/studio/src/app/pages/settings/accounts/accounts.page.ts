@@ -28,7 +28,6 @@ export const ACCOUNT_LINK_NONCE_KEY = "apicurio.studio.linked-accounts.nonces";
  * The Settings/Accounts Page component.
  */
 @Component({
-    moduleId: module.id,
     selector: "accounts-page",
     templateUrl: "accounts.page.html",
     styleUrls: ["accounts.page.css"]

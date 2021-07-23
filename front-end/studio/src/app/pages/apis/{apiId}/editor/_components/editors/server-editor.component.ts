@@ -43,7 +43,6 @@ export interface IServerEditorHandler extends IEntityEditorHandler<Oas30Server, 
 
 
 @Component({
-    moduleId: module.id,
     selector: "server-editor",
     templateUrl: "server-editor.component.html",
     styleUrls: ["server-editor.component.css"]

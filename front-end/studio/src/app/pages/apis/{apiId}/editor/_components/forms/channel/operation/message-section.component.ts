@@ -38,7 +38,6 @@ import {DropDownOptionValue as Value} from "../../../../../../../../components/c
 import {ObjectUtils} from "apicurio-ts-core";
 
 @Component({
-    moduleId: module.id,
     selector: "message-section",
     templateUrl: "message-section.component.html",
     styleUrls: [ "message-section.component.css" ],

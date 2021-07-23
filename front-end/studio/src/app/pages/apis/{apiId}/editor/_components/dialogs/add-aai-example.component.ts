@@ -16,7 +16,7 @@
  */
 
 import {Component, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {
     CodeEditorComponent,
     CodeEditorMode,
@@ -30,7 +30,6 @@ import {StringUtils} from "apicurio-ts-core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "add-aai-example-dialog",
     templateUrl: "add-aai-example.component.html",
     styleUrls: [ "add-aai-example.component.css" ]

@@ -1,0 +1,144 @@
+<entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="server" *ngIf="isOpen()"
+               [showRequiredFieldsMessage]="true" heading="Define the Server" [valid]="isValid()">
+
+    <div class="row-fluid body-section">
+        <div class="col-md-12">
+            <h3>1. Enter Server Info</h3>
+            <p class="explanation">
+                <span>
+                    Enter the name, URL template, protocol, protocol version, security requirements, server bindings, and description of the server.
+                    <br />
+                    Include server variables in the URL template using the following syntax:
+                </span>
+                <br />
+                <code>
+                    http://<span class="server-variable">&#123;domain&#125;</span>.example.com:<span class="server-variable">&#123;port&#125;</span>/api
+                </code>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label required" for="serverName">Name</label>
+                <div *ngIf="_mode === 'create'">
+                    <input #nameInput="ngModel" name="name" type="text" id="serverName" class="form-control"
+                           placeholder="Enter Server Name (must be unique)"
+                           required [(ngModel)]="model.name" pattern="[a-zA-Z0-9\-_]+">
+                    <div class="form-error-message error" *ngIf="serverExists">Server already exists.</div>
+                    <form-error-message [inputModel]="nameInput" [type]="'required'">Server name is required.</form-error-message>
+                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                </div>
+                <div *ngIf="_mode === 'edit'">
+                    <input title="To change a server name, choose the 'Rename' option from the previous screen."
+                           name="serverName" type="text" class="form-control readonly" required [(ngModel)]="model.name" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label required" for="serverUrl">Server URL</label>
+                <div *ngIf="_mode === 'create'">
+                    <table class="server-url-wrapper">
+                        <tr>
+                            <td width="100%">
+                                <input #urlInput="ngModel" name="server" type="text" id="serverUrl" class="form-control"
+                                       placeholder="Enter Server URL" (keypress)="onServerUrlKeypress($event)"
+                                       required [(ngModel)]="url">
+                            </td>
+                            <td>
+                                <button class="btn btn-primary url-action" (click)="apply()" [disabled]="!canApply()">Apply</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-default url-action" (click)="reset()" [disabled]="!canApply()">Reset</button>
+                            </td>
+                        </tr>
+                    </table>
+                    <form-error-message [inputModel]="urlInput" [type]="'required'">Server URL is required.</form-error-message>
+                    <div *ngIf="canApply()" class="form-error-message error">URL has been changed.  Press enter or click "Apply" to accept.</div>
+                </div>
+                <div *ngIf="_mode === 'edit'">
+                    <input name="server" type="text" id="server_ro" class="form-control" required
+                           [(ngModel)]="model.url" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label required" for="protocol">Protocol</label>
+                <div>
+                    <input name="protocol" id="protocol" class="form-control required" required #protocolInput
+                           placeholder="Server protocol (amqp, http, jms, kafka, mqtt, stomp, ws, ...)" [(ngModel)]="model.protocol">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="protocolVersion">Protocol Version</label>
+                <div>
+                    <input name="protocolVersion" id="protocolVersion" class="form-control" #protocolVersionInput
+                           placeholder="Server protocol version" [(ngModel)]="model.protocolVersion">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Security Requirements</label>
+                <div>
+                    <input class="form-control readonly" [ngModel]="securityRequirementSummary()" readonly>
+                </div>
+            </div>
+            <!-- TODO Server Bindings -->
+            <div class="form-group">
+                <label class="control-label">Server Bindings</label>
+                <div>
+                    <input placeholder="TODO" class="form-control readonly" [(ngModel)]="model.bindings" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="description">Description</label>
+                <div>
+                        <textarea name="description" id="description" class="form-control" autosize #descriptionInput
+                                  placeholder="Server description" [(ngModel)]="model.description"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid divider-section">
+        <div class="col-md-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row-fluid body-section">
+        <div class="col-md-12">
+            <h3>2. Configure Server Variables</h3>
+            <p class="explanation">
+                    <span>
+                        Configure the server variables found in the server URL template.
+                    </span>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <p class="empty-state" *ngIf="!hasVariables()">
+                This server URL does not contain variables.  Server variables are defined in the server URL template.
+            </p>
+
+            <div class="server-variables" *ngIf="hasVariables()">
+                <ul class="nav nav-tabs">
+                    <li *ngFor="let varName of variableNames()" [class.active]="varName == _varSelected"><a (click)="_varSelected = varName">{{ varName }}</a></li>
+                </ul>
+                <div class="panel panel-default tab-panel">
+                    <div *ngFor="let varName of variableNames()" class="panel-body" [class.hidden]="varName != _varSelected">
+                        <div class="form-group">
+                            <label class="control-label">Default Value</label>
+                            <div class="">
+                                <input name="defval_{{ varName }}" type="text" class="form-control short"
+                                       (keypress)="onKeypress($event)"
+                                       placeholder="Default value" [(ngModel)]="model.variables[varName].default">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label">Description</label>
+                            <div class="">
+                                    <textarea name="description_{{ varName }}" class="form-control" autosize
+                                              placeholder="Variable description" [(ngModel)]="model.variables[varName].description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</entity-editor>

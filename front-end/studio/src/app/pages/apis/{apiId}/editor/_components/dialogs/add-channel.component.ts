@@ -16,13 +16,12 @@
  */
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {AaiDocument} from "apicurio-data-models";
 import {ConfigService} from "../../../../../../services/config.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "add-channel-dialog",
     templateUrl: "add-channel.component.html"
 })

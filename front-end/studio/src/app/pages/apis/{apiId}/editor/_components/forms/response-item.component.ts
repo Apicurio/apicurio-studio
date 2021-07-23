@@ -24,7 +24,6 @@ import {ModelUtils} from "../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "[response-item]",
     templateUrl: "response-item.component.html",
     styleUrls: [ "response-item.component.css" ],

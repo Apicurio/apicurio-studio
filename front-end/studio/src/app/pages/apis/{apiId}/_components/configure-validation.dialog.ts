@@ -16,12 +16,11 @@
  */
 
 import {Component, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {ValidationProfileExt, ValidationService} from "../../../../services/validation.service";
 
 
 @Component({
-    moduleId: module.id,
     selector: "configure-validation-dialog",
     templateUrl: "configure-validation.dialog.html",
     styleUrls: [ "configure-validation.dialog.css" ]

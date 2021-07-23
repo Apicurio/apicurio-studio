@@ -26,7 +26,6 @@ import {Title} from "@angular/platform-browser";
  * The page used to finalize the creation of an account link.
  */
 @Component({
-    moduleId: module.id,
     selector: "created-linked-account-page",
     templateUrl: "created.page.html",
     styleUrls: [ "created.page.css" ]

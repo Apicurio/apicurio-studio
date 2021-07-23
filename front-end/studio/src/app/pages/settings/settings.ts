@@ -24,7 +24,6 @@ import {Title} from "@angular/platform-browser";
  * The Settings Page component.
  */
 @Component({
-    moduleId: module.id,
     selector: "settings-page",
     template: "<div></div>"
 })

@@ -16,11 +16,10 @@
  */
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {OasDocument} from "apicurio-data-models";
 
 @Component({
-    moduleId: module.id,
     selector: "add-path-dialog",
     templateUrl: "add-path.component.html"
 })

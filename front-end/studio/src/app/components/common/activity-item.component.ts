@@ -25,7 +25,6 @@ import {componentTypeToString} from "../../pages/apis/{apiId}/editor/_models/com
 
 
 @Component({
-    moduleId: module.id,
     selector: "activity-item",
     templateUrl: "activity-item.component.html",
     styleUrls: ["activity-item.component.css"]
@@ -97,6 +96,13 @@ export class ActivityItemComponent {
             case "AddSecurityRequirementCommand":
             case "AddExampleCommand_30":
             case "AddParameterExampleCommand_30":
+            case "AddChannelItemCommand":
+            case "AddChildSchemaCommand":
+            case "AddMessageExampleCommand_Aai20":
+            case "AddResponseDefinitionCommand":
+            case "AddResponseDefinitionCommand_20":
+            case "AddResponseDefinitionCommand_30":
+            case "AddSchemaDefinitionCommand_Aai20":
                 rval = "plus";
                 break;
             case "ChangeContactCommand":
@@ -137,7 +143,9 @@ export class ActivityItemComponent {
             case "ChangeSecuritySchemeCommand":
             case "ChangeSecuritySchemeCommand_20":
             case "ChangeSecuritySchemeCommand_30":
+            case "ChangeSecuritySchemeCommand_Aai20":
             case "ChangeServerCommand":
+            case "ChangeServerCommand_Aai20":
             case "ChangeTitleCommand":
             case "ChangeTitleCommand_20":
             case "ChangeTitleCommand_30":
@@ -149,6 +157,7 @@ export class ActivityItemComponent {
             case "SetExampleCommand_30":
             case "SetParameterExampleCommand_30":
             case "SetExtensionCommand":
+            case "SetPropertyCommand":
             case "ReplaceSecurityRequirementCommand":
                 rval = "pencil";
                 break;
@@ -163,6 +172,12 @@ export class ActivityItemComponent {
             case "DeleteAllServersCommand":
             case "DeleteAllSecurityRequirementsCommand":
             case "DeleteAllSecuritySchemesCommand":
+            case "DeleteAllChildSchemasCommand":
+            case "DeleteAllExamplesCommand":
+            case "DeleteAllMessageExamplesCommand_Aai20":
+            case "DeleteAllOperationsCommand_Aai20":
+            case "DeleteAllParameterExamplesCommand":
+            case "DeleteAllServersCommand_Aai20":
             case "DeleteMediaTypeCommand":
             case "DeleteOperationCommand":
             case "DeleteOperationCommand_20":
@@ -205,6 +220,18 @@ export class ActivityItemComponent {
             case "DeleteExampleCommand_30":
             case "DeleteParameterExampleCommand_30":
             case "DeleteExtensionCommand":
+            case "DeleteChannelCommand":
+            case "DeleteChildSchemaCommand":
+            case "DeleteMessageDefinitionCommand":
+            case "DeleteMessageExampleCommand_Aai20":
+            case "DeleteMessageTraitDefinitionCommand":
+            case "DeleteOperationCommand_Aai20":
+            case "DeleteOperationTraitDefinitionCommand":
+            case "DeleteResponseDefinitionCommand":
+            case "DeleteResponseDefinitionCommand_20":
+            case "DeleteResponseDefinitionCommand_30":
+            case "DeleteSecuritySchemeCommand_Aai20":
+            case "DeleteServerCommand_Aai20":
                 rval = "trash-o";
                 break;
             case "NewMediaTypeCommand":
@@ -235,9 +262,18 @@ export class ActivityItemComponent {
             case "NewSecuritySchemeCommand":
             case "NewSecuritySchemeCommand_20":
             case "NewSecuritySchemeCommand_30":
+            case "NewChannelCommand":
+            case "NewMessageDefinitionCommand":
+            case "NewMessageTraitDefinitionCommand":
+            case "NewOperationCommand_Aai20":
+            case "NewOperationTraitDefinitionCommand":
+            case "NewSchemaDefinitionCommand_Aai20":
+            case "NewSchemaPropertyCommand_Aai20":
+            case "NewSecuritySchemeCommand_Aai20":
                 rval = "plus";
                 break;
             case "NewServerCommand":
+            case "NewServerCommand_Aai20":
                 rval = "server";
                 break;
             case "NewTagCommand":
@@ -261,12 +297,20 @@ export class ActivityItemComponent {
                 rval = "code";
                 break;
             case "RenamePathItemCommand":
+            case "RenameChannelItemCommand":
             case "RenameParameterCommand":
             case "RenameSchemaDefinitionCommand":
             case "RenameSchemaDefinitionCommand_20":
             case "RenameSchemaDefinitionCommand_30":
             case "RenameResponseDefinitionCommand_20":
             case "RenameResponseDefinitionCommand_30":
+            case "RenameMessageDefinitionCommand":
+            case "RenameMessageTraitDefinitionCommand":
+            case "RenameOperationTraitDefinitionCommand":
+            case "RenamePropertyCommand":
+            case "RenameSecuritySchemeCommand":
+            case "RenameServerCommand_Aai20":
+            case "RenameTagDefinitionCommand":
                 rval = "exchange";
                 break;
 
@@ -327,6 +371,9 @@ export class ActivityItemComponent {
         let rval: string;
         let ppath: string
         switch (this.command()["type"]()) {
+            case "AddChannelItemCommand":
+                rval = "added a Channel Item named " + this.command()["_newChannelItemName"] + ".";
+                break;
             case "AddPathItemCommand":
             case "AddPathItemCommand_20":
             case "AddPathItemCommand_30":
@@ -335,7 +382,13 @@ export class ActivityItemComponent {
             case "AddSchemaDefinitionCommand":
             case "AddSchemaDefinitionCommand_20":
             case "AddSchemaDefinitionCommand_30":
+            case "AddSchemaDefinitionCommand_Aai20":
                 rval = "added a Data Type named " + this.command()["_newDefinitionName"] + ".";
+                break;
+            case "AddResponseDefinitionCommand":
+            case "AddResponseDefinitionCommand_20":
+            case "AddResponseDefinitionCommand_30":
+                rval = "added a Response Definition named " + this.command()["_newDefinitionName"] + ".";
                 break;
             case "AddSecurityRequirementCommand":
                 rval = `added a Security Requirement at location ${this.command()["_parentPath"]}.`;
@@ -388,10 +441,14 @@ export class ActivityItemComponent {
             case "ChangeSecuritySchemeCommand":
             case "ChangeSecuritySchemeCommand_20":
             case "ChangeSecuritySchemeCommand_30":
+            case "ChangeSecuritySchemeCommand_Aai20":
                 rval = "modified the details of Security Scheme named '" + this.command()["_schemeName"] + "'.";
                 break;
             case "ChangeServerCommand":
                 rval = "modified the details of Server '" + this.command()["_serverUrl"] + "' at location " + this.command()["_parentPath"] + ".";
+                break;
+            case "ChangeServerCommand_Aai20":
+                rval = "modified the details of Server '" + this.command()["_serverName"] + "'.";
                 break;
             case "ChangeTitleCommand":
             case "ChangeTitleCommand_20":
@@ -406,6 +463,9 @@ export class ActivityItemComponent {
             case "DeleteAllOperationsCommand":
                 rval = "deleted all of the operations from path " + this.command()["_parentPath"] + ".";
                 break;
+            case "DeleteAllOperationsCommand_Aai20":
+                rval = "deleted all of the operations from channel " + this.command()["_parentPath"] + ".";
+                break;
             case "DeleteAllTagsCommand":
                 rval = "deleted all of the tags from the API.";
                 break;
@@ -416,6 +476,9 @@ export class ActivityItemComponent {
                 } else {
                     rval = `deleted all of the servers from the operation at path ${ ppath }.`;
                 }
+                break;
+            case "DeleteAllServersCommand_Aai20":
+                rval = "deleted all of the servers from the API.";
                 break;
             case "DeleteAllSecurityRequirementsCommand":
                 ppath = this.command()["_parentPath"];
@@ -438,12 +501,16 @@ export class ActivityItemComponent {
             case "DeleteAllPropertiesCommand_30":
                 rval = "deleted all of the Schema properties at location " + this.command()["_schemaPath"] + ".";
                 break;
+            case "DeleteChannelCommand":
+                rval = "deleted a Channel Item named '" + this.command()["_channel"] + "'.";
+                break;
             case "DeleteMediaTypeCommand":
                 rval = "deleted Media Type '" + this.command()["_mediaTypeName"] + "' at location " + this.command()["_mediaTypePath"] + ".";
                 break;
             case "DeleteOperationCommand":
             case "DeleteOperationCommand_20":
             case "DeleteOperationCommand_30":
+            case "DeleteOperationCommand_Aai20":
                 rval = "deleted the '" + this.command()["_property"] + "' Operation at location " + this.command()["_parentPath"] + ".";
                 break;
             case "DeleteParameterCommand":
@@ -471,13 +538,22 @@ export class ActivityItemComponent {
             case "DeleteSchemaDefinitionCommand_30":
                 rval = "deleted the Data Type named '" + this.command()["_definitionName"] + "'.";
                 break;
+            case "DeleteResponseDefinitionCommand":
+            case "DeleteResponseDefinitionCommand_20":
+            case "DeleteResponseDefinitionCommand_30":
+                rval = "deleted the Response Definition named '" + this.command()["_definitionName"] + "'.";
+                break;
             case "DeleteSecuritySchemeCommand":
             case "DeleteSecuritySchemeCommand_20":
             case "DeleteSecuritySchemeCommand_30":
+            case "DeleteSecuritySchemeCommand_Aai20":
                 rval = "deleted the Security Scheme named '" + this.command()["_schemeName"] + "'.";
                 break;
             case "DeleteServerCommand":
                 rval = "deleted a Server with url '" + this.command()["_serverUrl"] + "' at location " + this.command()["_parentPath"] + ".";
+                break;
+            case "DeleteServerCommand_Aai20":
+                rval = "deleted a Server with name '" + this.command()["_serverName"] + ".";
                 break;
             case "DeleteTagCommand":
             case "DeleteTagCommand_20":
@@ -513,6 +589,9 @@ export class ActivityItemComponent {
             case "NewOperationCommand_30":
                 rval = "added a new Operation named '" + this.command()["_method"] + "' at location " + this.command()["_path"] + ".";
                 break;
+            case "NewOperationCommand_Aai20":
+                rval = "added a new Operation named '" + this.command()["_opType"] + "' at location " + this.command()["_channel"] + ".";
+                break;
             case "NewParamCommand":
             case "NewParamCommand_20":
             case "NewParamCommand_30":
@@ -522,6 +601,9 @@ export class ActivityItemComponent {
             case "NewPathCommand_20":
             case "NewPathCommand_30":
                 rval = "added a new Path named '" + this.command()["_newPath"] + "'.";
+                break;
+            case "NewChannelCommand":
+                rval = "added a new Channel named '" + this.command()["_newChannel"] + "'.";
                 break;
             case "NewRequestBodyCommand":
             case "NewRequestBodyCommand_20":
@@ -541,20 +623,26 @@ export class ActivityItemComponent {
             case "NewSchemaDefinitionCommand":
             case "NewSchemaDefinitionCommand_20":
             case "NewSchemaDefinitionCommand_30":
+            case "NewSchemaDefinitionCommand_Aai20":
                 rval = `added a new Data Type named '${ this.command()["_newDefinitionName"]}'.`;
                 break;
             case "NewSchemaPropertyCommand":
             case "NewSchemaPropertyCommand_20":
             case "NewSchemaPropertyCommand_30":
+            case "NewSchemaPropertyCommand_Aai20":
                 rval = "added a new Schema Property named '" + this.command()["_propertyName"] + "' at location " + this.command()["_schemaPath"] + ".";
                 break;
             case "NewSecuritySchemeCommand":
             case "NewSecuritySchemeCommand_20":
             case "NewSecuritySchemeCommand_30":
+            case "NewSecuritySchemeCommand_Aai20":
                 rval = "added a new Security Scheme named '" + this.command()["_schemeName"] + "'.";
                 break;
             case "NewServerCommand":
                 rval = "added a new Server with url '" + this.command()["_server"].url + "' at location " + this.command()["_parentPath"] + ".";
+                break;
+            case "NewServerCommand_Aai20":
+                rval = "added a new Server with name '" + this.command()["_serverName"] + "'.";
                 break;
             case "NewTagCommand":
             case "NewTagCommand_20":
@@ -590,6 +678,9 @@ export class ActivityItemComponent {
             case "RenamePathItemCommand":
                 rval = `renamed a path from '${this.command()['_oldPath']}' to '${this.command()['_newPath']}'.`;
                 break;
+            case "RenameChannelItemCommand":
+                rval = `renamed a channel from '${this.command()['_oldChannelName']}' to '${this.command()['_newChannelName']}'.`;
+                break;
             case "RenameParameterCommand":
                 rval = `renamed a ${this.command()['_paramIn']} parameter from '${this.command()['_oldParamName']}' to '${this.command()['_newParamName']}'.`;
                 break;
@@ -602,6 +693,12 @@ export class ActivityItemComponent {
             case "RenameResponseDefinitionCommand_20":
             case "RenameResponseDefinitionCommand_30":
                 rval = "renamed a response definition from '" + this.command()["_oldName"] + "' to '" + this.command()["_newName"] + "'.";
+                break;
+            case "RenameSecuritySchemeCommand":
+                rval = "renamed a security scheme from '" + this.command()["_oldSchemeName"] + "' to '" + this.command()["_newSchemeName"] + "'.";
+                break;
+            case "RenameServerCommand_Aai20":
+                rval = "renamed a server from '" + this.command()["_oldServerName"] + "' to '" + this.command()["_newServerName"] + "'.";
                 break;
             case "DeleteExampleCommand":
             case "DeleteExampleCommand_20":
@@ -630,6 +727,9 @@ export class ActivityItemComponent {
                 break;
             case "SetExtensionCommand":
                 rval = `changed the value of the extension named '${ this.command()["_name"] }'.`;
+                break;
+            case "SetPropertyCommand":
+                rval = `changed the value of the property named '${ this.command()["_name"] }' at location ${this.command()["_nodePath"]}.`;
                 break;
 
             case "AggregateCommand":

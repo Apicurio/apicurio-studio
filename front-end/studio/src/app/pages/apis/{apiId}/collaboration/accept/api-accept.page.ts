@@ -24,7 +24,6 @@ import {Invitation} from "../../../../../models/invitation.model";
 import {Title} from "@angular/platform-browser";
 
 @Component({
-    moduleId: module.id,
     selector: "api-accept-page",
     templateUrl: "api-accept.page.html",
     styleUrls: ["api-accept.page.css"]

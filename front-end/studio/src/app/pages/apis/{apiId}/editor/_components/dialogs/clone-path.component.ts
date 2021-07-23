@@ -16,12 +16,11 @@
  */
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
-import {ModalDirective} from "ngx-bootstrap";
+import {ModalDirective} from "ngx-bootstrap/modal";
 import {OasDocument, OasPathItem} from "apicurio-data-models";
 
 
 @Component({
-    moduleId: module.id,
     selector: "clone-path-dialog",
     templateUrl: "clone-path.component.html"
 })

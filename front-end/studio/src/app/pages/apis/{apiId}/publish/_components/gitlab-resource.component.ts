@@ -29,7 +29,6 @@ export interface GitLabEventData {
 }
 
 @Component({
-    moduleId: module.id,
     selector: "gitlab-resource",
     templateUrl: "gitlab-resource.component.html"
 })

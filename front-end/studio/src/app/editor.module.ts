@@ -59,7 +59,8 @@ import {LicenseService} from "./pages/apis/{apiId}/editor/_services/license.serv
 import {IconButtonComponent} from "./pages/apis/{apiId}/editor/_components/common/icon-button.component";
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {BsDropdownModule, ModalModule} from "ngx-bootstrap";
+import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
+import {ModalModule} from 'ngx-bootstrap/modal';
 import {ApicurioCommonComponentsModule} from "./common-components.module";
 import {SignpostComponent} from "./pages/apis/{apiId}/editor/_components/common/signpost.component";
 import {EditorTitleBarComponent} from "./pages/apis/{apiId}/editor/_components/title-bar.component";
@@ -147,6 +148,14 @@ import {SchemaRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/
 import {AddSchemaDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema.component";
 import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catalog.service";
 import {CheckBoxInputComponent} from "./pages/apis/{apiId}/editor/_components/common/checkbox-input.component";
+import {AaiServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/aaiservers-section.component";
+import {AaiServerEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/aaiserver-editor.component";
+import {AaiServerRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/aaiserver-row.component";
+import {AaiSecuritySchemesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/main/aaisecurity-schemes-section.component";
+import {AaiSecurityRequirementRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/aaisecurity-requirement-row.component";
+import {HttpHeadersComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/http-headers.component";
+import {HeaderRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/header-row.component";
+import {AddHeaderDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-header.component";
 
 @NgModule({
     imports: [
@@ -158,26 +167,26 @@ import {CheckBoxInputComponent} from "./pages/apis/{apiId}/editor/_components/co
         ChannelOperationInfoSectionComponent, MessageSectionComponent, PayloadTabComponent, HeadersTabComponent,
         SetLicenseDialogComponent, ClonePathDialogComponent,
         CloneDefinitionDialogComponent, ScopesInputComponent, AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent,
-        NoOperationComponent, ContentComponent, PropertyRowComponent, PathFormComponent, ChannelFormComponent,
+        NoOperationComponent, ContentComponent, HttpHeadersComponent, PropertyRowComponent, PathFormComponent, ChannelFormComponent,
         MessageTraitFormComponent, MessageTraitItemComponent, OperationTraitFormComponent, OperationTraitItemComponent,
         QueryParamRowComponent, SectionComponent, RequestBodySectionComponent, DefinitionItemComponent, DefinitionFormComponent,
         FormDataParamRowComponent, ResponseTab30Component, EditorMasterComponent, AsyncApiEditorMasterComponent, ApiEditorComponent,
         AddPathDialogComponent, AddChannelDialogComponent, ParameterEditorComponent, AddResponseDialogComponent,
         CloneResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, OperationTraitEditorComponent,
-        ChannelInfoSectionComponent, ResponseTabComponent, AddMediaTypeDialogComponent, MainFormComponent, AsyncApiMainFormComponent,
+        ChannelInfoSectionComponent, ResponseTabComponent, AddMediaTypeDialogComponent, AddHeaderDialogComponent, MainFormComponent, AsyncApiMainFormComponent,
         RenameEntityDialogComponent, AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent,
         AddAsyncApiExampleDialogComponent, EditAsyncApiExampleDialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
         IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, CheckBoxInputComponent,
         SecurityRequirementEditorComponent, InfoSectionComponent, AsyncApiInfoSectionComponent, ValidationProblemComponent,
         ValidationAggregateComponent, ContactSectionComponent, AsyncApiContactSectionComponent, LicenseSectionComponent,
-        AsyncApiLicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
-        SecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
-        PfInlineTextEditorComponent, TagRowComponent, ServerEditorComponent, ServerRowComponent, EntityEditorComponent,
+        AsyncApiLicenseSectionComponent, TagsSectionComponent, AaiServersSectionComponent, ServersSectionComponent, AaiSecurityRequirementRowComponent, SecurityRequirementsSectionComponent,
+        SecuritySchemesSectionComponent, AaiSecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
+        PfInlineTextEditorComponent, TagRowComponent, AaiServerEditorComponent, ServerEditorComponent, AaiServerRowComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
         DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
         HeaderParamsSectionComponent, OperationsSectionComponent, ChannelOperationsSectionComponent, MediaTypeRowComponent,
-        CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,
+        HeaderRowComponent, CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,
         ResponseEditorComponent, PropertiesEditorComponent, MessageTraitEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
         AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
         SchemaRowComponent, AddSchemaDialogComponent

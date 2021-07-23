@@ -27,7 +27,6 @@ import {AddSchemaDialogData} from "../../dialogs/add-schema.component";
 
 
 @Component({
-    moduleId: module.id,
     selector: "schemas-section",
     templateUrl: "schemas-section.component.html",
     encapsulation: ViewEncapsulation.None,

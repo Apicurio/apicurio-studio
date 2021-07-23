@@ -22,7 +22,6 @@ import {BitbucketRepository} from "../../../../../models/bitbucket-repository.mo
 
 
 @Component({
-    moduleId: module.id,
     selector: "bitbucket-resource",
     templateUrl: "bitbucket-resource.component.html"
 })

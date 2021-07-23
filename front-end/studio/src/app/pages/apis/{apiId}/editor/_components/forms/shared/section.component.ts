@@ -35,7 +35,6 @@ import {KeypressUtils} from "../../../_util/keypress.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "section",
     templateUrl: "section.component.html",
     styleUrls: ["section.component.css"],
@@ -60,8 +59,8 @@ export class SectionComponent extends AbstractBaseComponent {
 
     @Input() inForm: boolean = true;
 
-    @ViewChild("sectionHeader") sectionHeader: ElementRef;
-    @ViewChild("sectionBody") sectionBody: ElementRef;
+    @ViewChild("sectionHeader", { static: true }) sectionHeader: ElementRef;
+    @ViewChild("sectionBody", { static: true }) sectionBody: ElementRef;
 
     showContextMenu: boolean = false;
     contextMenuPos: any = {

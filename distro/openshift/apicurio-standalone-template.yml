@@ -242,7 +242,7 @@ objects:
           from:
             kind: ImageStreamTag
             namespace: openshift
-            name: 'postgresql:9.5'
+            name: ${POSTGRESQL_IMAGE}
       - type: ConfigChange
     replicas: 1
     test: false
@@ -260,7 +260,7 @@ objects:
               claimName: postgresql-data
         containers:
           - name: postgresql
-            image: centos/postgresql-95-centos7
+            image: ${POSTGRESQL_IMAGE}
             ports:
               - containerPort: 5432
                 protocol: TCP
@@ -841,6 +841,11 @@ parameters:
   description: Password for the Keycloak admin user.
   generate: expression
   from: "[a-zA-Z0-9]{16}"
+  required: true
+- name: POSTGRESQL_IMAGE
+  displayName: Postgresql Image
+  description: Image for the postgresql database
+  value: postgresql:9.6-el8
   required: true
 - name: UI_JVM_MIN
   displayName: UI Min JVM Memory Limit

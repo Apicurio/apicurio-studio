@@ -44,7 +44,6 @@ import {KeypressUtils} from "../_util/keypress.util";
  * which activates when there are validation problems detected.
  */
 @Component({
-    moduleId: module.id,
     selector: "title-bar",
     templateUrl: "title-bar.component.html",
     styleUrls: [ "title-bar.component.css" ],

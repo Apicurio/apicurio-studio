@@ -29,6 +29,7 @@ import {
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
+    AggregateCommand,
     CombinedVisitorAdapter, CommandFactory,
     DocumentType,
     ICommand,
@@ -44,7 +45,7 @@ import {
     Oas30ResponseDefinition,
     Oas30SchemaDefinition,
     OasDocument,
-    OasPathItem,
+    OasPathItem, OasSchema,
     OtCommand,
     OtEngine,
     ReferenceUtil,
@@ -75,10 +76,10 @@ import {ImportedComponent} from "./_models/imported-component.model";
 import { OperationTraitEditorComponent } from "./_components/editors/operationtrait-editor.component";
 import { MessageTraitEditorComponent } from "./_components/editors/messagetrait-editor.component";
 import {PropertiesEditorComponent} from "./_components/editors/properties-editor.component";
+import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 
 
 @Component({
-    moduleId: module.id,
     selector: "api-editor",
     templateUrl: "editor.component.html",
     styleUrls: ["editor.component.css"],
@@ -117,16 +118,15 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     private _commandSubscription: TopicSubscription<ICommand>;
     private _catalogSubscription: TopicSubscription<any>;
 
-    @ViewChild("master") master: EditorMasterComponent;
-    @ViewChild("serverEditor") serverEditor: ServerEditorComponent;
-    @ViewChild("securitySchemeEditor") securitySchemeEditor: SecuritySchemeEditorComponent;
-    @ViewChild("securityRequirementEditor") securityRequirementEditor: SecurityRequirementEditorComponent;
-    @ViewChild("dataTypeEditor") dataTypeEditor: DataTypeEditorComponent;
-    @ViewChild("responseEditor") responseEditor: ResponseEditorComponent;
-    @ViewChild("parameterEditor") parameterEditor: ParameterEditorComponent;
-    @ViewChild("propertyEditor") propertyEditor: PropertyEditorComponent;
-    @ViewChild("propertiesEditor") propertiesEditor: PropertiesEditorComponent;
-
+    @ViewChild("master", { static: true }) master: EditorMasterComponent;
+    @ViewChild("serverEditor", { static: true }) serverEditor: ServerEditorComponent;
+    @ViewChild("securitySchemeEditor", { static: true }) securitySchemeEditor: SecuritySchemeEditorComponent;
+    @ViewChild("securityRequirementEditor", { static: true }) securityRequirementEditor: SecurityRequirementEditorComponent;
+    @ViewChild("dataTypeEditor", { static: true }) dataTypeEditor: DataTypeEditorComponent;
+    @ViewChild("responseEditor", { static: true }) responseEditor: ResponseEditorComponent;
+    @ViewChild("parameterEditor", { static: true }) parameterEditor: ParameterEditorComponent;
+    @ViewChild("propertyEditor", { static: true }) propertyEditor: PropertyEditorComponent;
+    @ViewChild("propertiesEditor" , { static: true }) propertiesEditor: PropertiesEditorComponent;
 
     formType: string;
 
@@ -609,6 +609,10 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
 
     public getServerEditor(): ServerEditorComponent {
         return this.serverEditor;
+    }
+
+    public getAaiServerEditor(): AaiServerEditorComponent {
+        return null;
     }
 
     public getSecuritySchemeEditor(): SecuritySchemeEditorComponent {

@@ -36,7 +36,6 @@ import {AbstractBaseComponent} from "../../../common/base-component";
 import {SelectionService} from "../../../../_services/selection.service";
 
 @Component({
-    moduleId: module.id,
     selector: "headers-tab",
     templateUrl: "headers-tab.component.html",
     styleUrls: [ "headers-tab.component.css" ],

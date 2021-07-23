@@ -83,7 +83,6 @@ export class DropDownOptionDivider extends DropDownOption {
 export let DIVIDER: DropDownOption = new DropDownOptionDivider();
 
 @Component({
-    moduleId: module.id,
     selector: "drop-down",
     templateUrl: "drop-down.component.html",
     styleUrls: [ "drop-down.component.css" ]

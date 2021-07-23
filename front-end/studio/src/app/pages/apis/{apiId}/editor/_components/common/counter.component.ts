@@ -22,7 +22,6 @@ import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
 
 @Component({
-    moduleId: module.id,
     selector: "counter",
     templateUrl: "counter.component.html",
     styleUrls: [ "counter.component.css" ],

@@ -24,7 +24,6 @@ import {Title} from "@angular/platform-browser";
  * The Not Found (404) Page component - shown when navigating to a route that does not exist.
  */
 @Component({
-    moduleId: module.id,
     selector: "not-found-page",
     templateUrl: "404.page.html"
 })

@@ -72,7 +72,6 @@ import { IMessageTraitEditorHandler, MessageTraitData, MessageTraitEditorCompone
  * being displayed in the detail panel.
 */
 @Component({
-    moduleId: module.id,
     selector: "aaimaster",
     templateUrl: "aaimaster.component.html",
     styleUrls: [ "aaimaster.component.css" ],
@@ -92,13 +91,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         top: "0px"
     };
 
-    @ViewChild("addChannelDialog") addChannelDialog: AddChannelDialogComponent;
+    @ViewChild("addChannelDialog", { static: true }) addChannelDialog: AddChannelDialogComponent;
+    @ViewChild("renameChannelDialog", { static: true }) renameChannelDialog: RenameEntityDialogComponent;
 
-    @ViewChild("cloneDefinitionDialog") cloneDefinitionDialog: CloneDefinitionDialogComponent;
-    @ViewChild("renameDefinitionDialog") renameDefinitionDialog: RenameEntityDialogComponent;
+    @ViewChild("cloneDefinitionDialog", { static: true }) cloneDefinitionDialog: CloneDefinitionDialogComponent;
+    @ViewChild("renameDefinitionDialog", { static: true }) renameDefinitionDialog: RenameEntityDialogComponent;
 
     @ViewChild("renameOperationTraitDialog") renameOperationTraitDialog: RenameEntityDialogComponent;
-    @ViewChild("renameMessageTraitDialog") renameMessageTraitDialog: RenameEntityDialogComponent;
+    @ViewChild("renameMessageTraitDialog", { static: true }) renameMessageTraitDialog: RenameEntityDialogComponent;
 
     filterCriteria: string = null;
     _channels: AaiChannelItem[];
@@ -215,6 +215,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Returns true if the channels have been initialized to non empty
+     */
+    public hasChannels(): boolean {
+        let channelList = this.channels();
+        return !!channelList && channelList.length > 0;
+    }
+
+    /**
      * Returns the array of definitions, filtered by search criteria and sorted.
      */
     public definitions(): Aai20SchemaDefinition[] {
@@ -230,6 +238,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
             }
         }
         return this._defs;
+    }
+
+    /**
+     * Returns true if the definitions have been initialized to non empty
+     */
+    public hasDefinitions(): boolean {
+        let definitionList = this.definitions();
+        return !!definitionList && definitionList.length > 0;
     }
 
     /**
@@ -251,6 +267,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Returns true if the operationTraits have been initialized to non empty
+     */
+    public hasOperationTraits(): boolean {
+        let operationTraitList = this.operationTraits();
+        return !!operationTraitList && operationTraitList.length > 0;
+    }
+
+    /**
      * Returns the array of message trait definitions, filtered by search criteria and sorted.
      */
     public messageTraits(): AaiMessageTraitDefinition[] {
@@ -266,6 +290,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
             }
         }
         return this._msgTraitsDefs;
+    }
+
+    /**
+     * Returns true if the messageTraits have been initialized to non empty
+     */
+    public hasMessageTraits(): boolean {
+        let messageTraitList = this.messageTraits();
+        return !!messageTraitList && messageTraitList.length > 0;
     }
 
     /**
@@ -293,7 +325,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     /**
      * Called to return the currently selected path (if one is selected).  If not, returns "/".
      */
-    public getCurrentChannelSelection(): string {
+    public getCurrentChannelSelection(): string { // Should this method really exist on the asyncapi editor? It looks designed for REST resource nesting and returns '' on aai channels
         let currentSelection: string = this.__selectionService.currentSelection();
         let npath: NodePath = new NodePath(currentSelection);
         let node: Node = npath.resolve(this.document);
@@ -316,7 +348,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     public addChannel(channel: string): void {
         let command: ICommand = CommandFactory.createNewChannelCommand(channel);
         this.commandService.emit(command);
-        console.log("this.document.channels: " + JSON.stringify(this.document.channels));
+        console.log("this.document.channels: " + JSON.stringify(this.document.channels, (k,v) =>  ["_ownerDocument", "_parent"].includes(k) && !!v ? "<<circular reference>>" : v));
         this.selectChannel(this.document.channels.get(channel) as AaiChannelItem);
     }
 
@@ -327,12 +359,20 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         console.info("[AsyncApiEditorMasterComponent] Renaming path: ", modalData);
         if (undefined === modalData || modalData === null) {
             let channelItem: any = this.contextMenuSelection.resolve(this.document);
-            //this.renamePathDialog.open(this.document, pathItem);
+            let channelNames: string[] = [];
+            VisitorUtil.visitTree(this.document, new class extends CombinedVisitorAdapter {
+                public visitChannelItem(node: AaiChannelItem): void {
+                    channelNames.push(node.getName());
+                }
+            }, TraverserDirection.down);
+            this.renameChannelDialog.open(channelItem, channelItem.getName(), newName => {
+                return channelNames.indexOf(newName) !== -1;
+            });
         } else {
-            let channel: AaiChannelItem = modalData.channel;
+            let channel: AaiChannelItem = modalData.entity;
             let oldName: string = channel.getName();
-            console.info("[AsyncApiEditorMasterComponent] Rename definition to: %s", modalData.name);
-            let command: ICommand = CommandFactory.createRenamePathItemCommand(oldName, modalData.name, modalData.renameSubpaths);
+            console.info("[AsyncApiEditorMasterComponent] Rename channel to: %s", modalData.newName);
+            let command: ICommand = CommandFactory.createRenameChannelItemCommand(oldName, modalData.newName);
             this.commandService.emit(command);
         }
     }
@@ -429,6 +469,10 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      * Called when the user clicks "Delete Definition" in the context-menu for a schema definition.
      */
     public deleteDefinition(): void {
+        let definition: Aai20SchemaDefinition = this.contextMenuSelection.resolve(this.document) as Aai20SchemaDefinition;
+        let command: ICommand = CommandFactory.createDeleteSchemaDefinitionCommand(this.document.getDocumentType(), definition.getName());
+        this.commandService.emit(command);
+        this.closeContextMenu();
     }
 
     /**
@@ -470,6 +514,10 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      * Called when the user clicks "Delete Operation Trait" in the context-menu for a trait.
      */
     public deleteOperationTrait(): void {
+        let definition: AaiOperationTraitDefinition = this.contextMenuSelection.resolve(this.document) as AaiOperationTraitDefinition;
+        let command: ICommand = CommandFactory.createDeleteOperationTraitDefinitionCommand(definition.getName());
+        this.commandService.emit(command);
+        this.closeContextMenu();
     }
 
     /**
@@ -511,6 +559,10 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      * Called when the user clicks "Delete Message Trait" in the context-menu for a trait.
      */
     public deleteMessageTrait(): void {
+        let definition: AaiMessageTraitDefinition = this.contextMenuSelection.resolve(this.document) as AaiMessageTraitDefinition;
+        let command: ICommand = CommandFactory.createDeleteMessageTraitDefinitionCommand(definition.getName());
+        this.commandService.emit(command);
+        this.closeContextMenu();
     }
     
     /**

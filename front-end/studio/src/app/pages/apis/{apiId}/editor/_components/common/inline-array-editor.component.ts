@@ -37,7 +37,6 @@ import {ModelUtils} from "../../_util/model.util";
 import {KeypressUtils} from "../../_util/keypress.util";
 
 @Component({
-    moduleId: module.id,
     selector: "inline-array-editor",
     templateUrl: "inline-array-editor.component.html",
     styleUrls: ["inline-array-editor.component.css"],

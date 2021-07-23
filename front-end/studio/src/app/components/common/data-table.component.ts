@@ -34,7 +34,6 @@ export interface DataTableRow {
 
 
 @Component({
-    moduleId: module.id,
     selector: "data-table",
     templateUrl: "data-table.component.html",
     styleUrls: [ "data-table.component.css" ]

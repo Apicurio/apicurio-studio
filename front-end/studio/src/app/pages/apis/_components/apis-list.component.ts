@@ -20,7 +20,6 @@ import {Api} from "../../../models/api.model";
 
 
 @Component({
-    moduleId: module.id,
     selector: "apis-list",
     templateUrl: "apis-list.component.html",
     styleUrls: ["apis-list.component.css"]

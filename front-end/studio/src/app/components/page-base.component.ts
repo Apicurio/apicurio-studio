@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {OnDestroy, OnInit} from "@angular/core";
+import { OnDestroy, OnInit, Directive } from "@angular/core";
 import {ActivatedRoute} from "@angular/router";
 import {Title} from "@angular/platform-browser";
 
@@ -23,6 +23,7 @@ export class DataMap {
     [key: string]: boolean;
 }
 
+@Directive()
 export abstract class AbstractPageComponent implements OnInit, OnDestroy {
 
     public dataLoaded: DataMap = new DataMap();

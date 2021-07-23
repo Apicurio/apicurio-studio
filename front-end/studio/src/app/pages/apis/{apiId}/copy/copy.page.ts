@@ -27,7 +27,6 @@ import {CommandFactory, Document, DocumentType, Library, Oas20Document, Oas30Doc
 import {Base64} from "js-base64";
 
 @Component({
-    moduleId: module.id,
     selector: "copy-page",
     templateUrl: "copy.page.html",
     styleUrls: ["copy.page.css"]

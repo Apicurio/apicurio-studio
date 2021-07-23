@@ -28,7 +28,6 @@ export interface ValidationRuleFilter {
 
 
 @Component({
-    moduleId: module.id,
     selector: "profile-editor",
     templateUrl: "profile-editor.component.html",
     styleUrls: ["profile-editor.component.css"],

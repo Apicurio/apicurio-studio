@@ -19,7 +19,6 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewEnc
 
 
 @Component({
-    moduleId: module.id,
     selector: "no-operation",
     templateUrl: "no-operation.component.html",
     styleUrls: [ "no-operation.component.css" ],

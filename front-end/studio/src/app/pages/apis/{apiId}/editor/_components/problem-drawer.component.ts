@@ -37,7 +37,6 @@ import {FeaturesService} from "../_services/features.service";
  * when the user clicks the bell icon to drop down the list of problems.
  */
 @Component({
-    moduleId: module.id,
     selector: "problem-drawer",
     templateUrl: "problem-drawer.component.html",
     styleUrls: [ "problem-drawer.component.css" ],

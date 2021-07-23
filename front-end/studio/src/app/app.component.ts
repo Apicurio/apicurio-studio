@@ -20,7 +20,6 @@ import {IAuthenticationService} from './services/auth.service';
 import {User} from "./models/user.model";
 
 @Component({
-    moduleId: module.id,
     selector: "apicurio-studio",
     templateUrl: "app.component.html",
     styleUrls: ["app.component.css"]

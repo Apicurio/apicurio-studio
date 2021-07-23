@@ -47,7 +47,6 @@ import {ModelUtils} from "../../../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "responses-section",
     templateUrl: "responses-section.component.html",
     styleUrls: [ "responses-section.component.css" ],
@@ -58,8 +57,8 @@ export class ResponsesSectionComponent extends AbstractBaseComponent {
 
     @Input() operation: Oas20Operation | Oas30Operation;
 
-    @ViewChild("addResponseDialog") public addResponseDialog: AddResponseDialogComponent;
-    @ViewChild("cloneResponseDialog") public cloneResponseDialog: CloneResponseDialogComponent;
+    @ViewChild("addResponseDialog", { static: true }) public addResponseDialog: AddResponseDialogComponent;
+    @ViewChild("cloneResponseDialog", { static: true }) public cloneResponseDialog: CloneResponseDialogComponent;
 
     private _responseTab: string;
 

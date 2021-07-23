@@ -61,7 +61,6 @@ import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({
-    moduleId: module.id,
     selector: "requestBody-section",
     templateUrl: "requestBody-section.component.html",
     styleUrls: [ "requestBody-section.component.css" ],
@@ -72,7 +71,7 @@ export class RequestBodySectionComponent  extends AbstractBaseComponent {
 
     @Input() operation: Oas20Operation | Oas30Operation;
 
-    @ViewChild("renameFormDataDialog") renameFormDataDialog: RenameEntityDialogComponent;
+    @ViewChild("renameFormDataDialog", { static: true }) renameFormDataDialog: RenameEntityDialogComponent;
 
     public showRequestBody: boolean;
 

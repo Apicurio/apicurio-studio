@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.apicurio</groupId>
         <artifactId>apicurio-studio-distro</artifactId>
-        <version>0.2.49-SNAPSHOT</version>
+        <version>0.2.50-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>apicurio-studio-distro-quickstart</artifactId>
@@ -98,7 +98,7 @@
                     <dependency>
                         <groupId>org.apache.ant</groupId>
                         <artifactId>ant</artifactId>
-                        <version>1.10.10</version>
+                        <version>1.10.11</version>
                     </dependency>
                 </dependencies>
                 <executions>

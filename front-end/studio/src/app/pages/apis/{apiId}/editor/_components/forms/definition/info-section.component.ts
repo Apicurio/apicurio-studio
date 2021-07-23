@@ -31,7 +31,6 @@ import {ModelUtils} from "../../../_util/model.util";
 
 
 @Component({
-    moduleId: module.id,
     selector: "definition-info-section",
     templateUrl: "info-section.component.html",
     styleUrls: [ "info-section.component.css" ],

@@ -53,7 +53,6 @@ export interface IParameterEditorHandler extends IEntityEditorHandler<Oas20Param
 
 
 @Component({
-    moduleId: module.id,
     selector: "parameter-editor",
     templateUrl: "parameter-editor.component.html",
     styleUrls: ["parameter-editor.component.css"],

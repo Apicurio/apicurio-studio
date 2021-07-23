@@ -29,7 +29,6 @@ import {
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
-    AggregateCommand,
     CombinedVisitorAdapter, CommandFactory,
     DocumentType,
     ICommand,
@@ -45,7 +44,7 @@ import {
     Oas30ResponseDefinition,
     Oas30SchemaDefinition,
     OasDocument,
-    OasPathItem, OasSchema,
+    OasPathItem,
     OtCommand,
     OtEngine,
     ReferenceUtil,
@@ -75,6 +74,7 @@ import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
 import { OperationTraitEditorComponent } from "./_components/editors/operationtrait-editor.component";
 import { MessageTraitEditorComponent } from "./_components/editors/messagetrait-editor.component";
+import {PropertiesEditorComponent} from "./_components/editors/properties-editor.component";
 
 
 @Component({
@@ -125,6 +125,8 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     @ViewChild("responseEditor") responseEditor: ResponseEditorComponent;
     @ViewChild("parameterEditor") parameterEditor: ParameterEditorComponent;
     @ViewChild("propertyEditor") propertyEditor: PropertyEditorComponent;
+    @ViewChild("propertiesEditor") propertiesEditor: PropertiesEditorComponent;
+
 
     formType: string;
 
@@ -633,6 +635,10 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         return this.propertyEditor;
     }
 
+    public getPropertiesEditor(): PropertiesEditorComponent {
+        return this.propertiesEditor;
+    }
+
     public getOperationTraitEditor(): OperationTraitEditorComponent {
         return null;
     }
@@ -706,7 +712,7 @@ export class FormSelectionVisitor extends CombinedVisitorAdapter {
         this._selectionType = "path";
     }
 
-    public visitSchemaDefinition(node: Oas30SchemaDefinition | Oas30SchemaDefinition): void {
+    public visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         this._selectedNode = node;
         this._selectionType = "definition";
     }

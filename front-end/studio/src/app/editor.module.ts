@@ -133,6 +133,7 @@ import {RenameEntityDialogComponent} from "./pages/apis/{apiId}/editor/_componen
 import {CookieParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/cookie-params-section.component";
 import {CookieParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/cookie-param-row.component";
 import {ResponseEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/response-editor.component";
+import {PropertiesEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/properties-editor.component";
 import {OperationTraitEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/operationtrait-editor.component";
 import {MessageTraitEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/messagetrait-editor.component";
 import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/response-item.component";
@@ -145,6 +146,7 @@ import {InheritanceSchemasSectionComponent} from "./pages/apis/{apiId}/editor/_c
 import {SchemaRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/schema-row.component";
 import {AddSchemaDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema.component";
 import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catalog.service";
+import {CheckBoxInputComponent} from "./pages/apis/{apiId}/editor/_components/common/checkbox-input.component";
 
 @NgModule({
     imports: [
@@ -165,7 +167,7 @@ import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catal
         ChannelInfoSectionComponent, ResponseTabComponent, AddMediaTypeDialogComponent, MainFormComponent, AsyncApiMainFormComponent,
         RenameEntityDialogComponent, AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent,
         AddAsyncApiExampleDialogComponent, EditAsyncApiExampleDialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
-        IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,
+        IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, CheckBoxInputComponent,
         SecurityRequirementEditorComponent, InfoSectionComponent, AsyncApiInfoSectionComponent, ValidationProblemComponent,
         ValidationAggregateComponent, ContactSectionComponent, AsyncApiContactSectionComponent, LicenseSectionComponent,
         AsyncApiLicenseSectionComponent, TagsSectionComponent, ServersSectionComponent, SecurityRequirementsSectionComponent,
@@ -176,7 +178,7 @@ import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catal
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
         HeaderParamsSectionComponent, OperationsSectionComponent, ChannelOperationsSectionComponent, MediaTypeRowComponent,
         CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,
-        ResponseEditorComponent, MessageTraitEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
+        ResponseEditorComponent, PropertiesEditorComponent, MessageTraitEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
         AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
         SchemaRowComponent, AddSchemaDialogComponent
     ],

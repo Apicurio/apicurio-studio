@@ -118,7 +118,24 @@
 
 .property .body .property-minmax {
   margin-bottom: 10px;
-  margin-top: 10px;
+  margin-top: 20px;
+}
+
+.property .body .toggle-buttons{
+  margin: 20px auto;
+}
+
+.property .body .toggle-buttons button {
+  margin-left: 10px;
+}
+
+.property .body .divider {
+  height: 1px;
+  width:100%;
+  display:block;
+  margin: 15px 0;
+  overflow: hidden;
+  background-color: #e5e5e5;
 }
 
 .property .body .property-pattern {
@@ -146,4 +163,12 @@
 
 .property .minmax .parameter-required {
   margin-right: 3px;
+}
+
+.property .body .exclusive-div {
+  margin-top: 10px;
+}
+
+.property .body .nullable-div {
+  margin-top: 10px;
 }

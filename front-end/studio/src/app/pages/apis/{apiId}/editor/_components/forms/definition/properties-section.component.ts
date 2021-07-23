@@ -37,6 +37,7 @@ import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {ModelUtils} from "../../../_util/model.util";
 import {IPropertyEditorHandler, PropertyData, PropertyEditorComponent} from "../../editors/property-editor.component";
+import {IPropertiesEditorHandler, PropertiesData, PropertiesEditorComponent} from "../../editors/properties-editor.component";
 import {EditorsService} from "../../../_services/editors.service";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
 import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
@@ -81,8 +82,29 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         editor.open(handler, this.definition);
     }
 
+    public openAddSchemaPropertiesEditor(minOrMax: string): void {
+        let editor: PropertiesEditorComponent = this.editors.getPropertiesEditor();
+        editor.minOrMax = minOrMax;
+        let handler: IPropertiesEditorHandler = {
+            onSave: (event) => {
+                this.addSchemaProperties(event.data);
+            },
+            onCancel: () => {}
+        };
+        editor.open(handler, this.definition);
+    }
+
     public hasProperties(): boolean {
         return this.properties().length > 0;
+    }
+
+    public isObjectType(): boolean{
+        let sourceSchema: OasSchema = this.getPropertySourceSchema();
+
+        if(this.properties() && sourceSchema){
+            return sourceSchema.type === "object";
+        }
+        return false
     }
 
     public properties(): OasSchema[] {
@@ -134,10 +156,42 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         this.__selectionService.select(path.toString());
     }
 
+    public addSchemaProperties(data: PropertiesData): void {
+        console.log("addSchemaProperties : PropertiesData :", data);
+        let pschema: OasSchema = this.getPropertySourceSchema();
+        let command: ICommand = null;
+        let idc: boolean = false;
+
+        if (data.minProperties) {
+            command = CommandFactory.createChangePropertyCommand<number>(pschema, "minProperties", data.minProperties);
+            idc = true;
+        }
+        if (data.maxProperties) {
+            command = CommandFactory.createChangePropertyCommand<number>(pschema, "maxProperties", data.maxProperties);
+            this.commandService.emit(command);
+            idc = true;
+        }
+        if (idc) {
+            this.commandService.emit(command);
+        }
+    }
+
+
     public deleteAllSchemaProperties(): void {
         let command: ICommand = CommandFactory.createDeleteAllPropertiesCommand(this.getPropertySourceSchema());
         this.commandService.emit(command);
     }
+
+    public setMinProperties(minProp: number): void {
+        let command: ICommand = CommandFactory.createChangePropertyCommand<number>(this.getPropertySourceSchema(), "minProperties", minProp);
+        this.commandService.emit(command);
+    }
+
+    public setMaxProperties(): void {
+        let command: ICommand = CommandFactory.createDeleteAllPropertiesCommand(this.getPropertySourceSchema());
+        this.commandService.emit(command);
+    }
+
 
     public inheritanceType(): string {
         if (this.definition.allOf) {
@@ -176,5 +230,4 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         let command: ICommand = CommandFactory.createRenamePropertyCommand(parent, propertyName, event.newName);
         this.commandService.emit(command);
     }
-
 }

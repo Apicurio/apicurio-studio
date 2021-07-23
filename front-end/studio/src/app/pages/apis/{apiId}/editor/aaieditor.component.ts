@@ -34,7 +34,6 @@ import {
     CombinedVisitorAdapter, CommandFactory,
     DocumentType,
     ICommand,
-    IDefinition,
     IValidationSeverityRegistry,
     Library,
     Node,
@@ -71,6 +70,7 @@ import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
 import * as YAML from 'js-yaml';
+import {PropertiesEditorComponent} from "./_components/editors/properties-editor.component";
 
 
 @Component({
@@ -119,6 +119,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     @ViewChild("operationTraitEditor") operationTraitEditor: OperationTraitEditorComponent;
     @ViewChild("messageTraitEditor") messageTraitEditor: MessageTraitEditorComponent;
     @ViewChild("propertyEditor") propertyEditor: PropertyEditorComponent;
+    @ViewChild("propertiesEditor") propertiesEditor: PropertiesEditorComponent;
 
     formType: string;
 
@@ -599,6 +600,10 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
 
     public getPropertyEditor(): PropertyEditorComponent {
         return this.propertyEditor;
+    }
+
+    public getPropertiesEditor(): PropertiesEditorComponent {
+        return this.propertiesEditor;
     }
 
     public getOperationTraitEditor(): OperationTraitEditorComponent {

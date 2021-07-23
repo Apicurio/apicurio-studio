@@ -4,6 +4,12 @@
          [collaborationNodePath]="propertiesNodePath()"
          [validationModels]="properties()">
                     <span actions>
+                        <span *ngIf="isObjectType()">
+                            <icon-button (onClick)="openAddSchemaPropertiesEditor('min')" [pullRight]="true" type="minProps"
+                                         [title]="'Set the minimum number of properties allowed in this object.'"></icon-button>
+                            <icon-button (onClick)="openAddSchemaPropertiesEditor('max')" [pullRight]="true" type="maxProps"
+                                         [title]="'Set the maximum number of properties allowed in this object.'"></icon-button>
+                        </span>
                         <icon-button (onClick)="openAddSchemaPropertyEditor()" [pullRight]="true" type="add"
                                      [title]="'Add a property to the schema.'"></icon-button>
                         <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" type="delete"

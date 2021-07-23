@@ -156,7 +156,7 @@ export class ConfigService {
     }
 
     public channelNameValidation() :string {
-        if (!this.config.ui.channelNameValidation || !this.config.ui.channelNameValidation) {
+        if ( !this.config.ui || !this.config.ui.channelNameValidation || !this.config.ui.channelNameValidation) {
             return "";
         }
         return this.config.ui.channelNameValidation;

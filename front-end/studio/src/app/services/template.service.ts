@@ -21,6 +21,7 @@ import {AbstractHubService} from "./hub";
 import {HttpClient} from "@angular/common/http";
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
+import {ApiTypes} from "../models/api-types.enum";
 
 
 /**
@@ -47,25 +48,39 @@ export class TemplateService extends AbstractHubService {
      * @param type
      */
     public getTemplates(type: string): ApiDesignTemplate[] {
+        return this.templateCache.hasOwnProperty(type) ? this.templateCache[type] : [];
+    }
+
+    public loadTemplates(type: string): Promise<ApiDesignTemplate[]> {
         if (!this.templateCache.hasOwnProperty(type)) {
             console.info(`[TemplateService] Templates of type '${type}' are not ready, loading them from the API...`)
-            let rval: ApiDesignTemplate[] = [];
             let options: any = this.options({ "Accept": "application/json" });
-            this.httpGet<any>(this.endpoint("/templates", {}, { type: type }), options)
+            return this.httpGet<any>(this.endpoint("/templates", {}, { type: type }), options)
                 .then(rawTemplates => {
-                    for (let template of rawTemplates) {
-                        rval.push({
+                    let templates: ApiDesignTemplate[] = rawTemplates.map( template => {
+                        return {
                             type: template.type,
                             name: template.name,
                             description: template.description,
                             content: template.document
-                        })
-                    }
+                        };
+                    })
+                    this.templateCache[type] = templates;
+                    return templates;
                 }).catch(error => {
                     console.error("Couldn't load templates", error);
+                    return [];
                 });
-            this.templateCache[type] = rval;
         }
-        return this.templateCache[type];
+        return Promise.resolve(this.templateCache[type]);
+    }
+
+    public loadAllTemplates(): Promise<any> {
+        return Promise.all([
+            this.loadTemplates(ApiTypes.OpenAPI20),
+            this.loadTemplates(ApiTypes.OpenAPI30),
+            this.loadTemplates(ApiTypes.AsyncAPI20),
+            this.loadTemplates(ApiTypes.GraphQL)
+        ]);
     }
 }

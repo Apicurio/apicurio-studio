@@ -25,6 +25,7 @@ import {AbstractPageComponent} from "../../../components/page-base.component";
 import {Title} from "@angular/platform-browser";
 import {ImportApi} from "../../../models/import-api.model";
 import {Base64} from "js-base64";
+import {TemplateService} from "../../../services/template.service";
 
 @Component({
     selector: "createapi-page",
@@ -41,9 +42,23 @@ export class CreateApiPageComponent extends AbstractPageComponent {
      * @param route
      * @param apis
      * @param titleService
+     * @param templateService
      */
-    constructor(private router: Router, route: ActivatedRoute, private apis: ApisService, titleService: Title) {
+    constructor(private router: Router, route: ActivatedRoute, private apis: ApisService, titleService: Title,
+                private templateService: TemplateService) {
         super(route, titleService);
+    }
+
+    /**
+     * Called to kick off loading the page's async data.
+     * @param params
+     */
+    public loadAsyncPageData(params: any): void {
+        console.info("[CreateApiPageComponent] Loading async page data");
+        // Dynamically load the templates.
+        this.templateService.loadAllTemplates().then(() => {
+            this.dataLoaded["templates"] = true;
+        });
     }
 
     /**
@@ -76,7 +91,7 @@ export class CreateApiPageComponent extends AbstractPageComponent {
             });
         } else {
             let importApi: ImportApi = new ImportApi();
-            let spec: any = JSON.parse(JSON.stringify(eventData.template.content));
+            let spec: any = JSON.parse(eventData.template.content);
             this.updateSpec(spec, eventData);
             importApi.data = Base64.encode(JSON.stringify(spec));
 

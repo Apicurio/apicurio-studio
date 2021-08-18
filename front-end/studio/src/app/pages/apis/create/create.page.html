@@ -8,7 +8,10 @@
 <div class="container-fluid" *ngIf="!pageError">
     <div class="createapi-form row">
         <div class="col-md-8">
-            <createapi-form #createApiForm (onCreateApi)="onCreateApi($event)"></createapi-form>
+            <div *ngIf="!dataLoaded['templates']">
+                <p><span class="spinner spinner-lg spinner-inline"></span> Loading templates, please wait...</p>
+            </div>
+            <createapi-form *ngIf="dataLoaded['templates']" #createApiForm (onCreateApi)="onCreateApi($event)"></createapi-form>
         </div>
     </div>
 </div>

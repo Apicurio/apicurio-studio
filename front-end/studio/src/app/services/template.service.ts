@@ -30,7 +30,7 @@ import {ConfigService} from "./config.service";
 @Injectable()
 export class TemplateService extends AbstractHubService {
 
-    private templateCache: { [key: string]: Promise<ApiDesignTemplate[]> } = {};
+    private templateCache: { [key: string]: ApiDesignTemplate[] } = {};
 
     /**
      * Constructor.
@@ -46,13 +46,13 @@ export class TemplateService extends AbstractHubService {
      * Gets a list of templates for the given spec version.
      * @param type
      */
-    public getTemplates(type: string): Promise<ApiDesignTemplate[]> {
+    public getTemplates(type: string): ApiDesignTemplate[] {
         if (!this.templateCache.hasOwnProperty(type)) {
             console.info(`[TemplateService] Templates of type '${type}' are not ready, loading them from the API...`)
+            let rval: ApiDesignTemplate[] = [];
             let options: any = this.options({ "Accept": "application/json" });
-            this.templateCache[type] = this.httpGet<any>(this.endpoint("/templates", {}, { type: type }), options)
+            this.httpGet<any>(this.endpoint("/templates", {}, { type: type }), options)
                 .then(rawTemplates => {
-                    let rval: ApiDesignTemplate[] = [];
                     for (let template of rawTemplates) {
                         rval.push({
                             type: template.type,
@@ -61,8 +61,10 @@ export class TemplateService extends AbstractHubService {
                             content: template.document
                         })
                     }
-                    return rval;
+                }).catch(error => {
+                    console.error("Couldn't load templates", error);
                 });
+            this.templateCache[type] = rval;
         }
         return this.templateCache[type];
     }

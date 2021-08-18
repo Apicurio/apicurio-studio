@@ -37,7 +37,7 @@
                             <span class="icon fa fa-plus-circle"></span>
                             <span class="option-label">Blank API</span>
                         </div>
-                        <div class="template-option" *ngFor="let template of templates() | async" (click)="model.template = template"
+                        <div class="template-option" *ngFor="let template of templates()" (click)="model.template = template"
                              [class.selected]="model.template === template" title="{{ template.description }}">
                             <span class="check fa"
                                   [class.fa-circle-o]="model.template !== template"

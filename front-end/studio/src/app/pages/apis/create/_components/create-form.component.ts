@@ -87,7 +87,7 @@ export class CreateApiFormComponent {
         this.model.template = null;
     }
 
-    public templates(): Promise<ApiDesignTemplate[]> {
+    public templates(): ApiDesignTemplate[] {
         return this.templateService.getTemplates(this.model.type);
     }
 

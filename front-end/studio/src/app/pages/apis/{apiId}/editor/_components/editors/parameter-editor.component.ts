@@ -297,7 +297,7 @@ export class ParameterEditorComponent extends EntityEditor<Oas20Parameter | Oas3
                 return true;
             }
             if (recursionDepth < 5 && schemaDef.$ref !== null && ReferenceUtil.canResolveRef(schemaDef.$ref, schemaDef)) {
-                const resolvedSchemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition = ReferenceUtil.resolveNodeRef(schemaDef);
+                const resolvedSchemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition = <any>(ReferenceUtil.resolveNodeRef(schemaDef));
                 return isSimpleType(resolvedSchemaDef, recursionDepth + 1);
             }
 

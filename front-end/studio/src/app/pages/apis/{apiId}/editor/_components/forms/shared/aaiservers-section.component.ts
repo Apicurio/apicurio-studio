@@ -104,7 +104,7 @@ export class AaiServersSectionComponent extends AbstractBaseComponent {
     public addServer(data: AaiServerData): void {
         console.info("[AaiServersSectionComponent] Adding a server: %s", data.url);
 
-        let newServer: Aai20Server = this.parent.createServer(data.name);
+        let newServer: Aai20Server = <any>(this.parent.createServer(data.name));
 
         this.copyServerToModel(data, newServer);
 
@@ -119,7 +119,7 @@ export class AaiServersSectionComponent extends AbstractBaseComponent {
     public changeServer(event: AaiServerEditorEvent): void {
         console.info("[AaiServersSectionComponent] Editing a server: %s", event.data.name);
 
-        let newServer: Aai20Server = this.parent.createServer(event.data.name);
+        let newServer: Aai20Server = <any>(this.parent.createServer(event.data.name));
 
         this.copyServerToModel(event.data, newServer);
 

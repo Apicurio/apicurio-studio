@@ -167,7 +167,7 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
                 return true;
             }
             if (recursionDepth < 5 && schemaDef.$ref !== null && ReferenceUtil.canResolveRef(schemaDef.$ref, schemaDef)) {
-                const resolvedSchemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition = ReferenceUtil.resolveNodeRef(schemaDef);
+                const resolvedSchemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition = <any>(ReferenceUtil.resolveNodeRef(schemaDef));
                 return isSimpleType(resolvedSchemaDef, recursionDepth + 1);
             }
 

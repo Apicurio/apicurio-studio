@@ -6,6 +6,12 @@ docker run -d -p 8090:8080 apicurio/apicurio-studio-auth
 ```
 Make sure the KC's apicurio client lists the UI's address as a valid redirection URI
 
+Rebuild the local dependencies
+
+```bash
+mvn clean install -am -pl platforms/quarkus/api -pl platforms/quarkus/ws
+```
+
 To start the API
 ```bash
 qApiPath=platforms/quarkus/api

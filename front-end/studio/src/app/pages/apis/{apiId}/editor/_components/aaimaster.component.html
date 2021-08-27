@@ -186,6 +186,7 @@
                           warning="Renaming a Channel will also update its parameters."
                           validationPattern="([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+"
                           (onRename)="renameChannel($event)"></rename-entity-dialog>
+    <clone-channel-dialog #cloneChannelDialog (onClone)="cloneChannel($event)"></clone-channel-dialog>
 
     <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
     <rename-entity-dialog #renameDefinitionDialog

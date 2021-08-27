@@ -154,6 +154,7 @@ import {AaiSecurityRequirementRowComponent} from "./pages/apis/{apiId}/editor/_c
 import {HttpHeadersComponent} from "./pages/apis/{apiId}/editor/_components/forms/path/operation/http-headers.component";
 import {HeaderRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/header-row.component";
 import {AddHeaderDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-header.component";
+import {CloneChannelDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-channel.component";
 
 @NgModule({
     imports: [
@@ -187,7 +188,7 @@ import {AddHeaderDialogComponent} from "./pages/apis/{apiId}/editor/_components/
         HeaderRowComponent, CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,
         ResponseEditorComponent, MessageTraitEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
         AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
-        SchemaRowComponent, AddSchemaDialogComponent
+        SchemaRowComponent, AddSchemaDialogComponent, CloneChannelDialogComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

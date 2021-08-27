@@ -63,6 +63,8 @@ import {FeaturesService} from "../_services/features.service";
 import {ComponentType} from "../_models/component-type.model";
 import { IOperationTraitEditorHandler, OperationTraitData, OperationTraitEditorComponent } from "./editors/operationtrait-editor.component";
 import { IMessageTraitEditorHandler, MessageTraitData, MessageTraitEditorComponent } from "./editors/messagetrait-editor.component";
+import {CloneChannelDialogComponent} from "./dialogs/clone-channel.component";
+import {ConfigService} from "../../../../../services/config.service";
 
 
 /**
@@ -92,6 +94,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     };
 
     @ViewChild("addChannelDialog", { static: true }) addChannelDialog: AddChannelDialogComponent;
+    @ViewChild("cloneChannelDialog", { static: true }) cloneChannelDialog: CloneChannelDialogComponent;
     @ViewChild("renameChannelDialog", { static: true }) renameChannelDialog: RenameEntityDialogComponent;
 
     @ViewChild("cloneDefinitionDialog", { static: true }) cloneDefinitionDialog: CloneDefinitionDialogComponent;
@@ -380,7 +383,17 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     /**
      * Called when the user clicks "Clone Channel" in the context-menu for a channel.
      */
-    public cloneChannel(): void {
+    public cloneChannel(modalData?: any): void {
+        if (undefined === modalData || modalData === null) {
+            let channelItem: AaiChannelItem = this.contextMenuSelection.resolve(this.document) as AaiChannelItem;
+            this.cloneChannelDialog.open(this.document, channelItem);
+        } else {
+            let channelItem: AaiChannelItem = modalData.object;
+            console.info("[EditorMasterComponent] Clone channel item: %s", modalData.channelName);
+            let cloneSrcObj: any = Library.writeNode(channelItem);
+            let command: ICommand = CommandFactory.createAddChannelItemCommand(modalData.channelName, cloneSrcObj);
+            this.commandService.emit(command);
+        }
     }
 
     /**

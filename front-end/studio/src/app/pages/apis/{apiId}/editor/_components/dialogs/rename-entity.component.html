@@ -35,7 +35,7 @@
                                        required [(ngModel)]="newName" (ngModelChange)="validateName($event)">
                                 <div class="form-error-message error" *ngIf="newName !== originalName && _alreadyExists">{{ type }} already exists.</div>
                                 <form-error-message [inputModel]="defName" [type]="'required'">Name is required.</form-error-message>
-                                <form-error-message [inputModel]="defName" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                                <form-error-message [inputModel]="defName" [type]="'pattern'" [alwaysOn]="true">{{ validationError }}</form-error-message>
                             </div>
                         </div>
                     </form>

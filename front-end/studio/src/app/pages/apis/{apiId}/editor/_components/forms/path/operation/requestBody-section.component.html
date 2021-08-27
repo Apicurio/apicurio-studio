@@ -88,4 +88,5 @@
                       title="Rename Form Data Parameter"
                       warning="Renaming a Form Data Parameter may also update any form data parameters with the same name depending on path and operation hierarchies."
                       validationPattern="[a-zA-Z0-9\.\-_\$]+"
+                      validationError="Enter a valid name (only alpha-numeric characters, ., -, _ and $ are allowed - no whitespace)."
                       (onRename)="renameFormDataParameter($event)"></rename-entity-dialog>

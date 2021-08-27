@@ -29,4 +29,5 @@
                       title="Rename Tag"
                       warning="Renaming a Tag will also update any references to that tag elsewhere in the API (e.g. tagging on operations)."
                       validationPattern="[a-zA-Z0-9\.\-_]+"
+                      validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
                       (onRename)="rename($event)"></rename-entity-dialog>

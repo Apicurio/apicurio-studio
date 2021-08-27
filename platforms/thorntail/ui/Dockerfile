@@ -34,8 +34,7 @@ ENV APICURIO_UI_HUB_API_URL=https://localhost:8443/api
 ENV APICURIO_UI_EDITING_URL=https://localhost:8443/ws
 ENV APICURIO_MIN_HEAP=512m
 ENV APICURIO_MAX_HEAP=2048m
-ENV APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP='([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+'
-
+ENV APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP=([^\\x00-\\x20\\x7f\"\'%<>\\\\^`{|}]|%[0-9A-Fa-f]{2}|\{[+#./;?&=,!@|]?((\\w|%[0-9A-Fa-f]{2})(\\.?(\\w|%[0-9A-Fa-f]{2}))*(:[1-9]\\d{0,3}|\\*)?)(,((\\w|%[0-9A-Fa-f]{2})(\\.?(\\w|%[0-9A-Fa-f]{2}))*(:[1-9]\\d{0,3}|\\*)?))*\})*
 
 
 ENTRYPOINT ["/opt/apicurio/entrypoint.sh"]

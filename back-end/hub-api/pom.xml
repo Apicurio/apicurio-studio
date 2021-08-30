@@ -28,10 +28,10 @@
             <artifactId>apicurio-studio-be-hub-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>apicurio-studio-be-hub-codegen</artifactId>
-            <version>${project.version}</version>
+            <groupId>io.apicurio</groupId>
+            <artifactId>apicurio-codegen</artifactId>
         </dependency>
 
         <!-- Apicurio Data Model -->

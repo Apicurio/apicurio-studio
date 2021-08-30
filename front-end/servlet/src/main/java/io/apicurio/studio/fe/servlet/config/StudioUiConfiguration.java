@@ -126,6 +126,6 @@ public class StudioUiConfiguration extends Configuration {
      * @return the configured REGEXP CHANNEL
      */
     public String getAddChannelValidation() {
-        return getConfigurationProperty(VALIDATION_CHANNELNAME_REGEXP_ENV, VALIDATION_CHANNELNAME_REGEXP_SYSPROP, "([^{}\\/]*(\\{[a-zA-Z_][0-9a-zA-Z_]*\\})?)+");
+        return getConfigurationProperty(VALIDATION_CHANNELNAME_REGEXP_ENV, VALIDATION_CHANNELNAME_REGEXP_SYSPROP, "([^\\x00-\\x20\\x7f\"'%<>\\\\^`{|}]|%[0-9A-Fa-f]{2}|{[+#./;?&=,!@|]?((\\w|%[0-9A-Fa-f]{2})(\\.?(\\w|%[0-9A-Fa-f]{2}))*(:[1-9]\\d{0,3}|\\*)?)(,((\\w|%[0-9A-Fa-f]{2})(\\.?(\\w|%[0-9A-Fa-f]{2}))*(:[1-9]\\d{0,3}|\\*)?))*})*");
     }
 }

@@ -161,6 +161,7 @@
                           title="Rename Data Type"
                           warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
                           validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters, ., - and _ are allowed - no whitespace)."
                           (onRename)="renameDefinition($event)"></rename-entity-dialog>
 
     <clone-response-definition-dialog #cloneResponseDialog (onClone)="cloneResponse($event)"></clone-response-definition-dialog>
@@ -169,5 +170,6 @@
                           title="Rename Response"
                           warning="Renaming a Response will also update any references to it elsewhere in the API."
                           validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters, ., - and _ are allowed - no whitespace)."
                           (onRename)="renameResponse($event)"></rename-entity-dialog>
 </div>

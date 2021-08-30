@@ -184,8 +184,10 @@
                           type="Channel"
                           title="Rename Channel"
                           warning="Renaming a Channel will also update its parameters."
-                          validationPattern="([^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+"
+                          validationPattern="{{ channelNameRegex }}"
+                          validationError="Enter a valid name (Channel names need to be valid URIs)."
                           (onRename)="renameChannel($event)"></rename-entity-dialog>
+    <clone-channel-dialog #cloneChannelDialog (onClone)="cloneChannel($event)"></clone-channel-dialog>
 
     <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
     <rename-entity-dialog #renameDefinitionDialog
@@ -193,6 +195,7 @@
                           title="Rename Data Type"
                           warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. operation payload bodies)."
                           validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
                           (onRename)="renameDefinition($event)"></rename-entity-dialog>
 
     <rename-entity-dialog #renameMessageTraitDialog
@@ -200,5 +203,6 @@
                           title="Rename Message Trait"
                           warning="Renaming a Message Trait Type will also update any references to the trait elsewhere in the API (e.g. operation payloads)."
                           validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
                           (onRename)="renameMessageTrait($event)"></rename-entity-dialog>
 </div>

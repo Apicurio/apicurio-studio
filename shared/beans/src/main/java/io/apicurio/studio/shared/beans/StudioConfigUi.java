@@ -59,7 +59,7 @@ public class StudioConfigUi {
     }
 
     /**
-     * @param channelNameRegex the channel Name Regex to set
+     * @param channelNameValidation the channel Name Regex to set
      */
     public void setChannelNameValidation(String channelNameValidation) {
         this.channelNameValidation = channelNameValidation;

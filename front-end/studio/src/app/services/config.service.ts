@@ -30,7 +30,7 @@ let DEFAULT_CONFIG: any = {
     },
     ui: {
         uiUrl: "http://localhost:8080/studio/",
-        channelNameValidation: '([^{}\\/]*(\\{[a-zA-Z_][0-9a-zA-Z_]*\\})?)+',
+        channelNameValidation: "([^\\x00-\\x20\\x7f\"'%<>\\\\^`{|}]|%[0-9A-Fa-f]{2}|{[+#./;?&=,!@|]?((\\w|%[0-9A-Fa-f]{2})(\\.?(\\w|%[0-9A-Fa-f]{2}))*(:[1-9]\\d{0,3}|\\*)?)(,((\\w|%[0-9A-Fa-f]{2})(\\.?(\\w|%[0-9A-Fa-f]{2}))*(:[1-9]\\d{0,3}|\\*)?))*})*",
     },
     features: {
         "microcks": true,

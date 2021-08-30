@@ -151,4 +151,5 @@
                       title="Rename Data Type"
                       warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
                       validationPattern="[a-zA-Z0-9\.\-_]+"
+                      validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
                       (onRename)="rename($event)"></rename-entity-dialog>

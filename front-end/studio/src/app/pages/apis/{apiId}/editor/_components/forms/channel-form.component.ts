@@ -71,8 +71,7 @@ export class ChannelFormComponent extends SourceFormComponent<AaiChannelItem> {
     }
 
     protected createReplaceNodeCommand(node: AaiChannelItem): ICommand {
-        return CommandFactory.createAddChannelItemCommand(this.channel.getName(), node)
-        //return CommandFactory.createReplacePathItemCommand(this.channel, node);
+        return CommandFactory.createReplaceChannelItemCommand(this.channel, node);
     }
 
     public enableSourceMode(): void {

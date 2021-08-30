@@ -40,6 +40,7 @@ export class RenameEntityDialogComponent {
     @Input() message: string;
     @Input() warning: string;
     @Input() validationPattern: string;
+    @Input() validationError: string;
     @Output() onRename: EventEmitter<RenameEntityEvent> = new EventEmitter<RenameEntityEvent>();
 
     @ViewChildren("renameEntityModal") renameEntityModal: QueryList<ModalDirective>;

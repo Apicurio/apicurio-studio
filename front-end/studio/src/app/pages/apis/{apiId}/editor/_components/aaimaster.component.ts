@@ -63,6 +63,8 @@ import {FeaturesService} from "../_services/features.service";
 import {ComponentType} from "../_models/component-type.model";
 import { IOperationTraitEditorHandler, OperationTraitData, OperationTraitEditorComponent } from "./editors/operationtrait-editor.component";
 import { IMessageTraitEditorHandler, MessageTraitData, MessageTraitEditorComponent } from "./editors/messagetrait-editor.component";
+import {CloneChannelDialogComponent} from "./dialogs/clone-channel.component";
+import {ConfigService} from "../../../../../services/config.service";
 
 
 /**
@@ -80,6 +82,8 @@ import { IMessageTraitEditorHandler, MessageTraitData, MessageTraitEditorCompone
 })
 export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
 
+    channelNameRegex: string;
+
     @Input() document: Aai20Document;
 
     @Output() onImportComponent: EventEmitter<ComponentType> = new EventEmitter<ComponentType>();
@@ -92,6 +96,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     };
 
     @ViewChild("addChannelDialog", { static: true }) addChannelDialog: AddChannelDialogComponent;
+    @ViewChild("cloneChannelDialog", { static: true }) cloneChannelDialog: CloneChannelDialogComponent;
     @ViewChild("renameChannelDialog", { static: true }) renameChannelDialog: RenameEntityDialogComponent;
 
     @ViewChild("cloneDefinitionDialog", { static: true }) cloneDefinitionDialog: CloneDefinitionDialogComponent;
@@ -111,16 +116,18 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      * @param changeDetectorRef
      * @param documentService
      * @param selectionService
+     * @param configService
      * @param commandService
      * @param editors
      * @param restResourceService
      * @param features
      */
     constructor(changeDetectorRef: ChangeDetectorRef, documentService: DocumentService,
-                selectionService: SelectionService, private commandService: CommandService,
+                selectionService: SelectionService, configService: ConfigService, private commandService: CommandService,
                 private editors: EditorsService, private restResourceService: RestResourceService,
                 private features: FeaturesService) {
         super(changeDetectorRef, documentService, selectionService);
+        this.channelNameRegex = configService.channelNameValidation();
     }
 
     public ngOnInit(): void {
@@ -348,15 +355,15 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     public addChannel(channel: string): void {
         let command: ICommand = CommandFactory.createNewChannelCommand(channel);
         this.commandService.emit(command);
-        console.log("this.document.channels: " + JSON.stringify(this.document.channels, (k,v) =>  ["_ownerDocument", "_parent"].includes(k) && !!v ? "<<circular reference>>" : v));
-        this.selectChannel(this.document.channels.get(channel) as AaiChannelItem);
+        // console.debug("this.document.channels: " + JSON.stringify(this.document.channels, (k,v) =>  ["_ownerDocument", "_parent"].includes(k) && !!v ? "<<circular reference>>" : v));
+        this.selectChannel(this.document.channels[channel] as AaiChannelItem);
     }
 
     /**
      * Called when the user clicks "Rename Channel" in the context-menu for a channel.
      */
     public renameChannel(modalData?: any): void {
-        console.info("[AsyncApiEditorMasterComponent] Renaming path: ", modalData);
+        console.info("[AsyncApiEditorMasterComponent] Renaming channel: ", modalData);
         if (undefined === modalData || modalData === null) {
             let channelItem: any = this.contextMenuSelection.resolve(this.document);
             let channelNames: string[] = [];
@@ -380,7 +387,17 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     /**
      * Called when the user clicks "Clone Channel" in the context-menu for a channel.
      */
-    public cloneChannel(): void {
+    public cloneChannel(modalData?: any): void {
+        if (undefined === modalData || modalData === null) {
+            let channelItem: AaiChannelItem = this.contextMenuSelection.resolve(this.document) as AaiChannelItem;
+            this.cloneChannelDialog.open(this.document, channelItem);
+        } else {
+            let channelItem: AaiChannelItem = modalData.object;
+            console.info("[EditorMasterComponent] Clone channel item: %s", modalData.channelName);
+            let cloneSrcObj: any = Library.writeNode(channelItem);
+            let command: ICommand = CommandFactory.createAddChannelItemCommand(modalData.channelName, cloneSrcObj);
+            this.commandService.emit(command);
+        }
     }
 
     /**
@@ -404,7 +421,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         if (ObjectUtils.isNullOrUndefined(this.document.channels)) {
             return false;
         }
-        let pi: any = this.document.channels.getPathItem(channelItem.getName());
+        let pi: any = this.document.channels[channelItem.getName()];
         return pi === channelItem;
     }
 

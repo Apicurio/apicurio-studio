@@ -65,9 +65,10 @@
         <!-- Quarkus Version -->
         <version.io.quarkus>1.13.7.Final</version.io.quarkus>
 
-        <!-- Apicurio Data Models -->
+        <!-- Other Apicurio Projects -->
         <version.apicurio-data-models>1.1.15</version.apicurio-data-models>
         <version.apicurio-registry>1.3.2.Final</version.apicurio-registry>
+        <version.apicurio-codegen>1.0.1.Final</version.apicurio-codegen>
 
         <!-- Apache Artemis Version -->
         <version.apache-artemis>2.6.4</version.apache-artemis>
@@ -163,6 +164,13 @@
                 <groupId>io.apicurio</groupId>
                 <artifactId>apicurio-data-models</artifactId>
                 <version>${version.apicurio-data-models}</version>
+            </dependency>
+
+            <!-- Codegen -->
+            <dependency>
+                <groupId>io.apicurio</groupId>
+                <artifactId>apicurio-codegen</artifactId>
+                <version>${version.apicurio-codegen}</version>
             </dependency>
 
             <!-- Kafka (from Registry) -->

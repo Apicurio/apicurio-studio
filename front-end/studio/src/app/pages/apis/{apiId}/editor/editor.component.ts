@@ -75,6 +75,7 @@ import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
 import { OperationTraitEditorComponent } from "./_components/editors/operationtrait-editor.component";
 import { MessageTraitEditorComponent } from "./_components/editors/messagetrait-editor.component";
+import {PropertiesEditorComponent} from "./_components/editors/properties-editor.component";
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 
 
@@ -125,6 +126,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     @ViewChild("responseEditor", { static: true }) responseEditor: ResponseEditorComponent;
     @ViewChild("parameterEditor", { static: true }) parameterEditor: ParameterEditorComponent;
     @ViewChild("propertyEditor", { static: true }) propertyEditor: PropertyEditorComponent;
+    @ViewChild("propertiesEditor" , { static: true }) propertiesEditor: PropertiesEditorComponent;
 
     formType: string;
 
@@ -637,6 +639,10 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         return this.propertyEditor;
     }
 
+    public getPropertiesEditor(): PropertiesEditorComponent {
+        return this.propertiesEditor;
+    }
+
     public getOperationTraitEditor(): OperationTraitEditorComponent {
         return null;
     }
@@ -710,7 +716,7 @@ export class FormSelectionVisitor extends CombinedVisitorAdapter {
         this._selectionType = "path";
     }
 
-    public visitSchemaDefinition(node: Oas30SchemaDefinition | Oas30SchemaDefinition): void {
+    public visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         this._selectedNode = node;
         this._selectionType = "definition";
     }

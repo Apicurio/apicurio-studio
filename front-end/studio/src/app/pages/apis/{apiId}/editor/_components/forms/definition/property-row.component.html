@@ -51,7 +51,25 @@
                                                 (onChange)="changeType($event)"></schema-type-editor>
                         </div>
 
-                        <div class="property-minmax" *ngIf="isMinMaxEligible()">
+                        <span class="divider"></span>
+
+                        <div class="toggle-buttons">
+                            <button *ngIf="isIntFloatEligible()" class="btn btn-primary" type="button" data-toggle="collapse" data-target=".collapseMinMax" aria-expanded="false" aria-controls="collapseMinMax">
+                                Minimum/Maximum
+                            </button>
+                            <button *ngIf="isStringEligible()" class="btn btn-primary" type="button" data-toggle="collapse" data-target=".collapseMinMaxLength" aria-expanded="false" aria-controls="collapseLenght">
+                                Min/Max Length
+                            </button>
+                            <button  *ngIf="isStringEligible()" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExclusive" aria-expanded="false" aria-controls="collapseExclusive">
+                                Min/Max Exclusive
+                            </button>
+                            <button  *ngIf="isArrayEligible()" class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseMinMaxItems" aria-expanded="false" aria-controls="collapseMinMaxItems">
+                                Min/Max/Unique Items
+                            </button>
+
+                        </div>
+
+                        <div class="collapse property-minmax collapseMinMax" *ngIf="isIntFloatEligible()" id="collapseMinMax">
                             <div class="form-label">Minimum</div>
                             <inline-markdown-editor [value]="minimumIsSet()" [noValueMessage]="'No minimum.'"
                                                     [baseNode]="item" nodePath="minimum"
@@ -61,18 +79,70 @@
                             <inline-markdown-editor [value]="maximumIsSet()" [noValueMessage]="'No maximum.'"
                                                     [baseNode]="item" nodePath="maximum"
                                                     (onChange)="setNumValue($event,'maximum')"></inline-markdown-editor>
+
+                            <div class="form-label">MultipleOf</div>
+                            <inline-markdown-editor [value]="multipleOfIsSet()" [noValueMessage]="'No multipleOf.'"
+                                                    [baseNode]="item" nodePath="multipleOf"
+                                                    (onChange)="setNumValue($event,'multipleOf')"></inline-markdown-editor>
                         </div>
 
-                        <div class="property-minmax" *ngIf="isStringEligible()">
-                            <div class="form-label">MinLength</div>
-                            <inline-markdown-editor [value]="minLengthIsSet()" [noValueMessage]="'No minLength.'"
-                                                    [baseNode]="item" nodePath="minLength"
-                                                    (onChange)="setNumValue($event,'minLength')"></inline-markdown-editor>
+                        <div class="collapse property-minmax collapseMinMaxItems" *ngIf="isArrayEligible()" id="collapseMinMaxItems">
+                            <div class="form-label">MinItems</div>
+                            <inline-markdown-editor [value]="minItemsIsSet()" [noValueMessage]="'No minItems.'"
+                                                    [baseNode]="item" nodePath="minItems"
+                                                    (onChange)="setNumValue($event,'minItems')"></inline-markdown-editor>
 
-                            <div class="form-label">MaxLength</div>
-                            <inline-markdown-editor [value]="maxLengthIsSet()" [noValueMessage]="'No maxLength.'"
-                                                    [baseNode]="item" nodePath="maxLength"
-                                                    (onChange)="setNumValue($event,'maxLength')"></inline-markdown-editor>
+                            <div class="form-label">MaxItems</div>
+                            <inline-markdown-editor [value]="maxItemsIsSet()" [noValueMessage]="'No maxItems.'"
+                                                    [baseNode]="item" nodePath="maxItems"
+                                                    (onChange)="setNumValue($event,'maxItems')"></inline-markdown-editor>
+
+                            <div class="form-label exclusive-div">UniqueItems</div>
+                            <checkbox-input [defaultValue]="uniqueItemsIsSet()" [name]="'unique-items'"
+                                            [id]="'unique-items'" [baseNode]="item" nodePath="uniqueItems"
+                                            (onChange)="setBoolean($event,'uniqueItems')"></checkbox-input>
+                        </div>
+
+
+                        <div class="property-minmax" *ngIf="isStringEligible()">
+
+                            <div class="collapse collapseMinMaxLength" id="collapseLenght">
+                                <div class="form-label">MinLength</div>
+                                <inline-markdown-editor [value]="minLengthIsSet()" [noValueMessage]="'No minLength.'"
+                                                        [baseNode]="item" nodePath="minLength"
+                                                        (onChange)="setNumValue($event,'minLength')"></inline-markdown-editor>
+
+                                <div class="form-label">MaxLength</div>
+                                <inline-markdown-editor [value]="maxLengthIsSet()" [noValueMessage]="'No maxLength.'"
+                                                        [baseNode]="item" nodePath="maxLength"
+                                                        (onChange)="setNumValue($event,'maxLength')"></inline-markdown-editor>
+                            </div>
+
+                            <div class="collapse" id="collapseExclusive">
+                                <div class="form-label exclusive-div">ExclusiveMinimum / maximum</div>
+                                <checkbox-input [defaultValue]="exclusiveMinIsSet()" [name]="'exclusive-minimum'"
+                                                [id]="'exclusive-minimum'" [baseNode]="item" nodePath="exclusiveMinimum"
+                                                (onChange)="setBoolean($event,'exclusiveMinimum')"></checkbox-input>
+                                <checkbox-input [defaultValue]="exclusiveMaxIsSet()" [name]="'exclusive-maximum'"
+                                                [id]="'exclusive-maximum'" [baseNode]="item" nodePath="exclusiveMaximum"
+                                                (onChange)="setBoolean($event,'exclusiveMaximum')"></checkbox-input>
+                            </div>
+
+                        </div>
+
+                        <!--<div class="form-label nullable-div">Nullable</div>
+                        <checkbox-input [defaultValue]="uniqueItemsIsSet()" [name]="'nullable'"
+                                        [id]="'unique-items'" [baseNode]="item" nodePath="nullable"
+                                        (onChange)="setBoolean($event,'nullable')"></checkbox-input>-->
+
+                        <div class="onlyOptions">
+                            <div class="form-label nullable-div">ReadOnly / WriteOnly</div>
+                            <checkbox-input [defaultValue]="readOnlyIsSet()" [name]="'readOnly'"
+                                        [id]="'readOnly'" [baseNode]="item" nodePath="readOnly"
+                                        (onChange)="setBoolean($event,'readOnly')"></checkbox-input>
+                            <!--<checkbox-input [defaultValue]="uniqueItemsIsSet()" [name]="'writeOnly'"
+                                            [id]="'writeOnly'" [baseNode]="item" nodePath="writeOnly"
+                                            (onChange)="setBoolean($event,'writeOnly')"></checkbox-input>-->
                         </div>
 
                         <div class="property-pattern" *ngIf="isStringEligible()">

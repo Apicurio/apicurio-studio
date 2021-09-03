@@ -1,0 +1,30 @@
+<entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="response" *ngIf="isOpen()"
+               [showRequiredFieldsMessage]="true" heading="Define the Min/Max Properties value" [valid]="dataIsValid(nameInput.value)">
+
+  <div class="row-fluid body-section">
+    <div class="col-md-12">
+      <h3>1. Enter <span *ngIf="minOrMax === 'min'">MinProperties</span><span *ngIf="minOrMax === 'max'">MaxProperties</span> value</h3>
+      <p class="explanation">
+                <span *ngIf="minOrMax === 'min'">
+                    Set the minimum number of properties allowed in this object.
+                </span>
+                <span *ngIf="minOrMax === 'max'">
+                    Set the maximum number of properties allowed in this object.
+                </span>
+      </p>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="control-label required" for="rsp_name">Value</label>
+        <div>
+          <input name="name" type="number" id="rsp_name" class="form-control" required #nameInput="ngModel"
+                 [(ngModel)]="minOrMax === 'min' ? model.minProperties : model.maxProperties" placeholder="Enter a numeric value." pattern="[0-9]+"
+                 (ngModelChange)="minOrMax === 'min' ? model.minProperties = nameInput.value : model.maxProperties = nameInput.value" autocomplete="off">
+          <form-error-message [inputModel]="nameInput" type="required">Value is required.</form-error-message>
+          <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid value (only numeric characters are allowed - no whitespace).</form-error-message>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</entity-editor>

@@ -72,6 +72,7 @@ import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
 import * as YAML from 'js-yaml';
+import {PropertiesEditorComponent} from "./_components/editors/properties-editor.component";
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 
 
@@ -125,6 +126,8 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     @ViewChild("operationTraitEditor", { static: true }) operationTraitEditor: OperationTraitEditorComponent;
     @ViewChild("messageTraitEditor", { static: true }) messageTraitEditor: MessageTraitEditorComponent;
     @ViewChild("propertyEditor", { static: true }) propertyEditor: PropertyEditorComponent;
+    @ViewChild("propertiesEditor", { static: true }) propertiesEditor: PropertiesEditorComponent;
+
 
     formType: string;
 
@@ -629,6 +632,10 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
 
     public getPropertyEditor(): PropertyEditorComponent {
         return this.propertyEditor;
+    }
+
+    public getPropertiesEditor(): PropertiesEditorComponent {
+        return this.propertiesEditor;
     }
 
     public getOperationTraitEditor(): OperationTraitEditorComponent {

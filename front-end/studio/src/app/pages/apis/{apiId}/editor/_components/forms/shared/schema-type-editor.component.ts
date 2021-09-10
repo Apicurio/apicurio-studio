@@ -71,6 +71,12 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
      * i.e. should the dropdown contain references to data type schemas?
      */
     @Input() isParameter: boolean = false;
+    
+    /**
+     * Should the component list "data type" definition only?
+     * i.e. should the primitive types and As/Of fields be masked?
+     */
+    @Input() dataTypesOnly: boolean = false;
 
     /**
      * Emit the value when it is updated
@@ -100,7 +106,9 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
      * Main options
      */
     public typeOptions(): DropDownOption[] {
-        let options: DropDownOption[] = [
+        let options: DropDownOption[] = [];
+        
+        let primitiveTypesOptions: DropDownOption[] = [
             new Value("Array", "array"),
             new Value("Enum", "enum"),
             DIVIDER,
@@ -111,12 +119,28 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         ];
 
         /**
+         * Add primitive types to the dropdown menu
+         */
+        if (!this.dataTypesOnly) {
+            options.push(...primitiveTypesOptions);
+        }
+
+        /**
          * Add schema definitions to the dropdown menu
          */
-        options = [...options, ...this.getSchemaDefinitionsOptions()]
+        let schemaDefinitionsOptions = this.getSchemaDefinitionsOptions();
+        if (schemaDefinitionsOptions.length > 0) {
+            if (options.length > 0) {
+                options.push(DIVIDER);
+            }
+            options.push(...schemaDefinitionsOptions);
+        }
 
-        if(!this.isParameter && this.document.getDocumentType() === DocumentType.openapi2) {
-            options = [...options, DIVIDER, new Value("File", "file")]
+        if (!this.isParameter && !this.dataTypesOnly && this.document.getDocumentType() === DocumentType.openapi2) {
+            if (options.length > 0) {
+                options.push(DIVIDER);
+            }
+            options.push(new Value("File", "file"));
         }
 
         return options;
@@ -190,7 +214,6 @@ export class SchemaTypeEditorComponent extends AbstractBaseComponent {
         }
 
         if (defs.length > 0) {
-            options.push(DIVIDER);
             defs.forEach(def => {
                 let defName: string = def.getName();
                 options.push(new Value(defName, refPrefix + defName));

@@ -16,17 +16,16 @@ import {AbstractInlineEditor} from "./inline-editor.base";
 })
 export class CheckBoxInputComponent extends AbstractInlineEditor<boolean> {
 
-
     @Input() defaultValue: boolean;
     @Input() id: string;
     @Input() name: string;
+    @Input() label: string;
 
     public state: boolean;
 
     constructor(selectionService: SelectionService) {
         super(selectionService);
     }
-
 
     public getState(): boolean {
         this.state = this.defaultValue;

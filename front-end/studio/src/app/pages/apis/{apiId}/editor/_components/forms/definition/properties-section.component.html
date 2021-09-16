@@ -4,12 +4,8 @@
          [collaborationNodePath]="propertiesNodePath()"
          [validationModels]="properties()">
                     <span actions>
-                        <span *ngIf="isObjectType()">
-                            <icon-button (onClick)="openAddSchemaPropertiesEditor('min')" [pullRight]="true" type="minProps"
-                                         [title]="'Set the minimum number of properties allowed in this object.'"></icon-button>
-                            <icon-button (onClick)="openAddSchemaPropertiesEditor('max')" [pullRight]="true" type="maxProps"
-                                         [title]="'Set the maximum number of properties allowed in this object.'"></icon-button>
-                        </span>
+                        <icon-button (onClick)="togglePropertiesConfig()" [pullRight]="true" type="config"
+                                     [title]="'Configure advanced properties options (e.g. min/maxProperties).'"></icon-button>
                         <icon-button (onClick)="openAddSchemaPropertyEditor()" [pullRight]="true" type="add"
                                      [title]="'Add a property to the schema.'"></icon-button>
                         <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" type="delete"
@@ -21,6 +17,37 @@
             <span>No schema properties have been defined.</span>
             <a (click)="openAddSchemaPropertyEditor()">Add a property</a>
         </signpost>
+
+        <!-- Configuration of min/max/additional properties -->
+        <div *ngIf="_pconfigOpen" class="properties-config">
+            <div class="property-min-properties">
+                <div class="property-label">
+                    <label for="min-properties">Minimum Properties</label>
+                </div>
+                <div class="property-value">
+                    <pf-inline-text-editor [value]="minProperties()" noValueMessage="No minItems."
+                                           [baseNode]="definition" nodePath="minProperties" id="min-properties"
+                                           (onChange)="setMinProps($event)"></pf-inline-text-editor>
+                </div>
+            </div>
+
+            <div class="property-max-properties">
+                <div class="property-label">
+                    <label for="max-properties">Maximum Properties</label>
+                </div>
+                <div class="property-value">
+                    <pf-inline-text-editor [value]="maxProperties()" noValueMessage="No maxItems."
+                                           [baseNode]="definition" nodePath="maxProperties" id="max-properties"
+                                           (onChange)="setMaxProps($event)"></pf-inline-text-editor>
+                </div>
+            </div>
+
+            <div class="property-unique-items">
+                <checkbox-input [defaultValue]="!additionalProperties()" name="additional-properties" label="Allow only defined properties"
+                                id="unique-items" [baseNode]="definition" nodePath="additionalProperties"
+                                (onChange)="setAdditionalProperties(!$event)"></checkbox-input>
+            </div>
+        </div>
 
         <!-- The list of schema properties -->
         <div class="container-fluid path-parameters typed-item-list">

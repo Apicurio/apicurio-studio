@@ -29,7 +29,7 @@ import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
 import {
-    CommandFactory,
+    CommandFactory, DocumentType,
     ICommand,
     Oas20Schema,
     Oas30Schema,
@@ -51,6 +51,8 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
     @Output() onRename: EventEmitter<void> = new EventEmitter<void>();
+
+    _ptab: string = null;
 
     /**
      * C'tor.
@@ -74,6 +76,14 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
 
     public hasDescription(): boolean {
         if (this.item.description) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public hasType(): boolean {
+        if (this.item.type) {
             return true;
         } else {
             return false;
@@ -151,6 +161,13 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         return  this.item.readOnly ? this.item.readOnly : false;
     }
 
+    public writeOnlyIsSet(): boolean | null {
+        if (this.item.ownerDocument().getDocumentType() == DocumentType.openapi3) {
+            return (<Oas30PropertySchema>this.item).writeOnly ? true : false;
+        }
+        return false;
+    }
+
     public minPropertiesIsSet(): string | null {
         return  this.item.minProperties ? this.item.minProperties.toString() : null;
     }
@@ -198,15 +215,6 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
     public toggleSummary(): void {
         this.toggleTab("summary");
     }
-
-    public toggleMinimum(): void {
-        this.toggleTab("minimum");
-    }
-
-    public toggleMaximum(): void {
-        this.toggleTab("maximum");
-    }
-
 
     public delete(): void {
         this.onDelete.emit();
@@ -258,6 +266,7 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         let command: ICommand = CommandFactory.createChangePropertyTypeCommand(this.item, nt);
         this.commandService.emit(command);
         this._model = nt;
+        this._ptab = null;
     }
 
     public setBoolean(val: boolean, name: string): void {

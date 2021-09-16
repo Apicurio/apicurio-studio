@@ -37,7 +37,6 @@ import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {ModelUtils} from "../../../_util/model.util";
 import {IPropertyEditorHandler, PropertyData, PropertyEditorComponent} from "../../editors/property-editor.component";
-import {IPropertiesEditorHandler, PropertiesData, PropertiesEditorComponent} from "../../editors/properties-editor.component";
 import {EditorsService} from "../../../_services/editors.service";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
 import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
@@ -47,6 +46,7 @@ import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
 @Component({
     selector: "properties-section",
     templateUrl: "properties-section.component.html",
+    styleUrls: [ "properties-section.component.css" ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -55,6 +55,8 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
     @Input() definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
     @ViewChild("renamePropertyDialog", { static: true }) renamePropertyDialog: RenameEntityDialogComponent;
+
+    _pconfigOpen: boolean = false;
 
     /**
      * C'tor.
@@ -81,29 +83,12 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         editor.open(handler, this.definition);
     }
 
-    public openAddSchemaPropertiesEditor(minOrMax: string): void {
-        let editor: PropertiesEditorComponent = this.editors.getPropertiesEditor();
-        editor.minOrMax = minOrMax;
-        let handler: IPropertiesEditorHandler = {
-            onSave: (event) => {
-                this.addSchemaProperties(event.data);
-            },
-            onCancel: () => {}
-        };
-        editor.open(handler, this.definition);
+    public togglePropertiesConfig(): void {
+        this._pconfigOpen = !this._pconfigOpen;
     }
 
     public hasProperties(): boolean {
         return this.properties().length > 0;
-    }
-
-    public isObjectType(): boolean{
-        let sourceSchema: OasSchema = this.getPropertySourceSchema();
-
-        if(this.properties() && sourceSchema){
-            return sourceSchema.type === "object";
-        }
-        return false
     }
 
     public properties(): OasSchema[] {
@@ -155,30 +140,25 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         this.__selectionService.select(path.toString());
     }
 
-    public addSchemaProperties(data: PropertiesData): void {
-        console.log("addSchemaProperties : PropertiesData :", data);
-        let pschema: OasSchema = this.getPropertySourceSchema();
-        let command: ICommand = null;
-        let idc: boolean = false;
-
-        if (data.minProperties) {
-            command = CommandFactory.createChangePropertyCommand<number>(pschema, "minProperties", data.minProperties);
-            idc = true;
-        }
-        if (data.maxProperties) {
-            command = CommandFactory.createChangePropertyCommand<number>(pschema, "maxProperties", data.maxProperties);
-            this.commandService.emit(command);
-            idc = true;
-        }
-        if (idc) {
-            this.commandService.emit(command);
-        }
-    }
-
-
     public deleteAllSchemaProperties(): void {
         let command: ICommand = CommandFactory.createDeleteAllPropertiesCommand(this.getPropertySourceSchema());
         this.commandService.emit(command);
+    }
+
+    public minProperties(): string {
+        return this.definition.minProperties ? this.definition.minProperties.toString() : null;
+    }
+
+    public maxProperties(): string {
+        return this.definition.maxProperties ? this.definition.maxProperties.toString() : null;
+    }
+
+    public setMinProps(value: string): void {
+        this.setMinProperties(Number(value));
+    }
+
+    public setMaxProps(value: string): void {
+        this.setMaxProperties(Number(value));
     }
 
     public setMinProperties(minProp: number): void {
@@ -186,11 +166,24 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         this.commandService.emit(command);
     }
 
-    public setMaxProperties(): void {
-        let command: ICommand = CommandFactory.createDeleteAllPropertiesCommand(this.getPropertySourceSchema());
+    public setMaxProperties(maxProp: number): void {
+        let command: ICommand = CommandFactory.createChangePropertyCommand<number>(this.getPropertySourceSchema(), "maxProperties", maxProp);
         this.commandService.emit(command);
     }
 
+    public additionalProperties(): boolean {
+        if (typeof this.definition.additionalProperties === "boolean") {
+            return (this.definition.additionalProperties as boolean);
+        } else {
+            return true;
+        }
+    }
+
+    public setAdditionalProperties(value: boolean): void {
+        let newVal: any = value ? null : false;
+        let command: ICommand = CommandFactory.createChangePropertyCommand<number>(this.getPropertySourceSchema(), "additionalProperties", newVal);
+        this.commandService.emit(command);
+    }
 
     public inheritanceType(): string {
         if (this.definition.allOf) {

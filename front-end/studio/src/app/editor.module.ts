@@ -134,7 +134,6 @@ import {RenameEntityDialogComponent} from "./pages/apis/{apiId}/editor/_componen
 import {CookieParamsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/cookie-params-section.component";
 import {CookieParamRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/cookie-param-row.component";
 import {ResponseEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/response-editor.component";
-import {PropertiesEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/properties-editor.component";
 import {OperationTraitEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/operationtrait-editor.component";
 import {MessageTraitEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/messagetrait-editor.component";
 import {ResponseItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/response-item.component";
@@ -188,7 +187,7 @@ import {CloneChannelDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
         HeaderParamsSectionComponent, OperationsSectionComponent, ChannelOperationsSectionComponent, MediaTypeRowComponent,
         HeaderRowComponent, CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,
-        ResponseEditorComponent, PropertiesEditorComponent, MessageTraitEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
+        ResponseEditorComponent, MessageTraitEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
         AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
         SchemaRowComponent, AddSchemaDialogComponent, CloneChannelDialogComponent
     ],

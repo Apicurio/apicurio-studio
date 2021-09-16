@@ -1,4 +1,4 @@
-<span  class="inline-editor inline-text-editor pf-inline-text-editor">
+<span class="checkbox-input">
+      <label for="{{ id }}">{{ label }}:</label>
       <input type="checkbox"  #excludeCheckBox [checked]="getState()"  name="{{ name }}" id="{{ id }}" (click)="onSaveState(excludeCheckBox.checked)"  >
-      <label for="{{ id }}"> {{ name }}</label>
 </span>

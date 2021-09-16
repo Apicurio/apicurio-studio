@@ -60,11 +60,8 @@ export class IconButtonComponent extends AbstractBaseComponent {
         if (this.type === 'delete' || this.type === 'remove') {
             return "fa fa-trash";
         }
-        if (this.type === 'minProps') {
-            return "fas fa-minus-square";
-        }
-        if (this.type === 'maxProps') {
-            return "fas fa-plus-square";
+        if (this.type === 'config') {
+            return "pficon pficon-settings";
         }
         if (this.type === 'import') {
             return "pficon pficon-import";

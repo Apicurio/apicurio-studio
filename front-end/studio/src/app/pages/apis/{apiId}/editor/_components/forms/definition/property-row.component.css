@@ -2,10 +2,17 @@
   border: 1px solid transparent;
   position: relative;
 }
+
 .property.expanded {
   border: 1px solid #bbb;
-  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  box-shadow: 0 2px 6px rgba(3, 3, 3, .2);
   margin-bottom: 3px;
+}
+
+.property-config-tabcontent {
+  margin-top: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .property .header {
@@ -171,4 +178,9 @@
 
 .property .body .nullable-div {
   margin-top: 10px;
+}
+
+.property-label > label {
+  margin-bottom: 0px;
+  margin-top: 3px;
 }

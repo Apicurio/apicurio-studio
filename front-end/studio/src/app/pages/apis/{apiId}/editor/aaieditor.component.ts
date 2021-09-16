@@ -72,7 +72,6 @@ import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
 import * as YAML from 'js-yaml';
-import {PropertiesEditorComponent} from "./_components/editors/properties-editor.component";
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 
 
@@ -126,7 +125,6 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     @ViewChild("operationTraitEditor", { static: true }) operationTraitEditor: OperationTraitEditorComponent;
     @ViewChild("messageTraitEditor", { static: true }) messageTraitEditor: MessageTraitEditorComponent;
     @ViewChild("propertyEditor", { static: true }) propertyEditor: PropertyEditorComponent;
-    @ViewChild("propertiesEditor", { static: true }) propertiesEditor: PropertiesEditorComponent;
 
 
     formType: string;
@@ -205,7 +203,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
             this._undoableCommandCount = 0;
             this._redoableCommandCount = 0;
             this.formType = "main_20";
-            
+
             // Fire an event in the doc service indicating that there is a new document.
             this.documentService.setDocument(this.document());
             this.selectionService.selectRoot();
@@ -441,7 +439,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
      */
     private updateFormDisplay(path: string): void {
         let npath: NodePath = new NodePath(path);
-        
+
         let visitor: FormSelectionVisitor = new FormSelectionVisitor("20");
         npath.resolveWithVisitor(this.document(), visitor);
 
@@ -632,10 +630,6 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
 
     public getPropertyEditor(): PropertyEditorComponent {
         return this.propertyEditor;
-    }
-
-    public getPropertiesEditor(): PropertiesEditorComponent {
-        return this.propertiesEditor;
     }
 
     public getOperationTraitEditor(): OperationTraitEditorComponent {

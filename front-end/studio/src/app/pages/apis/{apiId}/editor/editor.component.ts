@@ -29,8 +29,8 @@ import {
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
-    AggregateCommand,
-    CombinedVisitorAdapter, CommandFactory,
+    CombinedVisitorAdapter,
+    CommandFactory,
     DocumentType,
     ICommand,
     IDefinition,
@@ -45,7 +45,7 @@ import {
     Oas30ResponseDefinition,
     Oas30SchemaDefinition,
     OasDocument,
-    OasPathItem, OasSchema,
+    OasPathItem,
     OtCommand,
     OtEngine,
     ReferenceUtil,
@@ -73,9 +73,8 @@ import {AbstractApiEditorComponent} from "./editor.base";
 import {ApiCatalogService} from "./_services/api-catalog.service";
 import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
-import { OperationTraitEditorComponent } from "./_components/editors/operationtrait-editor.component";
-import { MessageTraitEditorComponent } from "./_components/editors/messagetrait-editor.component";
-import {PropertiesEditorComponent} from "./_components/editors/properties-editor.component";
+import {OperationTraitEditorComponent} from "./_components/editors/operationtrait-editor.component";
+import {MessageTraitEditorComponent} from "./_components/editors/messagetrait-editor.component";
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 
 
@@ -126,7 +125,6 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     @ViewChild("responseEditor", { static: true }) responseEditor: ResponseEditorComponent;
     @ViewChild("parameterEditor", { static: true }) parameterEditor: ParameterEditorComponent;
     @ViewChild("propertyEditor", { static: true }) propertyEditor: PropertyEditorComponent;
-    @ViewChild("propertiesEditor" , { static: true }) propertiesEditor: PropertiesEditorComponent;
 
     formType: string;
 
@@ -637,10 +635,6 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
 
     public getPropertyEditor(): PropertyEditorComponent {
         return this.propertyEditor;
-    }
-
-    public getPropertiesEditor(): PropertiesEditorComponent {
-        return this.propertiesEditor;
     }
 
     public getOperationTraitEditor(): OperationTraitEditorComponent {

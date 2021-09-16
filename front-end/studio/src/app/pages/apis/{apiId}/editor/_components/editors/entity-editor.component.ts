@@ -23,7 +23,7 @@ import {
     AaiDocument,
     Node,
     OasOperation,
-    OasPathItem, IDefinition, OasSchema, AaiSchema, AaiServer
+    OasPathItem, IDefinition, OasSchema, AaiSchema, Oas20Schema, Oas30Schema, AaiServer
 } from "apicurio-data-models";
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
 import {KeypressUtils} from "../../_util/keypress.util";
@@ -48,7 +48,7 @@ export abstract class EntityEditor<T extends Node, E extends EntityEditorEvent<T
     public _mode: string = "create";
 
     public handler: IEntityEditorHandler<T, E>;
-    public context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition | AaiDocument | Aai20SchemaDefinition | AaiServer;
+    public context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition | AaiDocument | Aai20SchemaDefinition | Oas20Schema | Oas30Schema | AaiServer;
     public entity: T;
 
     /**
@@ -58,7 +58,7 @@ export abstract class EntityEditor<T extends Node, E extends EntityEditorEvent<T
      * @param entity
      */
     public open(handler: IEntityEditorHandler<T, E>,
-                context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition | AaiDocument | Aai20SchemaDefinition | AaiServer,
+                context: OasDocument | OasPathItem | OasOperation | Oas30SchemaDefinition | Oas20SchemaDefinition | AaiDocument | Aai20SchemaDefinition | Oas20Schema | Oas30Schema | AaiServer,
                 entity?: T): void {
         this.context = context;
         this.handler = handler;
@@ -196,7 +196,7 @@ export class EntityEditorComponent implements OnChanges {
      * Figures out what the context is based on what is passed to it.
      * @param context
      */
-    public expandContext(context: OasDocument | OasPathItem | OasOperation | Oas20SchemaDefinition | Oas30SchemaDefinition | AaiDocument | Aai20SchemaDefinition): void {
+    public expandContext(context: OasDocument | OasPathItem | OasOperation | Oas20SchemaDefinition | Oas30SchemaDefinition | AaiDocument | Aai20SchemaDefinition | Oas20Schema | Oas30Schema): void {
         if (context instanceof OasOperation) {
             this.contextIs = "operation";
             this._expandedContext.operation = context as OasOperation;

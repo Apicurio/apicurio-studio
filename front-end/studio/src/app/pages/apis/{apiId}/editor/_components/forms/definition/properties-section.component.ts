@@ -46,6 +46,7 @@ import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
 @Component({
     selector: "properties-section",
     templateUrl: "properties-section.component.html",
+    styleUrls: [ "properties-section.component.css" ],
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -54,6 +55,8 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
     @Input() definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
 
     @ViewChild("renamePropertyDialog", { static: true }) renamePropertyDialog: RenameEntityDialogComponent;
+
+    _pconfigOpen: boolean = false;
 
     /**
      * C'tor.
@@ -78,6 +81,10 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
             onCancel: () => {}
         };
         editor.open(handler, this.definition);
+    }
+
+    public togglePropertiesConfig(): void {
+        this._pconfigOpen = !this._pconfigOpen;
     }
 
     public hasProperties(): boolean {
@@ -138,6 +145,46 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         this.commandService.emit(command);
     }
 
+    public minProperties(): string {
+        return this.definition.minProperties ? this.definition.minProperties.toString() : null;
+    }
+
+    public maxProperties(): string {
+        return this.definition.maxProperties ? this.definition.maxProperties.toString() : null;
+    }
+
+    public setMinProps(value: string): void {
+        this.setMinProperties(Number(value));
+    }
+
+    public setMaxProps(value: string): void {
+        this.setMaxProperties(Number(value));
+    }
+
+    public setMinProperties(minProp: number): void {
+        let command: ICommand = CommandFactory.createChangePropertyCommand<number>(this.getPropertySourceSchema(), "minProperties", minProp);
+        this.commandService.emit(command);
+    }
+
+    public setMaxProperties(maxProp: number): void {
+        let command: ICommand = CommandFactory.createChangePropertyCommand<number>(this.getPropertySourceSchema(), "maxProperties", maxProp);
+        this.commandService.emit(command);
+    }
+
+    public additionalProperties(): boolean {
+        if (typeof this.definition.additionalProperties === "boolean") {
+            return (this.definition.additionalProperties as boolean);
+        } else {
+            return true;
+        }
+    }
+
+    public setAdditionalProperties(value: boolean): void {
+        let newVal: any = value ? null : false;
+        let command: ICommand = CommandFactory.createChangePropertyCommand<number>(this.getPropertySourceSchema(), "additionalProperties", newVal);
+        this.commandService.emit(command);
+    }
+
     public inheritanceType(): string {
         if (this.definition.allOf) {
             return "allOf";
@@ -175,5 +222,4 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         let command: ICommand = CommandFactory.createRenamePropertyCommand(parent, propertyName, event.newName);
         this.commandService.emit(command);
     }
-
 }

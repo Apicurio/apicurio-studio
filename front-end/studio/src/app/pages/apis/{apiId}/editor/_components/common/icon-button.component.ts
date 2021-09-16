@@ -26,7 +26,6 @@ import {
 } from "@angular/core";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
-import {CommandService} from "../../_services/command.service";
 import {SelectionService} from "../../_services/selection.service";
 
 
@@ -60,6 +59,9 @@ export class IconButtonComponent extends AbstractBaseComponent {
         }
         if (this.type === 'delete' || this.type === 'remove') {
             return "fa fa-trash";
+        }
+        if (this.type === 'config') {
+            return "pficon pficon-settings";
         }
         if (this.type === 'import') {
             return "pficon pficon-import";

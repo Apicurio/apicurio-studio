@@ -40,7 +40,7 @@
                     <div class="property-content" *ngIf="isEditingSummary()">
                         <div class="property-required">
                             <span class="dropdown-label">Property is</span>
-                            <drop-down [id]="'api-property-required'"
+                            <drop-down id="api-property-required"
                                        [value]="required()"
                                        [options]="requiredOptions()"
                                        (onValueChange)="changeRequired($event)"
@@ -51,35 +51,147 @@
                                                 (onChange)="changeType($event)"></schema-type-editor>
                         </div>
 
-                        <div class="property-minmax" *ngIf="isMinMaxEligible()">
-                            <div class="form-label">Minimum</div>
-                            <inline-markdown-editor [value]="minimumIsSet()" [noValueMessage]="'No minimum.'"
-                                                    [baseNode]="item" nodePath="minimum"
-                                                    (onChange)="setNumValue($event,'minimum')"></inline-markdown-editor>
-
-                            <div class="form-label">Maximum</div>
-                            <inline-markdown-editor [value]="maximumIsSet()" [noValueMessage]="'No maximum.'"
-                                                    [baseNode]="item" nodePath="maximum"
-                                                    (onChange)="setNumValue($event,'maximum')"></inline-markdown-editor>
+                        <div class="property-config-tabs" *ngIf="hasType()">
+                            <ul class="nav nav-tabs nav-tabs-pf">
+                                <li [class.active]="_ptab == null"><a (click)="_ptab = null">Advanced</a></li>
+                                <li [class.active]="_ptab == 'minmax'" *ngIf="isIntFloatEligible()"><a (click)="_ptab = 'minmax'">Minimum/Maximum</a></li>
+                                <li [class.active]="_ptab == 'length'" *ngIf="isStringEligible()"><a (click)="_ptab = 'length'">Min/Max Length</a></li>
+                                <li [class.active]="_ptab == 'exclusive'" *ngIf="isStringEligible()"><a (click)="_ptab = 'exclusive'">Min/Max Exclusive</a></li>
+                                <li [class.active]="_ptab == 'items'" *ngIf="isArrayEligible()"><a (click)="_ptab = 'items'">Min/Max/Unique Items</a></li>
+                            </ul>
                         </div>
+                        <div class="property-config-tabcontent" *ngIf="hasType()">
+                            <!-- Advanced tab content -->
+                            <div class="tabcontent-advanced" *ngIf="_ptab == null">
+                                <div class="property-readOnly">
+                                    <checkbox-input [defaultValue]="readOnlyIsSet()" [name]="'readOnly'" label="Read Only"
+                                                    id="read-only" [baseNode]="item" nodePath="readOnly"
+                                                    (onChange)="setBoolean($event,'readOnly')"></checkbox-input>
+                                </div>
+                                <div class="property-writeOnly">
+                                    <checkbox-input [defaultValue]="writeOnlyIsSet()" [name]="'writeOnly'" label="Write Only"
+                                                    id="write-only" [baseNode]="item" nodePath="writeOnly"
+                                                    (onChange)="setBoolean($event,'writeOnly')"></checkbox-input>
+                                </div>
 
-                        <div class="property-minmax" *ngIf="isStringEligible()">
-                            <div class="form-label">MinLength</div>
-                            <inline-markdown-editor [value]="minLengthIsSet()" [noValueMessage]="'No minLength.'"
-                                                    [baseNode]="item" nodePath="minLength"
-                                                    (onChange)="setNumValue($event,'minLength')"></inline-markdown-editor>
+                                <div class="property-pattern" *ngIf="isStringEligible()">
+                                    <div class="property-label">
+                                        <label for="pattern">Pattern</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="item.pattern"
+                                                               noValueMessage="No pattern."
+                                                               id="pattern"
+                                                               [baseNode]="item"
+                                                               nodePath="pattern"
+                                                               (onChange)="setPattern($event)"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <div class="form-label">MaxLength</div>
-                            <inline-markdown-editor [value]="maxLengthIsSet()" [noValueMessage]="'No maxLength.'"
-                                                    [baseNode]="item" nodePath="maxLength"
-                                                    (onChange)="setNumValue($event,'maxLength')"></inline-markdown-editor>
-                        </div>
+                            <!-- Min/max tab content -->
+                            <div class="tabcontent-minmax" *ngIf="_ptab == 'minmax'">
+                                <div class="property-minimum">
+                                    <div class="property-label">
+                                        <label for="minimum">Minimum</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="minimumIsSet()" noValueMessage="No minimum."
+                                                                [baseNode]="item" nodePath="minimum" id="minimum"
+                                                                (onChange)="setNumValue($event,'minimum')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
 
-                        <div class="property-pattern" *ngIf="isStringEligible()">
-                            <div class="form-label">Pattern</div>
-                            <inline-markdown-editor [value]="item.pattern" [noValueMessage]="'No pattern.'"
-                                                    [baseNode]="item" nodePath="pattern"
-                                                    (onChange)="setPattern($event)"></inline-markdown-editor>
+                                <div class="property-maximum">
+                                    <div class="property-label">
+                                        <label for="maximum">Maximum</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="maximumIsSet()" noValueMessage="No maximum."
+                                                                [baseNode]="item" nodePath="maximum" id="maximum"
+                                                                (onChange)="setNumValue($event,'maximum')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+
+                                <div class="property-multipleOf">
+                                    <div class="property-label">
+                                        <label for="multiple-of">MultipleOf</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="multipleOfIsSet()" noValueMessage="No multipleOf."
+                                                                [baseNode]="item" nodePath="multipleOf" id="multiple-of"
+                                                                (onChange)="setNumValue($event,'multipleOf')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Min/Max Length tab content -->
+                            <div class="tabcontent-length" *ngIf="_ptab == 'length'">
+                                <div class="property-min-length">
+                                    <div class="property-label">
+                                        <label for="min-length">Minimum Length</label>
+                                    </div>
+                                    <pf-inline-text-editor [value]="minLengthIsSet()" noValueMessage="No minLength."
+                                                            [baseNode]="item" nodePath="minLength" id="min-length"
+                                                            (onChange)="setNumValue($event,'minLength')"></pf-inline-text-editor>
+                                </div>
+
+                                <div class="property-max-length">
+                                    <div class="property-label">
+                                        <label for="max-length">Maximum Length</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="maxLengthIsSet()" noValueMessage="No maxLength."
+                                                                [baseNode]="item" nodePath="maxLength" id="max-length"
+                                                                (onChange)="setNumValue($event,'maxLength')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exclusive min/max tab content -->
+                            <div class="tabcontent-exclusive" *ngIf="_ptab == 'exclusive'">
+                                <div class="property-exclusive-minimum">
+                                    <checkbox-input [defaultValue]="exclusiveMinIsSet()" name="exclusive-minimum" label="Exclusive Min"
+                                                    id="exclusive-minimum" [baseNode]="item" nodePath="exclusiveMinimum"
+                                                    (onChange)="setBoolean($event,'exclusiveMinimum')"></checkbox-input>
+                                </div>
+                                <div class="property-exclusive-maximum">
+                                    <checkbox-input [defaultValue]="exclusiveMaxIsSet()" name="exclusive-maximum" label="Exclusive Max"
+                                                    id="exclusive-maximum" [baseNode]="item" nodePath="exclusiveMaximum"
+                                                    (onChange)="setBoolean($event,'exclusiveMaximum')"></checkbox-input>
+                                </div>
+                            </div>
+
+                            <!-- Min/max Items tab content -->
+                            <div class="tabcontent-items" *ngIf="_ptab == 'items'">
+                                <div class="property-min-items">
+                                    <div class="property-label">
+                                        <label for="min-items">Minimum Items</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="minItemsIsSet()" noValueMessage="No minItems."
+                                                                [baseNode]="item" nodePath="minItems" id="min-items"
+                                                                (onChange)="setNumValue($event,'minItems')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+
+                                <div class="property-max-items">
+                                    <div class="property-label">
+                                        <label for="max-items">Maximum Items</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="maxItemsIsSet()" noValueMessage="No maxItems."
+                                                                [baseNode]="item" nodePath="maxItems" id="max-items"
+                                                                (onChange)="setNumValue($event,'maxItems')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+
+                                <div class="property-unique-items">
+                                    <checkbox-input [defaultValue]="uniqueItemsIsSet()" name="unique-items" label="Unique Items"
+                                                    id="unique-items" [baseNode]="item" nodePath="uniqueItems"
+                                                    (onChange)="setBoolean($event,'uniqueItems')"></checkbox-input>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -126,6 +126,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     @ViewChild("messageTraitEditor", { static: true }) messageTraitEditor: MessageTraitEditorComponent;
     @ViewChild("propertyEditor", { static: true }) propertyEditor: PropertyEditorComponent;
 
+
     formType: string;
 
     /**
@@ -202,7 +203,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
             this._undoableCommandCount = 0;
             this._redoableCommandCount = 0;
             this.formType = "main_20";
-            
+
             // Fire an event in the doc service indicating that there is a new document.
             this.documentService.setDocument(this.document());
             this.selectionService.selectRoot();
@@ -438,7 +439,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
      */
     private updateFormDisplay(path: string): void {
         let npath: NodePath = new NodePath(path);
-        
+
         let visitor: FormSelectionVisitor = new FormSelectionVisitor("20");
         npath.resolveWithVisitor(this.document(), visitor);
 

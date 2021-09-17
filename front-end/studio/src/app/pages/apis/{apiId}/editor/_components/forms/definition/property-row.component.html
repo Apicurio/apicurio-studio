@@ -13,6 +13,10 @@
             <span class="property-required" *ngIf="isRequired()" title="This property is required.">[required]</span>
             <schema-type [type]="displayType()"></schema-type>
         </div>
+        <div class="example" (click)="toggleExample()" [class.selected]="isEditingExample()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingExample()"></span>
+            <markdown-summary [data]="example()" emptyText="No example."></markdown-summary>
+        </div>
         <div class="actions">
             <div class="dropdown dropdown-kebab-pf">
                 <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
@@ -81,6 +85,12 @@
                                                     [baseNode]="item" nodePath="pattern"
                                                     (onChange)="setPattern($event)"></inline-markdown-editor>
                         </div>
+                    </div>
+                    <div class="property-example" *ngIf="isEditingExample()">
+                        <div class="form-label">Example</div>
+                        <inline-markdown-editor [value]="item.example" [noValueMessage]="'No example.'"
+                                                [baseNode]="item" nodePath="example"
+                                                (onChange)="setExample($event)"></inline-markdown-editor>
                     </div>
                 </div>
             </form>

@@ -45,6 +45,17 @@
   color: #0088ce;
   cursor: pointer;
 }
+.property .header .example {
+  flex-basis: 39%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.property .header .example:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
 .property .header .summary {
   flex-basis: 41%;
 }
@@ -105,6 +116,13 @@
   font-weight: 600;
 }
 
+.property .body .property-example form {
+  width: 100%;
+}
+.property .body .property-example .form-label {
+  font-weight: 600;
+}
+
 .property .body span.strong {
   font-weight: 600;
 }
@@ -132,7 +150,8 @@
 }
 
 .property .header .description > .fa,
-.property .header .summary > .fa {
+.property .header .summary > .fa,
+.property .header .example > .fa{
   margin-right: 2px;
 }
 

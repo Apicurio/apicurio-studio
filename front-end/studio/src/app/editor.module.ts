@@ -146,6 +146,7 @@ import {InheritanceSchemasSectionComponent} from "./pages/apis/{apiId}/editor/_c
 import {SchemaRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/schema-row.component";
 import {AddSchemaDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-schema.component";
 import {ApiCatalogService} from "./pages/apis/{apiId}/editor/_services/api-catalog.service";
+import {CheckBoxInputComponent} from "./pages/apis/{apiId}/editor/_components/common/checkbox-input.component";
 import {AaiServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/aaiservers-section.component";
 import {AaiServerEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/aaiserver-editor.component";
 import {AaiServerRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/aaiserver-row.component";
@@ -175,7 +176,7 @@ import {CloneChannelDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         ChannelInfoSectionComponent, ResponseTabComponent, AddMediaTypeDialogComponent, AddHeaderDialogComponent, MainFormComponent, AsyncApiMainFormComponent,
         RenameEntityDialogComponent, AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent,
         AddAsyncApiExampleDialogComponent, EditAsyncApiExampleDialogComponent, EditorTitleBarComponent, EditExample20DialogComponent,
-        IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent,
+        IconButtonComponent, SignpostComponent, EditorProblemDrawerComponent, CheckBoxInputComponent,
         SecurityRequirementEditorComponent, InfoSectionComponent, AsyncApiInfoSectionComponent, ValidationProblemComponent,
         ValidationAggregateComponent, ContactSectionComponent, AsyncApiContactSectionComponent, LicenseSectionComponent,
         AsyncApiLicenseSectionComponent, TagsSectionComponent, AaiServersSectionComponent, ServersSectionComponent, AaiSecurityRequirementRowComponent, SecurityRequirementsSectionComponent,

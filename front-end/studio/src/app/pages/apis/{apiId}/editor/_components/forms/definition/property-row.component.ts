@@ -29,7 +29,7 @@ import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
 import {
-    CommandFactory,
+    CommandFactory, DocumentType,
     ICommand,
     Oas20Schema,
     Oas30Schema,
@@ -51,6 +51,8 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
     @Output() onRename: EventEmitter<void> = new EventEmitter<void>();
+
+    _ptab: string = null;
 
     /**
      * C'tor.
@@ -74,6 +76,14 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
 
     public hasDescription(): boolean {
         if (this.item.description) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public hasType(): boolean {
+        if (this.item.type) {
             return true;
         } else {
             return false;
@@ -123,12 +133,63 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         return this.item.maximum ? this.item.maximum.toString() : null;
     }
 
+    public multipleOfIsSet(): string | null {
+        return this.item.multipleOf ? this.item.multipleOf.toString() : null;
+    }
+
+    public minItemsIsSet(): string | null {
+        return  this.item.minItems ? this.item.minItems.toString() : null;
+    }
+
+    public maxItemsIsSet(): string | null {
+        return this.item.maxItems ? this.item.maxItems.toString() : null;
+    }
+
     public minLengthIsSet(): string | null {
         return  this.item.minLength ? this.item.minLength.toString() : null;
     }
 
     public maxLengthIsSet(): string | null {
         return this.item.maxLength ? this.item.maxLength.toString() : null;
+    }
+
+    public exclusiveMinIsSet(): boolean | null {
+        return  this.item.exclusiveMinimum ? this.item.exclusiveMinimum : false;
+    }
+
+    public uniqueItemsIsSet(): boolean | null {
+        return  this.item.uniqueItems ? this.item.uniqueItems : false;
+    }
+
+    public readOnlyIsSet(): boolean | null {
+        return  this.item.readOnly ? this.item.readOnly : false;
+    }
+
+    public writeOnlyIsSet(): boolean | null {
+        if (this.item.ownerDocument().getDocumentType() == DocumentType.openapi3) {
+            return (<Oas30PropertySchema>this.item).writeOnly ? true : false;
+        }
+        return false;
+    }
+
+    public minPropertiesIsSet(): string | null {
+        return  this.item.minProperties ? this.item.minProperties.toString() : null;
+    }
+
+    public maxPropertiesIsSet(): string | null {
+        return  this.item.maxProperties ? this.item.maxProperties.toString() : null;
+    }
+
+    // public writeOnlyIsSet(): boolean | null {
+    //     return  this.item.writeOnly ? this.item.writeOnly : false; TODO nullable not exist in dataModels
+    // }
+
+    // public nullableIsSet(): boolean | null {
+    //     return  this.item.nullable ? this.item.nullable : false; TODO nullable not exist in dataModels
+    // }
+
+    public exclusiveMaxIsSet(): boolean | null {
+        return  this.item.exclusiveMaximum ? this.item.exclusiveMaximum : false;
     }
 
     public isEditingDescription(): boolean {
@@ -143,12 +204,16 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         return this.isEditingTab("example");
     }
 
-    public isMinMaxEligible(): boolean  {
+    public isIntFloatEligible(): boolean  {
         return this.item.type === "integer" || this.item.type === "float"
     }
 
     public isStringEligible(): boolean  {
         return this.item.type === "string"
+    }
+
+    public isArrayEligible(): boolean  {
+        return this.item.type === "array"
     }
 
     public toggleDescription(): void {
@@ -162,15 +227,6 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
     public toggleExample(): void {
         this.toggleTab("example");
     }
-
-    public toggleMinimum(): void {
-        this.toggleTab("minimum");
-    }
-
-    public toggleMaximum(): void {
-        this.toggleTab("maximum");
-    }
-
 
     public delete(): void {
         this.onDelete.emit();
@@ -199,6 +255,11 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         this.commandService.emit(command);
     }
 
+    public setArrayValue(val: string, name: string): void {
+        let command: ICommand = CommandFactory.createChangePropertyCommand<Array<any>>(this.item, name, Array(val));
+        this.commandService.emit(command);
+    }
+
     public setPattern(pattern: string): void {
             let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "pattern", pattern);
             this.commandService.emit(command);
@@ -212,15 +273,6 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         this.commandService.emit(command);
     }
 
-    public changeMinMax(newValue: string): void {
-        // this.model().required = newValue === "required";
-        let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.item);
-        // nt.required = this.model().required;
-        let command: ICommand = CommandFactory.createChangePropertyTypeCommand(this.item, nt);
-        this.commandService.emit(command);
-    }
-
-
     public changeType(newType: SimplifiedType): void {
         let nt: SimplifiedPropertyType = new SimplifiedPropertyType();
         nt.required = this.model().required;
@@ -231,6 +283,12 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         let command: ICommand = CommandFactory.createChangePropertyTypeCommand(this.item, nt);
         this.commandService.emit(command);
         this._model = nt;
+        this._ptab = null;
+    }
+
+    public setBoolean(val: boolean, name: string): void {
+        let command: ICommand = CommandFactory.createChangePropertyCommand<boolean>(this.item, name, val);
+        this.commandService.emit(command);
     }
 
 }

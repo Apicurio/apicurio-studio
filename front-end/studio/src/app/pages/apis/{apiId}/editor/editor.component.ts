@@ -29,8 +29,8 @@ import {
 } from "@angular/core";
 import {ApiDefinition} from "../../../../models/api.model";
 import {
-    AggregateCommand,
-    CombinedVisitorAdapter, CommandFactory,
+    CombinedVisitorAdapter,
+    CommandFactory,
     DocumentType,
     ICommand,
     IDefinition,
@@ -45,7 +45,7 @@ import {
     Oas30ResponseDefinition,
     Oas30SchemaDefinition,
     OasDocument,
-    OasPathItem, OasSchema,
+    OasPathItem,
     OtCommand,
     OtEngine,
     ReferenceUtil,
@@ -73,8 +73,8 @@ import {AbstractApiEditorComponent} from "./editor.base";
 import {ApiCatalogService} from "./_services/api-catalog.service";
 import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
-import { OperationTraitEditorComponent } from "./_components/editors/operationtrait-editor.component";
-import { MessageTraitEditorComponent } from "./_components/editors/messagetrait-editor.component";
+import {OperationTraitEditorComponent} from "./_components/editors/operationtrait-editor.component";
+import {MessageTraitEditorComponent} from "./_components/editors/messagetrait-editor.component";
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 
 
@@ -710,7 +710,7 @@ export class FormSelectionVisitor extends CombinedVisitorAdapter {
         this._selectionType = "path";
     }
 
-    public visitSchemaDefinition(node: Oas30SchemaDefinition | Oas30SchemaDefinition): void {
+    public visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
         this._selectedNode = node;
         this._selectionType = "definition";
     }

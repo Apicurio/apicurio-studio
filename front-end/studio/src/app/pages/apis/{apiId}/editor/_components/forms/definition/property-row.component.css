@@ -2,10 +2,17 @@
   border: 1px solid transparent;
   position: relative;
 }
+
 .property.expanded {
   border: 1px solid #bbb;
-  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  box-shadow: 0 2px 6px rgba(3, 3, 3, .2);
   margin-bottom: 3px;
+}
+
+.property-config-tabcontent {
+  margin-top: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .property .header {
@@ -136,7 +143,24 @@
 
 .property .body .property-minmax {
   margin-bottom: 10px;
-  margin-top: 10px;
+  margin-top: 20px;
+}
+
+.property .body .toggle-buttons{
+  margin: 20px auto;
+}
+
+.property .body .toggle-buttons button {
+  margin-left: 10px;
+}
+
+.property .body .divider {
+  height: 1px;
+  width:100%;
+  display:block;
+  margin: 15px 0;
+  overflow: hidden;
+  background-color: #e5e5e5;
 }
 
 .property .body .property-pattern {
@@ -165,4 +189,17 @@
 
 .property .minmax .parameter-required {
   margin-right: 3px;
+}
+
+.property .body .exclusive-div {
+  margin-top: 10px;
+}
+
+.property .body .nullable-div {
+  margin-top: 10px;
+}
+
+.property-label > label {
+  margin-bottom: 0px;
+  margin-top: 3px;
 }

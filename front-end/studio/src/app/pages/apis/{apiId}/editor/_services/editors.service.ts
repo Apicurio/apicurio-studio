@@ -24,8 +24,8 @@ import {DataTypeEditorComponent} from "../_components/editors/data-type-editor.c
 import {ParameterEditorComponent} from "../_components/editors/parameter-editor.component";
 import {PropertyEditorComponent} from "../_components/editors/property-editor.component";
 import {ResponseEditorComponent} from "../_components/editors/response-editor.component";
-import { OperationTraitEditorComponent } from "../_components/editors/operationtrait-editor.component";
-import { MessageTraitEditorComponent } from "../_components/editors/messagetrait-editor.component";
+import {OperationTraitEditorComponent} from "../_components/editors/operationtrait-editor.component";
+import {MessageTraitEditorComponent} from "../_components/editors/messagetrait-editor.component";
 import {AaiServerEditorComponent} from "../_components/editors/aaiserver-editor.component";
 
 export interface IEditorsProvider {

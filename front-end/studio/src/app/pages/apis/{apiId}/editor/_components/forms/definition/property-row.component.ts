@@ -94,6 +94,10 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         return this.item.description
     }
 
+    public example(): string {
+        return this.item.example
+    }
+
     public minimum(): number {
         return this.item.minimum
     }
@@ -196,6 +200,10 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         return this.isEditingTab("summary");
     }
 
+    public isEditingExample(): boolean {
+        return this.isEditingTab("example");
+    }
+
     public isIntFloatEligible(): boolean  {
         return this.item.type === "integer" || this.item.type === "float"
     }
@@ -216,6 +224,10 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         this.toggleTab("summary");
     }
 
+    public toggleExample(): void {
+        this.toggleTab("example");
+    }
+
     public delete(): void {
         this.onDelete.emit();
     }
@@ -230,6 +242,11 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
 
     public setDescription(description: string): void {
         let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "description", description);
+        this.commandService.emit(command);
+    }
+
+    public setExample(example: string): void {
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "example", example);
         this.commandService.emit(command);
     }
 

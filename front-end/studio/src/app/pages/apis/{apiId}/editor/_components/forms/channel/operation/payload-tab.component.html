@@ -20,6 +20,7 @@
                     <div class="mt-content" *ngIf="isEditingType()">
                         <div class="mt-type">
                             <schema-type-editor [document]="document()" [value]="model()" [isParameter]="false"
+                                                [dataTypesOnly]="true"
                                                 (onChange)="changeRefType($event)"></schema-type-editor>
                         </div>
                     </div>

@@ -129,7 +129,7 @@ export class ConfigService {
 
     public isAsyncAPIEnabled(): boolean {
         if (!this.config.features) {
-            return false;
+            return true;
         }
         return this.config.features.asyncapi;
     }

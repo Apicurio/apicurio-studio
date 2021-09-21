@@ -24,26 +24,27 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {
-    CombinedVisitorAdapter, CommandFactory,
+    CombinedVisitorAdapter,
+    CommandFactory,
+    DocumentType,
     ICommand,
     Library,
+    Oas30Example,
+    Oas30Parameter,
+    OasDocument,
     OasOperation,
     OasParameter,
     OasPathItem,
+    Schema,
     SimplifiedParameterType,
-    SimplifiedType,
-    OasDocument,
-    Oas30Parameter,
-    Oas30Example,
-    Schema
+    SimplifiedType
 } from "apicurio-data-models";
 import {DropDownOption, DropDownOptionValue as Value} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
-import {AbstractBaseComponent} from "../../common/base-component";
-import { EditExampleEvent } from "../../dialogs/edit-example.component";
+import {EditExampleEvent} from "../../dialogs/edit-example.component";
 
 
 @Component({
@@ -112,7 +113,7 @@ export class QueryParamRowComponent extends AbstractRowComponent<OasParameter, S
     public is3xDocument(): boolean {
         return (<OasDocument> this.item.ownerDocument()).is3xDocument();
     }
-    
+
     public hasExamples(): boolean {
         if (this.item instanceof Oas30Parameter) {
             return this.paramExamples().length > 0;
@@ -121,7 +122,7 @@ export class QueryParamRowComponent extends AbstractRowComponent<OasParameter, S
     }
 
     public paramExamples(): Oas30Example[] {
-        return (<Oas30Parameter> this.item).getExamples();
+        return <any>(<Oas30Parameter> this.item).getExamples();
     }
 
     public exampleValue(example: Oas30Example): string {
@@ -251,16 +252,18 @@ export class QueryParamRowComponent extends AbstractRowComponent<OasParameter, S
 
     public editExample(event: EditExampleEvent): void {
         console.info("[QueryParamRowComponent] Changing the value of a Parameter example.");
-        let command: ICommand = CommandFactory.createSetParameterExampleCommand(this.item,
-            event.value, event.example.getName());
-        this.commandService.emit(command);
+        if (this.item.ownerDocument().getDocumentType() === DocumentType.openapi3) {
+            let command: ICommand = CommandFactory.createSetParameterExampleCommand(<Oas30Parameter>this.item,
+                event.value, event.example.getName());
+            this.commandService.emit(command);
+        }
     }
 
     public schemaForExample(): Schema {
         var param = <Oas30Parameter> this.item;
         return param.schema;
     }
-    
+
     public override(): void {
         let command: ICommand = CommandFactory.createNewParamCommand(this.item.parent() as any,
             this.item.name, "query", null, null, true);

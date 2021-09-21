@@ -26,6 +26,7 @@ import {
 import {
     CombinedVisitorAdapter,
     CommandFactory,
+    DocumentType,
     ICommand,
     Library,
     Oas30Example,
@@ -34,16 +35,15 @@ import {
     OasOperation,
     OasParameter,
     OasPathItem,
+    Schema,
     SimplifiedParameterType,
-    SimplifiedType,
-    Schema
+    SimplifiedType
 } from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {EditExampleEvent} from "../../dialogs/edit-example.component";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
-import {AbstractBaseComponent} from "../../common/base-component";
 
 
 @Component({
@@ -106,7 +106,7 @@ export class PathParamRowComponent extends AbstractRowComponent<OasParameter, Si
     public is3xDocument(): boolean {
         return (<OasDocument> this.item.ownerDocument()).is3xDocument();
     }
-    
+
     public hasExamples(): boolean {
         if (this.item instanceof Oas30Parameter) {
             return this.paramExamples().length > 0;
@@ -115,7 +115,7 @@ export class PathParamRowComponent extends AbstractRowComponent<OasParameter, Si
     }
 
     public paramExamples(): Oas30Example[] {
-        return (<Oas30Parameter> this.item).getExamples();
+        return <any>(<Oas30Parameter> this.item).getExamples();
     }
 
     public exampleValue(example: Oas30Example): string {
@@ -235,9 +235,11 @@ export class PathParamRowComponent extends AbstractRowComponent<OasParameter, Si
 
     public editExample(event: EditExampleEvent): void {
         console.info("[PathParamRowComponent] Changing the value of a Parameter example.");
-        let command: ICommand = CommandFactory.createSetParameterExampleCommand(this.item,
-            event.value, event.example.getName());
-        this.commandService.emit(command);
+        if (this.item.ownerDocument().getDocumentType() === DocumentType.openapi3) {
+            let command: ICommand = CommandFactory.createSetParameterExampleCommand(<Oas30Parameter>this.item,
+                event.value, event.example.getName());
+            this.commandService.emit(command);
+        }
     }
 
     public schemaForExample(): Schema {

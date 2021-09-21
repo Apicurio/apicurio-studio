@@ -110,7 +110,7 @@ export class HeaderRowComponent extends AbstractRowComponent<Oas30Header, Simpli
     }
 
     public headerExamples(): Oas30Example[] {
-        return this.item.getExamples();
+        return <any>this.item.getExamples();
     }
 
     public headerHasExamples(): boolean {

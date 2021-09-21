@@ -25,11 +25,12 @@ import {
 } from "@angular/core";
 import {
     CommandFactory,
-    ICommand,
+    ICommand, IPropertyParent,
     Library, Oas20Schema,
     Oas20SchemaDefinition, Oas30Schema,
     Oas30SchemaDefinition,
-    OasSchema
+    OasSchema,
+    Schema
 } from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";
 import {AbstractBaseComponent} from "../../common/base-component";
@@ -91,8 +92,8 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         return this.properties().length > 0;
     }
 
-    public properties(): OasSchema[] {
-        let rval: OasSchema[] = [];
+    public properties(): Schema[] {
+        let rval: Schema[] = [];
 
         let sourceSchema: OasSchema = this.getPropertySourceSchema();
         sourceSchema.getPropertyNames().sort((left, right) => {
@@ -123,7 +124,7 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         return ModelUtils.nodeToPath(this.getPropertySourceSchema()) + "/properties";
     }
 
-    public deleteProperty(property: OasSchema): void {
+    public deleteProperty(property: Schema): void {
         let command: ICommand = CommandFactory.createDeletePropertyCommand(property as any);
         this.commandService.emit(command);
     }
@@ -203,8 +204,8 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
      * Opens the rename property dialog.
      * @param property
      */
-    public openRenamePropertyDialog(property: OasSchema): void {
-        let parent: OasSchema = <any>property.parent();
+    public openRenamePropertyDialog(property: Schema): void {
+        let parent: IPropertyParent = <any>property.parent();
         let propertyNames: string[] = parent.getProperties().map( prop => { return (<Oas20PropertySchema>prop).getPropertyName(); });
         this.renamePropertyDialog.open(property, (<Oas20PropertySchema>property).getPropertyName(), newName => {
             return propertyNames.indexOf(newName) !== -1;

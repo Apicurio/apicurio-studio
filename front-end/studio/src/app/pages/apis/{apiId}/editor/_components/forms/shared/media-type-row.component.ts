@@ -112,7 +112,7 @@ export class MediaTypeRowComponent extends AbstractRowComponent<Oas30MediaType, 
     }
 
     public mediaTypeExamples(): Oas30Example[] {
-        return this.item.getExamples();
+        return <any>this.item.getExamples();
     }
 
     public mediaTypeHasExamples(): boolean {

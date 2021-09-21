@@ -104,7 +104,7 @@ public class StudioUiConfiguration extends Configuration {
      * Returns true if AsyncAPI support is enabled in the UI
      */
     public boolean isAsyncAPIEnabled() {
-        return "true".equals(getConfigurationProperty(FEATURE_ASYNCAPI_ENV, FEATURE_ASYNCAPI_SYSPROP, "false"));
+        return "true".equals(getConfigurationProperty(FEATURE_ASYNCAPI_ENV, FEATURE_ASYNCAPI_SYSPROP, "true"));
     }
 
     /**

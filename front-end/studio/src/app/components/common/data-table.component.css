@@ -8,7 +8,7 @@ table.dataTable thead tr {
 table.dataTable thead tr th.header-select-all {
     width: 1px;
 }
-table.dataTable thead tr th.header-select-all input {
+table.dataTable thead tr th.header-select-all .hidden-checkbox {
     visibility: hidden;
 }
 table.dataTable tbody {

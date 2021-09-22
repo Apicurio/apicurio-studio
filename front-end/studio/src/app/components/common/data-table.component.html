@@ -22,7 +22,8 @@
 <table class="table table-striped table-bordered table-hover dataTable" id="table1">
     <thead>
         <tr>
-            <th class="header-select-all"><label class="sr-only" for="selectAll">Select all rows</label><input type="checkbox" id="selectAll" name="selectAll" (change)="selectAll()"></th>
+            <th class="header-select-all"><label class="sr-only" for="selectAll">Select all rows</label>
+              <input type="checkbox" id="selectAll" name="selectAll" [(ngModel)]="this.isCheckedAll" [ngClass]="{ 'hidden-checkbox': !allowSelectAll }" (change)="selectAll()"></th>
             <th *ngFor="let col of columns" [class.sorting_asc]="isColSortAsc(col)" [class.sorting_desc]="isColSortDesc(col)" width="{{ col.width ? col.width : '' }}" nowrap="nowrap" (click)="sortBy(col)">{{ col.displayName }}</th>
         </tr>
     </thead>

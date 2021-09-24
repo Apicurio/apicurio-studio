@@ -46,6 +46,11 @@ export class DataTableComponent implements OnChanges {
     @Input() selectedValues: any[];
     @Output() selectedValuesChange: EventEmitter<any[]> = new EventEmitter<any[]>();
     @Input() pageSize: number = 15;
+    /**
+     * Allow show select all checkbox.
+     * Default value if false (hidden)
+     */
+    @Input() allowSelectAll: boolean = false;
 
     filteredRows: DataTableRow[] = [];
     displayRows: DataTableRow[] = [];
@@ -57,6 +62,7 @@ export class DataTableComponent implements OnChanges {
     numPages: number = 0;
     start: number;
     end: number;
+    isCheckedAll: boolean = false;
 
     constructor() {}
 
@@ -78,6 +84,11 @@ export class DataTableComponent implements OnChanges {
         } else {
             this.selectedRows.splice(this.selectedRows.indexOf(row), 1);
         }
+        if (this.selectedRows.length < this.filteredRows.length) {
+          this.isCheckedAll = false;
+        } else {
+          this.isCheckedAll = true;
+        }
         this.fireChanges();
     }
 
@@ -88,7 +99,12 @@ export class DataTableComponent implements OnChanges {
     }
 
     selectAll(): void {
-        // TODO implement this!
+      if (!this.isCheckedAll) {
+        this.selectedRows = [];
+      } else {
+        this.selectedRows = [...this.filteredRows];
+      }
+      this.fireChanges();
     }
 
     isSelected(row: DataTableRow): boolean {
@@ -161,7 +177,8 @@ export class DataTableComponent implements OnChanges {
         });
         // Then paginate.
         this.start = (this.page - 1) * this.pageSize;
-        this.end = this.start + this.pageSize;
+		// Use Number fix issues this.pageSize is String.
+        this.end = this.start + Number(this.pageSize);
         let maxEnd: number = this.filteredRows.length;
         if (this.end > maxEnd) {
             this.end = maxEnd;

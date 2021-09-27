@@ -48,6 +48,8 @@ import io.apicurio.hub.api.connectors.SourceConnectorFactory;
 import io.apicurio.hub.api.github.GitHubResourceResolver;
 import io.apicurio.hub.api.gitlab.GitLabResourceResolver;
 import io.apicurio.hub.api.rest.IDesignsResource;
+import io.apicurio.hub.core.auth.IAuthorizationService;
+import io.apicurio.hub.core.auth.impl.AuthorizationService;
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
@@ -92,6 +94,7 @@ public class DesignsResourceTest {
     private BitbucketResourceResolver bitbucketResolver;
     private MockMetrics metrics;
     private MockEventsService eventsService;
+    private IAuthorizationService authorizationService;
 
     @Before
     public void setUp() {
@@ -107,6 +110,7 @@ public class DesignsResourceTest {
         gitLabResolver = new GitLabResourceResolver();
         bitbucketResolver = new BitbucketResourceResolver();
         eventsService = new MockEventsService();
+        authorizationService = new AuthorizationService();
 
         sourceConnectorFactory = new SourceConnectorFactory();
         github = new MockGitHubService();
@@ -122,6 +126,9 @@ public class DesignsResourceTest {
         TestUtil.setPrivateField(bitbucketResolver, "config", config);
         bitbucketResolver.postConstruct();
 
+        TestUtil.setPrivateField(authorizationService, "config", config);
+        TestUtil.setPrivateField(authorizationService, "storage", storage);
+        
         TestUtil.setPrivateField(resource, "storage", storage);
         TestUtil.setPrivateField(resource, "sourceConnectorFactory", sourceConnectorFactory);
         TestUtil.setPrivateField(resource, "security", security);
@@ -132,6 +139,7 @@ public class DesignsResourceTest {
         TestUtil.setPrivateField(resource, "gitLabResolver", gitLabResolver);
         TestUtil.setPrivateField(resource, "bitbucketResolver", bitbucketResolver);
         TestUtil.setPrivateField(resource, "eventsService", eventsService);
+        TestUtil.setPrivateField(resource, "authorizationService", authorizationService);
     }
 
     @After

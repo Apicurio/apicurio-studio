@@ -20,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import java.util.List;
+
 /**
  * @author eric.wittmann@gmail.com
  */
@@ -32,6 +34,7 @@ public class User {
     private String name;
     private String email;
     private String avatar;
+    private List<StudioRole> roles;
     
     /**
      * Constructor.
@@ -108,5 +111,27 @@ public class User {
     public void setLogin(String login) {
         this.login = login;
     }
-    
+
+    /**
+     * @return the roles
+     */
+    public List<StudioRole> getRoles() {
+        return roles;
+    }
+
+    /**
+     * @param roles the roles to set
+     */
+    public void setRoles(List<StudioRole> roles) {
+        this.roles = roles;
+    }
+
+    /**
+     * Checks the user roles for the desired role
+     * @param role the desired role
+     * @return
+     */
+    public boolean hasRole(StudioRole role) {
+        return this.roles != null && this.roles.contains(role);
+    }
 }

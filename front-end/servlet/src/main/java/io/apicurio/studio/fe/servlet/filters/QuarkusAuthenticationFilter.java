@@ -19,13 +19,18 @@ package io.apicurio.studio.fe.servlet.filters;
 import io.apicurio.studio.fe.servlet.config.RequestAttributeKeys;
 import io.apicurio.studio.shared.beans.StudioConfigAuth;
 import io.apicurio.studio.shared.beans.StudioConfigAuthType;
+import io.apicurio.studio.shared.beans.StudioRole;
 import io.apicurio.studio.shared.beans.User;
 import io.smallrye.jwt.auth.principal.JWTCallerPrincipal;
 
+import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * This is a simple filter that extracts authentication information from the
@@ -68,6 +73,14 @@ public class QuarkusAuthenticationFilter implements Filter {
             user.setEmail(principal.getClaim("email"));
             user.setLogin(principal.getClaim("preferred_username"));
             user.setName(principal.getClaim("name"));
+            user.setRoles(
+                    principal.<JsonObject>getClaim("realm_access")
+                            .getJsonArray("roles").stream()
+                            .map(JsonString.class::cast)
+                            .map(JsonString::getString)
+                            .map(StudioRole::forName)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toUnmodifiableList()));
             httpSession.setAttribute(RequestAttributeKeys.USER_KEY, user);
 
             chain.doFilter(request, response);

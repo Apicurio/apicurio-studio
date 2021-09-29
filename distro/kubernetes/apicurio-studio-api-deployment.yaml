@@ -92,4 +92,4 @@ spec:
           secretName: apicurio-secret
       - name: apicurio-configmap
         configMap:
-          name: apicurio-cofngimap
+          name: apicurio-configmap

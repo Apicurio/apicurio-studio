@@ -443,11 +443,13 @@ export class ApisService extends AbstractHubService {
     /**
      * @see ApisService.publishApi
      */
-    public publishApi(apiId: string, info: PublishApi): Promise<void> {
+    public publishApi(apiId: string, info: PublishApi, dereference: string): Promise<void> {
         console.info("[ApisService] Importing an API design via the hub API");
 
         let publishApiUrl: string = this.endpoint("/designs/:designId/publications", {
             designId: apiId
+        }, {
+            dereference: dereference
         });
         let options: any = this.options({ "Content-Type": "application/json" });
 

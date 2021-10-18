@@ -20,6 +20,7 @@ import {User} from "../models/user.model";
 import {ConfigService} from "./config.service";
 import {HttpClient} from "@angular/common/http";
 import {Topic} from "apicurio-ts-core";
+import {ApicurioRole} from "../models/apicurio-role.enum";
 
 /**
  * A version of the authentication service that uses keycloak.js to provide
@@ -50,6 +51,8 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
         user.name = this.keycloak.tokenParsed.name;
         user.login = this.keycloak.tokenParsed.preferred_username;
         user.email = this.keycloak.tokenParsed.email;
+        user.roles = this.keycloak.tokenParsed.realm_access.roles
+            .filter(o => Object.values(ApicurioRole).includes(o));
 
         this._authenticated.send(true);
         this._user = user;

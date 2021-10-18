@@ -21,6 +21,7 @@ import {ConfigService} from "./config.service";
 import {HttpClient, HttpResponse} from "@angular/common/http";
 import {Topic} from "apicurio-ts-core";
 import {HttpUtils} from "../util/common";
+import {ApicurioRole} from "../models/apicurio-role.enum";
 
 
 export class OIDCDirectGrantAccessToken {
@@ -144,6 +145,8 @@ export class OIDCDirectGrantAuthenticationService extends IAuthenticationService
         user.login = tokenData["preferred_username"];
         user.email = tokenData["email"];
         user.name = tokenData["name"];
+        user.roles = tokenData["realm_access"]["roles"]
+            .filter(o => Object.values(ApicurioRole).includes(o));
         return user;
     }
 

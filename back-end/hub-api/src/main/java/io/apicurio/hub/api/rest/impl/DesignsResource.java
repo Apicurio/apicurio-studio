@@ -88,6 +88,7 @@ import io.apicurio.hub.api.microcks.IMicrocksConnector;
 import io.apicurio.hub.api.microcks.MicrocksConnectorException;
 import io.apicurio.hub.api.rest.IDesignsResource;
 import io.apicurio.hub.api.security.ISecurityContext;
+import io.apicurio.hub.core.auth.impl.AuthorizationService;
 import io.apicurio.hub.core.beans.ApiContentType;
 import io.apicurio.hub.core.beans.ApiDesign;
 import io.apicurio.hub.core.beans.ApiDesignChange;
@@ -121,6 +122,7 @@ import io.apicurio.hub.core.integrations.EventsService;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 import io.apicurio.hub.core.util.FormatUtils;
+import io.apicurio.studio.shared.beans.User;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -168,6 +170,8 @@ public class DesignsResource implements IDesignsResource {
 
     @Inject
     private EventsService eventsService;
+    @Inject
+    private AuthorizationService authorizationService;
 
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#listDesigns()
@@ -650,18 +654,19 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/invitations", "POST");
 
         try {
-            String user = this.security.getCurrentUser().getLogin();
-            String username = this.security.getCurrentUser().getName();
+            final User currentUser = this.security.getCurrentUser();
+            String userLogin = currentUser.getLogin();
+            String username = currentUser.getName();
             String inviteId = UUID.randomUUID().toString();
             
-            ApiDesign design = this.storage.getApiDesign(user, designId);
-            if (!this.storage.hasOwnerPermission(user, designId)) {
+            ApiDesign design = this.storage.getApiDesign(userLogin, designId);
+            if (!this.authorizationService.hasOwnerPermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
             
-            this.storage.createCollaborationInvite(inviteId, designId, user, username, "collaborator", design.getName());
+            this.storage.createCollaborationInvite(inviteId, designId, userLogin, username, "collaborator", design.getName());
             Invitation invite = new Invitation();
-            invite.setCreatedBy(user);
+            invite.setCreatedBy(userLogin);
             invite.setCreatedOn(new Date());
             invite.setDesignId(designId);
             invite.setInviteId(inviteId);
@@ -712,16 +717,17 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/invitations", "PUT");
 
         try {
-            String user = this.security.getCurrentUser().getLogin();
+            final User currentUser = this.security.getCurrentUser();
+            String userLogin = currentUser.getLogin();
             Invitation invite = this.storage.getCollaborationInvite(designId, inviteId);
-            if (this.storage.hasWritePermission(user, designId)) {
+            if (this.authorizationService.hasPersonalWritePermission(currentUser, designId)) {
                 throw new NotFoundException();
             }
-            boolean accepted = this.storage.updateCollaborationInviteStatus(inviteId, "pending", "accepted", user);
+            boolean accepted = this.storage.updateCollaborationInviteStatus(inviteId, "pending", "accepted", userLogin);
             if (!accepted) {
                 throw new NotFoundException();
             }
-            this.storage.createPermission(designId, user, invite.getRole());
+            this.storage.createPermission(designId, userLogin, invite.getRole());
         } catch (StorageException e) {
             throw new ServerError(e);
         }
@@ -757,8 +763,8 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/collaborators", "GET");
 
         try {
-            String user = this.security.getCurrentUser().getLogin();
-            if (!this.storage.hasWritePermission(user, designId)) {
+            final User currentUser = this.security.getCurrentUser();
+            if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
                 throw new NotFoundException();
             }
             return this.storage.listPermissions(designId);
@@ -777,8 +783,8 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/collaborators/{userId}", "PUT");
 
         try {
-            String user = this.security.getCurrentUser().getLogin();
-            if (!this.storage.hasOwnerPermission(user, designId)) {
+            final User currentUser = this.security.getCurrentUser();
+            if (!this.authorizationService.hasOwnerPermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
             this.storage.updatePermission(designId, userId, update.getNewRole());
@@ -797,8 +803,8 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/collaborators/{userId}", "DELETE");
 
         try {
-            String user = this.security.getCurrentUser().getLogin();
-            if (!this.storage.hasOwnerPermission(user, designId)) {
+            final User currentUser = this.security.getCurrentUser();
+            if (!this.authorizationService.hasOwnerPermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
             this.storage.deletePermission(designId, userId);
@@ -823,11 +829,9 @@ public class DesignsResource implements IDesignsResource {
         }
         
         try {
-        	if (!config.isShareForEveryone()) {
-	            String user = this.security.getCurrentUser().getLogin();
-	            if (!this.storage.hasWritePermission(user, designId)) {
+            final User currentUser = this.security.getCurrentUser();
+            if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
 	                throw new NotFoundException();
-	            }
         	}
             return this.storage.listApiDesignActivity(designId, from, to);
         } catch (StorageException e) {
@@ -851,11 +855,11 @@ public class DesignsResource implements IDesignsResource {
         }
         
         try {
-            String user = this.security.getCurrentUser().getLogin();
-            if (!this.storage.hasWritePermission(user, designId)) {
+            final User currentUser = this.security.getCurrentUser();
+            if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
                 throw new NotFoundException();
             }
-            return this.storage.listApiDesignPublicationsBy(designId, user, from, to);
+            return this.storage.listApiDesignPublicationsBy(designId, currentUser.getLogin(), from, to);
         } catch (StorageException e) {
             throw new ServerError(e);
         }
@@ -950,8 +954,8 @@ public class DesignsResource implements IDesignsResource {
         }
         
         try {
-            String user = this.security.getCurrentUser().getLogin();
-            if (!this.storage.hasWritePermission(user, designId)) {
+            final User currentUser = this.security.getCurrentUser();
+            if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
                 throw new NotFoundException();
             }
             return this.storage.listApiDesignMocks(designId, from, to);
@@ -1076,18 +1080,19 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/codegen/projects", "POST");
 
         try {
-            String user = this.security.getCurrentUser().getLogin();
+            final User currentUser = this.security.getCurrentUser();
+            String userLogin = currentUser.getLogin();
             
-            ApiDesign design = this.storage.getApiDesign(user, designId);
-            if (!this.storage.hasWritePermission(user, designId)) {
+            ApiDesign design = this.storage.getApiDesign(userLogin, designId);
+            if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
             
             CodegenProject project = new CodegenProject();
             Date now = new Date();
-            project.setCreatedBy(user);
+            project.setCreatedBy(userLogin);
             project.setCreatedOn(now);
-            project.setModifiedBy(user);
+            project.setModifiedBy(userLogin);
             project.setModifiedOn(now);
             project.setDesignId(design.getId());
             project.setType(body.getProjectType());
@@ -1121,7 +1126,7 @@ public class DesignsResource implements IDesignsResource {
                 project.getAttributes().put("pullRequest-url", prUrl);
             }
 
-            String projectId = this.storage.createCodegenProject(user, project);
+            String projectId = this.storage.createCodegenProject(userLogin, project);
             project.setId(projectId);
 
             return project;
@@ -1139,13 +1144,14 @@ public class DesignsResource implements IDesignsResource {
         logger.debug("Downloading a codegen project for API Design with ID {}", designId);
         metrics.apiCall("/designs/{designId}/codegen/projects/{projectId}/zip", "GET");
 
-        String user = this.security.getCurrentUser().getLogin();
+        final User currentUser = this.security.getCurrentUser();
+        String userLogin = currentUser.getLogin();
 
         try {
-            if (!this.storage.hasWritePermission(user, designId)) {
+            if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
-            CodegenProject project = this.storage.getCodegenProject(user, designId, projectId);
+            CodegenProject project = this.storage.getCodegenProject(userLogin, designId, projectId);
             String content = this.getApiContent(designId, FormatType.JSON);
             
             // TODO support other types besides Thorntail
@@ -1221,12 +1227,13 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/codegen/projects/{projectId}", "PUT");
 
         try {
-            String user = this.security.getCurrentUser().getLogin();
-            if (!this.storage.hasWritePermission(user, designId)) {
+            final User currentUser = this.security.getCurrentUser();
+            String userLogin = currentUser.getLogin();
+            if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
 
-            CodegenProject project = this.storage.getCodegenProject(user, designId, projectId);
+            CodegenProject project = this.storage.getCodegenProject(userLogin, designId, projectId);
             project.setType(body.getProjectType());
             
             project.setAttributes(new HashMap<String, String>());
@@ -1258,7 +1265,7 @@ public class DesignsResource implements IDesignsResource {
                 project.getAttributes().put("pullRequest-url", prUrl);
             }
 
-            this.storage.updateCodegenProject(user, project);
+            this.storage.updateCodegenProject(userLogin, project);
             
             return project;
         } catch (StorageException e) {
@@ -1276,11 +1283,12 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/codegen/projects/{projectId}", "DELETE");
 
         try {
-            String user = this.security.getCurrentUser().getLogin();
-            if (!this.storage.hasWritePermission(user, designId)) {
+            final User currentUser = this.security.getCurrentUser();
+            String userLogin = currentUser.getLogin();
+            if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
-            this.storage.deleteCodegenProject(user, designId, projectId);
+            this.storage.deleteCodegenProject(userLogin, designId, projectId);
         } catch (StorageException e) {
             throw new ServerError(e);
         }
@@ -1295,11 +1303,12 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/codegen/projects", "DELETE");
 
         try {
-            String user = this.security.getCurrentUser().getLogin();
-            if (!this.storage.hasWritePermission(user, designId)) {
+            final User currentUser = this.security.getCurrentUser();
+            String userLogin = currentUser.getLogin();
+            if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
-            this.storage.deleteCodegenProjects(user, designId);
+            this.storage.deleteCodegenProjects(userLogin, designId);
         } catch (StorageException e) {
             throw new ServerError(e);
         }
@@ -1490,10 +1499,10 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/sharing", "PUT");
 
         try {
-            String user = this.security.getCurrentUser().getLogin();
+            final User currentUser = this.security.getCurrentUser();
             String uuid = UUID.randomUUID().toString(); // Note: only used if this is the first time
             
-            if (!this.storage.hasOwnerPermission(user, designId)) {
+            if (!this.authorizationService.hasOwnerPermission(currentUser, designId)) {
                 throw new NotFoundException();
             }
             

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2017 JBoss Inc
+ * Copyright 2021 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {ApicurioRole} from "./apicurio-role.enum";
 
+export class ApicurioRole {
 
-export class User {
-    login: string;
-    id: number;
-    name: string;
-    email: string;
-    avatar: string;
-    roles: ApicurioRole[];
-
-    constructor() {
-        this.login = "";
-        this.name = "";
-        this.email = "";
-        this.roles = [];
-    }
+    public static APICURIO_ADMIN: string = "APICURIO_ADMIN";
 
 }

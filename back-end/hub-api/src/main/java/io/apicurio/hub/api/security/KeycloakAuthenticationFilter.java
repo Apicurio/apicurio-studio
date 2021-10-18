@@ -17,6 +17,8 @@
 package io.apicurio.hub.api.security;
 
 import java.io.IOException;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.servlet.Filter;
@@ -30,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
 
+import io.apicurio.studio.shared.beans.StudioRole;
 import io.apicurio.studio.shared.beans.User;
 
 /**
@@ -65,6 +68,10 @@ public class KeycloakAuthenticationFilter implements Filter {
                 user.setEmail(token.getEmail());
                 user.setLogin(token.getPreferredUsername());
                 user.setName(token.getName());
+                user.setRoles(token.getRealmAccess().getRoles().stream()
+                        .map(StudioRole::forName)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toUnmodifiableList()));
                 ((SecurityContext) security).setUser(user);
                 ((SecurityContext) security).setToken(session.getTokenString());
             }

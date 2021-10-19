@@ -4,7 +4,7 @@
 
 CREATE TABLE apicurio (prop_name VARCHAR(255) NOT NULL, prop_value VARCHAR(255));
 ALTER TABLE apicurio ADD PRIMARY KEY (prop_name);
-INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 11);
+INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 12);
 
 CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on TIMESTAMP WITHOUT TIME ZONE, used_on TIMESTAMP WITHOUT TIME ZONE, nonce VARCHAR(255));
 ALTER TABLE accounts ADD PRIMARY KEY (user_id, type);
@@ -68,3 +68,9 @@ END;
 $$
 LANGUAGE plpgsql;
 
+-- `api_type` column should be typed the same as `api_designs`' `api_type`
+-- `owner` column should be typed the same as `api_content`'s `created_by`
+-- `template` column should be typed the same as `api_content`'s `data`
+CREATE TABLE templates (template_id VARCHAR(255) NOT NULL PRIMARY KEY, name VARCHAR(64) NOT NULL, api_type VARCHAR(255) NOT NULL, description VARCHAR(255), owner VARCHAR(255) NOT NULL, template TEXT NOT NULL);
+CREATE INDEX IDX_temp_1 ON templates(name);
+CREATE INDEX IDX_temp_2 ON templates(api_type);

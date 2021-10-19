@@ -68,6 +68,7 @@ import io.apicurio.hub.api.beans.CodegenLocation;
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.NewApiPublication;
+import io.apicurio.hub.api.beans.NewApiTemplate;
 import io.apicurio.hub.api.beans.NewCodegenProject;
 import io.apicurio.hub.api.beans.ResourceContent;
 import io.apicurio.hub.api.beans.UpdateCodgenProject;
@@ -100,6 +101,7 @@ import io.apicurio.hub.core.beans.ApiDesignResourceInfo;
 import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.ApiTemplatePublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.CodegenProjectType;
 import io.apicurio.hub.core.beans.Contributor;
@@ -109,6 +111,7 @@ import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.beans.MockReference;
 import io.apicurio.hub.core.beans.SharingConfiguration;
 import io.apicurio.hub.core.beans.SharingLevel;
+import io.apicurio.hub.core.beans.StoredApiTemplate;
 import io.apicurio.hub.core.beans.UpdateSharingConfiguration;
 import io.apicurio.hub.core.cmd.OaiCommandException;
 import io.apicurio.hub.core.cmd.OaiCommandExecutor;
@@ -951,7 +954,79 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
+    @Override
+    public Collection<ApiTemplatePublication> getTemplatePublications(String designId, Integer start, Integer end) throws ServerError, NotFoundException {
+        logger.debug("Loading template activity for API: {}", designId);
+        metrics.apiCall("/designs/{designId}/templates", "GET");
+        int from = 0;
+        int to = 20;
+        if (start != null) {
+            from = start.intValue();
+        }
+        if (end != null) {
+            to = end.intValue();
+        }
+
+        try {
+            final User user = this.security.getCurrentUser();
+            if (!this.authorizationService.hasWritePermission(user, designId)) {
+                throw new NotFoundException();
+            }
+            return this.storage.listApiTemplatePublications(designId, from, to);
+        } catch (StorageException e) {
+            throw new ServerError(e);
+        }
+    }
+
+    @Override
+    public void publishTemplate(String designId, NewApiTemplate newApiTemplate) throws ServerError, NotFoundException, AccessDeniedException {
+        logger.debug("Publishing a template from API: {}", designId);
+        metrics.apiCall("/designs/{designId}/templates", "POST");
+        final User user = this.security.getCurrentUser();
+        final String userLogin = user.getLogin();
+        try {
+            if (!this.authorizationService.hasTemplateCreationPermission(user)) {
+                throw new AccessDeniedException();
+            }
+            if (!this.authorizationService.hasWritePermission(user, designId)) {
+                throw new NotFoundException();
+            }
+            // Apply the pending commands to get an up-to-date version number
+            final ApiDesign apiDesign = this.storage.getApiDesign(userLogin, designId);
+            final ApiDesignContent latestDocument = this.storage.getLatestContentDocument(userLogin, designId);
+            long version = latestDocument.getContentVersion();
+            String documentAsString = latestDocument.getDocument();
+            final List<ApiDesignCommand> pendingCommands = this.storage.listContentCommands(userLogin, designId, version);
+            if (pendingCommands.isEmpty()) {
+                logger.debug("The design {} is up to date, publishing it as is", designId);
+            } else {
+                logger.debug("Design {} has {} pending commands from version: {}", designId, pendingCommands.size(), version);
+                final List<String> commands = new ArrayList<>(pendingCommands.size());
+                for (ApiDesignCommand apiCommand : pendingCommands) {
+                    commands.add(apiCommand.getCommand());
+                }
+                documentAsString = this.oaiCommandExecutor.executeCommands(documentAsString, commands);
+                version = storage.addContent(userLogin, designId, ApiContentType.Document, documentAsString);
+                logger.info("Rolled up pending commands on design: {} and saved it as version: {}", designId, version);
+            }
+            // Create the template
+            final StoredApiTemplate storedApiTemplate = newApiTemplate.toStoredApiTemplate();
+            final String templateId = UUID.randomUUID().toString();
+            storedApiTemplate.setTemplateId(templateId);
+            storedApiTemplate.setType(apiDesign.getType());
+            storedApiTemplate.setOwner(userLogin);
+            storedApiTemplate.setDocument(documentAsString);
+            this.storage.createApiTemplate(storedApiTemplate);
+            // Store the publication metadata
+            final String templateData = createTemplateData(designId, newApiTemplate, version);
+            this.storage.addContent(userLogin, designId, ApiContentType.Template, templateData);
+
+        } catch (StorageException | OaiCommandException e) {
+            throw new ServerError(e);
+        }
+    }
+
     /**
      * Creates the JSON data to be stored in the data row representing a "publish API" event
      * (also known as an API publication).
@@ -990,6 +1065,25 @@ public class DesignsResource implements IDesignsResource {
             data.set("mockType", JsonNodeFactory.instance.textNode("microcks"));
             data.set("serviceRef", JsonNodeFactory.instance.textNode(serviceRef));
             data.set("mockURL", JsonNodeFactory.instance.textNode(mockURL));
+            return mapper.writeValueAsString(data);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Create the JSON data to be stored in the data row representing an API template event.
+     * @param designId the designId
+     * @param newApiTemplate The template info from the API request
+     */
+    private String createTemplateData(String designId, NewApiTemplate newApiTemplate, long contentVersion) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode data = JsonNodeFactory.instance.objectNode();
+            data.set("designId", JsonNodeFactory.instance.textNode(designId));
+            data.set("contentVersion", JsonNodeFactory.instance.numberNode(contentVersion));
+            data.set("name", JsonNodeFactory.instance.textNode(newApiTemplate.getName()));
+            data.set("description", JsonNodeFactory.instance.textNode(newApiTemplate.getDescription()));
             return mapper.writeValueAsString(data);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

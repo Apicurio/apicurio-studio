@@ -20,7 +20,7 @@ package io.apicurio.hub.core.beans;
  * @author c.desc2@gmail.com
  */
 public class ApiTemplate {
-
+    
     private ApiDesignType type;
     private String name;
     private String description;

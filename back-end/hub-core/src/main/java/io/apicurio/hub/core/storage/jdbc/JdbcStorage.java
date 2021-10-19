@@ -33,6 +33,8 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import io.apicurio.hub.core.beans.StoredApiTemplate;
+import io.apicurio.hub.core.storage.jdbc.mappers.StoredApiTemplateRowMapper;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.CharacterStreamArgument;
@@ -51,8 +53,10 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.ApiTemplatePublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
@@ -74,6 +78,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignContentRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiMockRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiPublicationRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.ApiTemplatePublicationRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.CodegenProjectRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ContributorRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.InvitationRowMapper;
@@ -90,7 +95,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 11;
+    private static int DB_VERSION = 12;
     private static final Object dbMutex = new Object();
 
     @Inject
@@ -664,6 +669,28 @@ public class JdbcStorage implements IStorage {
         }
     }
     
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getContentDocumentForVersion(String, long) 
+     */
+    @Override
+    public ApiDesignContent getContentDocumentForVersion(String designId, long contentVersion) throws NotFoundException, StorageException {
+        logger.debug("Selecting the api_content row of type 'document' for design_id: {} and version: {}", designId, contentVersion);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectContentDocumentForVersion();
+                Query query = handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, contentVersion);
+                return query.map(ApiDesignContentRowMapper.instance).one();
+            });
+        } catch (IllegalStateException e) {
+            logger.error("Error getting content document", e);
+            throw new NotFoundException();
+        } catch (Exception e) {
+            throw new StorageException("Error getting content document.", e);
+        }
+    }
+
     /**
      * @see io.apicurio.hub.core.storage.IStorage#getLatestContentDocumentForSharing(java.lang.String)
      */
@@ -1259,6 +1286,28 @@ public class JdbcStorage implements IStorage {
             throw new StorageException("Error getting mocks.", e);
         }
     }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#listApiTemplatePublications(java.lang.String, int, int)
+     * @return
+     */
+    @Override
+    public Collection<ApiTemplatePublication> listApiTemplatePublications(String designId, int from, int to) throws StorageException {
+        logger.debug("Selecting mock activity for API Design: {} from {} to {}", designId, from, to);
+        try {
+            return this.jdbi.withHandle( handle -> {
+                String statement = sqlStatements.selectApiTemplateActivity();
+                return handle.createQuery(statement)
+                        .bind(0, Long.valueOf(designId))
+                        .bind(1, to - from)
+                        .bind(2, from)
+                        .map(ApiTemplatePublicationRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting template publications.", e);
+        }
+    }
     
     /**
      * @see io.apicurio.hub.core.storage.IStorage#listCodegenProjects(java.lang.String, java.lang.String)
@@ -1589,4 +1638,138 @@ public class JdbcStorage implements IStorage {
         }        
     }
 
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#createApiTemplate(StoredApiTemplate)
+     */
+    @Override
+    public void createApiTemplate(StoredApiTemplate apiTemplate) throws StorageException {
+        logger.debug("Storing a template with id: {}", apiTemplate.getTemplateId());
+        try {
+            this.jdbi.withHandle(handle -> {
+                final String statement = sqlStatements.insertApiTemplate();
+                CharacterStreamArgument contentClob = new CharacterStreamArgument(new StringReader(apiTemplate.getDocument()), apiTemplate.getDocument().length());
+                return handle.createUpdate(statement)
+                        .bind(0, apiTemplate.getTemplateId())
+                        .bind(1, apiTemplate.getName())
+                        .bind(2, apiTemplate.getType().name())
+                        .bind(3, apiTemplate.getDescription())
+                        .bind(4, apiTemplate.getOwner())
+                        .bind(5, contentClob)
+                        .execute();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error creating template.", e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getStoredApiTemplate(String)
+     */
+    @Override
+    public StoredApiTemplate getStoredApiTemplate(String templateId) throws StorageException, NotFoundException {
+        logger.debug("Selecting a template for id: {}", templateId);
+        try {
+            return this.jdbi.withHandle(handle -> {
+                final String statement = sqlStatements.selectApiTemplate();
+                return handle.createQuery(statement)
+                        .bind(0, templateId)
+                        .map(StoredApiTemplateRowMapper.instance)
+                        .one();
+            });
+        } catch (IllegalStateException e) {
+            throw new NotFoundException();
+        } catch (Exception e) {
+            throw new StorageException("Error getting template.", e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getStoredApiTemplates()
+     */
+    @Override
+    public List<StoredApiTemplate> getStoredApiTemplates() throws StorageException {
+        logger.debug("Selecting all templates");
+        try {
+            return this.jdbi.withHandle(handle -> {
+                final String statement = sqlStatements.selectApiTemplates();
+                return handle.createQuery(statement)
+                        .map(StoredApiTemplateRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting templates.", e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#getStoredApiTemplates(ApiDesignType)
+     */
+    @Override
+    public List<StoredApiTemplate> getStoredApiTemplates(ApiDesignType type) throws StorageException {
+        logger.debug("Selecting templates for API Design Type: {}", type);
+        try {
+            return this.jdbi.withHandle(handle -> {
+                final String statement = sqlStatements.selectApiTemplatesByType();
+                return handle.createQuery(statement)
+                        .bind(0, type.name())
+                        .map(StoredApiTemplateRowMapper.instance)
+                        .list();
+            });
+        } catch (Exception e) {
+            throw new StorageException("Error getting templates.", e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#updateApiTemplate(StoredApiTemplate)
+     */
+    @Override
+    public void updateApiTemplate(StoredApiTemplate apiTemplate) throws StorageException, NotFoundException {
+        logger.debug("Updating a template with id: {}", apiTemplate.getTemplateId());
+        try {
+            this.jdbi.withHandle(handle -> {
+                final String statement = sqlStatements.updateApiTemplate();
+                CharacterStreamArgument contentClob = new CharacterStreamArgument(new StringReader(apiTemplate.getDocument()), apiTemplate.getDocument().length());
+                int rowCount = handle.createUpdate(statement)
+                        .bind(0, apiTemplate.getName())
+                        .bind(1, apiTemplate.getDescription())
+                        .bind(2, apiTemplate.getOwner())
+                        .bind(3, contentClob)
+                        .bind(4, apiTemplate.getTemplateId())
+                        .execute();
+                if (rowCount == 0) {
+                    throw new NotFoundException();
+                }
+                return null;
+            });
+        } catch (NotFoundException nfe) {
+            throw nfe;
+        } catch (Exception e) {
+            throw new StorageException("Error updating template.", e);
+        }
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.IStorage#deleteApiTemplate(String)
+     */
+    @Override
+    public void deleteApiTemplate(String templateId) throws StorageException, NotFoundException {
+        logger.debug("Deleting a template with id: {}", templateId);
+        try {
+            this.jdbi.withHandle(handle -> {
+                final String statement = sqlStatements.deleteApiTemplate();
+                int rowCount = handle.createUpdate(statement)
+                        .bind(0, templateId)
+                        .execute();
+                if (rowCount == 0) {
+                    throw new NotFoundException();
+                }
+                return null;
+            });
+        } catch (NotFoundException nfe) {
+            throw nfe;
+        } catch (Exception e) {
+            throw new StorageException("Error deleting template.", e);
+        }
+    }
 }

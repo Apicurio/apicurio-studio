@@ -22,6 +22,9 @@ import {HttpClient} from "@angular/common/http";
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
 import {ApiTypes} from "../models/api-types.enum";
+import {StoredApiDesignTemplate} from "../models/stored-api-design-template.model";
+import {NewApiTemplate} from "../models/new-api-template.model";
+import {UpdateApiTemplate} from "../models/update-api-template.model";
 
 
 /**
@@ -55,7 +58,7 @@ export class TemplateService extends AbstractHubService {
         if (!this.templateCache.hasOwnProperty(type)) {
             console.info(`[TemplateService] Templates of type '${type}' are not ready, loading them from the API...`)
             let options: any = this.options({ "Accept": "application/json" });
-            return this.httpGet<any>(this.endpoint("/templates", {}, { type: type }), options)
+            return this.httpGet<any>(this.endpoint("/templates/all", {}, { type: type }), options)
                 .then(rawTemplates => {
                     let templates: ApiDesignTemplate[] = rawTemplates.map( template => {
                         return {
@@ -82,5 +85,97 @@ export class TemplateService extends AbstractHubService {
             this.loadTemplates(ApiTypes.AsyncAPI20),
             this.loadTemplates(ApiTypes.GraphQL)
         ]);
+    }
+
+    /**
+     * @see TemplateService.getApiTemplates
+     */
+    public getStoredTemplates(): Promise<StoredApiDesignTemplate[]> {
+        console.info("[TemplateService] Getting API templates");
+
+        let apiTemplatesUrl: string = this.endpoint("/templates");
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[TemplateService] Fetching API templates: %s", apiTemplatesUrl);
+        return this.httpGet<any[]>(apiTemplatesUrl, options).then(rawTemplates => {
+            let templates: StoredApiDesignTemplate[] = rawTemplates.map( template => {
+                return {
+                    templateId: template.templateId,
+                    type: template.type,
+                    name: template.name,
+                    description: template.description,
+                    owner: template.owner,
+                    content: template.document
+                };
+            });
+            return templates;
+        });
+    }
+
+    /**
+     * @see TemplateService.createApiTemplate
+     */
+    public createStoredTemplate(template: NewApiTemplate): Promise<StoredApiDesignTemplate> {
+        console.info("[TemplateService] Creating an API template");
+
+        let apiTemplatesUrl: string = this.endpoint("/templates");
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[TemplateService] Creating an API template: %s", apiTemplatesUrl);
+        return this.httpPostWithReturn<NewApiTemplate, StoredApiDesignTemplate>(apiTemplatesUrl, template, options);
+    }
+
+    /**
+     * @see TemplateService.getApiTemplates
+     */
+    public getStoredTemplate(templateId: string): Promise<StoredApiDesignTemplate> {
+        console.info("[TemplateService] Getting the API template for id %s", templateId);
+
+        let apiTemplateUrl: string = this.endpoint("/templates/:templateId", {
+            templateId: templateId
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[TemplateService] Fetching API template: %s", apiTemplateUrl);
+        return this.httpGet<any>(apiTemplateUrl, options).then(rawTemplate => {
+            return {
+                templateId: rawTemplate.templateId,
+                type: rawTemplate.type,
+                name: rawTemplate.name,
+                description: rawTemplate.description,
+                owner: rawTemplate.owner,
+                content: rawTemplate.document
+            }
+        });
+    }
+
+    /**
+     * @see TemplateService.updateApiTemplate
+     */
+    public updateStoredTemplate(templateId: string, template: UpdateApiTemplate): Promise<void> {
+        console.info("[TemplateService] Updating the API template for id %s", templateId);
+
+        let apiTemplateUrl: string = this.endpoint("/templates/:templateId", {
+            templateId: templateId
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[TemplateService] Updating an API template: %s", apiTemplateUrl);
+        return this.httpPut<UpdateApiTemplate>(apiTemplateUrl, template, options);
+    }
+
+    /**
+     * @see TemplateService.deleteApiTemplate
+     */
+    public deleteStoredTemplate(templateId: string): Promise<void> {
+        console.info("[TemplateService] Deleting the API template for id %s", templateId);
+
+        let apiTemplateUrl: string = this.endpoint("/templates/:templateId", {
+            templateId: templateId
+        });
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[TemplateService] Deleting an API template: %s", apiTemplateUrl);
+        return this.httpDelete(apiTemplateUrl, options);
     }
 }

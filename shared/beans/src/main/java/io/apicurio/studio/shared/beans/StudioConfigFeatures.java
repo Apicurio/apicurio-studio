@@ -93,5 +93,4 @@ public class StudioConfigFeatures {
     public void setGraphql(boolean graphql) {
         this.graphql = graphql;
     }
-
 }

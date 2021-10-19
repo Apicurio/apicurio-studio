@@ -1,0 +1,106 @@
+<div id="api-breadcrumb-bar">
+    <breadcrumbs>
+        <li breadcrumb label="APIs" [route]="[ '/apis' ]"></li>
+        <li breadcrumb [label]="api.name" [route]="[ '/apis', api.id ]"></li>
+        <li breadcrumb label="Template" class="active"></li>
+    </breadcrumbs>
+</div>
+<page-error [error]="pageError" *ngIf="pageError"></page-error>
+<div class="container-fluid api-template" *ngIf="!pageError">
+
+    <!-- Loading API (spinner) -->
+    <div class="row-fluid" *ngIf="!isDataLoaded()">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+            <div class="container-fluid container-cards-pf api-editor-overview">
+                <div class="row row-cards-pf">
+                    <div class="">
+                        <div class="card-pf card-pf-accented">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading API information...</p>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="template-form row" *ngIf="isDataLoaded()">
+        <div class="form-instructions col-md-3">
+            <div class="alert alert-info">
+                <span class="pficon pficon-info"></span>
+                <strong>What is this page?</strong>
+                <p style="line-height: 18px">
+                    Use this page to create a template from this API.
+                    The template will be listed in the Create API page for all users.
+                </p>
+                <p style="line-height: 18px">
+                    To manage available templates, use the Templates menu in the navigation panel.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="template-panel panel panel-default">
+                <div class="panel-body" *ngIf="!sent">
+                    <h2>Create template from "{{ api.name }}"?</h2>
+                    <form id="template-form" class="form-horizontal" (submit)="publishTemplate()" #templateForm="ngForm">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label required" for="title">Title</label>
+                            <div class="col-sm-4">
+                                <input name="title" type="text" id="title" class="form-control"
+                                       placeholder="Enter a title for the template..." required #templateName="ngModel"
+                                       [(ngModel)]="name">
+                                <form-error-message [inputModel]="templateName" [type]="'required'">Name is required.</form-error-message>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="description">Description</label>
+                            <div class="col-sm-10">
+                                <textarea name="description" type="text" id="description" class="form-control"
+                                       placeholder="Enter a description for the template..." #templateDescription="ngModel" 
+                                       [(ngModel)]="description"> </textarea>
+                            </div>
+                        </div>
+
+                        <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                        <hr />
+
+                        <div class="form-group" >
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary pull-right" [disabled]="!isValid() || sending">
+                                    <span *ngIf="!sending">Create template</span>
+                                    <span *ngIf="sending"><span class="spinner spinner-xs spinner-inline"></span> Creating the template...</span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-10 panel panel-default template-resume" *ngIf="hasTemplatePublications()">
+            <div class="panel-body">
+                <h2>Template publications for this API:</h2>
+                                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Creator</th>
+                            <th>Created on</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let template of this.templates">
+                            <td>{{ template.name }}</td>
+                            <td>{{ template.createdBy }}</td>
+                            <td>{{ template.createdOn | date:'medium' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+
+</div>

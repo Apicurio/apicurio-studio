@@ -47,4 +47,11 @@ public interface IAuthorizationService {
      * @return if the user is owner of the design
      */
     boolean hasPersonalOwnerPermission(User user, String designId) throws StorageException;
+
+    /**
+     * Checks whether the user can create templates
+     * @param user the user
+     * @return if the user can create templates
+     */
+    boolean hasTemplateCreationPermission(User user);
 }

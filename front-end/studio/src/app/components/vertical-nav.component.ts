@@ -18,12 +18,16 @@
 import {Component, OnInit} from "@angular/core";
 import {Router, NavigationStart} from "@angular/router";
 import {ApisService} from "../services/apis.service";
+import {ConfigService} from "../services/config.service";
+import {IAuthenticationService} from "../services/auth.service";
+import {User} from "../models/user.model";
+import {ApicurioRole} from "../models/apicurio-role.enum";
 
 /**
  * Models the sub-menus off the main left-hand vertical nav.
  */
 export enum VerticalNavSubMenuType {
-    None, Dashboard, APIs, Settings
+    None, Dashboard, APIs, Settings, Templates
 }
 
 
@@ -41,8 +45,9 @@ export class VerticalNavComponent implements OnInit {
     /**
      * C'tor.
      * @param router
+     * @param configService
      */
-    constructor(private router: Router) {}
+    constructor(private router: Router, private configService: ConfigService, private authService: IAuthenticationService) {}
 
     ngOnInit(): void {
         this.router.events.subscribe(event => {
@@ -57,6 +62,15 @@ export class VerticalNavComponent implements OnInit {
      */
     public goToDashboard(): void {
         this.router.navigate(["/dashboard"]);
+    }
+
+    /**
+     * Navigates the user to the Templates.
+     */
+    public goToTemplates(): void {
+        if (this.isTemplatesEnabled()) {
+            this.router.navigate(["/templates"]);
+        }
     }
 
     /**
@@ -78,6 +92,14 @@ export class VerticalNavComponent implements OnInit {
     }
 
     /**
+     * Returns true if the currently active route is the templates.
+     * @returns {boolean}
+     */
+    isTemplatesRoute(): boolean {
+        return this.isRouteActive("/templates", true);
+    }
+
+    /**
      * Returns true if the currently active route is /apis/*
      * @returns {boolean}
      */
@@ -91,6 +113,15 @@ export class VerticalNavComponent implements OnInit {
      */
     isSettingsRoute(): boolean {
         return this.isRouteActive("/settings");
+    }
+    
+    /**
+     * Returns true if the templates route should be accessible.
+     * @returns {boolean}
+     */
+    isTemplatesEnabled(): boolean {
+        let user: User = this.authService.getAuthenticatedUserNow();
+        return user && user.roles.includes(ApicurioRole.APICURIO_ADMIN)
     }
 
     /**

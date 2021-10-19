@@ -26,8 +26,10 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.ApiTemplatePublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
@@ -36,6 +38,7 @@ import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.beans.SharingConfiguration;
 import io.apicurio.hub.core.beans.SharingInfo;
 import io.apicurio.hub.core.beans.SharingLevel;
+import io.apicurio.hub.core.beans.StoredApiTemplate;
 import io.apicurio.hub.core.beans.ValidationProfile;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -229,6 +232,15 @@ public interface IStorage {
      * @throws StorageException
      */
     public ApiDesignContent getLatestContentDocumentForSharing(String sharingUuid) throws NotFoundException, StorageException;
+    
+    /**
+     * Returns the full content row for the given API Design and content version.
+     * @param designId
+     * @param contentVersion 
+     * @throws NotFoundException
+     * @throws StorageException
+     */
+    public ApiDesignContent getContentDocumentForVersion(String designId, long contentVersion) throws NotFoundException, StorageException;
 
     /**
      * Returns a list of commands for a given API design that have been executed since 
@@ -400,6 +412,16 @@ public interface IStorage {
      * @param to
      */
     public Collection<ApiMock> listApiDesignMocks(String designId, int from, int to) throws StorageException;
+
+    /**
+     * Returns a collection of API templates (recorded whenever a user promotes a template).  This
+     * is a paged method similar to listApiDesignActivity().
+     * @param designId
+     * @param from
+     * @param to
+     * @return
+     */
+    public Collection<ApiTemplatePublication> listApiTemplatePublications(String designId, int from, int to) throws StorageException;
     
     /**
      * Returns a collection of codegen projects for the given API design.
@@ -517,5 +539,46 @@ public interface IStorage {
      * @throws NotFoundException
      */
     public SharingInfo getSharingInfo(String uuid) throws StorageException, NotFoundException;
+
+    /**
+     * Inserts an API template
+     * @param apiTemplate 
+     * @throws StorageException
+     */
+    public void createApiTemplate(StoredApiTemplate apiTemplate) throws StorageException;
+
+    /**
+     * Returns the stored template for a given templateId.
+     * @param templateId 
+     * @throws StorageException
+     */
+    public StoredApiTemplate getStoredApiTemplate(String templateId) throws StorageException, NotFoundException;
+
+    /**
+     * Returns a list of all the stored templates
+     * @throws StorageException
+     */
+    public List<StoredApiTemplate> getStoredApiTemplates() throws StorageException;
+
+    /**
+     * Returns a list of the stored templates for a given API type
+     * @param type
+     * @throws StorageException
+     */
+    public List<StoredApiTemplate> getStoredApiTemplates(ApiDesignType type) throws StorageException;
+
+    /**
+     * Updates an API template
+     * @param apiTemplate
+     * @throws StorageException
+     */
+    public void updateApiTemplate(StoredApiTemplate apiTemplate) throws StorageException, NotFoundException;
+
+    /**
+     * Deletes an API template
+     * @param templateId
+     * @throws StorageException
+     */
+    public void deleteApiTemplate(String templateId) throws StorageException, NotFoundException;
 
 }

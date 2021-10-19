@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
+import io.apicurio.hub.core.beans.StoredApiTemplate;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
@@ -1505,17 +1506,17 @@ public class JdbcStorageTest {
         String id = storage.createApiDesign("user", design, "{}");
         Assert.assertNotNull(id);
         Assert.assertEquals("1", id);
-        
+
         SharingConfiguration sc = storage.getSharingConfig("1");
         Assert.assertNull(sc);
-        
+
         storage.setSharingConfig("1", "12345", SharingLevel.DOCUMENTATION);
-        
+
         sc = storage.getSharingConfig("1");
         Assert.assertNotNull(sc);
         Assert.assertEquals("12345", sc.getUuid());
         Assert.assertEquals(SharingLevel.DOCUMENTATION, sc.getLevel());
-        
+
         storage.setSharingConfig("1", "54321", SharingLevel.NONE);
 
         sc = storage.getSharingConfig("1");
@@ -1523,6 +1524,182 @@ public class JdbcStorageTest {
         Assert.assertEquals("54321", sc.getUuid());
         Assert.assertEquals(SharingLevel.NONE, sc.getLevel());
     }
+
+    @Test
+    public void testCreateApiTemplate() throws Exception {
+        StoredApiTemplate apiTemplate = new StoredApiTemplate(
+                "uuid",
+                ApiDesignType.OpenAPI30,
+                "template 1",
+                "a template",
+                "test runner",
+                "{}"
+        );
+
+        this.storage.createApiTemplate(apiTemplate);
+
+        try {
+            // Fail on conflict
+            this.storage.createApiTemplate(apiTemplate);
+            Assert.fail();
+        } catch (StorageException e) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testGetStoredApiTemplate() throws Exception {
+        StoredApiTemplate apiTemplate = new StoredApiTemplate(
+                "uuid",
+                ApiDesignType.OpenAPI30,
+                "template 1",
+                "a template",
+                "test runner",
+                "{}"
+        );
+
+        this.storage.createApiTemplate(apiTemplate);
+
+        final StoredApiTemplate storedApiTemplate = this.storage.getStoredApiTemplate("uuid");
+
+        Assert.assertNotNull(storedApiTemplate);
+        Assert.assertEquals(apiTemplate.getTemplateId(), storedApiTemplate.getTemplateId());
+        Assert.assertEquals(apiTemplate.getName(), storedApiTemplate.getName());
+        Assert.assertEquals(apiTemplate.getDescription(), storedApiTemplate.getDescription());
+        Assert.assertEquals(apiTemplate.getType(), storedApiTemplate.getType());
+        Assert.assertEquals(apiTemplate.getOwner(), storedApiTemplate.getOwner());
+        Assert.assertEquals(apiTemplate.getDocument(), storedApiTemplate.getDocument());
+
+        try {
+            // Fail on missing template
+            this.storage.getStoredApiTemplate("nothing");
+            Assert.fail("Expected a NotFoundException");
+        } catch (NotFoundException e) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testGetStoredApiTemplates() throws Exception {
+        StoredApiTemplate templateA = new StoredApiTemplate(
+                "uuid1",
+                ApiDesignType.OpenAPI30,
+                "template A",
+                "a template",
+                "test runner",
+                "{}"
+        );
+        StoredApiTemplate templateC = new StoredApiTemplate(
+                "uuid2",
+                ApiDesignType.OpenAPI30,
+                "template C",
+                "another template",
+                "test runner",
+                "{}"
+        );
+        StoredApiTemplate templateB = new StoredApiTemplate(
+                "uuid3",
+                ApiDesignType.OpenAPI20,
+                "template B",
+                "another other template",
+                "test runner",
+                "{}"
+        );
+
+        this.storage.createApiTemplate(templateA);
+        this.storage.createApiTemplate(templateC);
+        this.storage.createApiTemplate(templateB);
+
+        List<StoredApiTemplate> storedApiTemplates = this.storage.getStoredApiTemplates();
+
+        Assert.assertNotNull(storedApiTemplates);
+        
+        // Should be ordered by name: templateA, templateB, templateC
+        Assert.assertEquals(3, storedApiTemplates.size());
+        Assert.assertEquals(templateA.getName(), storedApiTemplates.get(0).getName());
+        Assert.assertEquals(templateB.getName(), storedApiTemplates.get(1).getName());
+        Assert.assertEquals(templateC.getName(), storedApiTemplates.get(2).getName());
+
+        storedApiTemplates = this.storage.getStoredApiTemplates(ApiDesignType.OpenAPI30);
+
+        Assert.assertNotNull(storedApiTemplates);
+        // Should find templateA, templateC
+        Assert.assertEquals(2, storedApiTemplates.size());
+        Assert.assertEquals(templateA.getName(), storedApiTemplates.get(0).getName());
+        Assert.assertEquals(templateC.getName(), storedApiTemplates.get(1).getName());
+
+        storedApiTemplates = this.storage.getStoredApiTemplates(ApiDesignType.GraphQL);
+
+        Assert.assertNotNull(storedApiTemplates);
+        // Should find nothing
+        Assert.assertEquals(0, storedApiTemplates.size());
+
+    }
+
+    @Test
+    public void testUpdateApiTemplate() throws Exception {
+        StoredApiTemplate apiTemplate = new StoredApiTemplate(
+                "uuid",
+                ApiDesignType.OpenAPI30,
+                "template 1",
+                "a template",
+                "test runner",
+                "{}"
+        );
+
+        this.storage.createApiTemplate(apiTemplate);
+
+        apiTemplate.setName("Changed name"); // Should be reflected
+        apiTemplate.setType(ApiDesignType.GraphQL); // Should not be reflected
+
+        this.storage.updateApiTemplate(apiTemplate);
+
+        StoredApiTemplate updatedApiTemplate = this.storage.getStoredApiTemplate(apiTemplate.getTemplateId());
+        Assert.assertNotNull(updatedApiTemplate);
+        Assert.assertEquals(apiTemplate.getName(), updatedApiTemplate.getName());
+        Assert.assertNotEquals(apiTemplate.getType(), updatedApiTemplate.getType());
+
+        try {
+            // Fail on missing template
+            StoredApiTemplate anotherTemplate = new StoredApiTemplate(
+                    "nothing",
+                    ApiDesignType.OpenAPI30,
+                    "template 1",
+                    "a template",
+                    "test runner",
+                    "{}"
+            );
+            this.storage.updateApiTemplate(anotherTemplate);
+            Assert.fail("Expected a NotFoundException");
+        } catch (NotFoundException e) {
+            // expected
+        }
+    }
+
+    @Test
+    public void testDeleteApiTemplate() throws Exception {
+        StoredApiTemplate apiTemplate = new StoredApiTemplate(
+                "uuid",
+                ApiDesignType.OpenAPI30,
+                "template 1",
+                "a template",
+                "test runner",
+                "{}"
+        );
+
+        this.storage.createApiTemplate(apiTemplate);
+        
+        this.storage.deleteApiTemplate(apiTemplate.getTemplateId());
+
+        try {
+            // Fail on missing template
+            this.storage.deleteApiTemplate(apiTemplate.getTemplateId());
+            Assert.fail("Expected a NotFoundException");
+        } catch (NotFoundException e) {
+            // expected
+        }
+    }
+
     
     /**
      * Creates an in-memory datasource.

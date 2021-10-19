@@ -17,6 +17,7 @@
 
 import {Component, Input} from "@angular/core";
 import {ApiDesignChange} from "../../models/api-design-change.model";
+import {ApiTemplatePublication} from "../../models/api-template-publication.model";
 import { MockReference } from "../../models/mock-api.model";
 import {ICommand, MarshallCompat} from "apicurio-data-models";
 import {PublishApi} from "../../models/publish-api.model";
@@ -36,6 +37,7 @@ export class ActivityItemComponent {
     _command: ICommand = null;
     _publication: PublishApi;
     _mock: MockReference;
+    _template: ApiTemplatePublication;
 
     /**
      * Constructor.
@@ -67,6 +69,13 @@ export class ActivityItemComponent {
         return this._mock;
     }
 
+    protected template(): ApiTemplatePublication {
+        if (this._template == null) {
+            this._template = JSON.parse(this.item.data);
+        }
+        return this._template;
+    }
+
     /**
      * Returns an appropriate icon for the activity item, based on its type.
      * 
@@ -80,6 +89,9 @@ export class ActivityItemComponent {
         }
         if (this.item.type == "Mock") {
             return this.mockIcon();
+        }
+        if (this.item.type == "Template") {
+            return this.templateIcon();
         }
         return "document";
     }
@@ -350,6 +362,10 @@ export class ActivityItemComponent {
         return "cloud-upload";
     }
 
+    protected templateIcon(): string {
+        return "puzzle-piece";
+    }
+
     /**
      * Returns an appropriate description for the activity item, based on its type.
      * 
@@ -363,6 +379,9 @@ export class ActivityItemComponent {
         }
         if (this.item.type == "Mock") {
             return this.mockDescription();
+        }
+        if (this.item.type == "Template") {
+            return this.templateDescription();
         }
         return null;
     }
@@ -769,6 +788,10 @@ export class ActivityItemComponent {
     protected mockDescription(): string {
         return "mocked the API to " + this.mock().serviceRef
             + " at " + this.mock().mockURL + ".";
+    }
+
+    protected templateDescription(): string {
+        return "promoted the API as a template named '" + this.template().name + "'.";
     }
 
     public apiName(): string {

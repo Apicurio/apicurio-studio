@@ -79,6 +79,9 @@ import {DownloadDialogComponent} from "./pages/apis/{apiId}/_components/download
 import {ImportComponentsWizard} from "./pages/apis/{apiId}/_components/import-components.wizard";
 import {DataTableComponent} from "./components/common/data-table.component";
 import {LoadingComponent} from "./components/common/loading.component";
+import {TemplatePublicationPageComponent} from "./pages/apis/{apiId}/template/template-publication.page";
+import {TemplatesPageComponent} from "./pages/templates/templates.page";
+import {TemplateEditorComponent} from "./pages/templates/_components/template-editor.component";
 
 @NgModule({
     imports: [
@@ -96,7 +99,7 @@ import {LoadingComponent} from "./components/common/loading.component";
         GenerateProjectWizardComponent, ActivityItemComponent, EditorDisconnectedDialogComponent, MockPageComponent,
         DefaultPageComponent, ConfigureValidationComponent, ProfileEditorComponent, TagListComponent,
         SharingDialogComponent, ApiTextEditorPageComponent, DownloadDialogComponent, ImportComponentsWizard,
-        DataTableComponent, LoadingComponent
+        DataTableComponent, LoadingComponent, TemplatePublicationPageComponent, TemplatesPageComponent, TemplateEditorComponent
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService, ValidationService,

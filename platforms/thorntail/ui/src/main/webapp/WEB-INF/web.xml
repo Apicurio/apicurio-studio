@@ -35,6 +35,10 @@
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>AngularServlet</servlet-name>
+    <url-pattern>/templates</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AngularServlet</servlet-name>
     <url-pattern>/settings/*</url-pattern>
   </servlet-mapping>
 
@@ -119,6 +123,7 @@
       <url-pattern>/dashboard</url-pattern>
       <url-pattern>/settings/*</url-pattern>
       <url-pattern>/apis/*</url-pattern>
+      <url-pattern>/templates</url-pattern>
       <url-pattern>/download</url-pattern>
       <url-pattern>/preview</url-pattern>
     </web-resource-collection>

@@ -42,6 +42,8 @@ import {StorageError} from "../models/storageError.model";
 import {DeferredAction} from "../models/deferred.model";
 import {SharingConfiguration} from "../models/sharing-config.model";
 import {UpdateSharingConfiguration} from "../models/update-sharing-config.model";
+import {ApiTemplatePublication} from "../models/api-template-publication.model";
+import {NewApiTemplate} from "../models/new-api-template.model";
 
 
 export interface IConnectionHandler {
@@ -495,6 +497,43 @@ export class ApisService extends AbstractHubService {
     }
 
     /**
+     * Gets the list of templates for a given API id.
+     * @param apiId
+     * @param from
+     * @param to
+     */
+    public getTemplatePublications(apiId: string, from?: number, to?: number): Promise<ApiTemplatePublication[]> {
+        console.info("[ApisService] Getting all template publications for API %s", apiId);
+
+        let getTemplatesUrl: string = this.endpoint("/designs/:designId/templates", {
+            designId: apiId
+        }, {
+            start: from,
+            end: to
+        });
+
+        let options: any = this.options({ "Accept": "application/json" });
+
+        console.info("[ApisService] Fetching API template publications: %s", getTemplatesUrl);
+        return this.httpGet<ApiTemplatePublication[]>(getTemplatesUrl, options);
+    }
+
+    /**
+     * @see ApisService.publishApiTemplate
+     */
+    public publishApiTemplate(apiId: string, newApiTemplate: NewApiTemplate): Promise<void> {
+        console.info("[ApisService] Publishing an API template");
+
+        let templateApiUrl: string = this.endpoint("/designs/:designId/templates", {
+            designId: apiId
+        });
+        let options: any = this.options({ "Content-Type": "application/json" });
+
+        console.info("[ApisService] Publishing an API template: %s", templateApiUrl);
+        return this.httpPost<NewApiTemplate>(templateApiUrl, newApiTemplate, options);
+    }
+
+    /**
      * Updates the content of the API.
      * @param api
      */
@@ -907,5 +946,4 @@ export class ApisService extends AbstractHubService {
         console.info("[ApisService] Configuring sharing: %s", configureSharingUrl);
         return this.httpPutWithReturn<UpdateSharingConfiguration, SharingConfiguration>(configureSharingUrl, body, options);
     }
-
 }

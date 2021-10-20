@@ -120,7 +120,7 @@ public interface IDesignsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{designId}/publications")
-    public void publishApi(@PathParam("designId") String designId, NewApiPublication info) throws ServerError, NotFoundException;
+    public void publishApi(@PathParam("designId") String designId, NewApiPublication info, @QueryParam("dereference") String dereference) throws ServerError, NotFoundException;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

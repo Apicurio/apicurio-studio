@@ -22,7 +22,11 @@ import {Api} from "../../../../models/api.model";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {IAuthenticationService} from "../../../../services/auth.service";
 import {LinkedAccount} from "../../../../models/linked-account.model";
-import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
+import {
+    DropDownOption,
+    DropDownOptionValue,
+    DropDownOptionValue as Value
+} from "../../../../components/common/drop-down.component";
 import {CodeEditorMode} from "../../../../components/common/code-editor.component";
 import {PublishApi} from "../../../../models/publish-api.model";
 import {Title} from "@angular/platform-browser";
@@ -45,10 +49,17 @@ export class PublishPageComponent extends AbstractPageComponent {
     public modelValid: any;
     public resource: string;
     public format: string = "YAML";
+    public dereference: string = "false";
     public commitMessage: string;
 
     public publishing: boolean = false;
     public published: boolean = false;
+
+
+    refOptions: DropDownOption[] = [
+        new DropDownOptionValue("Publish API Spec As-Is", "false"),
+        new DropDownOptionValue("Dereference All External $refs", "true")
+    ];
 
     /**
      * Constructor.
@@ -186,7 +197,7 @@ export class PublishPageComponent extends AbstractPageComponent {
         info.format = this.format;
         info.commitMessage = this.commitMessage;
 
-        this.apis.publishApi(this.api.id, info).then( () => {
+        this.apis.publishApi(this.api.id, info, this.dereference).then( () => {
             this.publishing = false;
             this.published = true;
         }).catch( error => {
@@ -228,13 +239,17 @@ export class PublishPageComponent extends AbstractPageComponent {
             this.resource &&
             this.resource.length > 0;
     }
+    
+    public isGraphQL(): boolean {
+        return this.api && this.api.type === "GraphQL";
+    }
 
     public commitMessageMode(): CodeEditorMode {
         return CodeEditorMode.Markdown;
     }
 
     public formatOptions(): DropDownOption[] {
-        if (this.api && this.api.type === "GraphQL") {
+        if (this.isGraphQL()) {
             return [
                 new Value("SDL", "SDL")
             ];

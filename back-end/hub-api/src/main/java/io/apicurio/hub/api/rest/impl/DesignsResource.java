@@ -863,7 +863,6 @@ public class DesignsResource implements IDesignsResource {
             // First step - publish the content to the soruce control system
             ISourceConnector connector = this.sourceConnectorFactory.createConnector(type);
             String resourceUrl = toResourceUrl(info);
-            // TODO dereference from query params
             String formattedContent = getApiContent(designId, info.getFormat(), "true".equalsIgnoreCase(dereference));
             try {
                 ResourceContent content = connector.getResourceContent(resourceUrl);

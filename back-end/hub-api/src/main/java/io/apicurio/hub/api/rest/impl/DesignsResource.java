@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.zip.ZipInputStream;
@@ -595,43 +596,29 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/content", "GET");
 
         try {
+            FormatType formatType = format == null
+                    ? null
+                    : FormatType.valueOf(format.toUpperCase(Locale.ROOT));
+            final boolean isDereference = "true".equalsIgnoreCase(dereference);
+            getApiContent(designId, formatType, isDereference);
+            
             String user = this.security.getCurrentUser().getLogin();
             
-            String content = null;
+            String content = getApiContent(designId, formatType, isDereference);
             String ct = null;
             
             ApiDesign apiDesign = this.storage.getApiDesign(user, designId);
             if (apiDesign.getType() == ApiDesignType.GraphQL) {
-                ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
-                content = designContent.getDocument();
-                ct = "application/graphql; charset=" + StandardCharsets.UTF_8;
-                
-                if ("json".equals(format)) {
+                if (formatType == FormatType.JSON) {
                     // TODO: Convert from SDL to JSON
                     throw new ServerError("Format 'JSON' not yet supported for GraphQL designs.");
                 }
-            } else {
-                ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
-    
-                // Load and apply commands if any exist.
-                List<ApiDesignCommand> apiCommands = this.storage.listContentCommands(user, designId, designContent.getContentVersion());
-                List<String> commands = new ArrayList<>(apiCommands.size());
-                for (ApiDesignCommand apiCommand : apiCommands) {
-                    commands.add(apiCommand.getCommand());
-                }
-                content = this.oaiCommandExecutor.executeCommands(designContent.getDocument(), commands);
-                ct = "application/json; charset=" + StandardCharsets.UTF_8;
-                
-                // If we should dereference the content, do that now.
-                if ("true".equalsIgnoreCase(dereference)) {
-                    content = dereferencer.dereference(content);
-                }
-                
+                ct = "application/graphql; charset=" + StandardCharsets.UTF_8;
+            } else if (formatType == FormatType.YAML) {
                 // Convert to yaml if necessary
-                if ("yaml".equals(format)) {
-                    content = FormatUtils.jsonToYaml(content);
-                    ct = "application/x-yaml; charset=" + StandardCharsets.UTF_8;
-                }
+                ct = "application/x-yaml; charset=" + StandardCharsets.UTF_8;
+            } else {
+                ct = "application/json; charset=" + StandardCharsets.UTF_8;
             }
 
             byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
@@ -640,7 +627,7 @@ public class DesignsResource implements IDesignsResource {
                     .header("Content-Type", ct)
                     .header("Content-Length", cl);
             return builder.build();
-        } catch (StorageException | OaiCommandException | IOException e) {
+        } catch (StorageException e) {
             throw new ServerError(e);
         }
     }
@@ -866,17 +853,18 @@ public class DesignsResource implements IDesignsResource {
     }
     
     /**
-     * @see io.apicurio.hub.api.rest.IDesignsResource#publishApi(java.lang.String, io.apicurio.hub.api.beans.NewApiPublication)
+     * @see io.apicurio.hub.api.rest.IDesignsResource#publishApi(java.lang.String, io.apicurio.hub.api.beans.NewApiPublication, java.lang.String)
      */
     @Override
-    public void publishApi(String designId, NewApiPublication info) throws ServerError, NotFoundException {
+    public void publishApi(String designId, NewApiPublication info, String dereference) throws ServerError, NotFoundException {
         LinkedAccountType type = info.getType();
         
         try {
             // First step - publish the content to the soruce control system
             ISourceConnector connector = this.sourceConnectorFactory.createConnector(type);
             String resourceUrl = toResourceUrl(info);
-            String formattedContent = getApiContent(designId, info.getFormat());
+            // TODO dereference from query params
+            String formattedContent = getApiContent(designId, info.getFormat(), "true".equalsIgnoreCase(dereference));
             try {
                 ResourceContent content = connector.getResourceContent(resourceUrl);
                 content.setContent(formattedContent);
@@ -905,7 +893,8 @@ public class DesignsResource implements IDesignsResource {
     public MockReference mockApi(String designId) throws ServerError, NotFoundException {
         try {
             // First step - publish the content to the Microcks server API
-            String content = getApiContent(designId, FormatType.YAML);
+            // TODO should dereference be fetched from query here?
+            String content = getApiContent(designId, FormatType.YAML, false);
             String serviceRef = this.microcks.uploadResourceContent(content);
 
             // Build mockURL from microcksURL.
@@ -1012,10 +1001,11 @@ public class DesignsResource implements IDesignsResource {
      * Gets the current content of an API.
      * @param designId
      * @param format
+     * @param dereference
      * @throws ServerError
      * @throws NotFoundException
      */
-    private String getApiContent(String designId, FormatType format) throws ServerError, NotFoundException {
+    private String getApiContent(String designId, FormatType format, boolean dereference) throws ServerError, NotFoundException {
         try {
             String user = this.security.getCurrentUser().getLogin();
             
@@ -1037,7 +1027,12 @@ public class DesignsResource implements IDesignsResource {
                     }
                     content = this.oaiCommandExecutor.executeCommands(designContent.getDocument(), commands);
                 }
-    
+
+                // If we should dereference the content, do that now.
+                if (dereference) {
+                    content = dereferencer.dereference(content);
+                }
+
                 // Convert to yaml if necessary
                 if (format == FormatType.YAML) {
                     content = FormatUtils.jsonToYaml(content);
@@ -1151,10 +1146,11 @@ public class DesignsResource implements IDesignsResource {
             if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
+
             CodegenProject project = this.storage.getCodegenProject(userLogin, designId, projectId);
-            String content = this.getApiContent(designId, FormatType.JSON);
+            String content = this.getApiContent(designId, FormatType.JSON, true);
             
-            // TODO support other types besides Thorntail
+            // TODO support other types besides jax-rs
             if (project.getType() == CodegenProjectType.thorntail) {
                 JaxRsProjectSettings settings = toJaxRsSettings(project);
 
@@ -1325,7 +1321,8 @@ public class DesignsResource implements IDesignsResource {
     private String generateAndPublishProject(CodegenProject project, boolean updateOnly)
             throws ServerError, NotFoundException {
         try {
-            String content = this.getApiContent(project.getDesignId(), FormatType.JSON);
+            // TODO should dereference be fetched from query here?
+            String content = this.getApiContent(project.getDesignId(), FormatType.JSON, false);
             
             // Dereference the document so that we have everything we need in a single place
             content = dereferencer.dereference(content);
@@ -1471,8 +1468,9 @@ public class DesignsResource implements IDesignsResource {
         metrics.apiCall("/designs/{designId}/validation", "GET");
         
         // TODO support validation of GraphQL APIs.
-        
-        String content = this.getApiContent(designId, FormatType.JSON);
+
+        // TODO should dereference be fetched from query here?
+        String content = this.getApiContent(designId, FormatType.JSON, false);
 
         Document doc = Library.readDocumentFromJSONString(content);
         List<ValidationProblem> problems = Library.validate(doc, new IValidationSeverityRegistry() {

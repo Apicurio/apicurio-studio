@@ -996,20 +996,10 @@ public class DesignsResource implements IDesignsResource {
             final ApiDesign apiDesign = this.storage.getApiDesign(userLogin, designId);
             final ApiDesignContent latestDocument = this.storage.getLatestContentDocument(userLogin, designId);
             long version = latestDocument.getContentVersion();
-            String documentAsString = latestDocument.getDocument();
-            final List<ApiDesignCommand> pendingCommands = this.storage.listContentCommands(userLogin, designId, version);
-            if (pendingCommands.isEmpty()) {
-                logger.debug("The design {} is up to date, publishing it as is", designId);
-            } else {
-                logger.debug("Design {} has {} pending commands from version: {}", designId, pendingCommands.size(), version);
-                final List<String> commands = new ArrayList<>(pendingCommands.size());
-                for (ApiDesignCommand apiCommand : pendingCommands) {
-                    commands.add(apiCommand.getCommand());
-                }
-                documentAsString = this.oaiCommandExecutor.executeCommands(documentAsString, commands);
-                version = storage.addContent(userLogin, designId, ApiContentType.Document, documentAsString);
-                logger.info("Rolled up pending commands on design: {} and saved it as version: {}", designId, version);
-            }
+            final FormatType formatType = apiDesign.getType() == ApiDesignType.GraphQL 
+                    ? FormatType.SDL 
+                    : FormatType.JSON;
+            String documentAsString = getApiContent(designId, formatType);
             // Create the template
             final StoredApiTemplate storedApiTemplate = newApiTemplate.toStoredApiTemplate();
             final String templateId = UUID.randomUUID().toString();
@@ -1022,7 +1012,7 @@ public class DesignsResource implements IDesignsResource {
             final String templateData = createTemplateData(designId, newApiTemplate, version);
             this.storage.addContent(userLogin, designId, ApiContentType.Template, templateData);
 
-        } catch (StorageException | OaiCommandException e) {
+        } catch (StorageException e) {
             throw new ServerError(e);
         }
     }

@@ -999,7 +999,7 @@ public class DesignsResource implements IDesignsResource {
             final FormatType formatType = apiDesign.getType() == ApiDesignType.GraphQL 
                     ? FormatType.SDL 
                     : FormatType.JSON;
-            String documentAsString = getApiContent(designId, formatType);
+            String documentAsString = getApiContent(designId, formatType, false);
             // Create the template
             final StoredApiTemplate storedApiTemplate = newApiTemplate.toStoredApiTemplate();
             final String templateId = UUID.randomUUID().toString();

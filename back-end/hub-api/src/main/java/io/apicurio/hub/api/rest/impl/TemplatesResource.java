@@ -26,6 +26,7 @@ import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.auth.impl.AuthorizationService;
 import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiTemplate;
+import io.apicurio.hub.core.beans.ApiTemplateKind;
 import io.apicurio.hub.core.beans.StoredApiTemplate;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -92,31 +93,30 @@ public class TemplatesResource implements ITemplatesResource {
     private AuthorizationService authorizationService;
 
     /**
-     * @see ITemplatesResource#getAllTemplates(ApiDesignType)
+     * @see ITemplatesResource#getAllTemplates(ApiDesignType, ApiTemplateKind)
      */
     @Override
-    public List<ApiTemplate> getAllTemplates(ApiDesignType type) throws ServerError {
+    public List<ApiTemplate> getAllTemplates(ApiDesignType type, ApiTemplateKind templateKind) throws ServerError {
         metrics.apiCall("/templates/all", "GET");
-        if (type == null) {
-            logger.debug("Getting all templates");
-            return Stream.concat(
-                    staticTemplates.stream(),
-                    getStoredTemplates(null).stream()
-            ).collect(Collectors.toUnmodifiableList());
-        } else {
-            logger.debug("Getting all templates of type {}", type);
-            return Stream.concat(
-                    staticTemplates.stream().filter(apiTemplate -> type.equals(apiTemplate.getType())),
-                    getStoredTemplates(type).stream()
-            ).collect(Collectors.toUnmodifiableList());
+        final ArrayList<ApiTemplate> apiTemplates = new ArrayList<>();
+        if (templateKind == null || templateKind == ApiTemplateKind.STATIC) {
+            if (type == null) {
+                logger.debug("Getting all static templates");
+                apiTemplates.addAll(staticTemplates);
+            } else {
+                logger.debug("Getting all static templates of type {}", type);
+                staticTemplates.stream().filter(apiTemplate -> type.equals(apiTemplate.getType()))
+                        .forEach(apiTemplates::add);
+            }
         }
+        if (templateKind == null || templateKind == ApiTemplateKind.STORED) {
+            logger.debug("Getting all stored templates");
+            apiTemplates.addAll(getStoredTemplates(type));
+        }
+        return apiTemplates;
     }
 
-    /**
-     * @see ITemplatesResource#getStoredTemplates(ApiDesignType)
-     */
-    @Override
-    public List<StoredApiTemplate> getStoredTemplates(ApiDesignType type) throws ServerError {
+    private List<StoredApiTemplate> getStoredTemplates(ApiDesignType type) throws ServerError {
         logger.debug("Getting all stored templates");
         metrics.apiCall("/templates", "GET");
         try {

@@ -25,6 +25,7 @@ import {ApiTypes} from "../models/api-types.enum";
 import {StoredApiDesignTemplate} from "../models/stored-api-design-template.model";
 import {NewApiTemplate} from "../models/new-api-template.model";
 import {UpdateApiTemplate} from "../models/update-api-template.model";
+import {ApiTemplateKinds} from "../models/api-template-kinds.enum";
 
 
 /**
@@ -58,7 +59,7 @@ export class TemplateService extends AbstractHubService {
         if (!this.templateCache.hasOwnProperty(type)) {
             console.info(`[TemplateService] Templates of type '${type}' are not ready, loading them from the API...`)
             let options: any = this.options({ "Accept": "application/json" });
-            return this.httpGet<any>(this.endpoint("/templates/all", {}, { type: type }), options)
+            return this.httpGet<any>(this.endpoint("/templates", {}, { type: type }), options)
                 .then(rawTemplates => {
                     let templates: ApiDesignTemplate[] = rawTemplates.map( template => {
                         return {
@@ -93,7 +94,7 @@ export class TemplateService extends AbstractHubService {
     public getStoredTemplates(): Promise<StoredApiDesignTemplate[]> {
         console.info("[TemplateService] Getting API templates");
 
-        let apiTemplatesUrl: string = this.endpoint("/templates");
+        let apiTemplatesUrl: string = this.endpoint("/templates", {}, { kind: ApiTemplateKinds.STORED });
         let options: any = this.options({ "Accept": "application/json" });
 
         console.info("[TemplateService] Fetching API templates: %s", apiTemplatesUrl);

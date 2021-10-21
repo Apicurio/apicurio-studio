@@ -20,6 +20,7 @@ import io.apicurio.hub.api.beans.NewApiTemplate;
 import io.apicurio.hub.api.beans.UpdateApiTemplate;
 import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiTemplate;
+import io.apicurio.hub.core.beans.ApiTemplateKind;
 import io.apicurio.hub.core.beans.StoredApiTemplate;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -45,13 +46,8 @@ import java.util.List;
 public interface ITemplatesResource {
 
     @GET
-    @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
-    List<ApiTemplate> getAllTemplates(@QueryParam("type") ApiDesignType type) throws ServerError;
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    List<StoredApiTemplate> getStoredTemplates(@QueryParam("type") ApiDesignType type) throws ServerError;
+    List<ApiTemplate> getAllTemplates(@QueryParam("type") ApiDesignType type, @QueryParam("kind") ApiTemplateKind templateKind) throws ServerError;
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)

@@ -23,6 +23,7 @@ import {
     DropDownOptionValue as Value,
 } from "../../../components/common/drop-down.component";
 import {ConfigService} from "../../../services/config.service";
+import {CodeEditorMode, CodeEditorTheme} from "../../../components/common/code-editor.component";
 
 export interface TemplateModel {
     type: string;
@@ -43,6 +44,8 @@ export class TemplateEditorComponent {
 
     public _isOpen: boolean = false;
     public _mode: string = "create";
+    textMode: CodeEditorMode = CodeEditorMode.YAML;
+    textTheme: CodeEditorTheme = CodeEditorTheme.Light;
     
     sending: boolean =  false;
     templateId: string;
@@ -162,10 +165,6 @@ export class TemplateEditorComponent {
 
     public changeType($event: any) {
         this.model.type = $event;
-    }
-
-    public textAreaLineCount(text: string): number {
-        return text.split('\n').length;
     }
 
     public pageHeader(): string {

@@ -14,13 +14,3 @@
 .template-editor .panel-body > h1 {
   margin-top: 10px;
 }
-
-.template-editor form textarea {
-  resize: vertical;
-}
-
-.template-editor #document {
-  resize: none;
-  min-height: 50px;
-  max-height: 500px;
-}

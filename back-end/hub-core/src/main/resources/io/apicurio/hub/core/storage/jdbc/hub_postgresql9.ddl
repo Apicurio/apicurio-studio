@@ -71,6 +71,5 @@ LANGUAGE plpgsql;
 -- `api_type` column should be typed the same as `api_designs`' `api_type`
 -- `owner` column should be typed the same as `api_content`'s `created_by`
 -- `template` column should be typed the same as `api_content`'s `data`
-CREATE TABLE templates (template_id VARCHAR(255) NOT NULL PRIMARY KEY, name VARCHAR(64) NOT NULL, api_type VARCHAR(255) NOT NULL, description VARCHAR(255), owner VARCHAR(255) NOT NULL, template TEXT NOT NULL);
-CREATE INDEX IDX_temp_1 ON templates(name);
-CREATE INDEX IDX_temp_2 ON templates(api_type);
+CREATE TABLE templates (template_id VARCHAR(64) NOT NULL PRIMARY KEY, name VARCHAR(64) NOT NULL, api_type VARCHAR(255) NOT NULL, description VARCHAR(1024), owner VARCHAR(255) NOT NULL, template TEXT NOT NULL);
+CREATE INDEX IDX_temp_1 ON templates(api_type);

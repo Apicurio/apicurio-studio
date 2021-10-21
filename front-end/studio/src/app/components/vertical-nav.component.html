@@ -9,6 +9,11 @@
             <span class="fa fa-fw fa-dashboard"></span>
             <div>Dashboard</div>
         </div>
+        <div id="api-nav-item-templates" class="api-nav-item" [class.active]="isTemplatesRoute()" *ngIf="isTemplatesEnabled()"
+             [class.selected]="currentSubMenu === subMenuTypes.Templates" (click)="goToTemplates()">
+            <span class="fa fa-fw fa-puzzle-piece"></span>
+            <div>Templates</div>
+        </div>
         <div id="api-nav-item-apis" class="api-nav-item" [class.active]="isAPIsRoute()"
              [class.selected]="currentSubMenu === subMenuTypes.APIs" (click)="toggleSubMenu(subMenuTypes.APIs)">
             <span class="fa fa-fw fa-bolt"></span>

@@ -1,0 +1,36 @@
+
+.api-template {
+}
+
+.api-template .template-form {
+  margin-top: 20px;
+}
+
+.api-template .template-form .template-panel {
+}
+
+.api-template .template-form h2 {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.api-template .template-form .control-label {
+  padding-right: 0px;
+}
+
+.api-template .template-form textarea {
+  resize: vertical;
+}
+
+hr {
+  margin-top: 5px;
+}
+
+.api-template .notice-of-required {
+  margin-top: 30px;
+}
+
+.api-template .template-resume {
+  margin-left: 20px;
+}
+

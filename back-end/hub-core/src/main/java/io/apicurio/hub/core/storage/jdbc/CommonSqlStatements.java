@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.core.storage.jdbc;
 
+import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.config.HubConfiguration;
 
 import java.io.IOException;
@@ -348,6 +349,16 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     }
 
     /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectContentDocumentForVersion()
+     */
+    @Override
+    public String selectContentDocumentForVersion() {
+        return "SELECT c.* "
+                + "FROM api_content c "
+                + "WHERE c.design_id = ? AND c.version = ? AND c.type = 0";
+    }
+
+    /**
      * @see ISqlStatements#selectLatestContentCommand()
      */
     @Override
@@ -467,7 +478,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
         		+ "FROM api_content c "
                 + "JOIN api_designs d ON d.id = c.design_id "
         		+ "WHERE c.design_id = ? "
-        		+ "  AND (c.type = 1 OR c.type = 2 OR c.type = 3) "
+        		+ "  AND (c.type = 1 OR c.type = 2 OR c.type = 3 OR c.type = 4) "
         		+ "  AND c.reverted = 0 "
         		+ "ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
@@ -478,7 +489,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
         		+ "FROM api_content c "
                 + "JOIN api_designs d ON d.id = c.design_id "
         		+ "WHERE c.created_by = ? "
-        		+ "  AND (c.type = 1 OR c.type = 2 OR c.type = 3) "
+        		+ "  AND (c.type = 1 OR c.type = 2 OR c.type = 3 OR c.type = 4) "
         		+ "  AND c.reverted = 0 "
         		+ "ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
@@ -505,6 +516,14 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     @Override
     public String selectApiMockActivity() {
         return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.type = 3 ORDER BY created_on DESC LIMIT ? OFFSET ?";
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiMockActivity()
+     */
+    @Override
+    public String selectApiTemplateActivity() {
+        return "SELECT c.* FROM api_content c WHERE c.design_id = ? AND c.type = 4 ORDER BY created_on DESC LIMIT ? OFFSET ?";
     }
 
     /**
@@ -609,5 +628,58 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     @Override
     public String selectSharingInfo() {
         return "SELECT * FROM sharing WHERE uuid = ?";
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiTemplates()
+     */
+    @Override
+    public String selectApiTemplate() {
+        return "SELECT * FROM templates " +
+                "WHERE template_id = ?";
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiTemplates()
+     */
+    @Override
+    public String selectApiTemplates() {
+        return "SELECT * FROM templates " +
+                "ORDER BY name ASC";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#selectApiTemplatesByType()
+     */
+    @Override
+    public String selectApiTemplatesByType() {
+        return "SELECT * FROM templates " +
+                "WHERE api_type = ?" +
+                "ORDER BY name ASC";
+    }
+    
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#insertApiTemplate()
+     */
+    @Override
+    public String insertApiTemplate() {
+        return "INSERT INTO templates (template_id, name, api_type, description, owner, template) VALUES" +
+                "  (?, ?, ?, ?, ?, ?)";
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#updateApiTemplate()
+     */
+    @Override
+    public String updateApiTemplate() {
+        return "UPDATE templates SET name = ?, description = ?, owner = ?, template = ? WHERE template_id = ?";
+    }
+
+    /**
+     * @see io.apicurio.hub.core.storage.jdbc.ISqlStatements#deleteApiTemplate()
+     */
+    @Override
+    public String deleteApiTemplate() {
+        return "DELETE FROM templates WHERE template_id = ?";
     }
 }

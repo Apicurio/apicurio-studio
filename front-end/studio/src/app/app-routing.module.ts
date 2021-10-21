@@ -36,6 +36,8 @@ import {MockPageComponent} from './pages/apis/{apiId}/mock/mock.page';
 import {DefaultPageComponent} from "./pages/default.page";
 import {ValidationPageComponent} from "./pages/settings/validation/validation.page";
 import {ApiTextEditorPageComponent, ApiTextEditorPageGuard} from "./pages/apis/{apiId}/editor/api-teditor.page";
+import {TemplatePublicationPageComponent} from "./pages/apis/{apiId}/template/template-publication.page";
+import {TemplatesPageComponent} from "./pages/templates/templates.page";
 
 const routes: Routes = [
     {
@@ -46,6 +48,11 @@ const routes: Routes = [
     {
         path: 'dashboard',
         component: DashboardPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: 'templates',
+        component: TemplatesPageComponent,
         canActivate: [AuthenticationCanActivateGuard]
     },
     {
@@ -111,6 +118,11 @@ const routes: Routes = [
     {
         path: "apis/:apiId/mock",
         component: MockPageComponent,
+        canActivate: [AuthenticationCanActivateGuard]
+    },
+    {
+        path: "apis/:apiId/template",
+        component: TemplatePublicationPageComponent,
         canActivate: [AuthenticationCanActivateGuard]
     },
     {

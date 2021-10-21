@@ -1,0 +1,67 @@
+<div class="container-fluid container-templates">
+
+    <!-- Loading API (spinner) -->
+    <div class="row-fluid" *ngIf="!isDataLoaded()">
+        <div class="col-xs-12 col-sm-6 col-md-6">
+            <div class="container-fluid container-cards-pf api-editor-overview">
+                <div class="row row-cards-pf">
+                    <div class="">
+                        <div class="card-pf card-pf-accented">
+                            <div class="card-pf-heading">
+                                <h1 class="card-pf-title">
+                                    <p><span class="spinner spinner-xs spinner-inline"></span> Loading template information...</p>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="template-form row" *ngIf="isDataLoaded()">
+        <div class="col-md-10 panel panel-default">
+            <div class="panel-body">
+                <div class="templates-global-menu">
+                    <h1>Manage templates</h1>
+                    <button class="btn btn-primary pull-right" (click)="createTemplate()">Create template</button>
+                </div>
+                <table class="table table-striped table-bordered template-resume">
+                    <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th class="pre-actions">Creator</th>
+                        <th class="actions"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let template of this.templates">
+                        <td>{{ template.type }}</td>
+                        <td>{{ template.name }}</td>
+                        <td>{{ template.description }}</td>
+                        <td class="pre-actions">{{ template.owner }}</td>
+                        <td class="actions">
+                            <button class="icon-button fa-pull-right" title="Edit"
+                                    (click)="editTemplate(template)"><span class="fa fa-edit"></span></button>
+                            <button class="icon-button fa-pull-right" title="Delete"
+                                    (click)="deleteTemplate(template.templateId)"><span class="fa fa-trash"></span></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+
+    </div>
+</div>
+<template-editor #templateEditor (onSubmit)="loadAsyncPageData()"></template-editor>
+<confirm-delete-dialog #confirmDeleteModal>
+    <p>Do you really want to delete this template?</p>
+    <div class="alert alert-danger">
+        <span class="pficon pficon-error-circle-o"></span>
+        <strong>NOTE:</strong>
+        <span>This will <strong>permanently</strong> remove the template from the API creation page.  This operation cannot be undone.</span>
+    </div>
+</confirm-delete-dialog>

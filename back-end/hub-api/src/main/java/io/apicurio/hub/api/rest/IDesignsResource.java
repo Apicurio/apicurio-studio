@@ -35,6 +35,7 @@ import javax.ws.rs.core.Response;
 import io.apicurio.hub.api.beans.ImportApiDesign;
 import io.apicurio.hub.api.beans.NewApiDesign;
 import io.apicurio.hub.api.beans.NewApiPublication;
+import io.apicurio.hub.api.beans.NewApiTemplate;
 import io.apicurio.hub.api.beans.NewCodegenProject;
 import io.apicurio.hub.api.beans.UpdateCodgenProject;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
@@ -44,6 +45,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
+import io.apicurio.hub.core.beans.ApiTemplatePublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.Contributor;
 import io.apicurio.hub.core.beans.Invitation;
@@ -132,6 +134,17 @@ public interface IDesignsResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{designId}/mocks")
     public MockReference mockApi(@PathParam("designId") String designId) throws ServerError, NotFoundException;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{designId}/templates")
+    public Collection<ApiTemplatePublication> getTemplatePublications(@PathParam("designId") String designId,
+                                                                      @QueryParam("start") Integer start, @QueryParam("end") Integer end) throws ServerError, NotFoundException;
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("{designId}/templates")
+    public void publishTemplate(@PathParam("designId") String designId, NewApiTemplate newApiTemplate) throws ServerError, NotFoundException, AccessDeniedException;
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON, "application/x-yaml", "application/graphql" })

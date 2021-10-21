@@ -85,6 +85,12 @@
                                                         <span>Mock with Microcks...</span>
                                                     </a>
                                                 </li>
+                                                <li *ngIf="actionEnabled('create-template')">
+                                                    <a [routerLink]="[ 'template' ]">
+                                                        <span class="fa fa-fw fa-puzzle-piece"></span>
+                                                        <span>Promote as template...</span>
+                                                    </a>
+                                                </li>
                                                 <li role="separator" class="divider"></li>
                                                 <li *ngIf="actionEnabled('download')">
                                                     <a (click)="downloadModal.open(api)">

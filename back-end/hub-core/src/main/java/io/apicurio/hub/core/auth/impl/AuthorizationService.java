@@ -4,6 +4,7 @@ import io.apicurio.hub.core.auth.IAuthorizationService;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
+import io.apicurio.studio.shared.beans.StudioRole;
 import io.apicurio.studio.shared.beans.User;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -59,5 +60,12 @@ public class AuthorizationService implements IAuthorizationService {
     public boolean hasPersonalOwnerPermission(User user, String designId) throws StorageException {
         return this.storage.hasOwnerPermission(user.getLogin(), designId);
     }
-        
+
+    /**
+     * @see IAuthorizationService#hasTemplateCreationPermission(User) 
+     */
+    @Override
+    public boolean hasTemplateCreationPermission(User user) {
+        return user.hasRole(StudioRole.APICURIO_ADMIN);
+    }
 }

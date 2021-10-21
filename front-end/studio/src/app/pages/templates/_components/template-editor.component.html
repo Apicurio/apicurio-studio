@@ -1,0 +1,57 @@
+<div class="template-editor container-fluid" *ngIf="isOpen()">
+    <div class="row">
+        <div class="panel panel-default col-sm-10">
+            <div class="panel-body">
+                <h1>{{ pageHeader() }}</h1>
+            
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                    <button class="btn btn-default pull-right" (click)="cancel()">Cancel</button>
+                    <button class="btn btn-primary pull-right" (click)="submit()" [disabled]="!isValid()">{{ submitText()}}</button>
+                </div>
+                
+                <form id="template-form" class="form-horizontal container-fluid" #templateForm="ngForm">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label required" for="title">Title</label>
+                        <div class="col-sm-4">
+                            <input name="title" type="text" id="title" class="form-control"
+                                   placeholder="Enter a title for the template..." required #templateName="ngModel"
+                                   [(ngModel)]="model.name">
+                            <form-error-message [inputModel]="templateName" [type]="'required'">Name is required.</form-error-message>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label required" for="api-type">Type</label>
+                        <div class="col-sm-10" *ngIf="this._mode == 'create'">
+                            <drop-down id="api-type" [id]="'api-template-specVersion'" [value]="model.type" [options]="typeOptions()"
+                                       (onValueChange)="changeType($event)" [noSelectionLabel]="'Choose Type'"></drop-down>
+                            <div class="form-error-message error" *ngIf="!model.type">Type is required.</div>
+                        </div>
+                        <div class="col-sm-10" *ngIf="this._mode == 'edit'">
+                            <input [id]="'api-template-specVersion'" [value]="model.type" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="description">Description</label>
+                        <div class="col-sm-10">
+                                            <textarea name="description" type="text" id="description" class="form-control"
+                                                      placeholder="Enter a description for the template..." #templateDescription="ngModel"
+                                                      [(ngModel)]="model.description"> </textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label required">Document</label>
+                        <div class="col-sm-10">
+                            <code-editor #templateDocument [(text)]="model.document"
+                                         [theme]="textTheme"
+                                         [mode]="textMode"
+                                         [debounceTime]="500"
+                                         [editorStyle]="{ position: 'relative', height: '500px', border: '1px solid #ccc', width: '100%' }"></code-editor>
+                            <form-error-message [inputModel]="templateDocument" [type]="'required'">Document is required.</form-error-message>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

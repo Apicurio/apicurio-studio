@@ -29,6 +29,8 @@ import {User} from "../../../models/user.model";
 import {ApiCollaborator} from "../../../models/api-collaborator.model";
 import {ConfigService} from "../../../services/config.service";
 import {ApiMock, MockReference} from "../../../models/mock-api.model";
+import {ApiTemplatePublication} from "../../../models/api-template-publication.model";
+import {ApicurioRole} from "../../../models/apicurio-role.enum";
 
 @Component({
     selector: "api-detail-page",
@@ -36,11 +38,12 @@ import {ApiMock, MockReference} from "../../../models/mock-api.model";
     styleUrls: ["api-detail.page.css"]
 })
 export class ApiDetailPageComponent extends AbstractPageComponent {
-
+    
     public api: Api;
     public contributors: ApiContributors;
     public collaborators: ApiCollaborator[];
     public mocks: ApiMock[];
+    public templates: ApiTemplatePublication[];
     public activity: ApiDesignChange[] = [];
     public activityStart: number = 0;
     public activityEnd: number = 10;
@@ -50,6 +53,7 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
 
     public mock: ApiMock;
     public mockRef: MockReference;
+    public template: ApiTemplatePublication;
 
     public uiUrl: string = "";
 
@@ -185,6 +189,14 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
                 this.dataLoaded["mocks"] = true;
             });
         }
+        this.apis.getTemplatePublications(apiId).then(templates => { // getTemplateActivity
+            this.templates = templates;
+            if (templates && templates.length > 0) {
+                this.template = templates[0];
+                console.debug(`Loaded template for apiId ${apiId}: ${JSON.stringify(this.template, null, 2)}`);
+            }
+            this.dataLoaded["templates"] = true;
+        });
     }
 
     /**
@@ -262,6 +274,26 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         return this.mock.on < latestActivity.on;
     }
 
+    /**
+     * Returns true only if the template promotion is older than the most recent command activity.
+     */
+    public isTemplateStale(): boolean {
+        if (!this.activity) {
+            return false;
+        }
+        if (!this.template) {
+            return true;
+        }
+        let latestCommand = null;
+        for (let apiDesignChange of this.activity) {
+            if (apiDesignChange.type == "Command") {
+                latestCommand = apiDesignChange;
+                break;
+            }
+        }
+        return !!latestCommand && this.template.createdOn < latestCommand.on;
+    }
+
     public actionEnabled(action: string): boolean {
         if (action == "delete") {
             return this.canDelete;
@@ -289,6 +321,10 @@ export class ApiDetailPageComponent extends AbstractPageComponent {
         }
         if (action == "mock") {
             return this.config.isMicrocksEnabled() && (this.isOpenApi30() || this.isAsyncApi20());
+        }
+        if (action == "create-template") {
+            let user: User = this.authService.getAuthenticatedUserNow();
+            return user && user.roles.includes(ApicurioRole.APICURIO_ADMIN);
         }
         if (action == "edit-data-model") {
             return this.isOpenApi30() || this.isOpenApi20() || this.isAsyncApi20();

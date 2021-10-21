@@ -4,7 +4,7 @@
 
 CREATE TABLE apicurio (prop_name VARCHAR(255) NOT NULL, prop_value VARCHAR(255));
 ALTER TABLE apicurio ADD PRIMARY KEY (prop_name);
-INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 11);
+INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 12);
 
 CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on DATETIME, used_on DATETIME, nonce VARCHAR(255));
 ALTER TABLE accounts ADD PRIMARY KEY (user_id, type);
@@ -46,3 +46,9 @@ CREATE TABLE sharing (design_id BIGINT NOT NULL PRIMARY KEY, uuid VARCHAR(255) N
 ALTER TABLE sharing ADD CONSTRAINT FK_shar_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
 CREATE INDEX IDX_shar_1 ON sharing(uuid);
 CREATE INDEX IDX_shar_2 ON sharing(level);
+
+-- `api_type` column should be typed the same as `api_designs`' `api_type`
+-- `owner` column should be typed the same as `api_content`'s `created_by`
+-- `template` column should be typed the same as `api_content`'s `data`
+CREATE TABLE templates (template_id VARCHAR(64) NOT NULL PRIMARY KEY, name VARCHAR(64) NOT NULL, api_type VARCHAR(255) NOT NULL, description VARCHAR(1024), owner VARCHAR(255) NOT NULL, template MEDIUMTEXT NOT NULL);
+CREATE INDEX IDX_temp_1 ON templates(api_type);

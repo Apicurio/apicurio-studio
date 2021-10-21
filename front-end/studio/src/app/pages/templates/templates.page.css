@@ -1,0 +1,49 @@
+
+.container-templates .template-form {
+  margin-top: 20px;
+  margin-left: 10px;
+}
+
+.container-templates .template-form h1 {
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.container-templates .template-form .control-label {
+  padding-right: 0;
+}
+
+.container-templates .template-form textarea {
+  resize: vertical;
+}
+
+.container-templates .templates-global-menu {
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.container-templates .templates-global-menu > * {
+   display: inline;
+ }
+
+.container-templates .notice-of-required {
+  margin-top: 30px;
+}
+
+.container-templates .template-resume .actions > button {
+  background-color: transparent;
+  color: #776;
+  border-width: 0;
+}
+
+.container-templates table td.pre-actions,
+.container-templates table th.pre-actions {
+  border-right-width: 0px;
+}
+
+.container-templates table td.actions,
+.container-templates table th.actions {
+  border-left-width: 0px;
+  width: 10%;
+  padding-right: 0px;
+}

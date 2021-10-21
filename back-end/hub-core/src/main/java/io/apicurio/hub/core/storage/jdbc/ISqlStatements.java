@@ -16,6 +16,8 @@
 
 package io.apicurio.hub.core.storage.jdbc;
 
+import io.apicurio.hub.core.beans.ApiDesignType;
+
 import java.util.List;
 
 /**
@@ -207,6 +209,12 @@ public interface ISqlStatements {
     public String selectLatestContentDocumentForSharing();
 
     /**
+     * A statement used to return a 'document' style api_content row for
+     * a given API design and version.
+     */
+    public String selectContentDocumentForVersion();
+
+    /**
      * A statement used to return all of the 'command' style api_content rows for
      * a given API Design (excludes reverted commands).
      */
@@ -278,6 +286,12 @@ public interface ISqlStatements {
     public String selectApiMockActivity();
 
     /**
+     * A statement used to select rows from the api_content table (limited by a range).  Selects 
+     * only the template rows.
+     */
+    String selectApiTemplateActivity();
+    
+    /**
      * A statement used to select the most recent 5 APIs for a given user.
      */
     public String selectRecentApiDesigns();
@@ -342,4 +356,33 @@ public interface ISqlStatements {
      */
     public boolean supportsUpsert();
 
+    /**
+     * A statement used to select a single row from the template table.
+     */
+    public String selectApiTemplate();
+
+    /**
+     * A statement used to select all rows from the template table.
+     */
+    public String selectApiTemplates();
+    
+    /**
+     * A statement used to select all rows of a given api_type from the template table.
+     */
+    public String selectApiTemplatesByType();
+
+    /**
+     * A statement to insert a single row on the template table
+     */
+    public String insertApiTemplate();
+    
+    /**
+     * A statement to update a single row on the template table
+     */
+    public String updateApiTemplate();
+    
+    /**
+     * A statement to delete a single row on the template table
+     */
+    public String deleteApiTemplate();
 }

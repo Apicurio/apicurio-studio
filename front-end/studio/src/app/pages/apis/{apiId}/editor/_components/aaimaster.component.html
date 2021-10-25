@@ -87,6 +87,25 @@
         </li>
     </ul>
 
+    <!-- Message Context Menu -->
+    <ul id="message-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'message'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameMessage()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteMessage()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
     <!-- Search - Used to Filter Channels and Data Type -->
     <div class="editor-search">
         <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
@@ -130,6 +149,28 @@
 
                 <div definition-item *ngFor="let def of definitions()" class="api-definition {{ definitionClasses(def) }}" [schema]="def"
                         (click)="defList.focus() ; selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"></div>
+            </div>
+        </section>
+
+        <!-- Messages Section -->
+        <section type="message" label="Messages" [counterItems]="messages()" [inForm]="false"
+                 collaborationNodePath="/components/messages"
+                 contextHelp="Reusable message properties (headers, correlationId, contentType, ...) can be defined through Messages.">
+            <span actions>
+                <icon-button (onClick)="openAddMessageEditor()" [pullRight]="true" type="add" title="Create Message"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importMessages()" [pullRight]="true" type="import" title="Import Messages"></icon-button>
+            </span>
+            <div body tabindex="0" class="message-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #msgList>
+                <signpost *ngIf="!hasMessages()">
+                    <span>No messages have been created.</span>
+                    <a (click)="openAddMessageEditor()">Add a message</a>
+                </signpost>
+
+                <div class="api-message {{ messageClasses(message) }}" *ngFor="let message of messages()">
+                    <div class="api-message-item" message-item [message]="message"
+                         (click)="msgList.focus() ; selectMessage(message)"
+                         (contextmenu)="showMessageContextMenu($event, message)"></div>
+                </div>
             </div>
         </section>
 
@@ -205,4 +246,12 @@
                           validationPattern="[a-zA-Z0-9\.\-_]+"
                           validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
                           (onRename)="renameMessageTrait($event)"></rename-entity-dialog>
+
+    <rename-entity-dialog #renameMessageDialog
+                          type="Message"
+                          title="Rename Message"
+                          warning="Renaming a Message will also update any references to the message elsewhere in the API (e.g. operation payloads)."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
+                          (onRename)="renameMessage($event)"></rename-entity-dialog>
 </div>

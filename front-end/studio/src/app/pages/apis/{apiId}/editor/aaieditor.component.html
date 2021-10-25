@@ -20,6 +20,8 @@
                          *ngSwitchCase="'operationTrait_20'"></operationtrait-form>
         <messagetrait-form [messageTrait]="selectedMessageTrait()" class="editor-detail-form"
                             *ngSwitchCase="'messageTrait_20'"></messagetrait-form>
+        <message-form [message]="selectedMessage()" class="editor-detail-form"
+                           *ngSwitchCase="'message_20'"></message-form>
     </div>
 
     <data-type-editor #dataTypeEditor></data-type-editor>
@@ -28,6 +30,7 @@
     <security-requirement-editor #securityRequirementEditor></security-requirement-editor>
     <operationtrait-editor #operationTraitEditor></operationtrait-editor>
     <messagetrait-editor #messageTraitEditor></messagetrait-editor>
+    <message-editor #messageEditor></message-editor>
     <property-editor #propertyEditor></property-editor>
 
 </div>

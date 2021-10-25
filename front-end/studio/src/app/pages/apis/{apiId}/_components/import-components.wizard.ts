@@ -24,11 +24,14 @@ import {ComponentType} from "../editor/_models/component-type.model";
 import {DataTableColumn, DataTableRow} from "../../../../components/common/data-table.component";
 import * as moment from "moment";
 import {
+    AaiComponents,
     CombinedVisitorAdapter,
+    Components,
     Document,
     DocumentType,
     IDefinition,
     Library,
+    NodeCompat,
     TraverserDirection
 } from "apicurio-data-models";
 
@@ -416,6 +419,8 @@ class ComponentFinder extends CombinedVisitorAdapter {
                 return "#/components/securitySchemes/";
             case ComponentType.link:
                 return "#/components/links/";
+            case ComponentType.message:
+                return "#/components/messages/";
             case ComponentType.messageTrait:
                 return "#/components/messageTraits";
         }
@@ -430,6 +435,20 @@ class ComponentFinder extends CombinedVisitorAdapter {
     visitResponseDefinition(node: IDefinition): void {
         if (this.type == ComponentType.response) {
             this.componentFound(node);
+        }
+    }
+
+    visitComponents(node: Components): void {
+        if (this.type == ComponentType.message) {
+            let messages: Components = (<AaiComponents>node)?.messages;
+
+            if(NodeCompat.isDefined(messages)){
+                Object.keys(messages).forEach((messageName)=>{
+                    this.componentFound(messages[messageName])
+
+                })
+            }
+
         }
     }
 

@@ -1,0 +1,163 @@
+<div class="detail-title">
+    <div message-item class="detail-label" [message]="message"></div>
+    <div class="detail-actions">
+
+    </div>
+</div>
+<div class="detail-tabs">
+    <ul class="nav nav-tabs nav-tabs-pf">
+        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()">Design</a></li>
+        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()">Source</a></li>
+    </ul>
+</div>
+
+<!-- Source Mode -->
+<div class="detail-actionbar" *ngIf="isSourceMode()">
+    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
+    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canToggleSourceFormat()" (click)="toggleSourceFormat()">
+        <span class="fa fa-fw fa-code"></span>
+        <span *ngIf="isSourceFormatYaml()">As JSON</span>
+        <span *ngIf="isSourceFormatJson()">As YAML</span>
+    </button>
+</div>
+<div class="detail-content" style="position: relative" *ngIf="isSourceMode()">
+    <code-editor #sourceEditor
+                 [(text)]="source"
+                 [theme]="sourceEditorTheme()"
+                 [mode]="sourceEditorMode()"
+                 [debounceTime]="250"
+                 [editorStyle]="{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, 'margin-top': '1px' }"></code-editor>
+</div>
+
+<!-- Design Mode -->
+<div class="detail-content" *ngIf="isDesignMode()">
+
+    <div class="api-path-detail">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
+
+                <div class="half-section" >
+
+                    <!-- Name -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="message" [shallow]="true" [property]="'name'"></validation-problem>
+                        <span>Name</span>
+                    </div>
+                    <div class="section-field name">
+                        <pf-inline-text-editor [value]="message.name" [noValueMessage]="'No name.'"
+                                               [labelClass]="'api-version'"
+                                               [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                               [baseNode]="message" nodePath="name"
+                                               (onChange)="changeName($event)"></pf-inline-text-editor>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="message" [shallow]="true" [property]="'title'"></validation-problem>
+                        <span>Title</span>
+                    </div>
+                    <div class="section-field title">
+                        <pf-inline-text-editor [value]="message.title" [noValueMessage]="'No title.'"
+                                               [labelClass]="'api-version'"
+                                               [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                               [baseNode]="message" nodePath="title"
+                                               (onChange)="changeTitle($event)"></pf-inline-text-editor>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="message" [shallow]="true" [property]="'summary'"></validation-problem>
+                        <span>Summary</span>
+                    </div>
+                    <div class="section-field summary">
+                        <pf-inline-text-editor [value]="message.summary" [noValueMessage]="'No summary.'"
+                                               [labelClass]="'api-version'"
+                                               [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                               [baseNode]="message" nodePath="summary"
+                                               (onChange)="changeSummary($event)"></pf-inline-text-editor>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="message" [shallow]="true" [property]="'description'"></validation-problem>
+                        <span>Description</span>
+                    </div>
+                    <div class="section-field description">
+                        <inline-markdown-editor [value]="message.description" [noValueMessage]="'No description.'"
+                                                [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
+                                                [inputClass]="'api-item-description'"
+                                                [formClass]="'api-description-editor-form'"
+                                                [baseNode]="message" nodePath="description"
+                                                (onChange)="changeDescription($event)"></inline-markdown-editor>
+                    </div>
+
+                </div>
+
+                <div class="half-section right">
+                    <!-- Correlation ID -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="message" [shallow]="true" [property]="'name'"></validation-problem>
+                        <span>Correlation ID</span>
+                    </div>
+                    <div class="section-field name">
+                        <pf-inline-text-editor [value]="message.name" [noValueMessage]="'No name.'"
+                                               [labelClass]="'api-version'"
+                                               [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                               [baseNode]="message" nodePath="name"
+                                               (onChange)="changeName($event)"></pf-inline-text-editor>
+                    </div>
+
+                    <!-- Content Type -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="message" [shallow]="true" [property]="'contentType'"></validation-problem>
+                        <span>Content Type</span>
+                    </div>
+                    <div class="section-field contentType">
+                        <pf-inline-text-editor [value]="message.contentType" [noValueMessage]="'No content type. Default will apply.'"
+                                               [labelClass]="'api-version'"
+                                               [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                               [baseNode]="message" nodePath="contentType"
+                                               (onChange)="changeContentType($event)"></pf-inline-text-editor>
+                    </div>
+
+                    <!-- Schema Format -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="message" [shallow]="true" [property]="'schemaFormat'"></validation-problem>
+                        <span>Schema Format</span>
+                    </div>
+                    <div class="section-field schemaFormat">
+                        <drop-down [value]="message.schemaFormat"
+                                   [options]="schemaFormatOptions()"
+                                   (onValueChange)="changeSchemaFormat($event)"
+                                   noSelectionLabel="No Schema Format"></drop-down>
+                    </div>
+                </div>
+
+                <div class="section-field-label" >
+                    <validation-problem [model]="message" [shallow]="true" [property]="'payload'"></validation-problem>
+                    <span>Content</span>
+                </div>
+                <div class="parts-tabs" >
+                    <div class="tab" [class.active]="isPartActive('payload')">
+                        <a (click)="setActivePart('payload')">
+                            <span>Payload</span>
+                        </a>
+                    </div>
+                    <div class="tab" [class.active]="isPartActive('headers')">
+                        <a (click)="setActivePart('headers')">
+                            <span>Headers</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="parts-tab-content" >
+                    <payload-tab [message]="message" *ngIf="isPartActive('payload')"></payload-tab>
+                    <headers-tab [message]="message" *ngIf="isPartActive('headers')"></headers-tab>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

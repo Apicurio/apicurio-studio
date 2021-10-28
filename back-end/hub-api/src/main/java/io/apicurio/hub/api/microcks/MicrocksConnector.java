@@ -17,7 +17,6 @@
 package io.apicurio.hub.api.microcks;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
@@ -26,7 +25,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import io.apicurio.hub.api.content.ContentDereferencer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +50,6 @@ public class MicrocksConnector implements IMicrocksConnector {
 
     @Inject
     private HubConfiguration config;
-    @Inject
-    private ContentDereferencer dereferencer;
 
     /** Microcks API URL (should ends with /api). */
     private String apiURL;
@@ -143,14 +139,9 @@ public class MicrocksConnector implements IMicrocksConnector {
      * @param content OAS v3 specification content
      * @throws MicrocksConnectorException if upload fails for many reasons
      */
+    @Override
     public String uploadResourceContent(String content) throws MicrocksConnectorException {
         String oauthToken = this.getKeycloakOAuthToken();
-        try {
-            content = dereferencer.dereference(content);
-        } catch (IOException e) {
-            logger.error("Could not dereference imports in specification content", e);
-            throw new MicrocksConnectorException("Could not dereference imports before sending to Microcks");
-        }
         MultipartBody uploadRequest = Unirest.post(this.apiURL + "/artifact/upload")
                 .header("Authorization", "Bearer " + oauthToken)
                 .field("file", new ByteArrayInputStream(content.getBytes(Charset.forName("UTF-8"))), "open-api-contract.yml");
@@ -192,6 +183,7 @@ public class MicrocksConnector implements IMicrocksConnector {
      * @return List of repository secrets managed by Microcks server
      * @throws MicrocksConnectorException if connection fails for any reasons
      */
+    @Override
     public Collection<MicrocksSecret> getSecrets() throws MicrocksConnectorException {
         return null;
     }
@@ -202,6 +194,7 @@ public class MicrocksConnector implements IMicrocksConnector {
      * @return List of import jobs managed by Microcks server
      * @throws MicrocksConnectorException if connection fails for any reasons
      */
+    @Override
     public Collection<MicrocksImporter> getImportJobs() throws MicrocksConnectorException {
         return null;
     }
@@ -212,6 +205,7 @@ public class MicrocksConnector implements IMicrocksConnector {
      * @param job Import job to create in Microcks server.
      * @throws MicrocksConnectorException if connection fails for any reasons
      */
+    @Override
     public void createImportJob(MicrocksImporter job) throws MicrocksConnectorException {
         throw new MicrocksConnectorException("Not implemented");
     }
@@ -222,6 +216,7 @@ public class MicrocksConnector implements IMicrocksConnector {
      * @param job Import job to force import in Microcks server.
      * @throws MicrocksConnectorException if connection fails for any reasons
      */
+    @Override
     public void forceResourceImport(MicrocksImporter job) throws MicrocksConnectorException {
         throw new MicrocksConnectorException("Not implemented");
     }

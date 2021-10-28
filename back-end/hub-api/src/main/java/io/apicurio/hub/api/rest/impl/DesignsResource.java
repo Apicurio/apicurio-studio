@@ -140,7 +140,7 @@ public class DesignsResource implements IDesignsResource {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.setSerializationInclusion(Include.NON_NULL);
     }
-    
+
     @Inject
     private HubConfiguration config;
     @Inject
@@ -164,7 +164,7 @@ public class DesignsResource implements IDesignsResource {
     private HttpServletRequest request;
     @Context
     private HttpServletResponse response;
-    
+
     @Inject
     private GitLabResourceResolver gitLabResolver;
     @Inject
@@ -200,7 +200,7 @@ public class DesignsResource implements IDesignsResource {
     @Override
     public ApiDesign importDesign(ImportApiDesign info) throws ServerError, NotFoundException, ApiValidationException {
         metrics.apiCall("/designs", "PUT");
-        
+
         if (info.getData() != null && !info.getData().trim().isEmpty()) {
             logger.debug("Importing an API Design (from data).");
             return importDesignFromData(info);
@@ -210,14 +210,14 @@ public class DesignsResource implements IDesignsResource {
                 throw new ApiValidationException("No data provided to import.");
             }
             ISourceConnector connector = null;
-            
+
             try {
                 connector = this.sourceConnectorFactory.createConnector(info.getUrl());
             } catch (NotFoundException nfe) {
                 // This means it's not a source control URL.  So we'll treat it as a raw content URL.
                 connector = null;
             }
-            
+
             if (connector != null) {
                 return importDesignFromSource(info, connector);
             } else {
@@ -231,18 +231,18 @@ public class DesignsResource implements IDesignsResource {
      * @param info
      * @param connector
      * @throws NotFoundException
-     * @throws ServerError 
+     * @throws ServerError
      * @throws ApiValidationException
      */
     private ApiDesign importDesignFromSource(ImportApiDesign info, ISourceConnector connector) throws NotFoundException, ServerError, ApiValidationException {
         try {
             ApiDesignResourceInfo resourceInfo = connector.validateResourceExists(info.getUrl());
             ResourceContent initialApiContent = connector.getResourceContent(info.getUrl());
-            
+
             ApiDesign design = doImport(resourceInfo, initialApiContent.getContent());
-            
+
             metrics.apiImport(connector.getType());
-            
+
             return design;
         } catch (SourceConnectorException | IOException e) {
             throw new ServerError(e);
@@ -259,19 +259,19 @@ public class DesignsResource implements IDesignsResource {
         try {
             String data = info.getData();
             byte[] decodedData = Base64.decodeBase64(data);
-            
+
             try (InputStream is = new ByteArrayInputStream(decodedData)) {
                 String content = IOUtils.toString(is, "UTF-8");
                 ApiDesignResourceInfo resourceInfo = ApiDesignResourceInfo.fromContent(content);
-                
+
                 if (resourceInfo == null) {
                     throw new ApiValidationException("Failed to determine API Design type from content.");
                 }
-                
+
                 ApiDesign design = doImport(resourceInfo, content);
-                
+
                 metrics.apiImport(null);
-                
+
                 return design;
             }
         } catch (ApiValidationException | ServerError e) {
@@ -282,7 +282,7 @@ public class DesignsResource implements IDesignsResource {
     }
 
     /**
-     * Imports an API design from an arbitrary URL.  This simply opens a connection to that 
+     * Imports an API design from an arbitrary URL.  This simply opens a connection to that
      * URL and tries to consume its content as an OpenAPI document.
      * @param info
      * @throws NotFoundException
@@ -292,11 +292,11 @@ public class DesignsResource implements IDesignsResource {
     private ApiDesign importDesignFromUrl(ImportApiDesign info) throws NotFoundException, ServerError, ApiValidationException {
         try {
             URL url = new URL(info.getUrl());
-            
+
             try (InputStream is = url.openStream()) {
                 String content = IOUtils.toString(is, "UTF-8");
                 ApiDesignResourceInfo resourceInfo = ApiDesignResourceInfo.fromContent(content);
-                
+
                 String name = resourceInfo.getName();
                 if (name == null) {
                     name = url.getPath();
@@ -304,13 +304,13 @@ public class DesignsResource implements IDesignsResource {
                         name = name.substring(name.indexOf("/") + 1);
                     }
                 }
-                
+
                 resourceInfo.setName(name);
 
                 ApiDesign design = doImport(resourceInfo, content);
-                
+
                 metrics.apiImport(null);
-                
+
                 return design;
             }
         } catch (ApiValidationException | ServerError e) {
@@ -319,7 +319,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * Common functionality when importing a design.
      * @param info
@@ -331,7 +331,7 @@ public class DesignsResource implements IDesignsResource {
     private ApiDesign doImport(ApiDesignResourceInfo info, String content) throws ServerError, IOException {
         Date now = new Date();
         String user = this.security.getCurrentUser().getLogin();
-        
+
         if (info.getName() == null) {
             info.setName("Imported API Design");
         }
@@ -346,7 +346,7 @@ public class DesignsResource implements IDesignsResource {
         design.setCreatedOn(now);
         design.setTags(info.getTags());
         design.setType(info.getType());
-        
+
         try {
             // Convert from YAML to JSON if the source is YAML (always store as JSON).  Only for non-GraphQL designs.
             if (info.getType() != ApiDesignType.GraphQL && info.getFormat() == FormatType.YAML) {
@@ -374,7 +374,7 @@ public class DesignsResource implements IDesignsResource {
         try {
             Date now = new Date();
             String user = this.security.getCurrentUser().getLogin();
-            
+
             // The API Design meta-data
             ApiDesign design = new ApiDesign();
             design.setName(info.getName());
@@ -432,7 +432,7 @@ public class DesignsResource implements IDesignsResource {
             case GraphQL:
                 return "# GraphQL Schema '" + name + "' created " + new Date();
         }
-        
+
         if (doc != null) {
             doc.info = doc.createInfo();
             doc.info.title = name;
@@ -440,7 +440,7 @@ public class DesignsResource implements IDesignsResource {
             doc.info.version = "1.0.0";
             return Library.writeDocumentToJSONString(doc);
         }
-        
+
         throw new RuntimeException("Unhandled API design type: " + type);
     }
 
@@ -460,7 +460,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#updateDesign(java.lang.String, java.io.InputStream)
      */
@@ -473,13 +473,13 @@ public class DesignsResource implements IDesignsResource {
         try {
             String user = this.security.getCurrentUser().getLogin();
             ApiDesign design = this.storage.getApiDesign(user, designId);
-            
+
             String encoding = "UTF8";
             if (request != null) {
                 encoding = request.getCharacterEncoding();
             }
             String contentStr = IOUtils.toString(content, encoding);
-            
+
             try {
                 if (design.getType() == ApiDesignType.GraphQL) {
                     SchemaParser schemaParser = new SchemaParser();
@@ -509,7 +509,7 @@ public class DesignsResource implements IDesignsResource {
             } catch (Exception e) {
                 throw new ApiValidationException("Content is invalid.", e);
             }
-            
+
             storage.addContent(user, designId, ApiContentType.Document, contentStr);
         } catch (IOException | StorageException e) {
             throw new ServerError(e);
@@ -523,7 +523,7 @@ public class DesignsResource implements IDesignsResource {
     public Response editDesign(String designId) throws ServerError, NotFoundException {
         logger.debug("Editing an API Design with ID {}", designId);
         metrics.apiCall("/designs/{designId}/session", "GET");
-        
+
         try {
             String user = this.security.getCurrentUser().getLogin();
             logger.debug("\tUSER: {}", user);
@@ -588,7 +588,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#getContent(java.lang.String, java.lang.String, java.lang.String)
      */
@@ -604,12 +604,12 @@ public class DesignsResource implements IDesignsResource {
                     : FormatType.valueOf(format.toUpperCase(Locale.ROOT));
             final boolean isDereference = "true".equalsIgnoreCase(dereference);
             getApiContent(designId, formatType, isDereference);
-            
+
             String user = this.security.getCurrentUser().getLogin();
-            
+
             String content = getApiContent(designId, formatType, isDereference);
             String ct = null;
-            
+
             ApiDesign apiDesign = this.storage.getApiDesign(user, designId);
             if (apiDesign.getType() == ApiDesignType.GraphQL) {
                 if (formatType == FormatType.JSON) {
@@ -634,7 +634,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#createInvitation(java.lang.String)
      */
@@ -648,12 +648,12 @@ public class DesignsResource implements IDesignsResource {
             String userLogin = currentUser.getLogin();
             String username = currentUser.getName();
             String inviteId = UUID.randomUUID().toString();
-            
+
             ApiDesign design = this.storage.getApiDesign(userLogin, designId);
             if (!this.authorizationService.hasOwnerPermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
-            
+
             this.storage.createCollaborationInvite(inviteId, designId, userLogin, username, "collaborator", design.getName());
             Invitation invite = new Invitation();
             invite.setCreatedBy(userLogin);
@@ -681,7 +681,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#getInvitations(java.lang.String)
      */
@@ -697,7 +697,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#acceptInvitation(java.lang.String, java.lang.String)
      */
@@ -762,7 +762,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#updateCollaborator(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.UpdateCollaborator)
      */
@@ -782,7 +782,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#deleteCollaborator(java.lang.String, java.lang.String)
      */
@@ -817,7 +817,7 @@ public class DesignsResource implements IDesignsResource {
         if (end != null) {
             to = end.intValue();
         }
-        
+
         try {
             final User currentUser = this.security.getCurrentUser();
             if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
@@ -828,7 +828,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#getPublications(java.lang.String, java.lang.Integer, java.lang.Integer)
      */
@@ -843,7 +843,7 @@ public class DesignsResource implements IDesignsResource {
         if (end != null) {
             to = end.intValue();
         }
-        
+
         try {
             final User currentUser = this.security.getCurrentUser();
             if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
@@ -854,14 +854,14 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#publishApi(java.lang.String, io.apicurio.hub.api.beans.NewApiPublication, java.lang.String)
      */
     @Override
     public void publishApi(String designId, NewApiPublication info, String dereference) throws ServerError, NotFoundException {
         LinkedAccountType type = info.getType();
-        
+
         try {
             // First step - publish the content to the soruce control system
             ISourceConnector connector = this.sourceConnectorFactory.createConnector(type);
@@ -874,7 +874,7 @@ public class DesignsResource implements IDesignsResource {
             } catch (NotFoundException nfe) {
                 connector.createResourceContent(resourceUrl, info.getCommitMessage(), formattedContent);
             }
-            
+
             // Followup step - store a row in the api_content table
             try {
                 String user = this.security.getCurrentUser().getLogin();
@@ -896,7 +896,7 @@ public class DesignsResource implements IDesignsResource {
         try {
             // First step - publish the content to the Microcks server API
             // TODO should dereference be fetched from query here?
-            String content = getApiContent(designId, FormatType.YAML, false);
+            String content = getApiContent(designId, FormatType.YAML, true);
             String serviceRef = this.microcks.uploadResourceContent(content);
 
             // Build mockURL from microcksURL.
@@ -943,7 +943,7 @@ public class DesignsResource implements IDesignsResource {
         if (end != null) {
             to = end.intValue();
         }
-        
+
         try {
             final User currentUser = this.security.getCurrentUser();
             if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
@@ -996,8 +996,8 @@ public class DesignsResource implements IDesignsResource {
             final ApiDesign apiDesign = this.storage.getApiDesign(userLogin, designId);
             final ApiDesignContent latestDocument = this.storage.getLatestContentDocument(userLogin, designId);
             long version = latestDocument.getContentVersion();
-            final FormatType formatType = apiDesign.getType() == ApiDesignType.GraphQL 
-                    ? FormatType.SDL 
+            final FormatType formatType = apiDesign.getType() == ApiDesignType.GraphQL
+                    ? FormatType.SDL
                     : FormatType.JSON;
             String documentAsString = getApiContent(designId, formatType, false);
             // Create the template
@@ -1091,7 +1091,7 @@ public class DesignsResource implements IDesignsResource {
     private String getApiContent(String designId, FormatType format, boolean dereference) throws ServerError, NotFoundException {
         try {
             String user = this.security.getCurrentUser().getLogin();
-            
+
             ApiDesign design = this.storage.getApiDesign(user, designId);
 
             ApiDesignContent designContent = this.storage.getLatestContentDocument(user, designId);
@@ -1123,13 +1123,13 @@ public class DesignsResource implements IDesignsResource {
                     content = FormatUtils.formatJson(content);
                 }
             }
-            
+
             return content;
         } catch (StorageException | OaiCommandException | IOException e) {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#getCodegenProjects(java.lang.String)
      */
@@ -1160,12 +1160,12 @@ public class DesignsResource implements IDesignsResource {
         try {
             final User currentUser = this.security.getCurrentUser();
             String userLogin = currentUser.getLogin();
-            
+
             ApiDesign design = this.storage.getApiDesign(userLogin, designId);
             if (!this.authorizationService.hasWritePermission(currentUser, designId)) {
                 throw new AccessDeniedException();
             }
-            
+
             CodegenProject project = new CodegenProject();
             Date now = new Date();
             project.setCreatedBy(userLogin);
@@ -1174,7 +1174,7 @@ public class DesignsResource implements IDesignsResource {
             project.setModifiedOn(now);
             project.setDesignId(design.getId());
             project.setType(body.getProjectType());
-            
+
             project.setAttributes(new HashMap<String, String>());
             if (body.getProjectConfig() != null) {
                 project.getAttributes().putAll(body.getProjectConfig());
@@ -1212,7 +1212,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#getCodegenProjectAsZip(java.lang.String, java.lang.String)
      */
@@ -1232,7 +1232,7 @@ public class DesignsResource implements IDesignsResource {
 
             CodegenProject project = this.storage.getCodegenProject(userLogin, designId, projectId);
             String content = this.getApiContent(designId, FormatType.JSON, true);
-            
+
             // TODO support other types besides jax-rs
             if (project.getType() == CodegenProjectType.thorntail) {
                 JaxRsProjectSettings settings = toJaxRsSettings(project);
@@ -1243,29 +1243,29 @@ public class DesignsResource implements IDesignsResource {
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
-                
+
                 return asResponse(settings, generator);
             } else if (project.getType() == CodegenProjectType.jaxrs) {
                 JaxRsProjectSettings settings = toJaxRsSettings(project);
-                
+
                 boolean updateOnly = "true".equals(project.getAttributes().get("update-only"));
 
                 final OpenApi2JaxRs generator = new OpenApi2JaxRs();
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
-                
+
                 return asResponse(settings, generator);
             } else if (project.getType() == CodegenProjectType.quarkus) {
                 JaxRsProjectSettings settings = toJaxRsSettings(project);
-                
+
                 boolean updateOnly = "true".equals(project.getAttributes().get("update-only"));
 
                 final OpenApi2Quarkus generator = new OpenApi2Quarkus();
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
-                
+
                 return asResponse(settings, generator);
             } else {
                 throw new ServerError("Unsupported project type: " + project.getType());
@@ -1287,7 +1287,7 @@ public class DesignsResource implements IDesignsResource {
                 generator.generate(output);
             }
         };
-        
+
         String fname = settings.artifactId + ".zip";
         ResponseBuilder builder = Response.ok().entity(stream)
                 .header("Content-Disposition", "attachment; filename=\"" + fname + "\"")
@@ -1295,7 +1295,7 @@ public class DesignsResource implements IDesignsResource {
 
         return builder.build();
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#updateCodegenProject(java.lang.String, java.lang.String, io.apicurio.hub.api.beans.UpdateCodgenProject)
      */
@@ -1314,7 +1314,7 @@ public class DesignsResource implements IDesignsResource {
 
             CodegenProject project = this.storage.getCodegenProject(userLogin, designId, projectId);
             project.setType(body.getProjectType());
-            
+
             project.setAttributes(new HashMap<String, String>());
             if (body.getProjectConfig() != null) {
                 project.getAttributes().putAll(body.getProjectConfig());
@@ -1334,24 +1334,24 @@ public class DesignsResource implements IDesignsResource {
                 project.getAttributes().put("publish-repo", body.getPublishInfo().getRepo());
                 project.getAttributes().put("publish-team", body.getPublishInfo().getTeam());
             }
-            
+
             if (body.getLocation() == CodegenLocation.download) {
                 // Nothing extra to do when downloading - that will be handled by a separate call
             }
-            
+
             if (body.getLocation() == CodegenLocation.sourceControl) {
                 String prUrl = generateAndPublishProject(project, true);
                 project.getAttributes().put("pullRequest-url", prUrl);
             }
 
             this.storage.updateCodegenProject(userLogin, project);
-            
+
             return project;
         } catch (StorageException e) {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#deleteCodegenProject(java.lang.String, java.lang.String)
      */
@@ -1372,7 +1372,7 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#deleteCodegenProjects(java.lang.String)
      */
@@ -1394,7 +1394,7 @@ public class DesignsResource implements IDesignsResource {
     }
 
     /**
-     * Generate and publish (to a git/source control system) a project.  This will 
+     * Generate and publish (to a git/source control system) a project.  This will
      * generate a project from the OpenAPI document and then publish the result to
      * a source control platform.
      * @param project
@@ -1404,12 +1404,11 @@ public class DesignsResource implements IDesignsResource {
     private String generateAndPublishProject(CodegenProject project, boolean updateOnly)
             throws ServerError, NotFoundException {
         try {
-            // TODO should dereference be fetched from query here?
-            String content = this.getApiContent(project.getDesignId(), FormatType.JSON, false);
-            
+            String content = this.getApiContent(project.getDesignId(), FormatType.JSON, true);
+
             // Dereference the document so that we have everything we need in a single place
             content = dereferencer.dereference(content);
-            
+
             // Generate the type of project being requested.
             if (project.getType() == CodegenProjectType.thorntail) {
                 JaxRsProjectSettings settings = toJaxRsSettings(project);
@@ -1418,7 +1417,7 @@ public class DesignsResource implements IDesignsResource {
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
-                
+
                 return generateAndPublish(project, generator);
             } else if (project.getType() == CodegenProjectType.jaxrs) {
                 JaxRsProjectSettings settings = toJaxRsSettings(project);
@@ -1427,7 +1426,7 @@ public class DesignsResource implements IDesignsResource {
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
-                
+
                 return generateAndPublish(project, generator);
             } else if (project.getType() == CodegenProjectType.quarkus) {
                 JaxRsProjectSettings settings = toJaxRsSettings(project);
@@ -1436,7 +1435,7 @@ public class DesignsResource implements IDesignsResource {
                 generator.setSettings(settings);
                 generator.setOpenApiDocument(content);
                 generator.setUpdateOnly(updateOnly);
-                
+
                 return generateAndPublish(project, generator);
             } else {
                 throw new ServerError("Unsupported project type: " + project.getType());
@@ -1458,7 +1457,7 @@ public class DesignsResource implements IDesignsResource {
             throws IOException, NotFoundException, SourceConnectorException {
         ByteArrayOutputStream generatedContent = generator.generate();
         LinkedAccountType scsType = LinkedAccountType.valueOf(project.getAttributes().get("publish-type"));
-        
+
         ISourceConnector connector = this.sourceConnectorFactory.createConnector(scsType);
         String url = toSourceResourceUrl(project);
         String commitMessage = project.getAttributes().get("publish-commitMessage");
@@ -1503,7 +1502,7 @@ public class DesignsResource implements IDesignsResource {
                 String path = project.getAttributes().get("publish-location");
                 url = bitbucketResolver.create(team, repo, branch, path);
             }
-            break; 
+            break;
             case GitHub: {
                 String org = project.getAttributes().get("publish-org");
                 String repo = project.getAttributes().get("publish-repo");
@@ -1541,7 +1540,7 @@ public class DesignsResource implements IDesignsResource {
         }
         return null;
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#validateDesign(java.lang.String)
      */
@@ -1549,7 +1548,7 @@ public class DesignsResource implements IDesignsResource {
     public List<ValidationError> validateDesign(String designId) throws ServerError, NotFoundException {
         logger.debug("Validating API design with ID: {}", designId);
         metrics.apiCall("/designs/{designId}/validation", "GET");
-        
+
         // TODO support validation of GraphQL APIs.
 
         // TODO should dereference be fetched from query here?
@@ -1569,7 +1568,7 @@ public class DesignsResource implements IDesignsResource {
         }
         return errors;
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#configureSharing(java.lang.String, io.apicurio.hub.core.beans.UpdateSharingConfiguration)
      */
@@ -1582,20 +1581,20 @@ public class DesignsResource implements IDesignsResource {
         try {
             final User currentUser = this.security.getCurrentUser();
             String uuid = UUID.randomUUID().toString(); // Note: only used if this is the first time
-            
+
             if (!this.authorizationService.hasOwnerPermission(currentUser, designId)) {
                 throw new NotFoundException();
             }
-            
+
             this.storage.setSharingConfig(designId, uuid, config.getLevel());
-            
+
             return this.storage.getSharingConfig(designId);
         } catch (StorageException e) {
             throw new ServerError(e);
         }
-        
+
     }
-    
+
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#getSharingConfiguration(java.lang.String)
      */
@@ -1604,7 +1603,7 @@ public class DesignsResource implements IDesignsResource {
             throws ServerError, NotFoundException {
         logger.debug("Getting sharing settings for API: {} ", designId);
         metrics.apiCall("/designs/{designId}/sharing", "GET");
-        
+
         // Make sure we have access to the design.
         this.getDesign(designId);
 
@@ -1619,5 +1618,5 @@ public class DesignsResource implements IDesignsResource {
             throw new ServerError(e);
         }
     }
-    
+
 }

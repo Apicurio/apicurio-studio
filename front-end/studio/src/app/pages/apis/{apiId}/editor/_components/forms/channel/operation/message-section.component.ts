@@ -15,27 +15,33 @@
  * limitations under the License.
  */
 
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    SimpleChanges,
-    ViewEncapsulation
-} from "@angular/core";
-import { 
+    AaiDocument,
     AaiMessage,
     AaiOperation,
+    CommandFactory,
     ICommand,
-    CommandFactory
+    Library,
+    NodePath,
+    ReferenceUtil
 } from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";
 import {ModelUtils} from "../../../../_util/model.util";
-import {DropDownOptionValue as Value} from "../../../../../../../../components/common/drop-down.component";
+import {
+    DropDownOption,
+    DropDownOptionValue as Value
+} from "../../../../../../../../components/common/drop-down.component";
 import {ObjectUtils} from "apicurio-ts-core";
+import {SchemaUtil} from "../../../../_util/schema.util";
+import {EditorsService} from "../../../../_services/editors.service";
+
+const INHERITANCE_TYPES: DropDownOption[] = [
+    new Value("OneOf", "oneOf")
+];
 
 @Component({
     selector: "message-section",
@@ -49,6 +55,7 @@ export class MessageSectionComponent extends AbstractBaseComponent {
     @Input() operation: AaiOperation;
 
     currentPart: string = 'payload';
+    nodePathToDel: NodePath = undefined;
 
     /**
      * C'tor.
@@ -56,15 +63,15 @@ export class MessageSectionComponent extends AbstractBaseComponent {
      * @param documentService
      * @param commandService
      * @param selectionService
+     * @param editors
      */
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
-                private commandService: CommandService, private selectionService: SelectionService) {
+                private commandService: CommandService, private selectionService: SelectionService, private editors: EditorsService) {
             super(changeDetectorRef, documentService, selectionService);
     }
 
     ngOnInit(): void {
         console.log("operation.ownerDocument: " + this.operation.ownerDocument());
-        console.log("operation.message: " + this.operation.message);
         if (this.operation.message != null) {
             console.log("operation.message.ownerDocument: " + this.operation.message.ownerDocument());
             console.log("operation.message.name: " + this.operation.message.name);
@@ -77,18 +84,64 @@ export class MessageSectionComponent extends AbstractBaseComponent {
         return ModelUtils.nodeToPath(this.operation) + "/message";
     }
 
-    public addMessage(): void {
-        /*
-        let command: ICommand = CommandFactory.createNewRequestBodyCommand(this.operation.ownerDocument().getDocumentType(), this.operation);
-        this.commandService.emit(command);
-        let nodePath = Library.createNodePath(this.operation);
-        nodePath.appendSegment("requestBody", false);
-        this.selectionService.select(nodePath.toString());
-        */
+    /**
+     * Called when the user selects the main/default element from the master area.
+     */
+    public selectMain(): void {
+        this.__selectionService.selectRoot();
     }
 
-    public message(): AaiMessage {
+    /**
+     * Deselects the currently selected message definition.
+     */
+    public deselectMessage(): void {
+        this.selectMain();
+    }
+
+    public addOneOf(newOneOf: string){
+        let doc: AaiDocument = this.operation.ownerDocument() as AaiDocument;
+        let message: AaiMessage = doc.components.getMessage(newOneOf);
+        message.setReference(message.payload.$ref.replace("schemas","messages").replace(message.payload.$ref.split("/")[3],message.getName()));
+        message.name = null;
+        message.payload = null;
+        let command: ICommand = CommandFactory.createAddOneOfInMessageCommand(message,this.operation.message);
+        this.commandService.emit(command);
+
+        let nodePath = Library.createNodePath(this.operation);
+        this.__selectionService.select(nodePath.toString());
+    }
+
+    public deleteMessageInOneOf(data: AaiMessage, idx: number): void {
+        let command: ICommand = CommandFactory.createDeleteOneOfMessageCommand(data, idx);
+        this.commandService.emit(command);
+
+        let nodePath = Library.createNodePath(this.operation);
+        this.__selectionService.select(nodePath.toString());
+    }
+
+
+    public isMultiMessages(): boolean {
+        if (ObjectUtils.isNullOrUndefined((this.messageFromOperation()))) {
+            return false;
+        }
+        return !ObjectUtils.isNullOrUndefined((this.messageFromOperation().oneOf)) && this.messageFromOperation().oneOf.length > 0;
+    }
+
+    //message from operation
+    public messageFromOperation(): AaiMessage {
         return this.operation.message;
+    }
+
+    // Name Message list from document
+    public getMessagesFromDocument(): string[] {
+        let doc: AaiDocument = this.operation.ownerDocument() as AaiDocument;
+        return doc.components.getMessagesList().map( m =>
+            m.getName()
+        );
+    }
+
+    public referenceAlreadyAdd(): string[] {
+        return this.operation.message.oneOf.map(m => m.getReference().split('/')[3]);
     }
 
     public hasMessage(): boolean {
@@ -96,13 +149,7 @@ export class MessageSectionComponent extends AbstractBaseComponent {
     }
 
     public schemaFormatOptions() {
-        return [
-            new Value("application/vnd.aai.asyncapi;version=2.0.0", "application/vnd.aai.asyncapi;version=2.0.0"),
-            new Value("application/vnd.oai.openapi;version=3.0.0", "application/vnd.oai.openapi;version=3.0.0"),
-            new Value("application/application/schema+json;version=draft-07", "application/application/schema+json;version=draft-07"),
-            new Value("application/application/schema+yaml;version=draft-07", "application/application/schema+yaml;version=draft-07"),
-            new Value("application/vnd.apache.avro;version=1.9.0", "application/vnd.apache.avro;version=1.9.0")
-        ];
+        return SchemaUtil.schemaFormatOptions;
     }
 
     public isPartActive(part: string): boolean {
@@ -112,45 +159,55 @@ export class MessageSectionComponent extends AbstractBaseComponent {
         this.currentPart = part;
     }
 
+    public deref(message: AaiMessage){
+        return ReferenceUtil.resolveFragmentFromJS(this.messageFromOperation().ownerDocument(), message.$ref);
+    }
+
     public changeName(newName: string): void {
-        console.info("[MessageSectionComponent] Changing message name to: ", newName);
-        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.message(),
+        console.info("[MessageSectionComponent] Changing message name to: ", this.messageFromOperation());
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.messageFromOperation(),
                 "name", newName);
         this.commandService.emit(command);
     }
 
     public changeTitle(newTitle: string): void {
         console.info("[MessageSectionComponent] Changing message title to: ", newTitle);
-        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.message(),
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.messageFromOperation(),
                 "title", newTitle);
         this.commandService.emit(command);
     }
 
     public changeSummary(newSummary: string): void {
         console.info("[MessageSectionComponent] Changing message summary to: ", newSummary);
-        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.message(),
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.messageFromOperation(),
                 "summary", newSummary);
         this.commandService.emit(command);
     }
 
     public changeDescription(newDescription: string): void {
         console.info("[MessageSectionComponent] Changing message description to: ", newDescription);
-        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.message(),
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.messageFromOperation(),
                 "description", newDescription);
         this.commandService.emit(command);
     }
 
     public changeContentType(newContentType: string): void {
         console.info("[MessageSectionComponent] Changing message contentType to: ", newContentType);
-        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.message(),
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.messageFromOperation(),
                 "contentType", newContentType);
         this.commandService.emit(command);
     }
 
     public changeSchemaFormat(newSchemaFormat: boolean): void {
         console.info("[MessageSectionComponent] Changing message schemaFormat to: ", newSchemaFormat);
-        let command: ICommand = CommandFactory.createChangePropertyCommand(this.message(),
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.messageFromOperation(),
                 "schemaFormat", newSchemaFormat);
         this.commandService.emit(command);
     }
+
+    public inheritanceType(): string {
+        return "oneOf";
+    }
+
+
 }

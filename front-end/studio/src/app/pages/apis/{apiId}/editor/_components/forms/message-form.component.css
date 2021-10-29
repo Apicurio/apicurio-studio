@@ -1,0 +1,88 @@
+.half-section {
+    width: 50%;
+    display: inline-block;
+}
+
+.half-section.right {
+    float: right;
+}
+
+.parts-tabs {
+    display: flex;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.parts-tabs .tab {
+    position: relative;
+    padding: 5px 10px;
+    background-color: #efefef;
+    border: 1px solid transparent;
+    margin-right: 5px;
+}
+
+.parts-tabs .tab:hover {
+    background-color: #e4e4e4;
+}
+
+.parts-tabs .tab.active {
+    border-color: #ddd;
+    border-bottom: 1px solid transparent;
+    background-color: white;
+    margin-bottom: -1px;
+}
+
+.parts-tabs .tab.active:hover {}
+
+.parts-tabs .tab:first-child {
+    border-left: 1px solid transparent;
+}
+
+.parts-tabs .tab:first-child.active {
+    border-left: 1px solid #ddd;
+}
+
+.parts-tabs .tab>a {
+    cursor: pointer;
+    text-decoration: none;
+    color: #666;
+}
+
+.parts-tabs .tab.active>a {
+    cursor: default;
+}
+
+.parts-tabs .tab.statusCode.success>a {
+    color: green;
+}
+
+.parts-tabs .tab.statusCode.redirect>a {
+    color: blue;
+}
+
+.parts-tabs .tab.statusCode.problem>a {
+    color: orange;
+}
+
+.parts-tabs .tab.statusCode.error>a {
+    color: red;
+}
+
+.parts-tabs .tab .validation-aggregate {
+    position: absolute;
+    right: -3px;
+    top: -7px;
+}
+
+.parts-tabs .actions {
+    flex-grow: 1;
+    text-align: right;
+    padding-right: 10px;
+    margin-top: 5px;
+}
+
+.parts-tab-content {
+    border: 1px solid #ddd;
+    background-color: white;
+    padding: 10px;
+}

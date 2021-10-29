@@ -75,7 +75,9 @@ import {ComponentType} from "./_models/component-type.model";
 import {ImportedComponent} from "./_models/imported-component.model";
 import {OperationTraitEditorComponent} from "./_components/editors/operationtrait-editor.component";
 import {MessageTraitEditorComponent} from "./_components/editors/messagetrait-editor.component";
+import {MessageEditorComponent} from "./_components/editors/message-editor.component";
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
+import { OneOfInMessageEditorComponent } from "./_components/editors/oneof-in-message-editor.component";
 
 
 @Component({
@@ -146,7 +148,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
 
         Library.addReferenceResolver(this);
         console.debug("[ApiEditorComponent] Subscribing to API Catalog changes.");
-        this._catalogSubscription = this.catalog.changes().subscribe( () => {
+        this._catalogSubscription = this.catalog.changes().subscribe(() => {
             console.debug("[ApiEditorComponent] Re-validating model due to API Catalog change.");
             // Re-validate whenever the contents of the API catalog change
             this.validateModel();
@@ -642,6 +644,15 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     }
 
     public getMessageTraitEditor(): MessageTraitEditorComponent {
+        return null;
+    }
+
+    public getMessageEditor(): MessageEditorComponent {
+        return null;
+    }
+
+
+    getOneOfInMessageEditor(): OneOfInMessageEditorComponent {
         return null;
     }
 

@@ -44,7 +44,7 @@ import {
     AaiMessageTraitDefinition,
     OtCommand,
     OtEngine,
-    ValidationProblem
+    ValidationProblem, AaiMessage
 } from "apicurio-data-models";
 import {AsyncApiEditorMasterComponent} from "./_components/aaimaster.component";
 import {VersionedAck} from "../../../../models/ack.model";
@@ -73,6 +73,8 @@ import {ImportedComponent} from "./_models/imported-component.model";
 import {CodeEditorMode, CodeEditorTheme} from "../../../../components/common/code-editor.component";
 import * as YAML from 'js-yaml';
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
+import {MessageEditorComponent} from "./_components/editors/message-editor.component";
+import {OneOfInMessageEditorComponent} from "./_components/editors/oneof-in-message-editor.component";
 
 
 @Component({
@@ -124,6 +126,8 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     @ViewChild("dataTypeEditor", { static: true }) dataTypeEditor: DataTypeEditorComponent;
     @ViewChild("operationTraitEditor", { static: true }) operationTraitEditor: OperationTraitEditorComponent;
     @ViewChild("messageTraitEditor", { static: true }) messageTraitEditor: MessageTraitEditorComponent;
+    @ViewChild("messageEditor", { static: true }) messageEditor: MessageEditorComponent;
+    @ViewChild("oneOfInMessageEditor", { static: true }) oneOfInMessageEditor: OneOfInMessageEditorComponent;
     @ViewChild("propertyEditor", { static: true }) propertyEditor: PropertyEditorComponent;
 
 
@@ -509,6 +513,14 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         }
     }
 
+    public selectedMessage(): AaiMessage {
+        if (this.currentSelectionType === "message") {
+            return this.currentSelectionNode as AaiMessage;
+        } else {
+            return null;
+        }
+    }
+
     public preDocumentChange(): void {
         // Before changing the document, let's clear/reset the current selection
         this.selectionService.clearAllSelections();
@@ -640,6 +652,14 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         return this.messageTraitEditor;
     }
 
+    public getMessageEditor(): MessageEditorComponent {
+        return this.messageEditor;
+    }
+
+    public getOneOfInMessageEditor(): OneOfInMessageEditorComponent {
+        return this.oneOfInMessageEditor;
+    }
+
     importComponent(type: ComponentType) {
         if (this.componentImporter) {
             this.componentImporter(type).then(imports => {
@@ -654,6 +674,8 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
                         commands.push(CommandFactory.createAddSchemaDefinitionCommand(this.document().getDocumentType(), name, fromRef));
                     } else if (type === ComponentType.messageTrait) {
                         //commands.push(CommandFactory.createAddResponseDefinitionCommand(this.document().getDocumentType(), name, fromRef));
+                    } else if (type === ComponentType.message) {
+                        // commands.push(CommandFactory.createNewMessageDefinitionCommand(imp.name, fromRef));
                     }
                 });
 
@@ -673,6 +695,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
             });
         }
     }
+
 }
 
 /**
@@ -717,5 +740,10 @@ export class FormSelectionVisitor extends CombinedVisitorAdapter {
     public visitMessageTraitDefinition(node: AaiMessageTraitDefinition): void {
         this._selectedNode = node;
         this._selectionType = "messageTrait";
+    }
+
+    public visitMessage(node: AaiMessage): void {
+        this._selectedNode = node;
+        this._selectionType = "message";
     }
 }

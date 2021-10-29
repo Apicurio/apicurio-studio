@@ -28,12 +28,15 @@ import {AddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dia
 import {CloneDefinitionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-definition.component";
 import {ClonePathDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-path.component";
 import {PropertyRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/property-row.component";
+import {OneOfRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/oneof-row.component";
 import {ServersSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/servers-section.component";
 import {DefinitionItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-item.component";
 import {DefinitionFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition-form.component";
 import {PathFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/path-form.component";
 import {ChannelFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel-form.component";
 import {MessageTraitFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/messagetrait-form.component";
+import {MessageFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/message-form.component";
+import {MessageItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/message-item.component";
 import {MessageTraitItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/messagetrait-item.component";
 import {OperationTraitFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/operationtrait-form.component";
 import {OperationTraitItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/operationtrait-item.component";
@@ -156,6 +159,9 @@ import {HttpHeadersComponent} from "./pages/apis/{apiId}/editor/_components/form
 import {HeaderRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/header-row.component";
 import {AddHeaderDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-header.component";
 import {CloneChannelDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/clone-channel.component";
+import {MessageEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/message-editor.component";
+import {OneOfInMessageEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/oneof-in-message-editor.component";
+import {AddOneOfInMessageDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-message-reference.component";
 
 @NgModule({
     imports: [
@@ -167,11 +173,11 @@ import {CloneChannelDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         ChannelOperationInfoSectionComponent, MessageSectionComponent, PayloadTabComponent, HeadersTabComponent,
         SetLicenseDialogComponent, ClonePathDialogComponent,
         CloneDefinitionDialogComponent, ScopesInputComponent, AddTagDialogComponent, UndoIconComponent, SchemaTypeEditorComponent,
-        NoOperationComponent, ContentComponent, HttpHeadersComponent, PropertyRowComponent, PathFormComponent, ChannelFormComponent,
-        MessageTraitFormComponent, MessageTraitItemComponent, OperationTraitFormComponent, OperationTraitItemComponent,
+        NoOperationComponent, ContentComponent, HttpHeadersComponent, PropertyRowComponent, OneOfRowComponent, PathFormComponent, ChannelFormComponent,
+        MessageTraitFormComponent, MessageFormComponent, MessageTraitItemComponent, MessageItemComponent, OperationTraitFormComponent, OperationTraitItemComponent,
         QueryParamRowComponent, SectionComponent, RequestBodySectionComponent, DefinitionItemComponent, DefinitionFormComponent,
         FormDataParamRowComponent, ResponseTab30Component, EditorMasterComponent, AsyncApiEditorMasterComponent, ApiEditorComponent,
-        AddPathDialogComponent, AddChannelDialogComponent, ParameterEditorComponent, AddResponseDialogComponent,
+        AddPathDialogComponent, AddChannelDialogComponent, AddOneOfInMessageDialogComponent, ParameterEditorComponent, AddResponseDialogComponent,
         CloneResponseDialogComponent, RedoIconComponent, PathInfoSectionComponent, OperationTraitEditorComponent,
         ChannelInfoSectionComponent, ResponseTabComponent, AddMediaTypeDialogComponent, AddHeaderDialogComponent, MainFormComponent, AsyncApiMainFormComponent,
         RenameEntityDialogComponent, AddExampleDialogComponent, EditExampleDialogComponent, AddExample20DialogComponent,
@@ -187,7 +193,7 @@ import {CloneChannelDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
         HeaderParamsSectionComponent, OperationsSectionComponent, ChannelOperationsSectionComponent, MediaTypeRowComponent,
         HeaderRowComponent, CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,
-        ResponseEditorComponent, MessageTraitEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
+        ResponseEditorComponent, MessageTraitEditorComponent, MessageEditorComponent, OneOfInMessageEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
         AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
         SchemaRowComponent, AddSchemaDialogComponent, CloneChannelDialogComponent
     ],

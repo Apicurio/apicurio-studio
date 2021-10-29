@@ -1,0 +1,33 @@
+<!-- Add refSelected in Message Dialog -->
+<div bsModal #addReferenceModal="bs-modal" class="modal fade" id="addReferenceModal" tabindex="-1" role="dialog" aria-labelledby="addReferenceModal" role="dialog" aria-hidden="true" [config]="{ backdrop: true }" (onHidden)="close()"
+    *ngIf="isOpen()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addReferenceModalLabel">Add a message to the operation </h4>
+            </div>
+            <div class="modal-body">
+                <p>Choose a message below and then click Add.</p>
+                <form id="addReference-form" class="form-horizontal" (submit)="add()" #addReferenceForm="ngForm" data-dismiss="modal">
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label required" for="mt">Reference </label>
+                        <div class="col-sm-9">
+                            <drop-down id="mt" [id]="'ref-message'" [value]="refSelected" [options]="referenceOptions()"
+                                       (onValueChange)="refSelected = $event" noSelectionLabel="Choose a message"></drop-down>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!addReferenceForm.form.valid || messagesFromDocExists">Add</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

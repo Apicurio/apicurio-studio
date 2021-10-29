@@ -27,7 +27,6 @@ import {
     CommandFactory,
     ICommand,
     AaiChannelItem,
-    AaiDocument,
     AaiOperation
 } from "apicurio-data-models";
 import {CommandService} from "../../../_services/command.service";

@@ -40,7 +40,7 @@ import {
     AaiMessageTraitDefinition,
     AaiOperationTraitDefinition,
     TraverserDirection,
-    VisitorUtil
+    VisitorUtil, AaiMessage
 } from "apicurio-data-models";
 import {AddChannelDialogComponent} from "./dialogs/add-channel.component";
 import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.component";
@@ -65,6 +65,8 @@ import { IOperationTraitEditorHandler, OperationTraitData, OperationTraitEditorC
 import { IMessageTraitEditorHandler, MessageTraitData, MessageTraitEditorComponent } from "./editors/messagetrait-editor.component";
 import {CloneChannelDialogComponent} from "./dialogs/clone-channel.component";
 import {ConfigService} from "../../../../../services/config.service";
+import {FindMessageDefinitionsVisitor} from "../_visitors/message-definitions.visitor";
+import {IMessageEditorHandler, MessageData, MessageEditorComponent} from "./editors/message-editor.component";
 
 
 /**
@@ -105,11 +107,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     @ViewChild("renameOperationTraitDialog") renameOperationTraitDialog: RenameEntityDialogComponent;
     @ViewChild("renameMessageTraitDialog", { static: true }) renameMessageTraitDialog: RenameEntityDialogComponent;
 
+    @ViewChild("renameMessageDialog", { static: true }) renameMessageDialog: RenameEntityDialogComponent;
+
     filterCriteria: string = null;
     _channels: AaiChannelItem[];
     _defs: Aai20SchemaDefinition[];
     _opTraitsDefs: AaiOperationTraitDefinition[];
     _msgTraitsDefs: AaiMessageTraitDefinition[];
+    _msgsDefs: AaiMessage[];
 
     /**
      * C'tor.
@@ -139,6 +144,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         this._defs = null;
         this._opTraitsDefs = null;
         this._msgTraitsDefs = null;
+        this._msgsDefs = null;
     }
 
     public onChannelsKeypress(event: KeyboardEvent): void {
@@ -203,6 +209,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         this._defs = null;
         this._opTraitsDefs = null;
         this._msgTraitsDefs = null;
+        this._msgsDefs = null;
     }
 
     /**
@@ -300,11 +307,37 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Returns the array of message definitions, filtered by search criteria and sorted.
+     */
+    public messages(): AaiMessage[]{
+        if (!this._msgsDefs) {
+            if (this.document.components) {
+                let viz: FindMessageDefinitionsVisitor = new FindMessageDefinitionsVisitor(this.filterCriteria);
+                this.document.components.getMessagesList().forEach( msgDef => {
+                    VisitorUtil.visitNode(msgDef, viz);
+                })
+                this._msgsDefs = viz.getSortedMessageDefinitions();
+            } else {
+                this._msgsDefs = [];
+            }
+        }
+        return this._msgsDefs;
+    }
+
+    /**
      * Returns true if the messageTraits have been initialized to non empty
      */
     public hasMessageTraits(): boolean {
         let messageTraitList = this.messageTraits();
         return !!messageTraitList && messageTraitList.length > 0;
+    }
+
+    /**
+     * Returns true if the messages have been initialized to non empty
+     */
+    public hasMessages(): boolean {
+        let messageList = this.messages();
+        return !!messageList && messageList.length > 0;
     }
 
     /**
@@ -581,7 +614,52 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         this.commandService.emit(command);
         this.closeContextMenu();
     }
-    
+
+    /**
+     * Called when the user fills out the Add Message page and clicks Add.
+     */
+    public addMessage(mes: MessageData): void {
+        console.info("[AsyncAPIEditorMasterComponent] Adding a message: ", mes);
+        let command: ICommand = CommandFactory.createNewMessageDefinitionCommand(mes.name, mes.description);
+        this.commandService.emit(command);
+        this.deselectMessage();
+    }
+
+    /**
+     * Called when the user clicks "Rename Message" in the context-menu for a Message.
+     */
+    public renameMessage(event?: RenameEntityEvent): void {
+        if (undefined === event || event === null) {
+            let message: AaiMessageTraitDefinition = <any>this.contextMenuSelection.resolve(this.document);
+            let name: string = message.getName();
+            let messageNames: string[] = [];
+            VisitorUtil.visitTree(this.document, new class extends CombinedVisitorAdapter {
+                public visitMessage(node: AaiMessage): void {
+                    messageNames.push(node.getName());
+                }
+            }, TraverserDirection.down);
+            this.renameMessageDialog.open(message, name, newName => {
+                return messageNames.indexOf(newName) !== -1;
+            });
+        } else {
+            let message: AaiMessage = <any>event.entity;
+            let oldName: string = message.getName();
+            console.info("[AsyncApiEditorMasterComponent] Rename message to: %s", event.newName);
+            let command: ICommand = CommandFactory.createRenameMessageDefinitionCommand(oldName, event.newName);
+            this.commandService.emit(command);
+        }
+    }
+
+    /**
+     * Called when the user clicks "Delete Message" in the context-menu for a trait.
+     */
+    public deleteMessage(): void {
+        let definition: AaiMessage = this.contextMenuSelection.resolve(this.document) as AaiMessage;
+        let command: ICommand = CommandFactory.createDeleteMessageDefinitionCommand(definition.getName());
+        this.commandService.emit(command);
+        this.closeContextMenu();
+    }
+
     /**
      * Converts a JSON formatted string example to an object.
      * @param from
@@ -676,9 +754,24 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Called when the user selects a message definition from the master area.
+     * @param messageDef
+     */
+    public selectMessage(messageDef: AaiMessage): void {
+        this.__selectionService.selectNode(messageDef);
+    }
+
+    /**
      * Deselects the currently selected message trait definition.
      */
     public deselectMessageTrait(): void {
+        this.selectMain();
+    }
+
+    /**
+     * Deselects the currently selected message definition.
+     */
+    public deselectMessage(): void {
         this.selectMain();
     }
 
@@ -769,6 +862,20 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Called when the user right-clicks on a message definition.
+     * @param event
+     * @param msgDef
+     */
+    public showMessageContextMenu(event: MouseEvent, msg: AaiMessage): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.contextMenuPos.left = event.clientX + "px";
+        this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuSelection = Library.createNodePath(msg);
+        this.contextMenuType = "message";
+    }
+
+    /**
      * Called when the user clicks somewhere in the document.  Used to close the context
      * menu if it is open.
      */
@@ -852,6 +959,15 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Returns the classes that should be applied to the message definition in the master view.
+     * @param node
+     * @return
+     */
+    public messageClasses(node: Node): string {
+        return this.entityClasses(node);
+    }
+
+    /**
      * Opens the Add Definition Editor (full screen editor for adding a data type).
      */
     public openAddDefinitionEditor(): void {
@@ -893,6 +1009,20 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         dtEditor.open(handler, this.document);
     }
 
+    /**
+     * Opens the Add Message Editor (full screen editor for adding a data type).
+     */
+    public openAddMessageEditor(): void {
+        let dtEditor: MessageEditorComponent = this.editors.getMessageEditor();
+        let handler: IMessageEditorHandler = {
+            onSave: (event) => {
+                this.addMessage(event.data);
+            },
+            onCancel: () => { /* Do nothing on cancel... */ }
+        };
+        dtEditor.open(handler, this.document);
+    }
+
     importsEnabled(): boolean {
         return this.features.getFeatures().componentImports;
     }
@@ -903,6 +1033,10 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
 
     importMessageTraits(): void {
         this.onImportComponent.emit(ComponentType.messageTrait);
+    }
+
+    importMessages(): void {
+        this.onImportComponent.emit(ComponentType.message);
     }
 }
 

@@ -162,6 +162,11 @@ import {CloneChannelDialogComponent} from "./pages/apis/{apiId}/editor/_componen
 import {MessageEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/message-editor.component";
 import {OneOfInMessageEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/oneof-in-message-editor.component";
 import {AddOneOfInMessageDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-message-reference.component";
+import {ExtensionsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/extensions-section.component";
+import {ExtensionRowComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/extension-row.component";
+import {JsonSummaryComponent} from "./components/common/json-summary.component";
+import {InlineJsonEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-json-editor.component";
+import {AddExtensionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-extension.component";
 
 @NgModule({
     imports: [
@@ -195,7 +200,8 @@ import {AddOneOfInMessageDialogComponent} from "./pages/apis/{apiId}/editor/_com
         HeaderRowComponent, CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,
         ResponseEditorComponent, MessageTraitEditorComponent, MessageEditorComponent, OneOfInMessageEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
         AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
-        SchemaRowComponent, AddSchemaDialogComponent, CloneChannelDialogComponent
+        SchemaRowComponent, AddSchemaDialogComponent, CloneChannelDialogComponent, ExtensionsSectionComponent,
+        ExtensionRowComponent, JsonSummaryComponent, InlineJsonEditorComponent, AddExtensionDialogComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

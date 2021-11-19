@@ -16,8 +16,21 @@
 
 package io.apicurio.hub.api.rest.impl;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+
 import io.apicurio.hub.api.beans.NewApiTemplate;
 import io.apicurio.hub.api.beans.UpdateApiTemplate;
 import io.apicurio.hub.api.metrics.IApiMetrics;
@@ -34,17 +47,6 @@ import io.apicurio.hub.core.exceptions.ServerError;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 import io.apicurio.studio.shared.beans.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author c.desc2@gmail.com
@@ -130,7 +132,7 @@ public class TemplatesResource implements ITemplatesResource {
     }
 
     /**
-     * @see ITemplatesResource#createStoredTemplate(NewApiTemplate) 
+     * @see ITemplatesResource#createStoredTemplate(NewApiTemplate)
      */
     @Override
     public StoredApiTemplate createStoredTemplate(NewApiTemplate template) throws ServerError, AccessDeniedException {
@@ -141,7 +143,7 @@ public class TemplatesResource implements ITemplatesResource {
             if (!authorizationService.hasTemplateCreationPermission(currentUser)) {
                 throw new AccessDeniedException();
             }
-            
+
             StoredApiTemplate storedApiTemplate = new StoredApiTemplate();
             String templateId = UUID.randomUUID().toString();
             storedApiTemplate.setTemplateId(templateId);
@@ -150,7 +152,7 @@ public class TemplatesResource implements ITemplatesResource {
             storedApiTemplate.setType(template.getType());
             storedApiTemplate.setOwner(currentUser.getLogin());
             storedApiTemplate.setDocument(template.getDocument());
-            
+
             this.storage.createApiTemplate(storedApiTemplate);
 
             return storedApiTemplate;
@@ -160,7 +162,7 @@ public class TemplatesResource implements ITemplatesResource {
     }
 
     /**
-     * @see ITemplatesResource#getStoredTemplate(String) 
+     * @see ITemplatesResource#getStoredTemplate(String)
      */
     @Override
     public StoredApiTemplate getStoredTemplate(String templateId) throws ServerError, NotFoundException {
@@ -174,7 +176,7 @@ public class TemplatesResource implements ITemplatesResource {
     }
 
     /**
-     * @see ITemplatesResource#updateStoredTemplate(String, UpdateApiTemplate) 
+     * @see ITemplatesResource#updateStoredTemplate(String, UpdateApiTemplate)
      */
     @Override
     public void updateStoredTemplate(String templateId, UpdateApiTemplate template) throws ServerError, NotFoundException, AccessDeniedException {
@@ -186,13 +188,13 @@ public class TemplatesResource implements ITemplatesResource {
                 throw new AccessDeniedException();
             }
             StoredApiTemplate storedApiTemplate = new StoredApiTemplate();
-            
+
             storedApiTemplate.setTemplateId(templateId);
             storedApiTemplate.setName(template.getName());
             storedApiTemplate.setDescription(template.getDescription());
             storedApiTemplate.setOwner(currentUser.getLogin());
             storedApiTemplate.setDocument(template.getDocument());
-            
+
             this.storage.updateApiTemplate(storedApiTemplate);
         } catch (StorageException e) {
             throw new ServerError(e);
@@ -200,7 +202,7 @@ public class TemplatesResource implements ITemplatesResource {
     }
 
     /**
-     * @see ITemplatesResource#deleteStoredTemplate(String) 
+     * @see ITemplatesResource#deleteStoredTemplate(String)
      */
     @Override
     public void deleteStoredTemplate(String templateId) throws ServerError, NotFoundException, AccessDeniedException {

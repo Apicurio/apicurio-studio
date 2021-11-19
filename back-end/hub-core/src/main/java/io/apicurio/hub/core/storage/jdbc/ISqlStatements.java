@@ -16,8 +16,6 @@
 
 package io.apicurio.hub.core.storage.jdbc;
 
-import io.apicurio.hub.core.beans.ApiDesignType;
-
 import java.util.List;
 
 /**
@@ -115,7 +113,7 @@ public interface ISqlStatements {
      * A statement used to delete the sharing config for a design.
      */
     public String deleteSharingConfig();
-    
+
     /**
      * Gets sharing config for an API design by design id.
      */
@@ -125,7 +123,7 @@ public interface ISqlStatements {
      * Gets sharing info for an API design by sharing UUID.
      */
     public String selectSharingInfo();
-    
+
     /**
      * A statement used to update a row in the sharing table.
      */
@@ -280,17 +278,17 @@ public interface ISqlStatements {
     public String selectApiPublicationActivityByUser();
 
     /**
-     * A statement used to select rows from the api_content table (limited by a range).  Selects 
+     * A statement used to select rows from the api_content table (limited by a range).  Selects
      * only the mock rows.
      */
     public String selectApiMockActivity();
 
     /**
-     * A statement used to select rows from the api_content table (limited by a range).  Selects 
+     * A statement used to select rows from the api_content table (limited by a range).  Selects
      * only the template rows.
      */
     String selectApiTemplateActivity();
-    
+
     /**
      * A statement used to select the most recent 5 APIs for a given user.
      */
@@ -330,12 +328,12 @@ public interface ISqlStatements {
      * A statement used to select the latest command for a single design_id.
      */
     public String selectLatestContentCommand();
-    
+
     /**
      * A statement used to select all validation profiles for a user.
      */
     public String selectValidationProfiles();
-    
+
     /**
      * A statement used to insert a single row on the validation profiles table.
      */
@@ -365,7 +363,7 @@ public interface ISqlStatements {
      * A statement used to select all rows from the template table.
      */
     public String selectApiTemplates();
-    
+
     /**
      * A statement used to select all rows of a given api_type from the template table.
      */
@@ -375,12 +373,12 @@ public interface ISqlStatements {
      * A statement to insert a single row on the template table
      */
     public String insertApiTemplate();
-    
+
     /**
      * A statement to update a single row on the template table
      */
     public String updateApiTemplate();
-    
+
     /**
      * A statement to delete a single row on the template table
      */

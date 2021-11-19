@@ -1,0 +1,46 @@
+<div class="extension" [class.expanded]="isEditing()">
+    <div class="header">
+        <div class="expand" (click)="toggle()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>
+        </div>
+        <div class="name" (click)="toggle()">
+            <validation-problem [model]="item"></validation-problem>
+            <span class="fa fa-extension entity-icon"></span>
+            <span>{{ name() }}</span>
+        </div>
+        <div class="value" (click)="toggle()">
+            <json-summary [data]="value()" emptyText="No value."></json-summary>
+        </div>
+        <div class="actions">
+            <div class="dropdown dropdown-kebab-pf">
+                <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a (click)="renameExtension()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Rename</span></a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-11">
+                    <div class="extension-value">
+                        <div class="form-label">Value (must be valid JSON)</div>
+                        <inline-json-editor [value]="valueAsString()"
+                                            [labelClass]="'api-vendor-extension'"
+                                            [formClass]="'api-vendor-extension-editor-form'"
+                                            [inputClass]="'api-item-editor api-example-editor api-definition-example api-item-example'"
+                                            [baseNode]="item"
+                                            [noValueMessage]="'No value.'"
+                                            (onChange)="setValue($event)"></inline-json-editor>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

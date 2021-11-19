@@ -112,7 +112,6 @@ export class TagsSectionComponent extends AbstractBaseComponent {
         let path = Library.createNodePath(this.document);
         path.appendSegment("tags", false);
         this.selectionService.select(path.toString());
-
     }
 
     /**

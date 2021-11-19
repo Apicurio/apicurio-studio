@@ -1952,10 +1952,10 @@ anymatch@~3.1.2:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
 
-apicurio-data-models@1.1.18:
-  version "1.1.18"
-  resolved "https://registry.yarnpkg.com/apicurio-data-models/-/apicurio-data-models-1.1.18.tgz#80bc2857d961b77cf834c3da3a3ffdb2545787fc"
-  integrity sha512-HNrVVfrQ7y26n1HMYY/rF+t+9rk29G70VOCF4VQCyuYvDnFxHGGcaR9CmBSlvHyre4wwpkqIZxqzlW5SkANlPw==
+apicurio-data-models@1.1.19:
+  version "1.1.19"
+  resolved "https://registry.yarnpkg.com/apicurio-data-models/-/apicurio-data-models-1.1.19.tgz#41b0b10dfffec869e04ec5464c211926747fef3a"
+  integrity sha512-EZzXcYCU4eC2XNScovemMJ+xitZyPgApDHK53vbs1k3RJ2UFFzqcetEv6yGaHV6cGUcKo54+lr4oT7M2mrEZmw==
   dependencies:
     core-js "3.19.0"
 

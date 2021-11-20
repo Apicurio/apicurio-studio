@@ -107,6 +107,9 @@
             <!-- Security Requirements -->
             <security-requirements-section [parent]="operation()" [global]="false"></security-requirements-section>
 
+            <!-- Vendor Extensions -->
+            <extensions-section [parent]="operation()"></extensions-section>
+
         </div>
 
         <div class="no-operation" *ngIf="!hasSelectedOperation()">

@@ -19,7 +19,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    Input,
+    Input, SimpleChanges,
     ViewChild,
     ViewEncapsulation
 } from "@angular/core";
@@ -47,6 +47,10 @@ export class ExtensionsSectionComponent extends AbstractBaseComponent {
     @ViewChild("addExtensionDialog", { static: true }) addExtensionDialog: AddExtensionDialogComponent;
     @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 
+    public showSectionBody: boolean;
+
+    private _extensions: Extension[];
+
     /**
      * C'tor.
      * @param changeDetectorRef
@@ -59,10 +63,28 @@ export class ExtensionsSectionComponent extends AbstractBaseComponent {
         super(changeDetectorRef, documentService, selectionService);
     }
 
+    protected onDocumentChange(): void {
+        this._extensions = null;
+    }
+
+    public ngOnInit(): void {
+        super.ngOnInit();
+        this.showSectionBody = this.hasExtensions();
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        super.ngOnChanges(changes);
+        this._extensions = null;
+    }
+
     /**
      * Returns the list of extensions
      */
     public extensions(): Extension[] {
+        if (this._extensions !== null) {
+            return this._extensions;
+        }
+
         let extensions: Extension[] = this.parent.getExtensions();
         if (ObjectUtils.isNullOrUndefined(extensions)) {
             extensions = [];
@@ -73,6 +95,7 @@ export class ExtensionsSectionComponent extends AbstractBaseComponent {
         extensions.sort( (obj1, obj2) => {
             return obj1.name.toLowerCase().localeCompare(obj2.name.toLowerCase());
         });
+        this._extensions = extensions;
         return extensions;
     }
 
@@ -84,7 +107,7 @@ export class ExtensionsSectionComponent extends AbstractBaseComponent {
      * Returns true if the node has at least one extension defined.
      */
     public hasExtensions(): boolean {
-        let extensions: Extension[] = this.parent.getExtensions();
+        let extensions: Extension[] = this.extensions();
         return extensions && extensions.length > 0;
     }
 

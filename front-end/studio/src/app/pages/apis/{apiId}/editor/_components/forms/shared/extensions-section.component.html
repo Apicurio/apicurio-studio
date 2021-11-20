@@ -1,6 +1,6 @@
 <section type="extensions" label="VENDOR EXTENSIONS" [counterItems]="extensions()"
          contextHelp="Configure vendor extensions for the selected component in this section."
-         collaborationNodePath="extensionsNodePath()"
+         collaborationNodePath="extensionsNodePath()" [expanded]="showSectionBody"
          [validationModels]="extensions()">
     <span actions>
         <icon-button (onClick)="openAddExtensionDialog()" [pullRight]="true" type="add"

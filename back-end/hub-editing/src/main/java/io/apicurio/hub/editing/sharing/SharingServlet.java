@@ -34,10 +34,11 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignSharedContent;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
+import io.apicurio.hub.editing.content.ContentDereferencer;
 
 /**
  * Used when showing generated documentation.
@@ -62,6 +63,9 @@ public class SharingServlet extends HttpServlet {
 
     @Inject
     private IStorage storage;
+
+    @Inject
+    private ContentDereferencer dereferencer;
 
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
@@ -95,12 +99,14 @@ public class SharingServlet extends HttpServlet {
      */
     private void doGetContent(HttpServletResponse resp, String uuid) throws ServletException, IOException {
         try {
-            ApiDesignContent adc = storage.getLatestContentDocumentForSharing(uuid);
+            ApiDesignSharedContent adc = storage.getLatestContentDocumentForSharing(uuid);
             if (adc == null) {
                 // TODO respond with an error and a response payload in JSON
                 throw new ServletException("Unknown sharing UUID: " + uuid);
             }
             String content = adc.getDocument();
+
+            content = dereferencer.dereference(content, adc.getCreatedBy());
             
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setContentType("application/json");

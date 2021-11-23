@@ -48,6 +48,7 @@ import io.apicurio.datamodels.openapi.v2.models.Oas20Schema;
 import io.apicurio.datamodels.openapi.v3.models.Oas30Document;
 import io.apicurio.datamodels.openapi.v3.models.Oas30Response;
 import io.apicurio.datamodels.openapi.v3.models.Oas30SchemaDefinition;
+import io.apicurio.hub.core.content.AbsoluteReferenceResolver;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -70,7 +71,7 @@ public class AbsoluteReferenceResolverTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.content.AbsoluteReferenceResolver#resolveRef(java.lang.String, io.apicurio.datamodels.core.models.Node)}.
+     * Test method for {@link io.apicurio.hub.core.content.AbsoluteReferenceResolver#resolveRef(java.lang.String, io.apicurio.datamodels.core.models.Node)}.
      */
     @Test
     public void testResolveRef_OpenAPI3() {
@@ -95,7 +96,7 @@ public class AbsoluteReferenceResolverTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.content.AbsoluteReferenceResolver#resolveRef(java.lang.String, io.apicurio.datamodels.core.models.Node)}.
+     * Test method for {@link io.apicurio.hub.core.content.AbsoluteReferenceResolver#resolveRef(java.lang.String, io.apicurio.datamodels.core.models.Node)}.
      */
     @Test
     public void testResolveRef_OpenAPI2() {
@@ -119,7 +120,7 @@ public class AbsoluteReferenceResolverTest {
     }
 
     /**
-     * Test method for {@link io.apicurio.hub.api.content.AbsoluteReferenceResolver#resolveRef(java.lang.String, io.apicurio.datamodels.core.models.Node)}.
+     * Test method for {@link io.apicurio.hub.core.content.AbsoluteReferenceResolver#resolveRef(java.lang.String, io.apicurio.datamodels.core.models.Node)}.
      */
     @Test
     public void testResolveRef_AsyncAPI2() {

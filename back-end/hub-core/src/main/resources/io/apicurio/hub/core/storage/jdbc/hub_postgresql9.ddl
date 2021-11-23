@@ -4,7 +4,7 @@
 
 CREATE TABLE apicurio (prop_name VARCHAR(255) NOT NULL, prop_value VARCHAR(255));
 ALTER TABLE apicurio ADD PRIMARY KEY (prop_name);
-INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 12);
+INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 13);
 
 CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on TIMESTAMP WITHOUT TIME ZONE, used_on TIMESTAMP WITHOUT TIME ZONE, nonce VARCHAR(255));
 ALTER TABLE accounts ADD PRIMARY KEY (user_id, type);
@@ -42,7 +42,7 @@ CREATE INDEX IDX_codegen_2 ON codegen(design_id);
 CREATE TABLE validation_profiles (id BIGSERIAL NOT NULL PRIMARY KEY, owner VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024), severities TEXT NOT NULL);
 CREATE INDEX IDX_vprof_1 ON validation_profiles(owner);
 
-CREATE TABLE sharing (design_id BIGINT NOT NULL PRIMARY KEY, uuid VARCHAR(255) NOT NULL, level VARCHAR(64) NOT NULL);
+CREATE TABLE sharing (design_id BIGINT NOT NULL PRIMARY KEY, uuid VARCHAR(255) NOT NULL, level VARCHAR(64) NOT NULL, created_by VARCHAR(255));
 ALTER TABLE sharing ADD CONSTRAINT FK_shar_1 FOREIGN KEY (design_id) REFERENCES api_designs (id);
 CREATE INDEX IDX_shar_1 ON sharing(uuid);
 CREATE INDEX IDX_shar_2 ON sharing(level);

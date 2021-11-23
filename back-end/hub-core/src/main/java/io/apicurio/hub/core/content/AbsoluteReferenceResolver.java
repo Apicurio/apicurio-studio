@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.content;
+package io.apicurio.hub.core.content;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,7 +63,7 @@ public class AbsoluteReferenceResolver extends AbstractReferenceResolver {
     }
     
     /**
-     * @see io.apicurio.hub.api.content.AbstractReferenceResolver#accepts(java.net.URI)
+     * @see AbstractReferenceResolver#accepts(java.net.URI)
      */
     @Override
     protected boolean accepts(URI uri) {
@@ -72,7 +72,7 @@ public class AbsoluteReferenceResolver extends AbstractReferenceResolver {
     }
     
     /**
-     * @see io.apicurio.hub.api.content.AbstractReferenceResolver#fetchUriContent(java.net.URI)
+     * @see AbstractReferenceResolver#fetchUriContent(java.net.URI)
      */
     @Override
     protected String fetchUriContent(URI referenceUri) throws IOException {

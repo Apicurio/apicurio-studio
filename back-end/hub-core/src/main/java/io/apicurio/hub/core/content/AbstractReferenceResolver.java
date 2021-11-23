@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.content;
+package io.apicurio.hub.core.content;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

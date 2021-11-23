@@ -32,6 +32,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignSharedContent;
 import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
@@ -296,7 +297,7 @@ public class MockStorage implements IStorage {
      * @see io.apicurio.hub.core.storage.IStorage#getLatestContentDocumentForSharing(java.lang.String)
      */
     @Override
-    public ApiDesignContent getLatestContentDocumentForSharing(String sharingUuid)
+    public ApiDesignSharedContent getLatestContentDocumentForSharing(String sharingUuid)
             throws NotFoundException, StorageException {
         return null;
     }

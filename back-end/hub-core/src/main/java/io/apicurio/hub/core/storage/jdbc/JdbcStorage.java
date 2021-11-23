@@ -33,8 +33,6 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import io.apicurio.hub.core.beans.StoredApiTemplate;
-import io.apicurio.hub.core.storage.jdbc.mappers.StoredApiTemplateRowMapper;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.CharacterStreamArgument;
@@ -53,6 +51,7 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.beans.ApiDesignSharedContent;
 import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
@@ -65,6 +64,7 @@ import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.beans.SharingConfiguration;
 import io.apicurio.hub.core.beans.SharingInfo;
 import io.apicurio.hub.core.beans.SharingLevel;
+import io.apicurio.hub.core.beans.StoredApiTemplate;
 import io.apicurio.hub.core.beans.ValidationProfile;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
@@ -76,6 +76,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignCollaboratorRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignCommandRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignContentRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignSharedContentRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiMockRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiPublicationRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiTemplatePublicationRowMapper;
@@ -84,6 +85,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ContributorRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.InvitationRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.SharingConfigurationRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.SharingInfoRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.StoredApiTemplateRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 
 /**
@@ -95,7 +97,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 12;
+    private static int DB_VERSION = 13;
     private static final Object dbMutex = new Object();
 
     @Inject
@@ -695,7 +697,7 @@ public class JdbcStorage implements IStorage {
      * @see io.apicurio.hub.core.storage.IStorage#getLatestContentDocumentForSharing(java.lang.String)
      */
     @Override
-    public ApiDesignContent getLatestContentDocumentForSharing(String sharingUuid)
+    public ApiDesignSharedContent getLatestContentDocumentForSharing(String sharingUuid)
             throws NotFoundException, StorageException {
         logger.debug("Selecting the most recent api_content row of type 'document' for sharing UUID: {}", sharingUuid);
         try {
@@ -703,7 +705,7 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.selectLatestContentDocumentForSharing();
                 Query query = handle.createQuery(statement)
                         .bind(0, sharingUuid);
-                return query.map(ApiDesignContentRowMapper.instance).one();
+                return query.map(ApiDesignSharedContentRowMapper.instance).one();
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();

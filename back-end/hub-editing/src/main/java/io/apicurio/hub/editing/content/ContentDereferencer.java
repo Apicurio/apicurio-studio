@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.content;
+package io.apicurio.hub.editing.content;
 
-import java.io.IOException;
+import io.apicurio.datamodels.Library;
+import io.apicurio.datamodels.core.models.Document;
+import io.apicurio.datamodels.core.util.IReferenceResolver;
+import io.apicurio.hub.core.content.AbsoluteReferenceResolver;
+import io.apicurio.hub.core.storage.IStorage;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import io.apicurio.datamodels.Library;
-import io.apicurio.datamodels.core.models.Document;
-import io.apicurio.hub.core.content.AbsoluteReferenceResolver;
+import java.io.IOException;
 
 /**
  * Used to take a {@link Document} and convert it to its dereferenced
@@ -39,12 +40,12 @@ public class ContentDereferencer {
 
     @Inject
     private AbsoluteReferenceResolver absoluteResolver;
+    
     @Inject
-    private InternalReferenceResolver apicurioResolver;
+    private IStorage storage;
 
     @PostConstruct
     void init() {
-        Library.addReferenceResolver(apicurioResolver);
         Library.addReferenceResolver(absoluteResolver);
     }
     
@@ -53,9 +54,15 @@ public class ContentDereferencer {
      * @param content
      * @throws IOException
      */
-    public String dereference(String content) throws IOException {
+    public String dereference(String content, String userScope) throws IOException {
         Document doc = Library.readDocumentFromJSONString(content);
-        doc = Library.dereferenceDocument(doc);
+        IReferenceResolver userScopedResolver = new UserScopedReferenceResolver(storage, userScope);
+        try {
+            Library.addReferenceResolver(userScopedResolver);
+            doc = Library.dereferenceDocument(doc);
+        } finally {
+            Library.removeReferenceResolver(userScopedResolver);
+        }
         return Library.writeDocumentToJSONString(doc);
     }
 

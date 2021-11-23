@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.content;
+package io.apicurio.hub.editing.content;
 
-import java.io.IOException;
-import java.net.URI;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.content.AbstractReferenceResolver;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 
+import java.io.IOException;
+import java.net.URI;
+
 /**
- * Resolves references that are local/internal to Apicurio.  These references will be of the following form:
+ * Resolves references that are local/internal to Apicurio using the permissions of a user.  These references will be of the following form:
  * 
  *   apicurio:API_ID#/path/to/Entity
  * 
@@ -38,24 +34,24 @@ import io.apicurio.hub.core.storage.StorageException;
  * 
  *   apicurio:173827#/components/DataType
  * 
- * @author eric.wittmann@gmail.com
+ * @author c.desc2@gmail.com
  */
-@ApplicationScoped
-public class InternalReferenceResolver extends AbstractReferenceResolver {
+public class UserScopedReferenceResolver extends AbstractReferenceResolver {
     
-    @Inject
     private IStorage storage;
-    @Inject
-    private ISecurityContext security;
+    
+    private String userId;
 
     /**
      * Constructor.
      */
-    public InternalReferenceResolver() {
+    public UserScopedReferenceResolver(final IStorage storage, final String userId) {
+        this.storage = storage;
+        this.userId = userId;
     }
     
     /**
-     * @see io.apicurio.hub.core.content.AbstractReferenceResolver#accepts(java.net.URI)
+     * @see AbstractReferenceResolver#accepts(URI)
      */
     @Override
     protected boolean accepts(URI uri) {
@@ -64,14 +60,14 @@ public class InternalReferenceResolver extends AbstractReferenceResolver {
     }
     
     /**
-     * @see io.apicurio.hub.core.content.AbstractReferenceResolver#fetchUriContent(java.net.URI)
+     * @see AbstractReferenceResolver#fetchUriContent(URI)
      */
     @Override
     protected String fetchUriContent(URI referenceUri) throws IOException {
         try {
             String apiId = referenceUri.getSchemeSpecificPart();
             // TODO handle in-progress content?  this code will ignore any changes not yet rolled up via the rollup executor
-            ApiDesignContent dc = storage.getLatestContentDocument(security.getCurrentUser().getLogin(), apiId);
+            ApiDesignContent dc = storage.getLatestContentDocument(this.userId, apiId);
             if (dc != null) {
                 return dc.getDocument();
             }

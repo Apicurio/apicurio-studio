@@ -23,7 +23,7 @@ import {
     SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
-import {CommandFactory, ICommand, Library, Oas20Response, OasDocument, SimplifiedType} from "apicurio-data-models";
+import {CommandFactory, DocumentType, ICommand, Library, NodePath, Oas20Response, OasDocument, SimplifiedType} from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {EditExample20Event} from "../../../dialogs/edit-example-20.component";
@@ -48,6 +48,40 @@ export class ResponseTabComponent extends AbstractBaseComponent {
     constructor(private changeDetectorRef: ChangeDetectorRef, private documentService: DocumentService,
                 private commandService: CommandService, private selectionService: SelectionService) {
         super(changeDetectorRef, documentService, selectionService);
+    }
+
+    isRef(): boolean {
+        return this.response.$ref !== null && this.response.$ref !== undefined;
+    }
+
+    responseDefRefPrefix(): string {
+        let prefix: string = "#/components/responses/";
+        if (this.response.ownerDocument().getDocumentType() === DocumentType.openapi2) {
+            prefix = "#/responses/";
+        }
+        return prefix;
+    }
+
+    responseDefPathPrefix(): string {
+        return this.responseDefRefPrefix().substr(1);
+    }
+
+    definitionName(): string {
+        if (this.isRef()) {
+            let prefix: string = this.responseDefRefPrefix();
+            let $ref: string = this.response.$ref;
+            if ($ref.startsWith(prefix)) {
+                return $ref.substr(prefix.length);
+            }
+            return this.response.$ref
+        }
+        return null;
+    }
+
+    navigateToDefinition(): void {
+        let path: NodePath = new NodePath(this.responseDefPathPrefix());
+        path.appendSegment(this.definitionName(), true);
+        this.selectionService.select(path.toString());
     }
 
     protected onDocumentChange(): void {

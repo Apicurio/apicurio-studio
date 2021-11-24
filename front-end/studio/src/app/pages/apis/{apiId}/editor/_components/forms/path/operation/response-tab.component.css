@@ -48,3 +48,10 @@
 .response .response-examples a {
   cursor: pointer;
 }
+
+.response .response-ref em {
+  font-style: normal;
+}
+.response .response-ref em > a {
+  font-weight: bold;
+}

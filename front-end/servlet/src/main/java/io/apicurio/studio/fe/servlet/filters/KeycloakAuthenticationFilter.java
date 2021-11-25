@@ -17,6 +17,7 @@
 package io.apicurio.studio.fe.servlet.filters;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -78,10 +79,14 @@ public class KeycloakAuthenticationFilter implements Filter {
                 user.setEmail(token.getEmail());
                 user.setLogin(token.getPreferredUsername());
                 user.setName(token.getName());
-                user.setRoles(token.getRealmAccess().getRoles().stream()
-                        .map(StudioRole::forName)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toUnmodifiableList()));
+                if (token.getRealmAccess() == null || token.getRealmAccess().getRoles() == null) {
+                    user.setRoles(Collections.emptyList());
+                } else {
+                    user.setRoles(token.getRealmAccess().getRoles().stream()
+                            .map(StudioRole::forName)
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toUnmodifiableList()));
+                }
                 httpSession.setAttribute(RequestAttributeKeys.USER_KEY, user);
             }
         }

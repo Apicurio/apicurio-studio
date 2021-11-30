@@ -638,7 +638,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             String getContentUrl = this.endpoint("/api/v4/projects/:id/repository/files/:path")
                     .bind("id", toEncodedId(resource))
                     .bind("path", toEncodedPath(resource))
-                    .queryParam("ref", toEncodedBranch(resource))
+                    .queryParam("ref", resource.getBranch())
                     .toString();
             
             HttpGet get = new HttpGet(getContentUrl);

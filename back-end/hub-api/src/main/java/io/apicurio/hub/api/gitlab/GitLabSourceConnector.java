@@ -691,7 +691,8 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     
     private String toId(String value) {
         try {
-            return URLEncoder.encode(value, StandardCharsets.UTF_8.name());
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.name())
+                    .replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
             return value;
         }

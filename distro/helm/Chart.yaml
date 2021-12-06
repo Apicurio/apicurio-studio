@@ -1,6 +1,6 @@
 apiVersion: v2
 name: apicurio
-version: Beta 2.46
+version: 2.46.0-beta
 description: API design studio
 type: application
 keywords:

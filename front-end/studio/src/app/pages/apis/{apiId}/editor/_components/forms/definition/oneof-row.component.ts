@@ -19,7 +19,8 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    EventEmitter, Input,
+    EventEmitter,
+    Input,
     Output,
     ViewEncapsulation
 } from "@angular/core";
@@ -31,16 +32,12 @@ import {AbstractRowComponent} from "../../common/item-row.abstract";
 import {
     AaiDocument,
     AaiMessage,
-    CommandFactory, DocumentType,
+    CommandFactory,
     ICommand,
-    Oas20Schema,
-    Oas30Schema, ReferenceUtil,
-    SimplifiedParameterType,
-    SimplifiedPropertyType, SimplifiedType
+    ReferenceUtil,
+    SimplifiedPropertyType,
+    SimplifiedType
 } from "apicurio-data-models";
-import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
-import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
-import {newArray} from "@angular/compiler/src/util";
 
 /**
  * @author vvilerio
@@ -56,8 +53,6 @@ export class OneOfRowComponent extends AbstractRowComponent<AaiMessage, Simplifi
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
     @Input() oneOfName: string;
-
-    _ptab: string = null;
 
     /**
      * C'tor.
@@ -87,13 +82,17 @@ export class OneOfRowComponent extends AbstractRowComponent<AaiMessage, Simplifi
         var vals: Array<Value> = [];
         var doc: AaiDocument = (<AaiDocument>this.item.ownerDocument());
         doc.components.getMessagesList().filter(f => f.getName() !== this.deref(item).getName()).forEach(mess => {
-            vals.push(new Value(mess.getName(), "#/component/messages/".concat(mess.getName())));
+            vals.push(new Value(mess.getName(), "#/components/messages/".concat(mess.getName())));
         })
         return vals;
     }
 
-    public toggleOneOf(): void {
-        this.toggleTab("oneOf");
+    public toggleDropDown(): void {
+        if (this.isEditing()) {
+            this._editing = false;
+        } else {
+            this._editing = true;
+        }
     }
 
     public delete(): void {
@@ -102,6 +101,14 @@ export class OneOfRowComponent extends AbstractRowComponent<AaiMessage, Simplifi
 
     public deref(message: AaiMessage){
         return ReferenceUtil.resolveFragmentFromJS(this.item.parent().ownerDocument(), message.$ref);
+    }
+
+    public displayType(): SimplifiedType {
+        let type: SimplifiedType = new SimplifiedType();
+        if (this.item && this.item.$ref) {
+            type.type = this.item.$ref;
+        }
+        return type;
     }
 
     public displayOneOf(): string {
@@ -113,16 +120,13 @@ export class OneOfRowComponent extends AbstractRowComponent<AaiMessage, Simplifi
         this.commandService.emit(command);
     }
 
-    public changeOneOf(newValue: string): void {//TODO
-        // this.model().required = newValue === "required";
-        // let nt: SimplifiedPropertyType = SimplifiedPropertyType.fromPropertySchema(this.item);
-        // nt.required = this.model().required;
-        // let command: ICommand = CommandFactory.createChangePropertyTypeCommand(this.item, nt);
-        // this.commandService.emit(command);
+    public changeOneOf(ref: string): void {
+        let command: ICommand = CommandFactory.createChangeRefSeveralMessagesCommand(this.item, ref);
+        this.commandService.emit(command);
     }
 
     protected updateModel(): void {
-        // this._model = SimplifiedPropertyType.fromPropertySchema(this.item);
+        // Nothing to do for this row impl
     }
 
 }

@@ -1,0 +1,146 @@
+version: '3'
+services:
+  jboss-keycloak-mysql:
+    image: 'percona:5.7'
+    environment:
+      MYSQL_DATABASE: ${KC_SQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${KC_SQL_ROOT_PASSWORD}
+      MYSQL_USER: ${KC_SQL_USER}
+      MYSQL_PASSWORD: ${KC_SQL_PASSWORD}
+    volumes:
+      - 'mysql2:/var/lib/mysql'
+
+  jboss-keycloak:
+    image: 'as-keycloak'
+    build: ./keycloak
+    depends_on: [jboss-keycloak-mysql]
+    ports:
+      - '8090:8080'
+    volumes:
+      - ./config/keycloak:/microcks-keycloak-config
+    environment:
+      JDBC_PARAMS: "useSSL=false"
+      KEYCLOAK_USER: ${KEYCLOAK_USER}
+      KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KEYCLOAK_IMPORT: /microcks-keycloak-config/apicurio-realm.json,/microcks-keycloak-config/microcks-realm.json
+
+      DB_VENDOR: ${DB_VENDOR}
+      DB_ADDR: ${DB_ADDR}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+  mongo:
+    image: mongo:3.4.23
+    container_name: microcks-mongo
+    volumes:
+      - "mongo_data2:/data/db"
+
+  postman:
+    image: microcks/microcks-postman-runtime:latest
+    container_name: microcks-postman-runtime
+
+  microcks:
+    depends_on:
+      - mongo
+      - postman
+      - jboss-keycloak
+    image: microcks/microcks:latest
+    container_name: microcks
+    volumes:
+      - ./config:/deployments/config
+    ports:
+      - "8900:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${MR_SPRING_PROFILES_ACTIVE}
+      SPRING_DATA_MONGODB_URI: ${MR_SPRING_DATA_MONGODB_URI}
+      SPRING_DATA_MONGODB_DATABASE: ${MR_SPRING_DATA_MONGODB_DATABASE}
+      POSTMAN_RUNNER_URL: ${MR_POSTMAN_RUNNER_URL}
+      TEST_CALLBACK_URL: ${MR_TEST_CALLBACK_URL}
+      KEYCLOAK_URL: ${MR_KEYCLOAK_URL}
+
+  apicurio-studio-ws:
+    image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
+    depends_on: [apicurio-studio-db]
+    ports:
+      - '8092:8080'
+    environment:
+      JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
+
+      APICURIO_HUB_STORAGE_JDBC_TYPE: ${APICURIO_DB_TYPE}
+      APICURIO_DB_DRIVER_NAME: ${APICURIO_DB_DRIVER_NAME}
+      APICURIO_DB_CONNECTION_URL: ${APICURIO_DB_CONNECTION_URL}
+      APICURIO_DB_USER_NAME: ${APICURIO_DB_USER_NAME}
+      APICURIO_DB_PASSWORD: ${APICURIO_DB_PASSWORD}
+      APICURIO_DB_INITIALIZE: ${WS_APICURIO_DB_INITIALIZE}
+      APICURIO_SHARE_FOR_EVERYONE: ${APICURIO_SHARE_FOR_EVERYONE}
+
+
+  apicurio-studio-api:
+    image: 'apicurio/apicurio-studio-api:${APICURIO_API_VERSION}'
+    depends_on: [apicurio-studio-db, apicurio-studio-ws]
+    ports:
+      - '8091:8080'
+    environment:
+      JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
+
+      APICURIO_KC_AUTH_URL: ${APICURIO_KC_AUTH_URL}
+      APICURIO_KC_CLIENT_ID: ${API_APICURIO_KC_CLIENT_ID}
+      APICURIO_KC_REALM: ${APICURIO_KC_REALM}
+
+      APICURIO_HUB_STORAGE_JDBC_TYPE: ${APICURIO_DB_TYPE}
+      APICURIO_DB_DRIVER_NAME: ${APICURIO_DB_DRIVER_NAME}
+      APICURIO_DB_CONNECTION_URL: ${APICURIO_DB_CONNECTION_URL}
+      APICURIO_DB_USER_NAME: ${APICURIO_DB_USER_NAME}
+      APICURIO_DB_PASSWORD: ${APICURIO_DB_PASSWORD}
+      APICURIO_DB_INITIALIZE: ${API_APICURIO_DB_INITIALIZE}
+
+      APICURIO_MICROCKS_API_URL: ${APICURIO_MICROCKS_API_URL}
+      APICURIO_MICROCKS_CLIENT_ID: ${APICURIO_MICROCKS_CLIENT_ID}
+      APICURIO_MICROCKS_CLIENT_SECRET: ${APICURIO_MICROCKS_CLIENT_SECRET}
+
+      APICURIO_GITHUB_API_URL: ${APICURIO_GITHUB_API_URL}
+      APICURIO_GITLAB_API_URL: ${APICURIO_GITLAB_API_URL}
+      APICURIO_BITBUCKET_API_URL: ${APICURIO_BITBUCKET_API_URL}
+      APICURIO_SHARE_FOR_EVERYONE: ${APICURIO_SHARE_FOR_EVERYONE}
+
+
+  apicurio-studio-ui:
+    image: 'apicurio/apicurio-studio-ui:${APICURIO_UI_VERSION}'
+    depends_on: [apicurio-studio-db, apicurio-studio-api, apicurio-studio-ws]
+    ports:
+      - '8093:8080'
+    environment:
+      JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
+
+      APICURIO_KC_CLIENT_ID: ${APICURIO_UI_KC_CLIENT_ID}
+      APICURIO_KC_AUTH_URL: ${APICURIO_KC_AUTH_URL}
+      APICURIO_KC_REALM: ${APICURIO_KC_REALM}
+
+      APICURIO_UI_HUB_API_URL: ${APICURIO_UI_HUB_API_URL}
+      APICURIO_UI_EDITING_URL: ${APICURIO_UI_EDITING_URL}
+      APICURIO_UI_FEATURE_MICROCKS: ${APICURIO_UI_FEATURE_MICROCKS}
+      APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE: ${APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE}
+      APICURIO_UI_LOGOUT_REDIRECT_URI: /
+      APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP: ${APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP}
+
+  apicurio-studio-db:
+    image: 'percona:5.7'
+    command: [
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci'
+    ]
+    environment:
+      MYSQL_DATABASE: ${AS_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${AS_MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${AS_DB_USER}
+      MYSQL_PASSWORD: ${AS_DB_PASSWORD}
+    volumes:
+      - 'mysql_apicurio:/var/lib/mysql'
+
+networks:
+  main:
+
+volumes:
+  mysql2:
+  mongo_data2: {}
+  mysql_apicurio:

@@ -22,11 +22,11 @@ then
   export P=/apicurio
 fi
 
-KC_ROOT_DB_PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c6)
-KC_DB_PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c6)
-KC_PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c6)
-AS_MYSQL_ROOT_PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c6)
-AS_DB_PASSWORD=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c6)
+KC_ROOT_DB_PASSWORD=$(LC_CTYPE=C tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c6)
+KC_DB_PASSWORD=$(LC_CTYPE=C tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c6)
+KC_PASSWORD=$(LC_CTYPE=C tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c6)
+AS_MYSQL_ROOT_PASSWORD=$(LC_CTYPE=C tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c6)
+AS_DB_PASSWORD=$(LC_CTYPE=C tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c6)
 
 SERVICE_CLIENT_SECRET=$(uuidgen)
 

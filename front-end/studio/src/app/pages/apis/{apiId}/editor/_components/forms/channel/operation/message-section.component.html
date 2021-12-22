@@ -134,7 +134,7 @@
             </div>
         </div>
         <div class="parts-tab-content" *ngIf="hasMessage() && !isMultiMessages() ">
-            <payload-tab [message]="messageFromOperation()" *ngIf="isPartActive('payload')"></payload-tab>
+            <payload-tab [message]="messageFromOperation()" [from]="'OPERATION'" *ngIf="isPartActive('payload')"></payload-tab>
             <headers-tab [message]="messageFromOperation()" *ngIf="isPartActive('headers')"></headers-tab>
         </div>
     </div>

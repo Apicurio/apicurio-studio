@@ -15,30 +15,24 @@
  * limitations under the License.
  */
 
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    SimpleChanges,
-    ViewEncapsulation
-} from "@angular/core";
-import { 
+    Aai20Schema, AaiComponents,
     AaiDocument,
-    AaiMessage, 
+    AaiMessage,
     AaiOperation,
-    Aai20Schema,
     CommandFactory,
     ICommand,
-    SimplifiedType,
+    Library,
     ReferenceUtil,
-    Library
+    SimplifiedType
 } from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {SelectionService} from "../../../../_services/selection.service";
-import { EditExampleEvent } from "../../../dialogs/edit-aai-example.component";
+import {EditExampleEvent} from "../../../dialogs/edit-aai-example.component";
+import {PayloadType} from "./enum-payload-tab"
 
 @Component({
     selector: "payload-tab",
@@ -50,6 +44,7 @@ import { EditExampleEvent } from "../../../dialogs/edit-aai-example.component";
 export class PayloadTabComponent extends AbstractBaseComponent {
 
     @Input() message: AaiMessage;
+    @Input() from: string;
 
     protected _model: SimplifiedType = null;
     protected editing: boolean = false;
@@ -123,8 +118,14 @@ export class PayloadTabComponent extends AbstractBaseComponent {
         nt.of = newType.of;
         nt.as = newType.as;
 
-        let command: ICommand = CommandFactory.createChangePayloadRefCommand_Aai20(nt.type, this.message.parent() as AaiOperation);
-        this.commandService.emit(command);
+        if(this.from == PayloadType.OPE.toString()){
+            let command: ICommand = CommandFactory.createChangePayloadRefCommand_Aai20(nt.type, this.message.parent() as AaiOperation);
+            this.commandService.emit(command);
+        }else if(this.from == PayloadType.COMP.toString()){
+            let command: ICommand = CommandFactory.createChangePayloadRefCommand_Aai20(nt.type, this.message.parent() as AaiComponents, this.message._name); //the name like key
+            this.commandService.emit(command);
+        }
+
         this._model = nt;
     }
 

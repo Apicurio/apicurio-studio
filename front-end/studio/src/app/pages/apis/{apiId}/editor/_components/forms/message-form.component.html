@@ -152,7 +152,7 @@
                     </div>
                 </div>
                 <div class="parts-tab-content" >
-                    <payload-tab [message]="message" *ngIf="isPartActive('payload')"></payload-tab>
+                    <payload-tab [message]="message" [from]="'COMPONENT'" *ngIf="isPartActive('payload')"></payload-tab>
                     <headers-tab [message]="message" *ngIf="isPartActive('headers')"></headers-tab>
                 </div>
 

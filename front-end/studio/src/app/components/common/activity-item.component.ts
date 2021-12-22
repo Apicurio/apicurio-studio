@@ -111,6 +111,7 @@ export class ActivityItemComponent {
             case "AddChannelItemCommand":
             case "AddChildSchemaCommand":
             case "AddMessageExampleCommand_Aai20":
+            case "AddOneOfInMessageCommand":
             case "AddResponseDefinitionCommand":
             case "AddResponseDefinitionCommand_20":
             case "AddResponseDefinitionCommand_30":
@@ -147,6 +148,7 @@ export class ActivityItemComponent {
             case "ChangeSchemaTypeCommand":
             case "ChangeResponseDefinitionTypeCommand":
             case "ChangeResponseDefinitionTypeCommand_20":
+            case "ChangePayloadRefCommand_Aai20":
                 rval = "info";
                 break;
             case "ChangePropertyCommand":
@@ -190,6 +192,7 @@ export class ActivityItemComponent {
             case "DeleteAllOperationsCommand_Aai20":
             case "DeleteAllParameterExamplesCommand":
             case "DeleteAllServersCommand_Aai20":
+            case "DeleteOneOfMessageCommand":
             case "DeleteMediaTypeCommand":
             case "DeleteOperationCommand":
             case "DeleteOperationCommand_20":
@@ -409,6 +412,9 @@ export class ActivityItemComponent {
             case "AddResponseDefinitionCommand_30":
                 rval = "added a Response Definition named " + this.command()["_newDefinitionName"] + ".";
                 break;
+            case "AddOneOfInMessageCommand":
+                rval = "added a Message in a(n) component/operation (OneOf section) " + JSON.stringify(this.command()["_newOneOf"]) + ".";
+                break;
             case "AddSecurityRequirementCommand":
                 rval = `added a Security Requirement at location ${this.command()["_parentPath"]}.`;
                 break;
@@ -451,6 +457,9 @@ export class ActivityItemComponent {
             case "ChangeResponseDefinitionTypeCommand":
             case "ChangeResponseDefinitionTypeCommand_20":
                 rval = "changed the type of an operation Response at location " + this.command()["_responsePath"] + ".";
+                break;
+            case "ChangePayloadRefCommand_Aai20":
+                rval = "change the payload of a message " + this.command()["_oldPayloadRef"] + ".";
                 break;
             case "ChangePropertyCommand":
             case "ChangePropertyCommand_20":
@@ -525,6 +534,9 @@ export class ActivityItemComponent {
                 break;
             case "DeleteMediaTypeCommand":
                 rval = "deleted Media Type '" + this.command()["_mediaTypeName"] + "' at location " + this.command()["_mediaTypePath"] + ".";
+                break;
+            case "DeleteOneOfMessageCommand":
+                rval = "deleted Message from component/operation'" + JSON.stringify(this.command()["_oldMessage"]) + ".";
                 break;
             case "DeleteOperationCommand":
             case "DeleteOperationCommand_20":

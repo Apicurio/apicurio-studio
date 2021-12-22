@@ -4,12 +4,11 @@
             <span>Reference</span>
         </div>
         <div class="name">
-            <span>{{oneOfName}}</span>
+            <span>{{displayOneOf()}}</span>
         </div>
-        <div class="oneof-value" (click)="toggleOneOf()" [class.selected]="isEditingOneOf()">
-            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingOneOf()"></span>
-            <span class="oneof-sel" *ngIf="isOneOf()" title="This oneof is setting">{{item.oneOf}}</span>
-            <markdown-summary [data]="displayOneOf()" emptyText="No OneOf."></markdown-summary>
+        <div class="oneof-value" (click)="toggleDropDown()" [class.selected]="isEditing()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>
+            <schema-type [type]="displayType()"></schema-type>
         </div>
         <div class="actions">
             <div class="dropdown dropdown-kebab-pf">
@@ -27,13 +26,13 @@
         <div class="content container-fluid">
             <form  class="form-horizontal">
                 <div class="col-md-11">
-                    <div class="oneof-content" *ngIf="isEditingOneOf()">
+                    <div class="oneof-content" *ngIf="isEditing()">
                         <div class="oneof-sel">
-                            <span class="dropdown-label">OneOf is</span>
+                            <span class="dropdown-label">Message (OneOf type) is</span>
                             <drop-down id="api-oneof-sel"
                                        [value]="oneOf(item)"
                                        [options]="oneOfOptions(item)"
-                                       (onValueChange)="changeOneOf($event)"
+                                       (onValueChange)="changeRef($event)"
                                        [noSelectionLabel]="oneOfName"></drop-down>
                         </div>
                     </div>

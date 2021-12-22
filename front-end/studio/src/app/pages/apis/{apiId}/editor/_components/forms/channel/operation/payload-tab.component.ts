@@ -32,7 +32,6 @@ import {DocumentService} from "../../../../_services/document.service";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {SelectionService} from "../../../../_services/selection.service";
 import {EditExampleEvent} from "../../../dialogs/edit-aai-example.component";
-import {PayloadType} from "./enum-payload-tab"
 
 @Component({
     selector: "payload-tab",
@@ -44,7 +43,6 @@ import {PayloadType} from "./enum-payload-tab"
 export class PayloadTabComponent extends AbstractBaseComponent {
 
     @Input() message: AaiMessage;
-    @Input() from: string;
 
     protected _model: SimplifiedType = null;
     protected editing: boolean = false;
@@ -118,19 +116,14 @@ export class PayloadTabComponent extends AbstractBaseComponent {
         nt.of = newType.of;
         nt.as = newType.as;
 
-        if(this.from == PayloadType.OPE.toString()){
-            let command: ICommand = CommandFactory.createChangePayloadRefCommand_Aai20(nt.type, this.message.parent() as AaiOperation);
-            this.commandService.emit(command);
-        }else if(this.from == PayloadType.COMP.toString()){
-            let command: ICommand = CommandFactory.createChangePayloadRefCommand_Aai20(nt.type, this.message.parent() as AaiComponents, this.message._name); //the name like key
-            this.commandService.emit(command);
-        }
+        let command: ICommand = CommandFactory.createChangePayloadRefCommand_Aai20$java_lang_String$io_apicurio_datamodels_asyncapi_models_AaiMessage(nt.type, this.message);
+        this.commandService.emit(command);
 
         this._model = nt;
     }
 
     public schemaForExamplePayload(): Aai20Schema {
-        if (this.message.payload.$ref) {
+        if (this.message.payload && this.message.payload.$ref) {
             return ReferenceUtil.resolveRef(this.message.payload.$ref, this.message) as Aai20Schema;
         }
         return null;

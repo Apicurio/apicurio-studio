@@ -15,11 +15,11 @@
         <div *ngIf="isMultiMessages()">
             <!-- One Of -->
             <!-- Inheritance -->
-                    <div class="section-field-label">
-                        <span>Inheritance Type OneOf</span>
-                    </div><br>
-                    <oneof-row *ngFor="let sel of this.messageFromOperation().oneOf; let idx = index" [item]="sel" [oneOfName]="deref(sel).name"
-                                  (onDelete)="deleteMessageInOneOf(this.messageFromOperation(),idx)"></oneof-row>
+            <div class="section-field-label">
+                <span>Inheritance Type OneOf</span>
+            </div><br>
+            <oneof-row *ngFor="let sel of this.messageFromOperation().oneOf; let idx = index" [item]="sel" [oneOfName]="oneOfName(sel)"
+                          (onDelete)="deleteMessageInOneOf(this.messageFromOperation(),idx)"></oneof-row>
         </div>
 
         <div class="half-section" *ngIf="hasMessage() && !isMultiMessages()">
@@ -134,7 +134,7 @@
             </div>
         </div>
         <div class="parts-tab-content" *ngIf="hasMessage() && !isMultiMessages() ">
-            <payload-tab [message]="messageFromOperation()" [from]="'OPERATION'" *ngIf="isPartActive('payload')"></payload-tab>
+            <payload-tab [message]="messageFromOperation()" *ngIf="isPartActive('payload')"></payload-tab>
             <headers-tab [message]="messageFromOperation()" *ngIf="isPartActive('headers')"></headers-tab>
         </div>
     </div>

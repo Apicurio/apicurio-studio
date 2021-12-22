@@ -120,8 +120,8 @@ export class OneOfRowComponent extends AbstractRowComponent<AaiMessage, Simplifi
         this.commandService.emit(command);
     }
 
-    public changeOneOf(ref: string): void {
-        let command: ICommand = CommandFactory.createChangeRefSeveralMessagesCommand(this.item, ref);
+    public changeRef(ref: string): void {
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.item, "$ref", ref);
         this.commandService.emit(command);
     }
 

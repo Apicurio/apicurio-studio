@@ -159,6 +159,21 @@ export class MessageSectionComponent extends AbstractBaseComponent {
         this.currentPart = part;
     }
 
+    public oneOfName(message: AaiMessage): string {
+        if (message && message.$ref) {
+            const r: any = this.deref(message);
+            if (r && r.getName && r.getName()) {
+                return r.getName();
+            } else {
+                return message.$ref;
+            }
+        } else if (message.name) {
+            return message.name;
+        } else {
+            return "Unknown message";
+        }
+    }
+
     public deref(message: AaiMessage){
         return ReferenceUtil.resolveFragmentFromJS(this.messageFromOperation().ownerDocument(), message.$ref);
     }

@@ -46,7 +46,7 @@ export class ActivityItemComponent {
 
     /**
      * Get the command for this change.
-     * 
+     *
      */
     protected command(): ICommand {
         if (this._command == null) {
@@ -78,7 +78,7 @@ export class ActivityItemComponent {
 
     /**
      * Returns an appropriate icon for the activity item, based on its type.
-     * 
+     *
      */
     public icon(): string {
         if (this.item.type == "Command") {
@@ -371,7 +371,7 @@ export class ActivityItemComponent {
 
     /**
      * Returns an appropriate description for the activity item, based on its type.
-     * 
+     *
      */
     public description(): string {
         if (this.item.type == "Command") {
@@ -459,7 +459,7 @@ export class ActivityItemComponent {
                 rval = "changed the type of an operation Response at location " + this.command()["_responsePath"] + ".";
                 break;
             case "ChangePayloadRefCommand_Aai20":
-                rval = "change the payload of a message " + this.command()["_oldPayloadRef"] + ".";
+                rval = "changed the payload of a message " + this.command()["_oldPayloadRef"] + ".";
                 break;
             case "ChangePropertyCommand":
             case "ChangePropertyCommand_20":

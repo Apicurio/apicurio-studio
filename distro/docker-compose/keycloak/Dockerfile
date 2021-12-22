@@ -1,3 +1,3 @@
-FROM jboss/keycloak:14.0.0
+FROM jboss/keycloak:16.1.0
 
 ADD apicurio /opt/jboss/keycloak/themes/apicurio

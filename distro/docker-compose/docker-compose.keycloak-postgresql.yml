@@ -6,7 +6,7 @@ volumes:
 
 services:
   jboss-keycloak-postgresql:
-    image: postgres
+    image: 'postgres:12.9'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:

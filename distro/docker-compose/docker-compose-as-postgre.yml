@@ -5,7 +5,7 @@ volumes:
 
 services:
   apicurio-studio-db:
-    image: 'postgres:9.6'    
+    image: 'postgres:12.9'    
     environment:
       POSTGRES_DB: ${AS_DATABASE}
       POSTGRES_USER: ${AS_DB_USER}

@@ -37,7 +37,9 @@ For both profiles you need to provide connection configuration for a oidc server
  |OIDC Realm|`-Dstudio.keycloak.realm`|`APICURIO_KC_REALM`|
  |OIDC Client ID|`-Dquarkus.oidc.client-id`|`APICURIO_KC_CLIENT_ID`|
  
- 
+In `prod` profile, by default, the OIDC connector forces the `redirect_uri` to use `https://` URI - considering this component may be deployed behind a reverse proxy that handles the TLS termination.
+To disable this behavior, you may set the `APICURIO_OIDC_REDIRECT_HTTPS` environment variable to `false`.
+
 To see additional options, visit:
  - [OIDC Options](https://quarkus.io/guides/security-openid-connect) 
  

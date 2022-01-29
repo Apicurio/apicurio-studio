@@ -1,0 +1,26 @@
+:root {
+  --myApp-global--spacer--md: 30px;
+}
+
+.app-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--myApp-global--spacer--md);
+}
+
+.notification-container {
+  flex: 0 1 auto;
+}
+
+.pf-c-page {
+  width: 100%;
+  height: 100vh;
+}
+
+.ps_header-breadcrumbs {
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 5px;
+  padding-bottom: 0px;
+}

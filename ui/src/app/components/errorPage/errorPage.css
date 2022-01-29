@@ -1,0 +1,17 @@
+.centerizer {
+    text-align: center;
+}
+
+.centerizer > div {
+    display: inline-block;
+}
+
+.centerizer > div.separator {
+    display: block;
+    height: 0px;
+}
+
+.centerizer > div.ace-wrapper > div {
+    border: 1px solid #ccc;
+}
+

@@ -1,0 +1,22 @@
+target/
+.project
+.settings
+.classpath
+.DS_Store
+
+# VS Code
+.vscode/
+.factorypath
+
+# IntelliJ / IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+website
+
+# Other
+*~
+.notes
+**/bin

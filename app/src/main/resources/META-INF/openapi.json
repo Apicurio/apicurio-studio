@@ -1,0 +1,1112 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Apicurio API Studio [v1]",
+        "version": "1.0.0",
+        "description": "Managed application services API Studio.",
+        "contact": {
+            "name": "Apicurio",
+            "email": "apicurio@lists.jboss.org"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        }
+    },
+    "paths": {
+        "/teams": {
+            "summary": "Manage the collection of teams",
+            "get": {
+                "tags": [
+                    "Teams"
+                ],
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "description": "",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "offset",
+                        "description": "",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "order",
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/components/schemas/SortOrder"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "orderby",
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/components/schemas/TeamSortBy"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TeamResults"
+                                }
+                            }
+                        },
+                        "description": "A list of teams."
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "listTeams",
+                "summary": "List teams",
+                "description": "Lists all of the teams visible to the authenticated user.\n\nThis operation may fail for one of the following reasons:\n\n* A server error occurred (HTTP error `500`)\n"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "Information about the new team being created.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewTeam"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Teams"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The team was successfully created."
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "createTeam",
+                "summary": "Create a new team",
+                "description": "Creates a new team.\n\nThis operation may fail for one of the following reasons:\n\n* The provided team name was invalid (HTTP error `400`)\n* A team with the provided name already exists (HTTP error `409`)\n* A server error occurred (HTTP error `500`)\n"
+            }
+        },
+        "/teams/{teamName}": {
+            "get": {
+                "tags": [
+                    "Teams"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Team"
+                                }
+                            }
+                        },
+                        "description": "Information about a team."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "getTeam",
+                "summary": "Get information about a team",
+                "description": "Operation used to get information about a single team."
+            },
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTeam"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Teams"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Team was updated successfully."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "updateTeam",
+                "summary": "Update team information",
+                "description": "Operation to update the information about a team."
+            },
+            "delete": {
+                "tags": [
+                    "Teams"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The team was successfully deleted."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "deleteTeam",
+                "summary": "Delete a team",
+                "description": "Operation used to delete a team."
+            },
+            "parameters": [
+                {
+                    "name": "teamName",
+                    "description": "Unique name of the team.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/teams/{teamName}/members": {
+            "summary": "Manage the members of a team",
+            "get": {
+                "tags": [
+                    "Teams"
+                ],
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "description": "",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "offset",
+                        "description": "",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "order",
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/components/schemas/SortOrder"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "orderby",
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/components/schemas/TeamMemberSortBy"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TeamMemberResults"
+                                }
+                            }
+                        },
+                        "description": "A list of team members."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "listMembers",
+                "summary": "List team members",
+                "description": "Operation to list the members of a single team."
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewTeamMember"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Teams"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The team member was added."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "addTeamMember",
+                "summary": "Add a member to the team",
+                "description": "Operation used to add a member to a team."
+            },
+            "parameters": [
+                {
+                    "name": "teamName",
+                    "description": "Unique name of a team.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/teams/{teamName}/members/{principal}": {
+            "delete": {
+                "tags": [
+                    "Teams"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The team member was removed."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "deleteTeamMember",
+                "summary": "Remove a team member",
+                "description": "Operation to remove a member from a team."
+            },
+            "parameters": [
+                {
+                    "name": "principal",
+                    "description": "The principal of a team member.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "teamName",
+                    "description": "The unique name of the team.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/me": {
+            "summary": "Retrieves information about the current user",
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserInfo"
+                                }
+                            }
+                        },
+                        "description": "Response when the endpoint is successfully invoked."
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "getCurrentUserInfo",
+                "summary": "Get current user",
+                "description": "Returns information about the currently authenticated user."
+            }
+        },
+        "/artifacts": {
+            "summary": "Manage the collection of artifacts",
+            "get": {
+                "tags": [
+                    "Artifacts"
+                ],
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "description": "",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "offset",
+                        "description": "",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "order",
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/components/schemas/SortOrder"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "orderby",
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/components/schemas/ArtifactSortBy"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ArtifactResults"
+                                }
+                            }
+                        },
+                        "description": "The list of artifacts is successfully returned."
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "listArtifacts",
+                "summary": "List artifacts",
+                "description": "Lists all of the artifacts visible to the authenticated user.\n\nThis operation may fail for one of the following reasons:\n\n* A server error occurred (HTTP error `500`)\n"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NewArtifact"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Artifacts"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The artifact was successfully created."
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/InvalidInput"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "createArtifact",
+                "summary": "Create an artifact",
+                "description": "Creates a new artifact.\n\nThis operation may fail for one of the following reasons:\n\n* The provided artifact QName was invalid (HTTP error `400`)\n* An artifact with the provided QName already exists (HTTP error `409`)\n* A server error occurred (HTTP error `500`)\n"
+            }
+        },
+        "/admin/config/properties": {
+            "summary": "Manage configuration properties.",
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ConfigurationProperty"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "On a successful response, returns a list of configuration properties."
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "listConfigProperties",
+                "summary": "List all configuration properties",
+                "description": "Returns a list of all configuration properties that have been set.  The list is not paged.\n\nThis operation may fail for one of the following reasons:\n\n* A server error occurred (HTTP error `500`)\n"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConfigurationProperty"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Returned if the configuration property is correctly set."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "setConfigProperty",
+                "summary": "Set a configuration property",
+                "description": "Sets a configuration property using a name and value.  If the configuration property is\nalready set, it will be overwritten.  Only editable configuration properties can be \nconfigured using the REST API.\n\nThis operation may fail for one of the following reasons:\n\n* No property with the given name exists to be set (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
+            }
+        },
+        "/admin/config/properties/{propertyName}": {
+            "summary": "Manage a single configuration property (by name).",
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConfigurationProperty"
+                                }
+                            }
+                        },
+                        "description": "The configuration property value."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "getConfigProperty",
+                "summary": "Get the value of a configuration property",
+                "description": "Returns the value of a single configuration property.\n\nThis operation may fail for one of the following reasons:\n\n* Property not found or not configured (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
+            },
+            "put": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateConfigurationProperty"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The configuration property was updated."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "updateConfigProperty",
+                "summary": "Update a configuration property",
+                "description": "Updates the value of a single configuration property.\n\nThis operation may fail for one of the following reasons:\n\n* Property not found or not configured (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
+            },
+            "delete": {
+                "tags": [
+                    "Admin"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The configuration property was deleted."
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "deleteConfigProperty",
+                "summary": "Delete a configuration property",
+                "description": "Deletes the value of a single configuration property.  This will return the property to\nits default value (see external documentation for supported properties and their default\nvalues).\n\nThis operation may fail for one of the following reasons:\n\n* Property not found or not configured (HTTP error `404`)\n* A server error occurred (HTTP error `500`)\n"
+            },
+            "parameters": [
+                {
+                    "name": "propertyName",
+                    "description": "The name of a configuration property.",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        }
+    },
+    "components": {
+        "schemas": {
+            "Team": {
+                "title": "Root Type for Team",
+                "description": "",
+                "required": [
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "createdBy": {
+                        "description": "",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "name": "tiger-team",
+                    "description": "Team dedicated to killing it."
+                }
+            },
+            "NewTeam": {
+                "title": "Root Type for NewTeam",
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "name": "project-1-team",
+                    "description": "A team of people working on a project."
+                }
+            },
+            "ValidationError": {
+                "description": "Error returned when an operation's input contains invalid data.",
+                "type": "object",
+                "allOf": [
+                    {
+                        "required": [
+                            "property"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "property": {
+                                "description": "",
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/ErrorInfo"
+                    }
+                ]
+            },
+            "UpdateTeam": {
+                "title": "Root Type for UpdateTeam",
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "description": "An updated description of the team."
+                }
+            },
+            "TeamSortBy": {
+                "description": "",
+                "enum": [
+                    "name",
+                    "createdOn"
+                ],
+                "type": "string"
+            },
+            "TeamMemberSortBy": {
+                "description": "",
+                "enum": [
+                    "name"
+                ],
+                "type": "string"
+            },
+            "TeamMemberResults": {
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "required": [
+                            "members"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "members": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/TeamMember"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/Results"
+                    }
+                ]
+            },
+            "Results": {
+                "title": "Root Type for SearchResults",
+                "description": "",
+                "required": [
+                    "count"
+                ],
+                "type": "object",
+                "properties": {
+                    "count": {
+                        "format": "int32",
+                        "minimum": 0,
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "count": 100
+                }
+            },
+            "TeamMember": {
+                "title": "Root Type for TeamMember",
+                "description": "",
+                "required": [
+                    "principal"
+                ],
+                "type": "object",
+                "properties": {
+                    "principal": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "principal": "bwayne@gotham.gov"
+                }
+            },
+            "NewTeamMember": {
+                "title": "Root Type for NewTeamMember",
+                "description": "",
+                "required": [
+                    "principal"
+                ],
+                "type": "object",
+                "properties": {
+                    "principal": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "principal": "dprince@themyscira.gov"
+                }
+            },
+            "SortOrder": {
+                "description": "",
+                "enum": [
+                    "asc",
+                    "desc"
+                ],
+                "type": "string",
+                "example": "\"asc\""
+            },
+            "UserInfo": {
+                "title": "Root Type for UserInfo",
+                "description": "Information about a single user.",
+                "required": [
+                    "username"
+                ],
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "displayName": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "username": "dprince",
+                    "displayName": "Diana Prince"
+                }
+            },
+            "ArtifactMetaData": {
+                "title": "Root Type for ApiInfo",
+                "description": "Meta information about an API.",
+                "required": [
+                    "createdBy",
+                    "createdOn",
+                    "latestVersion",
+                    "name",
+                    "namespace",
+                    "title",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "createdBy": {
+                        "type": "string"
+                    },
+                    "createdOn": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "latestVersion": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": ""
+                    }
+                },
+                "example": {
+                    "namespace": "urn:example:logistics",
+                    "name": "fraud-detection-api",
+                    "title": "Fraud Detection API",
+                    "description": "A simple API to detect fraud.",
+                    "latest-version": "1.0.7",
+                    "created-on": "2021-01-17T17:55:22Z",
+                    "created-by": "bwayne@gotham.net"
+                }
+            },
+            "NewArtifact": {
+                "title": "Root Type for NewArtifact",
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "namespace": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "contentFrom": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "namespace": "urn:example:hr",
+                    "name": "career-api",
+                    "type": "OPENAPI",
+                    "content": "https://www.example.com/apis/sample.json",
+                    "contentFrom": "url"
+                }
+            },
+            "ArtifactType": {
+                "description": "",
+                "enum": [
+                    "JSON_SCHEMA",
+                    "OPENAPI",
+                    "ASYNCAPI"
+                ],
+                "type": "string",
+                "example": "OPENAPI",
+                "x-codegen-package": "io.apicurio.studio.types"
+            },
+            "TeamResults": {
+                "title": "Root Type for TeamResults",
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "teams": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Team"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/Results"
+                    }
+                ],
+                "example": {
+                    "count": 2,
+                    "teams": [
+                        {
+                            "name": "team-1",
+                            "description": "Description of team one."
+                        },
+                        {
+                            "name": "team-2",
+                            "description": "Description of team two."
+                        }
+                    ]
+                }
+            },
+            "ArtifactResults": {
+                "title": "Root Type for ArtifactsResults",
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "type": "object",
+                        "properties": {
+                            "artifacts": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/ArtifactMetaData"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/components/schemas/Results"
+                    }
+                ],
+                "example": {
+                    "count": 2,
+                    "artifacts": [
+                        {
+                            "namespace": "urn:foo",
+                            "name": "some-api"
+                        },
+                        {
+                            "namespace": "urn:bar",
+                            "name": "some-api"
+                        }
+                    ]
+                }
+            },
+            "ArtifactSortBy": {
+                "description": "",
+                "enum": [
+                    "name",
+                    "createdOn"
+                ],
+                "type": "string"
+            },
+            "ErrorInfo": {
+                "title": "Root Type for ErrorInfo",
+                "description": "Details about a specific error returned by the server.",
+                "required": [
+                ],
+                "type": "object",
+                "properties": {
+                    "error_code": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "detail": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "name": {
+                        "description": "",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "error_code": 500,
+                    "message": "An error occurred on the server."
+                }
+            },
+            "ConfigurationProperty": {
+                "title": "Root Type for ConfigurationProperty",
+                "description": "",
+                "required": [
+                    "name",
+                    "value"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "name": "registry.auth.owner-only-authorization",
+                    "value": "true"
+                }
+            },
+            "UpdateConfigurationProperty": {
+                "title": "Root Type for UpdateConfigurationProperty",
+                "description": "",
+                "required": [
+                    "value"
+                ],
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "value": "true"
+                }
+            }
+        },
+        "responses": {
+            "InvalidInput": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        }
+                    }
+                },
+                "description": ""
+            },
+            "BadRequest": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorInfo"
+                        }
+                    }
+                },
+                "description": "Common response for all operations that can return a `400` error."
+            },
+            "NotFound": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorInfo"
+                        }
+                    }
+                },
+                "description": "The response returned when something is requested but cannot be found."
+            },
+            "ServerError": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorInfo"
+                        }
+                    }
+                },
+                "description": "The response sent from the server when an unexpected error occurs (for example \na database connection error)."
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Artifacts",
+            "description": "Operations related to managing artifacts."
+        },
+        {
+            "name": "Teams",
+            "description": "Operations related to teams."
+        }
+    ],
+    "x-codegen": {
+        "contextRoot": "/apis/studio/v1",
+        "bean-annotations": [
+            "io.quarkus.runtime.annotations.RegisterForReflection",
+            {
+                "annotation": "lombok.Builder",
+                "excludeEnums": true
+            },
+            {
+                "annotation": "lombok.AllArgsConstructor",
+                "excludeEnums": true
+            },
+            {
+                "annotation": "lombok.NoArgsConstructor",
+                "excludeEnums": true
+            },
+            {
+                "annotation": "lombok.EqualsAndHashCode",
+                "excludeEnums": true
+            },
+            {
+                "annotation": "lombok.ToString",
+                "excludeEnums": true
+            }
+        ]
+    }
+}

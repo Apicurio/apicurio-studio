@@ -1,0 +1,15 @@
+#avatar-dropdown {
+    margin-left: 15px;
+}
+
+#avatar-dropdown .pf-c-dropdown__toggle-icon {
+    margin-left: 5px;
+}
+
+#avatar-dropdown .avatar-logout-link {
+    color: rgb(21, 21, 21);
+}
+#avatar-dropdown .avatar-logout-link:hover {
+    border-bottom: none;
+    text-decoration: none;
+}

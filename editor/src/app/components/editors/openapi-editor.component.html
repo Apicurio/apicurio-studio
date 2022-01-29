@@ -1,0 +1,7 @@
+<div class="openapi-editor" id="openapi-editor">
+    <div class="editor">
+        <api-editor #apiEditor [api]="api" [embedded]="true" (onCommandExecuted)="documentChanged()"
+                    (onUndo)="documentChanged()" (onRedo)="documentChanged()"
+                    [features]="{ componentImports: false, validationSettings: false }"></api-editor>
+    </div>
+</div>

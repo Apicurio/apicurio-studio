@@ -1,0 +1,21 @@
+{
+    "content": {
+        "type": "OPENAPI"
+    },
+    "from": {
+        "type": "HTTP",
+        "method": "GET",
+        "url": "https://raw.githubusercontent.com/Apicurio/apicurio-registry/master/app/src/test/resources/io/apicurio/registry/rest/v2/openapi-empty.json"
+    },
+    "to": {
+        "type": "FILE"
+    },
+    "features": {
+        "allowCollaboration": false,
+        "allowCustomValidations": false,
+        "allowImports": false,
+        "closeButton": false,
+        "saveButton": false,
+        "toolbar": false
+    }
+}

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 
 import {Component, Input, ViewChild} from "@angular/core";
 import {ApiDefinition, ApiEditorComponent} from "apicurio-design-studio";
+import {LoggerService} from "../../services/logger.service";
+import {EditorComponent} from "./editor.component";
 
 
 @Component({
@@ -24,28 +26,29 @@ import {ApiDefinition, ApiEditorComponent} from "apicurio-design-studio";
     templateUrl: "openapi-editor.component.html",
     styleUrls: ["openapi-editor.component.css"]
 })
-export class OpenApiEditorComponent {
+export class OpenApiEditorComponent implements EditorComponent {
 
     // @ts-ignore
     @Input() api: ApiDefinition;
 
-    @ViewChild("apiEditor") apiEditor: ApiEditorComponent|undefined;
+    @ViewChild("apiEditor") apiEditor: ApiEditorComponent | undefined;
 
     /**
      * Constructor.
      */
-    constructor() {
+    constructor(private logger: LoggerService) {
     }
 
     /**
      * Called whenever the API definition is changed by the user.
      */
     public documentChanged(): any {
-        console.info("[EditorComponent] Detected a document change, scheduling disaster recovery persistence");
+        this.logger.info("[OpenApiEditorComponent] Detected a document change, scheduling disaster recovery persistence");
     }
 
-    public async save(mode: "save" | "save-as" = "save", format?: "json" | "yaml"): Promise<void> {
-        console.info("[EditorComponent] Saving the API definition.");
+    public getValue(): string {
+        const value: ApiDefinition = this.apiEditor.getValue();
+        return JSON.stringify(value.spec, null, 4);
     }
 
 }

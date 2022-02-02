@@ -1,0 +1,22 @@
+{
+    "content": {
+        "type": "OPENAPI"
+    },
+    "from": {
+        "type": "HTTP",
+        "method": "GET",
+        "url": "https://raw.githubusercontent.com/Apicurio/apicurio-registry/master/common/src/main/resources/META-INF/openapi.json"
+    },
+    "to": {
+        "type": "FILE"
+    },
+    "features": {
+        "allowCollaboration": false,
+        "allowCustomValidations": false,
+        "allowImports": false,
+        "closeButton": false,
+        "saveButton": true,
+        "saveButtonLabel": "Save",
+        "toolbar": true
+    }
+}

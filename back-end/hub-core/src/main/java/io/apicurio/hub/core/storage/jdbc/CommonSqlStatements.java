@@ -340,7 +340,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String selectLatestContentDocumentForSharing() {
-        return "SELECT c.*, s.created_by "
+        return "SELECT c.* "
                 + "FROM api_content c "
                 + "JOIN sharing s ON s.design_id = c.design_id "
                 + "WHERE s.uuid = ? AND s.level = 'DOCUMENTATION' AND c.type = 0 "

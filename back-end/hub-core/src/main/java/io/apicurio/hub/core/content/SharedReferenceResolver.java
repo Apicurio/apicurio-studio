@@ -14,40 +14,35 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.editing.content;
+package io.apicurio.hub.core.content;
 
+import io.apicurio.datamodels.core.models.Node;
 import io.apicurio.hub.core.beans.ApiDesignContent;
-import io.apicurio.hub.core.content.AbstractReferenceResolver;
+import io.apicurio.hub.core.beans.SharingConfiguration;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.net.URI;
 
 /**
- * Resolves references that are local/internal to Apicurio using the permissions of a user.  These references will be of the following form:
- * 
- *   apicurio:API_ID#/path/to/Entity
- * 
- * An example of a valid local reference might be:
- * 
- *   apicurio:173827#/components/DataType
+ * Resolves an internal reference to a {@link Node} if the pointed resource is publicly shared.
  * 
  * @author c.desc2@gmail.com
  */
-public class UserScopedReferenceResolver extends AbstractReferenceResolver {
+@ApplicationScoped
+public class SharedReferenceResolver extends AbstractReferenceResolver {
     
+    @Inject
     private IStorage storage;
     
-    private String userId;
-
     /**
      * Constructor.
      */
-    public UserScopedReferenceResolver(final IStorage storage, final String userId) {
-        this.storage = storage;
-        this.userId = userId;
+    public SharedReferenceResolver() {
     }
     
     /**
@@ -64,17 +59,17 @@ public class UserScopedReferenceResolver extends AbstractReferenceResolver {
      */
     @Override
     protected String fetchUriContent(URI referenceUri) throws IOException {
+        final String designId = referenceUri.getSchemeSpecificPart();
         try {
-            String apiId = referenceUri.getSchemeSpecificPart();
-            // TODO handle in-progress content?  this code will ignore any changes not yet rolled up via the rollup executor
-            ApiDesignContent dc = storage.getLatestContentDocument(this.userId, apiId);
-            if (dc != null) {
-                return dc.getDocument();
+            final SharingConfiguration sharingConfig = storage.getSharingConfig(designId);
+            if (sharingConfig != null) {
+                final ApiDesignContent document = storage.getLatestContentDocumentForSharing(sharingConfig.getUuid());
+                return document.getDocument();
             }
+        } catch (StorageException | NotFoundException e) {
             return null;
-        } catch (NotFoundException | StorageException e) {
-            throw new IOException(e);
         }
+        return null;
     }
 
 }

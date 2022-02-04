@@ -105,6 +105,7 @@ import io.apicurio.hub.core.beans.ApiTemplatePublication;
 import io.apicurio.hub.core.beans.CodegenProject;
 import io.apicurio.hub.core.beans.CodegenProjectType;
 import io.apicurio.hub.core.beans.Contributor;
+import io.apicurio.hub.core.beans.DereferenceControlResult;
 import io.apicurio.hub.core.beans.FormatType;
 import io.apicurio.hub.core.beans.Invitation;
 import io.apicurio.hub.core.beans.LinkedAccountType;
@@ -116,11 +117,13 @@ import io.apicurio.hub.core.beans.UpdateSharingConfiguration;
 import io.apicurio.hub.core.cmd.OaiCommandException;
 import io.apicurio.hub.core.cmd.OaiCommandExecutor;
 import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.content.ContentAccessibilityAsserter;
 import io.apicurio.hub.core.editing.IEditingSessionManager;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.exceptions.ServerError;
+import io.apicurio.hub.core.exceptions.UnresolvableReferenceException;
 import io.apicurio.hub.core.integrations.ApicurioEventType;
 import io.apicurio.hub.core.integrations.EventsService;
 import io.apicurio.hub.core.storage.IStorage;
@@ -155,6 +158,8 @@ public class DesignsResource implements IDesignsResource {
     private OaiCommandExecutor oaiCommandExecutor;
     @Inject
     private ContentDereferencer dereferencer;
+    @Inject
+    private ContentAccessibilityAsserter accessibilityAsserter;
     @Inject
     private IEditingSessionManager editingSessionManager;
     @Inject
@@ -1125,7 +1130,7 @@ public class DesignsResource implements IDesignsResource {
             }
 
             return content;
-        } catch (StorageException | OaiCommandException | IOException e) {
+        } catch (StorageException | OaiCommandException | IOException | UnresolvableReferenceException e) {
             throw new ServerError(e);
         }
     }
@@ -1440,7 +1445,7 @@ public class DesignsResource implements IDesignsResource {
             } else {
                 throw new ServerError("Unsupported project type: " + project.getType());
             }
-        } catch (IOException | SourceConnectorException e) {
+        } catch (IOException | SourceConnectorException | UnresolvableReferenceException e) {
             throw new ServerError(e);
         }
     }
@@ -1584,6 +1589,15 @@ public class DesignsResource implements IDesignsResource {
 
             if (!this.authorizationService.hasOwnerPermission(currentUser, designId)) {
                 throw new NotFoundException();
+            }
+            
+            if (SharingLevel.DOCUMENTATION == config.getLevel()) {
+                final ApiDesignContent document = this.storage.getLatestContentDocument(currentUser.getLogin(), designId);
+                final String content = document.getDocument();
+                final DereferenceControlResult dereferenceControlResult = accessibilityAsserter.isDereferenceable(content);
+                if (!dereferenceControlResult.isSuccess()) {
+                    throw new ServerError(dereferenceControlResult.getError());
+                }
             }
 
             this.storage.setSharingConfig(designId, uuid, config.getLevel());

@@ -134,7 +134,7 @@
         <version.org.keycloak>16.1.1</version.org.keycloak>
         <version.mysql>8.0.22</version.mysql>
         <version.org.postgresql>42.2.20</version.org.postgresql>
-        <version.org.slf4j>1.7.35</version.org.slf4j>
+        <version.org.slf4j>1.7.36</version.org.slf4j>
         <version.scala>2.13.8</version.scala>
         <version.infinispan>13.0.6.Final</version.infinispan>
     </properties>

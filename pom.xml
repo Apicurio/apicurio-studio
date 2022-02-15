@@ -120,11 +120,11 @@
         <quarkus.profile>dev</quarkus.profile>
 
         <!-- Apicurio Data Models (OpenAPI and AsyncAPI support) -->
-        <apicurio-data-models.version>1.1.19</apicurio-data-models.version>
+        <apicurio-data-models.version>1.1.20</apicurio-data-models.version>
 
         <!-- Apicurio Commons -->
-        <apicurio-common-app-components.version>0.1.1-SNAPSHOT</apicurio-common-app-components.version>
-        <apicurio-common-rest-client.version>0.1.5.Final</apicurio-common-rest-client.version>
+        <apicurio-common-app-components.version>0.1.8.Final</apicurio-common-app-components.version>
+        <apicurio-common-rest-client.version>0.1.7.Final</apicurio-common-rest-client.version>
 
         <!-- Apicurio Registry -->
         <apicurio-registry.version>2.1.4.Final</apicurio-registry.version>
@@ -201,6 +201,11 @@
             <dependency>
                 <groupId>io.apicurio</groupId>
                 <artifactId>apicurio-common-app-components-config</artifactId>
+                <version>${apicurio-common-app-components.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.apicurio</groupId>
+                <artifactId>apicurio-common-app-components-config-index</artifactId>
                 <version>${apicurio-common-app-components.version}</version>
             </dependency>
             <dependency>

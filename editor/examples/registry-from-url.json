@@ -16,7 +16,7 @@
         "allowImports": false,
         "closeButton": false,
         "saveButton": true,
-        "saveButtonLabel": "Save",
+        "saveButtonLabel": "Save to file",
         "toolbar": true
     }
 }

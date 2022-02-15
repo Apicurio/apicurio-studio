@@ -17,15 +17,21 @@
 package io.apicurio.studio.rest.v1.impl;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 
+import io.apicurio.common.apps.config.Dynamic;
 import io.apicurio.common.apps.config.DynamicConfigPropertyDef;
 import io.apicurio.common.apps.config.DynamicConfigPropertyDto;
+import io.apicurio.common.apps.config.DynamicConfigPropertyIndex;
+import io.apicurio.common.apps.storage.exceptions.InvalidInputException;
+import io.apicurio.common.apps.storage.exceptions.NotFoundException;
 import io.apicurio.studio.rest.v1.AdminResource;
 import io.apicurio.studio.rest.v1.beans.ConfigurationProperty;
 import io.apicurio.studio.rest.v1.beans.UpdateConfigurationProperty;
@@ -45,6 +51,20 @@ public class AdminResourceImpl implements AdminResource {
     @Inject
     SqlStorage storage;
 
+    @Inject
+    DynamicConfigPropertyIndex dynamicPropertyIndex;
+
+    /*******************************************************
+     * Two temporary dynamic properties for testing.  Can
+     * remove these once we have actual dynamic properties
+     * somewhere in the application.
+     *******************************************************/
+    @Dynamic @ConfigProperty(name = "app.properties.test.string", defaultValue = "_default_")
+    Supplier<String> stringProperty;
+    @Dynamic @ConfigProperty(name = "app.properties.test.int", defaultValue = "100")
+    Supplier<Integer> intProperty;
+
+
     /**
      * @see io.apicurio.mas.studio.rest.v1.AdminResource#listConfigProperties()
      */
@@ -61,7 +81,7 @@ public class AdminResourceImpl implements AdminResource {
      */
     @Override
     public void setConfigProperty(ConfigurationProperty data) {
-        DynamicConfigPropertyDef<?> propertyDef = resolveConfigProperty(data.getName());
+        DynamicConfigPropertyDef propertyDef = resolveConfigProperty(data.getName());
         validateType(propertyDef, data);
 
         DynamicConfigPropertyDto dto = new DynamicConfigPropertyDto();
@@ -110,13 +130,12 @@ public class AdminResourceImpl implements AdminResource {
      * @param propertyName the name of the dynamic property
      * @return the dynamic config property definition
      */
-    private DynamicConfigPropertyDef<?> resolveConfigProperty(String propertyName) {
-        // TODO Get the dynamic config property from the index of dynamic config properties.  TBD
-        DynamicConfigPropertyDef<String> propertyDef = new DynamicConfigPropertyDef<String>(propertyName, String.class);
-//        if (propertyDef == null) {
-//            throw new NotFoundException("Dynamic configuration property not found: " + propertyName);
-//        }
-        return propertyDef;
+    private DynamicConfigPropertyDef resolveConfigProperty(String propertyName) {
+        DynamicConfigPropertyDef property = dynamicPropertyIndex.getProperty(propertyName);
+        if (property == null) {
+            throw new NotFoundException("Dynamic configuration property not found: " + propertyName);
+        }
+        return property;
     }
 
     /**
@@ -125,8 +144,10 @@ public class AdminResourceImpl implements AdminResource {
      * @param propertyDef the dynamic config property definition
      * @param data the new value of the property
      */
-    private void validateType(DynamicConfigPropertyDef<?> propertyDef, ConfigurationProperty data) {
-        // TODO implement validation of the property value against the property type
+    private void validateType(DynamicConfigPropertyDef propertyDef, ConfigurationProperty data) {
+        if (!propertyDef.isValidValue(data.getValue())) {
+            throw new InvalidInputException("Invalid dynamic configuration property value for: " + data.getName());
+        }
     }
 
     private static ConfigurationProperty dtoToConfigurationProperty(DynamicConfigPropertyDto dto) {

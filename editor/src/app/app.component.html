@@ -2,7 +2,7 @@
     <img src="https://cdn.dribbble.com/users/3337757/screenshots/6825268/076_-loading_animated_dribbble_copy.gif" />
 </div>
 <div *ngIf="isShowEditor" class="studio-editor">
-    <toolbar [config]="config" (onSave)="onSave()" (onClose)="onClose()"></toolbar>
+    <toolbar *ngIf="config.features.toolbar" [config]="config" (onSave)="onSave()" (onClose)="onClose()"></toolbar>
     <div class="content-editor">
         <openapi-editor #openapiEditor *ngIf="config.content.type === 'OPENAPI'" [api]="api"></openapi-editor>
     </div>

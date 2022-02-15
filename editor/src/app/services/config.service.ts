@@ -32,8 +32,8 @@ export class ConfigService {
 
   public get(): Promise<EditingInfo> {
       this.logger.info("[ConfigService] Getting editing info.");
-      const queryParams: any = new Proxy(this.window.window.location.search, {
-          get: (searchParams, prop) => searchParams.get(prop),
+      const queryParams: any = new Proxy(new URLSearchParams(this.window.window.location.search), {
+          get: (searchParams, prop) => searchParams.get(prop as string),
       });
       const configUrl: string = queryParams.cfg;
       if (configUrl) {

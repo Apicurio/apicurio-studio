@@ -17,6 +17,7 @@
 package io.apicurio.studio.rest;
 
 import static java.net.HttpURLConnection.HTTP_CONFLICT;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
@@ -59,7 +60,7 @@ public class AppExceptionMapper implements ExceptionMapper<Throwable> {
         Map<Class<? extends Exception>, Integer> map = new HashMap<>();
         map.put(AlreadyExistsException.class, HTTP_CONFLICT);
         map.put(NotFoundException.class, HTTP_NOT_FOUND);
-        map.put(InvalidInputException.class, HTTP_CONFLICT);
+        map.put(InvalidInputException.class, HTTP_BAD_REQUEST);
         CODE_MAP = Collections.unmodifiableMap(map);
     }
 

@@ -86,7 +86,7 @@
         <version.jar.plugin>3.2.2</version.jar.plugin>
         <version.javadoc.plugin>3.3.1</version.javadoc.plugin>
         <version.maven-gpg-plugin.plugin>1.6</version.maven-gpg-plugin.plugin>
-        <version.nexus-staging-maven-plugin.plugin>1.6.8</version.nexus-staging-maven-plugin.plugin>
+        <version.nexus-staging-maven-plugin.plugin>1.6.11</version.nexus-staging-maven-plugin.plugin>
         <version.resources.plugin>3.2.0</version.resources.plugin>
         <version.source.plugin>3.2.1</version.source.plugin>
         <version.surefire.plugin>2.22.2</version.surefire.plugin>

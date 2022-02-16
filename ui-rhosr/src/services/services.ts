@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {TeamsService} from "./teams";
 import {ConfigService} from "./config";
 import {LoggerService} from "./logger";
-import {AdminService} from "./admin";
 import {Service} from "./baseService";
 import {AuthService} from "./auth";
 import {UsersService} from "./users";
+import {RegistriesService} from "./registries";
 
 /**
  * Class that provides access to all of the services in the application.
  */
 export class Services {
 
-    public static getTeamsService(): TeamsService {
-        return Services.all.groups;
+    public static getRegistriesService(): RegistriesService {
+        return Services.all.registries;
     }
 
     public static getConfigService(): ConfigService {
@@ -37,10 +36,6 @@ export class Services {
 
     public static getLoggerService(): LoggerService {
         return Services.all.logger;
-    }
-
-    public static getAdminService(): AdminService {
-        return Services.all.admin;
     }
 
     public static getAuthService(): AuthService {
@@ -52,11 +47,10 @@ export class Services {
     }
 
     private static all: any = {
-        admin: new AdminService(),
         auth: new AuthService(),
         config: new ConfigService(),
-        groups: new TeamsService(),
         logger: new LoggerService(),
+        registries: new RegistriesService(),
         users: new UsersService(),
     };
 

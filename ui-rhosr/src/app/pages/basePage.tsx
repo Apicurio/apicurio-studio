@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import {Flex, FlexItem, PageSection, PageSectionVariants, Spinner} from "@patter
 import {AccessErrorPage} from "../components/errorPage/accessErrorPage";
 
 // TODO this should be configurable via standard UI config settings
-const MAX_RETRIES: number = 5;
+const MAX_RETRIES: number = 2;
 
 export enum PageErrorType {
     React, Server
@@ -48,7 +48,7 @@ export interface PageState extends PureComponentState {
 
 
 /**
- * The artifacts page.
+ * Base class for all pages.
  */
 export abstract class PageComponent<P extends PageProps, S extends PageState> extends PureComponent<P, S> {
 
@@ -142,12 +142,6 @@ export abstract class PageComponent<P extends PageProps, S extends PageState> ex
         if (!Array.isArray(loaders)) {
             loaders = [ loaders ];
         }
-
-        // Always add the "update current user" loader
-        loaders = [
-            Services.getUsersService().updateCurrentUser(),
-            ...loaders
-        ];
 
         if (loaders.length === 0) {
             this.setSingleState("isLoading", false);

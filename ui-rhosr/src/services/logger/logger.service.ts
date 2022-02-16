@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,22 +32,22 @@ export class LoggerService implements Service {
 
     public debug(message: any, ...optionalParams: any[]): void {
         // tslint:disable-next-line:no-console
-        console.debug((this.config.featureMultiTenant() ? "{MT}::" : "") + message, ...optionalParams);
+        console.debug((this.config.features()?.multiTenant ? "{MT}::" : "") + message, ...optionalParams);
     }
 
     public info(message: any, ...optionalParams: any[]): void {
         // tslint:disable-next-line:no-console
-        console.info((this.config.featureMultiTenant() ? "{MT}::" : "") + message, ...optionalParams);
+        console.info((this.config.features()?.multiTenant ? "{MT}::" : "") + message, ...optionalParams);
     }
 
     public warn(message: any, ...optionalParams: any[]): void {
         // tslint:disable-next-line:no-console
-        console.warn((this.config.featureMultiTenant() ? "{MT}::" : "") + message, ...optionalParams);
+        console.warn((this.config.features()?.multiTenant ? "{MT}::" : "") + message, ...optionalParams);
     }
 
     public error(message: any, ...optionalParams: any[]): void {
         // tslint:disable-next-line:no-console
-        console.error((this.config.featureMultiTenant() ? "{MT}::" : "") + message, ...optionalParams);
+        console.error((this.config.features()?.multiTenant ? "{MT}::" : "") + message, ...optionalParams);
     }
 
 }

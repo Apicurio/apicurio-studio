@@ -1,11 +1,17 @@
 var ApicurioConfig = {
     auth: {
-        type: "none"
+        type: "keycloakjs",
+        options: {
+            url: "https://studio-auth.apicur.io/auth",
+            realm: "apicurio-local",
+            clientId:"apicurio-registry",
+            onLoad: "login-required"
+        }
     },
     features: {},
     instances: {
         auth: {
-            type: "none"
+            type: "keycloakjs"
         }
     },
     registries: {

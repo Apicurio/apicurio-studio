@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ export class RootRedirectPage extends PageComponent<RootRedirectPageProps, RootR
     }
 
     public renderPage(): React.ReactElement {
-        const redirect: string = `/apis`;
+        const redirect: string = `/artifacts`;
         return (
             <Redirect to={redirect}  />
         );

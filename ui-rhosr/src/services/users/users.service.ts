@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,22 @@
  */
 
 import {BaseService} from "../baseService";
-import {UserInfo} from "../../models";
+import {RegistryInstance, UserInfo} from "../../models";
 
 /**
  * A service that provides access to the /users endpoint.
  */
 export class UsersService extends BaseService {
 
-    private currentUserInfo: UserInfo;
+    private anonymousUser: UserInfo;
 
     constructor() {
         super();
-        this.currentUserInfo = {
-            admin: false,
+        this.anonymousUser = {
+            admin: true,
             developer: false,
-            displayName: "",
-            username: "",
+            displayName: "Anonymous",
+            username: "anonymous",
             viewer: false
         };
     }
@@ -40,21 +40,17 @@ export class UsersService extends BaseService {
         // Nothing to init (done in c'tor)
     }
 
-    public currentUser(): UserInfo {
-        return this.currentUserInfo;
+    public getUserInfo(instance: RegistryInstance): Promise<UserInfo> {
+        if (this.isInstanceAuthEnabled()) {
+            const endpoint: string = this.endpoint(instance.registryUrl,"/apis/registry/v2/users/me");
+            return this.httpGet<UserInfo>(endpoint);
+        } else {
+            return Promise.resolve(this.anonymousUser);
+        }
     }
 
-    public updateCurrentUser(): Promise<UserInfo> {
-        if (this.auth.isAuthenticated()) {
-            // TODO cache the response for a few minutes to limit the # of times this is called per minute??
-            const endpoint: string = this.endpoint("/users/me");
-            return this.httpGet<UserInfo>(endpoint).then(userInfo => {
-                this.currentUserInfo = userInfo;
-                return userInfo;
-            });
-        } else {
-            return Promise.resolve(this.currentUserInfo);
-        }
+    private isInstanceAuthEnabled(): boolean {
+        return this.config.instancesConfig().auth.type !== "none";
     }
 
 }

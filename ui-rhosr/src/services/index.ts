@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-export * from "./admin";
 export * from "./baseService";
 export * from "./config";
 export * from "./logger";
 export * from "./services";
-export * from "./teams";
+export * from "./registries";
 export * from "./users";

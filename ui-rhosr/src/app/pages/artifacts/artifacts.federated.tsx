@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,21 @@
  * limitations under the License.
  */
 
+import {ArtifactsPage, ArtifactsPageProps} from "./artifacts";
+import {FederatedComponentProps, FederatedUtils} from "../../federated";
 
-export class CreateTeam {
+export interface FederatedArtifactsPageProps extends ArtifactsPageProps, FederatedComponentProps {
+}
+
+export default class FederatedArtifactsPage extends ArtifactsPage {
+
+    constructor(props: Readonly<FederatedArtifactsPageProps>) {
+        super(props);
+    }
+
+    protected postConstruct(): void {
+        FederatedUtils.updateConfiguration(this.props as FederatedComponentProps);
+        super.postConstruct();
+    }
 
 }

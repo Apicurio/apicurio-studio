@@ -1,5 +1,5 @@
 import Keycloak from "keycloak-js";
-import {ConfigService} from "../config";
+import {AuthConfig, ConfigService, GetTokenAuthConfig, KeycloakJsAuthConfig} from "../config";
 import {Service} from "../baseService";
 import {AxiosRequestConfig} from "axios";
 import {LoggerService} from "../logger";
@@ -54,8 +54,9 @@ export class AuthService implements Service {
     }
 
     public authenticateUsingKeycloak = (onAuthenticatedCallback: () => void) => {
-        const configOptions: any = only(KC_CONFIG_OPTIONS, this.config.authOptions());
-        const initOptions: any = only(KC_INIT_OPTIONS, this.config.authOptions());
+        const kcAuthOptions: any = (this.config.authConfig() as KeycloakJsAuthConfig).options;
+        const configOptions: any = only(KC_CONFIG_OPTIONS, kcAuthOptions);
+        const initOptions: any = only(KC_INIT_OPTIONS, kcAuthOptions);
 
         this.keycloak = Keycloak(configOptions);
 
@@ -127,7 +128,7 @@ export class AuthService implements Service {
     }
 
     public authenticateAndRender(render: () => void): void {
-        if (this.config.authType() === "keycloakjs") {
+        if (this.config.authConfig().type === "keycloakjs") {
             this.enabled = true;
             this.authenticateUsingKeycloak(render);
         } else {
@@ -139,21 +140,27 @@ export class AuthService implements Service {
     public getAuthInterceptor(): (config: AxiosRequestConfig) => Promise<any> {
         const self: AuthService = this;
         const interceptor = (config: AxiosRequestConfig) => {
-            if (self.config.authType() === "keycloakjs") {
+            // tslint:disable:no-string-literal
+            // @ts-ignore
+            const authConfig: AuthConfig = config["apicurioAuth"] as AuthConfig;
+            if (authConfig?.type === "keycloakjs") {
                 return self.updateKeycloakToken(() => {
                     config.headers.Authorization = `Bearer ${this.getToken()}`;
                     return Promise.resolve(config);
                 });
-            } else if (self.config.authType() === "gettoken") {
+            } else if (authConfig?.type === "gettoken") {
                 this.logger.info("[AuthService] Using 'getToken' auth type.")
-                return self.config.authGetToken()().then(token => {
+                const getToken: () => Promise<string> = (authConfig as GetTokenAuthConfig).getToken;
+                return getToken().then(token => {
                     this.logger.info("[AuthService] Token acquired.");
                     config.headers.Authorization = `Bearer ${token}`;
                     return Promise.resolve(config);
+                }).catch(error => {
+                    this.logger.info("[AuthService] Failed to acquire token.");
+                    Promise.reject(error);
                 });
-            } else {
-                return Promise.resolve(config);
             }
+            return Promise.resolve(config);
         };
         return interceptor;
     }

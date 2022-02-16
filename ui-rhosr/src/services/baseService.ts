@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 
 
 import {LoggerService} from "./logger";
-import {ConfigService} from "./config";
+import {AuthConfig, ConfigService} from "./config";
 import axios, { AxiosRequestConfig } from "axios";
 import {AuthService} from "./auth";
 import {ContentTypes} from "../models";
@@ -53,42 +53,39 @@ export abstract class BaseService implements Service {
 
     /**
      * Creates an endpoint to use when making a REST call.  Supports path params and query params.
-     * @param path
-     * @param params
-     * @param queryParams
      */
-    protected endpoint(path: string, params?: any, queryParams?: any): string {
+    protected endpoint(apiBaseHref: string, path: string, params?: any, queryParams?: any): string {
         if (params) {
             Object.keys(params).forEach(key => {
                 const value: string = encodeURIComponent(params[key]);
                 path = path.replace(":" + key, value);
             });
         }
-        let rval: string = this.apiBaseHref() + path;
+        const baseHref: string = this.normalizeBaseHref(apiBaseHref);
+        let theEndpoint: string = baseHref + path;
         if (queryParams) {
             let first: boolean = true;
             for (const key in queryParams) {
                 if (queryParams[key]) {
                     const value: string = encodeURIComponent(queryParams[key]);
                     if (first) {
-                        rval = rval + "?" + key;
+                        theEndpoint = theEndpoint + "?" + key;
                     } else {
-                        rval = rval + "&" + key;
+                        theEndpoint = theEndpoint + "&" + key;
                     }
                     if (value !== null && value !== undefined) {
-                        rval = rval + "=" + value;
+                        theEndpoint = theEndpoint + "=" + value;
                     }
                     first = false;
                 }
             }
         }
-        this.logger.info("[BaseService] Using REST endpoint: ", rval);
-        return rval;
+        this.logger.info("[BaseService] Using REST endpoint: ", theEndpoint);
+        return theEndpoint;
     }
 
     /**
      * Creates the request options used by the HTTP service when making API calls.
-     * @param headers
      */
     protected options(headers: {[header: string]: string}): AxiosRequestConfig {
         const options: AxiosRequestConfig = {headers};
@@ -99,14 +96,14 @@ export abstract class BaseService implements Service {
      * Performs an HTTP GET operation to the given URL with the given options.  Returns
      * a Promise to the HTTP response data.
      */
-    protected httpGet<T>(url: string, options?: AxiosRequestConfig, successCallback?: (value: any) => T): Promise<T> {
+    protected httpGet<T>(url: string, auth: AuthConfig, options?: AxiosRequestConfig, successCallback?: (value: any) => T): Promise<T> {
         this.logger.info("[BaseService] Making a GET request to: ", url);
 
         if (!options) {
             options = this.options({ "Accept": ContentTypes.APPLICATION_JSON });
         }
 
-        const config: AxiosRequestConfig = this.axiosConfig("get", url, options);
+        const config: AxiosRequestConfig = this.axiosConfig("get", url, auth, options);
         return AXIOS.request(config)
             .then(response => {
                 const data: T = response.data;
@@ -123,18 +120,15 @@ export abstract class BaseService implements Service {
     /**
      * Performs an HTTP POST operation to the given URL with the given body and options.  Returns
      * a Promise to null (no response data expected).
-     * @param url
-     * @param body
-     * @param options
      */
-    protected httpPost<I>(url: string, body: I, options?: AxiosRequestConfig, successCallback?: () => void): Promise<void> {
+    protected httpPost<I>(url: string, auth: AuthConfig, body: I, options?: AxiosRequestConfig, successCallback?: () => void): Promise<void> {
         this.logger.info("[BaseService] Making a POST request to: ", url);
 
         if (!options) {
             options = this.options({ "Content-Type": ContentTypes.APPLICATION_JSON });
         }
 
-        const config: AxiosRequestConfig = this.axiosConfig("post", url, options, body);
+        const config: AxiosRequestConfig = this.axiosConfig("post", url, auth, options, body);
         return AXIOS.request(config)
             .then(() => {
                 if (successCallback) {
@@ -150,18 +144,15 @@ export abstract class BaseService implements Service {
     /**
      * Performs an HTTP POST operation to the given URL with the given body and options.  Returns
      * a Promise to the HTTP response data.
-     * @param url
-     * @param body
-     * @param options
      */
-    protected httpPostWithReturn<I, O>(url: string, body: I, options?: AxiosRequestConfig, successCallback?: (data: any) => O): Promise<O> {
+    protected httpPostWithReturn<I, O>(url: string, auth: AuthConfig, body: I, options?: AxiosRequestConfig, successCallback?: (data: any) => O): Promise<O> {
         this.logger.info("[BaseService] Making a POST request to: ", url);
 
         if (!options) {
             options = this.options({ "Accept": ContentTypes.APPLICATION_JSON, "Content-Type": ContentTypes.APPLICATION_JSON });
         }
 
-        const config: AxiosRequestConfig = this.axiosConfig("post", url, options, body);
+        const config: AxiosRequestConfig = this.axiosConfig("post", url, auth, options, body);
         return AXIOS.request(config)
             .then(response => {
                 const data: O = response.data;
@@ -178,18 +169,15 @@ export abstract class BaseService implements Service {
     /**
      * Performs an HTTP PUT operation to the given URL with the given body and options.  Returns
      * a Promise to null (no response data expected).
-     * @param url
-     * @param body
-     * @param options
      */
-    protected httpPut<I>(url: string, body: I, options?: AxiosRequestConfig, successCallback?: () => void): Promise<void> {
+    protected httpPut<I>(url: string, auth: AuthConfig, body: I, options?: AxiosRequestConfig, successCallback?: () => void): Promise<void> {
         this.logger.info("[BaseService] Making a PUT request to: ", url);
 
         if (!options) {
             options = this.options({ "Content-Type": ContentTypes.APPLICATION_JSON });
         }
 
-        const config: AxiosRequestConfig = this.axiosConfig("put", url, options, body);
+        const config: AxiosRequestConfig = this.axiosConfig("put", url, auth, options, body);
         return AXIOS.request(config)
             .then(() => {
                 if (successCallback) {
@@ -205,18 +193,15 @@ export abstract class BaseService implements Service {
     /**
      * Performs an HTTP PUT operation to the given URL with the given body and options.  Returns
      * a Promise to the HTTP response data.
-     * @param url
-     * @param body
-     * @param options
      */
-    protected httpPutWithReturn<I, O>(url: string, body: I, options?: AxiosRequestConfig, successCallback?: (data: O) => O): Promise<O> {
+    protected httpPutWithReturn<I, O>(url: string, auth: AuthConfig, body: I, options?: AxiosRequestConfig, successCallback?: (data: O) => O): Promise<O> {
         this.logger.info("[BaseService] Making a PUT request to: ", url);
 
         if (!options) {
             options = this.options({ "Accept": ContentTypes.APPLICATION_JSON, "Content-Type": ContentTypes.APPLICATION_JSON });
         }
 
-        const config: AxiosRequestConfig = this.axiosConfig("put", url, options, body);
+        const config: AxiosRequestConfig = this.axiosConfig("put", url, auth, options, body);
         return AXIOS.request(config)
             .then(response => {
                 const data: O = response.data;
@@ -232,17 +217,15 @@ export abstract class BaseService implements Service {
 
     /**
      * Performs an HTTP DELETE operation to the given URL with the given body and options.
-     * @param url
-     * @param options
      */
-    protected httpDelete<T>(url: string, options?: AxiosRequestConfig, successCallback?: () => T): Promise<T> {
+    protected httpDelete<T>(url: string, auth: AuthConfig, options?: AxiosRequestConfig, successCallback?: () => T): Promise<T> {
         this.logger.info("[BaseService] Making a DELETE request to: ", url);
 
         if (!options) {
             options = {};
         }
 
-        const config: AxiosRequestConfig = this.axiosConfig("delete", url, options);
+        const config: AxiosRequestConfig = this.axiosConfig("delete", url, auth, options);
         // @ts-ignore
         return AXIOS.request(config)
             .then(() => {
@@ -252,20 +235,26 @@ export abstract class BaseService implements Service {
             });
     }
 
-    protected apiBaseHref(): string {
-        let apiUrl: string|null = this.config.apiUrl();
-        if (apiUrl == null) {
+    protected normalizeBaseHref(href: string | null | undefined): string {
+        if (href === undefined || href === null) {
             return "";
         }
-        if (apiUrl.endsWith("/")) {
-            apiUrl = apiUrl.substring(0, apiUrl.length - 1);
+        if (href.endsWith("/")) {
+            return href.substring(0, href.length - 1);
         }
-        this.logger.debug("[BaseService] Base HREF of REST API: ", apiUrl);
+        return href;
+    }
+
+    protected registriesBaseHref(): string {
+        let apiUrl: string | undefined = this.config.registriesConfig().apiUrl;
+        apiUrl = this.normalizeBaseHref(apiUrl);
+        this.logger.debug("[BaseService] Base HREF of Registries REST API: ", apiUrl);
         return apiUrl;
     }
 
-    private axiosConfig(method: string, url: string, options: any, data?: any): AxiosRequestConfig {
+    private axiosConfig(method: string, url: string, authConfig: AuthConfig, options: any, data?: any): AxiosRequestConfig {
         return {...{
+                apicurioAuth: authConfig,
                 data,
                 method,
                 url,
@@ -276,16 +265,31 @@ export abstract class BaseService implements Service {
     }
 
     private unwrapErrorData(error: any): any {
-        if (error.response && error.response.data) {
+        if (error && error.response && error.response.data) {
             return {
                 message: error.message,
                 ...error.response.data,
                 status: error.response.status
-            };
+            }
+        } else if (error && error.response) {
+            return {
+                message: error.message,
+                status: error.response.status
+            }
+        } else if (error) {
+            // tslint:disable-next-line:no-console
+            console.error("Unknown error detected: ", error);
+            return {
+                message: error.message,
+                status: 500
+            }
+        } else {
+            // tslint:disable-next-line:no-console
+            console.error("Unknown error detected: ", error);
+            return {
+                message: "Unknown error",
+                status: 500
+            }
         }
-        return {
-            message: error.message,
-            status: error.response.status
-        };
     }
 }

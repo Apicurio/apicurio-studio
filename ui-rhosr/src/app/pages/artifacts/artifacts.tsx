@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,41 +16,37 @@
  */
 
 import React from "react";
-import "./teams.css";
+import "./artifacts.css";
 import {PageSection, PageSectionVariants} from '@patternfly/react-core';
 import {PageComponent, PageProps, PageState} from "../basePage";
-import {RootPageHeader} from "../../components";
 
 
 /**
  * Properties
  */
 // tslint:disable-next-line:no-empty-interface
-export interface TeamsPageProps extends PageProps {
+export interface ArtifactsPageProps extends PageProps {
 }
 
 /**
  * State
  */
 // tslint:disable-next-line:no-empty-interface
-export interface TeamsPageState extends PageState {
+export interface ArtifactsPageState extends PageState {
 }
 
 /**
- * The teams page.
+ * The artifacts page.
  */
-export class TeamsPage extends PageComponent<TeamsPageProps, TeamsPageState> {
+export class ArtifactsPage extends PageComponent<ArtifactsPageProps, ArtifactsPageState> {
 
-    constructor(props: Readonly<TeamsPageProps>) {
+    constructor(props: Readonly<ArtifactsPageProps>) {
         super(props);
     }
 
     public renderPage(): React.ReactElement {
         return (
             <React.Fragment>
-                <PageSection className="ps_teams-header" variant={PageSectionVariants.light} padding={{ default: "noPadding" }}>
-                    <RootPageHeader tabKey={1} />
-                </PageSection>
                 <PageSection variant={PageSectionVariants.default} isFilled={true}>
                     <h1>Hello World</h1>
                 </PageSection>
@@ -58,7 +54,7 @@ export class TeamsPage extends PageComponent<TeamsPageProps, TeamsPageState> {
         );
     }
 
-    protected initializePageState(): TeamsPageState {
+    protected initializePageState(): ArtifactsPageState {
         return {
         };
     }

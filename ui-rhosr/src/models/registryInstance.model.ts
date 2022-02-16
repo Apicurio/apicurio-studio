@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +15,10 @@
  * limitations under the License.
  */
 
-import {ApisPage, ApisPageProps} from "./apis";
-import {FederatedComponentProps, FederatedUtils} from "../../federated";
+export interface RegistryInstance {
 
-export interface FederatedApisPageProps extends ApisPageProps, FederatedComponentProps {
-}
-
-export default class FederatedApisPage extends ApisPage {
-
-    constructor(props: Readonly<FederatedApisPageProps>) {
-        super(props);
-    }
-
-    protected postConstruct(): void {
-        FederatedUtils.updateConfiguration(this.props as FederatedComponentProps);
-        super.postConstruct();
-    }
+    id: string;
+    name: string;
+    registryUrl: string;
 
 }

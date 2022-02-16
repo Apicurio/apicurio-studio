@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,4 @@
  * limitations under the License.
  */
 
-import {BaseService} from "../baseService";
-
-/**
- * The Admin service.  Used to get global/settings information from the back-end, like global
- * rules and logging settings.
- */
-export class AdminService extends BaseService {
-
-}
+export * from "./registries.service";

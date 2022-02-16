@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,10 @@ import React from "react";
 import {Page} from "@patternfly/react-core";
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import {AppHeader} from "./components/header";
-import {ApisPage} from "./pages/apis";
 import {RootRedirectPage} from "./pages/root";
 import {NotFoundPage} from "./pages/404";
 import {Services} from "../services";
-import {TeamsPage} from "./pages/teams";
+import {ArtifactsPage} from "./pages";
 
 
 /**
@@ -48,8 +47,7 @@ export default class App extends React.PureComponent<{}, {}> {
                 >
                     <Switch>
                         <Route path='/' exact={true} component={RootRedirectPage}/>
-                        <Route path='/teams' exact={true} component={TeamsPage}/>
-                        <Route path='/apis' exact={true} component={ApisPage}/>
+                        <Route path='/artifacts' exact={true} component={ArtifactsPage}/>
                         <Route component={NotFoundPage} />
                     </Switch>
                 </Page>

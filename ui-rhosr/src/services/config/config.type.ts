@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2021 Red Hat
+ * Copyright 2022 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {RegistryInstance} from "../../models";
 
+// tslint:disable-next-line:no-empty-interface
 export interface FeaturesConfig {
-    breadcrumbs?: boolean;
     multiTenant?: boolean;
 }
 
-export interface ApiConfig {
-    url: string;
+export interface RegistriesConfig {
+    static?: RegistryInstance[];
+    apiUrl?: string;
+    auth: KeycloakJsAuthConfig | NoneAuthConfig | GetTokenAuthConfig;
+}
+
+export interface InstancesConfig {
+    auth: KeycloakJsAuthConfig | NoneAuthConfig | GetTokenAuthConfig;
 }
 
 export interface UiConfig {
@@ -35,31 +42,26 @@ export interface AuthConfig {
 
 // Used when `type=keycloakjs`
 export interface KeycloakJsAuthConfig extends AuthConfig {
+    type: 'keycloakjs';
     options?: any;
 }
 
 // Used when `type=none`
 // tslint:disable-next-line:no-empty-interface
 export interface NoneAuthConfig extends AuthConfig {
-
+    type: 'none';
 }
 
 // Used when `type=gettoken`
 export interface GetTokenAuthConfig extends AuthConfig {
+    type: 'gettoken';
     getToken: () => Promise<string>;
 }
 
-export interface Principal {
-    principalType: "USER_ACCOUNT" | "SERVICE_ACCOUNT";
-    id: string;
-    displayName?: string;
-    emailAddress?: string;
-}
-
 export interface ConfigType {
-    api: ApiConfig;
-    auth: KeycloakJsAuthConfig | NoneAuthConfig | GetTokenAuthConfig;
-    principals?: Principal[];
+    auth: KeycloakJsAuthConfig | NoneAuthConfig;
+    registries: RegistriesConfig;
+    instances: InstancesConfig;
     features?: FeaturesConfig;
     ui: UiConfig;
 }

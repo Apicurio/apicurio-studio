@@ -1,0 +1,13 @@
+.please-wait {
+}
+
+.please-wait > .pf-c-title + .pf-c-modal-box__body {
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.please-wait .message {
+    font-size: 15px;
+    color: #333;
+    margin-left: 10px;
+}

@@ -31,17 +31,17 @@ spec:
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: apicurio-secret
+                  name: {{ include "apicurio-studio.secretName" . }}
                   key: db-password
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: apicurio-secret
+                  name: {{ include "apicurio-studio.secretName" . }}
                   key: db-root-password
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
-                  name: apicurio-secret
+                  name: {{ include "apicurio-studio.secretName" . }}
                   key: db-user
           image: {{ .Values.database.image }}
           imagePullPolicy: {{ .Values.database.imagePullPolicy }}

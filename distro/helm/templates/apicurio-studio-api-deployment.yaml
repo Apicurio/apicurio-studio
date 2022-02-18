@@ -29,14 +29,14 @@ spec:
           - name: APICURIO_DB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: apicurio-secret
+                name: {{ include "apicurio-studio.secretName" . }}
                 key: db-password
           - name: APICURIO_DB_TYPE
             value: {{ .Values.database.type }}
           - name: APICURIO_DB_USER_NAME
             valueFrom:
               secretKeyRef:
-                name: apicurio-secret
+                name: {{ include "apicurio-studio.secretName" . }}
                 key: db-user
           - name: APICURIO_MICROCKS_API_URL
             value: {{ .Values.microcks.api.url }}
@@ -45,7 +45,7 @@ spec:
           - name: APICURIO_MICROCKS_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
-                name: apicurio-secret
+                name: {{ include "apicurio-studio.secretName" . }}
                 key: apicurio-microcks-client-secret
           - name: APICURIO_KC_AUTH_URL
             value: {{ .Values.keycloak.url }}
@@ -56,7 +56,7 @@ spec:
           - name: APICURIO_KC_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
-                name: apicurio-secret
+                name: {{ include "apicurio-studio.secretName" . }}
                 key: apicurio-kc-client-secret
           - name: APICURIO_SHARE_FOR_EVERYONE
             value: {{ .Values.uiFeatureShareForEveryone | quote }}

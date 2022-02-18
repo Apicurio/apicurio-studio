@@ -1,3 +1,5 @@
+
+{{- if .Values.database.install }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -61,3 +63,4 @@ spec:
         {{- end }}
       securityContext:
         fsGroup: 999
+{{- end }}

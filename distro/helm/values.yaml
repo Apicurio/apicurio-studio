@@ -37,6 +37,7 @@ ws:
   extraVolumes: []
 
 database:
+  install: true
   name: apicurio-studio-db
   image: percona:5.7
   port: 3306

@@ -11,7 +11,7 @@ Apicurio is available at https://{{ .Values.ui.hostname }}
 
 Keycloak that is defined is available on {{ .Values.keycloak.url }}
 {{- if .Values.ui.feature.microcks }}
-Microks is enabled and available on {{ .Values.microcks.api.url }}
+Microcks is enabled and available on {{ .Values.microcks.api.url }}
 {{- else }}
-Microks is disabled
+Microcks is disabled
 {{- end }}

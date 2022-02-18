@@ -67,6 +67,12 @@ spec:
           imagePullPolicy: {{ .Values.api.imagePullPolicy }}
           ports:
             - containerPort: 8080
+
+          {{- if .Values.api.resources }}
+          resources:
+          {{- toYaml .Values.api.resources | nindent 12 }}
+          {{- end }}
+
           {{- if .Values.api.extraVolumes }}
           volumeMounts:
             {{- range $volume := .Values.api.extraVolumes }}

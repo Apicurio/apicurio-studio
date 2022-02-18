@@ -59,6 +59,11 @@ spec:
           name: {{ .Values.ui.name }}
           ports:
             - containerPort: 8080
+          {{- if .Values.ui.resources }}
+          resources:
+          {{- toYaml .Values.ui.resources | nindent 12 }}
+          {{- end }}
+
           {{- if .Values.ui.extraVolumes }}
           volumeMounts:
             {{- range $volume := .Values.ui.extraVolumes }}

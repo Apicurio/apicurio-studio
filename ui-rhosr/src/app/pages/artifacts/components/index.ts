@@ -14,11 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {EditingInfoTo} from "./editingInfoTo.model";
 
-export interface EditingInfoToHttp extends EditingInfoTo {
-
-    method: string;
-    url: string;
-
-}
+export * from "./artifactList";
+export * from "./empty";
+export * from "./toolbar";

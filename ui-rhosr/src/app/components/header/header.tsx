@@ -54,7 +54,7 @@ export class AppHeader extends PureComponent<AppHeaderProps, AppHeaderState> {
         );
 
         return (<PageHeader
-            logo={<Brand onClick={this.navigateTo(this.linkTo("/apis"))} src={brandImg} alt="API Studio"/>}
+            logo={<Brand onClick={this.navigateTo(this.linkTo("/"))} src={brandImg} alt="API Studio"/>}
             showNavToggle={false}
             headerTools={pageToolbar}
         />);

@@ -32,6 +32,7 @@ export interface InstancesConfig {
 }
 
 export interface UiConfig {
+    editorAppUrl?: string;
     contextPath?: string;
     navPrefixPath?: string;
 }

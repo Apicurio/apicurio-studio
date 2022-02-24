@@ -19,7 +19,6 @@ import {Injectable} from "@angular/core";
 import {EditingInfo} from "../models/editingInfo.model";
 import {LoggerService} from "./logger.service";
 import {WindowRef} from "./window-ref.service";
-import {HttpClientService} from "./http-client.service";
 
 /**
  * A service used to get access to the config information.
@@ -27,24 +26,26 @@ import {HttpClientService} from "./http-client.service";
 @Injectable()
 export class ConfigService {
 
-  constructor(private window: WindowRef, private logger: LoggerService, private http: HttpClientService) {
-  }
+    private resolve: any;
+    private reject: any;
 
-  public get(): Promise<EditingInfo> {
-      this.logger.info("[ConfigService] Getting editing info.");
-      const queryParams: any = new Proxy(new URLSearchParams(this.window.window.location.search), {
-          get: (searchParams, prop) => searchParams.get(prop as string),
-      });
-      const configUrl: string = queryParams.cfg;
-      if (configUrl) {
-          const endpoint: string = this.http.endpoint(configUrl);
-          const options: any = this.http.options({ Accept: "application/json" });
-          return this.http.httpGet<EditingInfo>(endpoint, options);
-      }
-      return Promise.reject({
-          error: "Missing query parameter: cfg",
-          code: 404
-      });
-  }
+    constructor(private window: WindowRef, private logger: LoggerService) {
+        this.logger.info("[ConfigService] Config service created.");
+        this.window.window.onmessage = (evt: MessageEvent) => {
+            this.logger.info("[ConfigService] OnMessage received: ", evt);
+            if (evt.data && evt.data.type && evt.data.type === "apicurio-editingInfo") {
+                const ei: EditingInfo = evt.data.data as EditingInfo;
+                this.logger.info("[ConfigService] Editing Info received from parent frame: ", ei);
+                this.resolve(ei);
+            }
+        };
+    }
+
+    public get(): Promise<EditingInfo> {
+        return new Promise((resolve, reject) => {
+            this.resolve = resolve;
+            this.reject = reject;
+        });
+    }
 
 }

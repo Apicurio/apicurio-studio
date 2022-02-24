@@ -40,4 +40,32 @@ export class RegistriesService extends BaseService {
         }
     }
 
+    public getRegistry(registryId: string): Promise<RegistryInstance> {
+        if (this.config.registriesConfig().static) {
+            const registry: RegistryInstance | null = this.getStaticRegistry(registryId);
+            if (registry) {
+                return Promise.resolve(registry);
+            }
+        } else if (this.config.registriesConfig().apiUrl) {
+            const auth: AuthConfig = this.config.registriesConfig().auth;
+            const registriesBaseHref: string = this.config.registriesConfig().apiUrl as string;
+            const endpoint: string = this.endpoint(registriesBaseHref,
+                "/api/serviceregistry_mgmt/v1/registries/:registryId",
+                { registryId }
+                );
+            return this.httpGet<RegistryInstance>(endpoint, auth, this.options({}));
+        }
+        return Promise.reject("Could not load registry details.");
+    }
+
+
+    private getStaticRegistry(registryId: string): RegistryInstance | null {
+        const registries: RegistryInstance[] = this.config.registriesConfig().static as RegistryInstance[];
+        const filtered: RegistryInstance[] = registries.filter(registry => registry.id === registryId);
+        if (filtered.length === 1) {
+            return filtered[0];
+        }
+        return null;
+    }
+
 }

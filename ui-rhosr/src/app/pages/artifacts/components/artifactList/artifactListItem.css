@@ -1,0 +1,29 @@
+
+.artifact-list-item .artifact-title .status-badge {
+    margin-left: 10px;
+    border: 1px solid #ccc;
+}
+
+.artifact-list-item .artifact-tags {
+}
+
+.artifact-list-item .artifact-tags > span {
+    margin-right: 5px;
+    font-size: 13px;
+}
+
+.artifact-list-item .artifact-details {
+    font-size: 14px;
+}
+
+.artifact-list-item .artifact-details .label {
+    font-weight: bold;
+}
+
+.artifact-list-item .artifact-details .actions-label {
+    margin-top: 15px;
+}
+
+.artifact-list-item .artifact-details .actions > button {
+    font-size: 13px;
+}

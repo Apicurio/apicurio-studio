@@ -14,9 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {EditingInfoTo} from "./editingInfoTo.model";
 
-// tslint:disable-next-line:no-empty-interface
-export interface EditingInfoToFile extends EditingInfoTo {
+
+export interface ArtifactMetaData {
+
+    groupId: string|null;
+    id: string;
+    name: string|null;
+    description: string|null;
+    labels: string[]|null;
+    type: string;
+    version: string;
+    createdBy: string;
+    createdOn: Date;
+    modifiedBy: string;
+    modifiedOn: Date;
+    globalId: number;
+    contentId: number|null;
+    state: string;
 
 }

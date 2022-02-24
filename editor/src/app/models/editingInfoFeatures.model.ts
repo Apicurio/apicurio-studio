@@ -17,12 +17,6 @@
 
 export interface EditingInfoFeatures {
 
-    toolbar: boolean;
-    saveButton: boolean;
-    saveButtonLabel: string;
-    closeButton: boolean;
-    closeButtonLabel: string;
-    allowCollaboration: boolean;
     allowImports: boolean;
     allowCustomValidations: boolean;
 

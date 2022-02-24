@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {EditingInfoFrom} from "./editingInfoFrom.model";
 
-export interface EditingInfoFromHttp extends EditingInfoFrom {
 
-    method: string;
-    url: string;
-
+// tslint:disable-next-line:interface-name
+export interface CreateArtifactData {
+    groupId: string;
+    id: string|null;
+    type: string;
+    content: string;
 }

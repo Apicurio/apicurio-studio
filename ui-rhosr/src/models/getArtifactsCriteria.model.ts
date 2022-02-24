@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
-export interface EditingInfoTo {
 
+// tslint:disable-next-line:interface-name
+export interface GetArtifactsCriteria {
     type: string;
-
+    value: string;
+    sortAscending: boolean;
 }

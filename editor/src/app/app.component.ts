@@ -19,7 +19,6 @@ import {Component, ViewChild} from "@angular/core";
 import {ApiDefinition} from "apicurio-design-studio";
 import {LoggerService} from "./services/logger.service";
 import {ConfigService} from "./services/config.service";
-import {FromHandler, IOService, ToHandler} from "./services/io.service";
 import {EditingInfo} from "./models/editingInfo.model";
 import {EditorComponent} from "./components/editors/editor.component";
 
@@ -37,27 +36,21 @@ export class AppComponent {
     isShowError: boolean = false;
 
     config: EditingInfo;
-    fromHandler: FromHandler;
-    toHandler: ToHandler;
 
     @ViewChild("openapiEditor") openapiEditor: EditorComponent | undefined;
 
-    constructor(private logger: LoggerService, private configService: ConfigService, private io: IOService) {
+    constructor(private logger: LoggerService, private configService: ConfigService) {
         configService.get().then(cfg => {
             this.config = cfg;
-            this.fromHandler = io.fromHandler(cfg);
-            this.toHandler = io.toHandler(cfg);
-            this.loadContent();
+            this.initContent();
         }).catch(error => {
             this.logger.error("Failed to get editor configuration: %o", error);
         });
     }
 
-    private loadContent(): void {
-        this.fromHandler.get().then(textContent => {
-            this.logger.info("[AppComponent] Successfully retrieved content (using FROM handler).");
-
-            const content: any = JSON.parse(textContent);
+    private initContent(): void {
+        try {
+            const content: any = JSON.parse(this.config.content.value);
             this.logger.info("[AppComponent] JSON content successfully parsed.");
 
             this.api = new ApiDefinition();
@@ -74,18 +67,9 @@ export class AppComponent {
 
             this.isShowLoading = false;
             this.isShowEditor = true;
-        }).catch(error => {
+        } catch (error) {
             this.logger.error("Error loading HTTP content: %o", error);
-        });
-    }
-
-    public onSave(): void {
-        this.logger.info("[AppComponent] Saving editor content.");
-        const editor: EditorComponent = this.editor();
-        this.toHandler.put(editor.getValue());
-    }
-
-    public onClose(): void {
+        }
     }
 
     private editor(): EditorComponent {

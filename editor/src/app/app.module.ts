@@ -27,15 +27,11 @@ import {ModalModule} from "ngx-bootstrap/modal";
 import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 import {LoggerService} from "./services/logger.service";
 import {ConfigService} from "./services/config.service";
-import {IOService} from "./services/io.service";
 import {WindowRef} from "./services/window-ref.service";
-import {HttpClientService} from "./services/http-client.service";
-import {ToolbarComponent} from "./components/toolbar.component";
 
 @NgModule({
     declarations: [
         AppComponent,
-        ToolbarComponent,
         OpenApiEditorComponent
     ],
     imports: [
@@ -51,9 +47,7 @@ import {ToolbarComponent} from "./components/toolbar.component";
     providers: [
         WindowRef,
         LoggerService,
-        ConfigService,
-        IOService,
-        HttpClientService
+        ConfigService
     ],
     bootstrap: [AppComponent]
 })

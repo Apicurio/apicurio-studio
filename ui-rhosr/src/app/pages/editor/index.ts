@@ -15,8 +15,5 @@
  * limitations under the License.
  */
 
-export interface EditingInfoFrom {
-
-    type: string;
-
-}
+export * from "./editor";
+export * from "./components";

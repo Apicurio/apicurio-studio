@@ -1,0 +1,13 @@
+.editor-flex-container {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.editor-flex-container .editor-flex-toolbar {
+    flex-grow: 0;
+}
+
+.editor-flex-container .editor-flex-editor {
+    flex-grow: 1;
+}

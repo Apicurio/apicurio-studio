@@ -46,7 +46,7 @@ export interface NotFoundPageState extends PageState {
 }
 
 /**
- * The global rules page.
+ * The 404 not found page.
  */
 export class NotFoundPage extends PageComponent<NotFoundPageProps, NotFoundPageState> {
 

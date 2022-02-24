@@ -1,0 +1,15 @@
+
+.artifact-title .group {
+    font-weight: bold;
+}
+.artifact-title .group::after {
+    color: #9c9c9c;
+    content: "/";
+    font-size: 11px;
+    padding: 0 5px 0px 5px;
+    line-height: 12px;
+}
+
+.artifact-title .nogroup {
+    display: none;
+}

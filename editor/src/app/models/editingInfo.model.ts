@@ -15,17 +15,11 @@
  * limitations under the License.
  */
 import {EditingInfoContent} from "./editingInfoContent.model";
-import {EditingInfoFromHttp} from "./editingInfoFromHttp.model";
-import {EditingInfoFromFile} from "./editingInfoFromFile.model";
-import {EditingInfoToFile} from "./editingInfoToFile.model";
-import {EditingInfoToHttp} from "./editingInfoToHttp.model";
 import {EditingInfoFeatures} from "./editingInfoFeatures.model";
 
 export interface EditingInfo {
 
     content: EditingInfoContent;
-    from: EditingInfoFromHttp | EditingInfoFromFile;
-    to: EditingInfoToHttp | EditingInfoToFile;
     features: EditingInfoFeatures;
 
 }

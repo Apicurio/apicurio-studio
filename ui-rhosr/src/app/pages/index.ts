@@ -17,4 +17,5 @@
 
 export * from "./404";
 export * from "./artifacts";
+export * from "./editor";
 export * from "./root";

@@ -28,22 +28,22 @@ export class LoggerService {
 
   public debug(message: any, ...optionalParams: any[]): void {
     // tslint:disable-next-line:no-console
-    console.debug(message, ...optionalParams);
+    console.debug("_editor_::" + message, ...optionalParams);
   }
 
   public info(message: any, ...optionalParams: any[]): void {
     // tslint:disable-next-line:no-console
-    console.info(message, ...optionalParams);
+    console.info("_editor_::" + message, ...optionalParams);
   }
 
   public warn(message: any, ...optionalParams: any[]): void {
     // tslint:disable-next-line:no-console
-    console.warn(message, ...optionalParams);
+    console.warn("_editor_::" + message, ...optionalParams);
   }
 
   public error(message: any, ...optionalParams: any[]): void {
     // tslint:disable-next-line:no-console
-    console.error(message, ...optionalParams);
+    console.error("_editor_::" + message, ...optionalParams);
   }
 
 }

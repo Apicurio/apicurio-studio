@@ -19,6 +19,7 @@ import {Component, Input, ViewChild} from "@angular/core";
 import {ApiDefinition, ApiEditorComponent} from "apicurio-design-studio";
 import {LoggerService} from "../../services/logger.service";
 import {EditorComponent} from "./editor.component";
+import {WindowRef} from '../../services/window-ref.service';
 
 
 @Component({
@@ -36,14 +37,22 @@ export class OpenApiEditorComponent implements EditorComponent {
     /**
      * Constructor.
      */
-    constructor(private logger: LoggerService) {
+    constructor(private logger: LoggerService, private window: WindowRef) {
     }
 
     /**
      * Called whenever the API definition is changed by the user.
      */
     public documentChanged(): any {
-        this.logger.info("[OpenApiEditorComponent] Detected a document change, scheduling disaster recovery persistence");
+        this.logger.info("[OpenApiEditorComponent] Detected a document change");
+        const newValue: ApiDefinition = this.apiEditor.getValue();
+        const message: any = {
+            type: "apicurio_onChange",
+            data: {
+                content: newValue.spec
+            }
+        };
+        this.window.window.top.postMessage(message, "*");
     }
 
     public getValue(): string {

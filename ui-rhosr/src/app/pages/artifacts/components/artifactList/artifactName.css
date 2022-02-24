@@ -1,0 +1,16 @@
+
+.artifact-title .name {
+    font-weight: bold;
+    font-size: 18px;
+    margin-right: 10px;
+}
+.artifact-title .id::before {
+    content: '(';
+}
+.artifact-title .id {
+    font-weight: bold;
+    font-size: 16px;
+}
+.artifact-title .id::after {
+    content: ')';
+}

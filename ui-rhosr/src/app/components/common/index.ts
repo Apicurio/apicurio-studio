@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+export * from "./artifactTypeIcon";
 export * from "./if";
 export * from "./ifAuth";
 export * from "./ifFeature";

@@ -20,4 +20,5 @@ export * from "./config";
 export * from "./logger";
 export * from "./services";
 export * from "./registries";
+export * from "./registry";
 export * from "./users";

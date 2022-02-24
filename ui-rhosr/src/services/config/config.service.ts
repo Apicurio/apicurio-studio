@@ -49,6 +49,7 @@ const DEFAULT_CONFIG: ConfigType = {
     },
     ui: {
         contextPath: "/",
+        editorAppUrl: "http://localhost:4200",
         navPrefixPath: "/"
     },
 };
@@ -81,14 +82,21 @@ export class ConfigService implements Service {
         this.config = config;
     }
 
-    public uiContextPath(): string|undefined {
+    public uiContextPath(): string {
         if (!this.config.ui || !this.config.ui.contextPath) {
             return "/";
         }
         return this.config.ui.contextPath;
     }
 
-    public uiNavPrefixPath(): string|undefined {
+    public uiEditorAppUrl(): string {
+        if (!this.config.ui || !this.config.ui.editorAppUrl) {
+            return "http://localhost:4200";
+        }
+        return this.config.ui.editorAppUrl;
+    }
+
+    public uiNavPrefixPath(): string {
         if (!this.config.ui || !this.config.ui.navPrefixPath) {
             return "";
         }

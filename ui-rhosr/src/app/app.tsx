@@ -23,6 +23,7 @@ import {RootRedirectPage} from "./pages/root";
 import {NotFoundPage} from "./pages/404";
 import {Services} from "../services";
 import {ArtifactsPage} from "./pages";
+import {EditorPage} from "./pages/editor";
 
 
 /**
@@ -48,6 +49,7 @@ export default class App extends React.PureComponent<{}, {}> {
                     <Switch>
                         <Route path='/' exact={true} component={RootRedirectPage}/>
                         <Route path='/artifacts' exact={true} component={ArtifactsPage}/>
+                        <Route path='/editor' exact={true} component={EditorPage}/>
                         <Route component={NotFoundPage} />
                     </Switch>
                 </Page>

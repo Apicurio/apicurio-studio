@@ -16,3 +16,4 @@
  */
 
 export * from "./artifacts";
+export * from "./components";

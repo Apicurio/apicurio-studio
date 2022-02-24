@@ -20,6 +20,7 @@ import {Service} from "./baseService";
 import {AuthService} from "./auth";
 import {UsersService} from "./users";
 import {RegistriesService} from "./registries";
+import {RegistryService} from "./registry";
 
 /**
  * Class that provides access to all of the services in the application.
@@ -28,6 +29,10 @@ export class Services {
 
     public static getRegistriesService(): RegistriesService {
         return Services.all.registries;
+    }
+
+    public static getRegistryService(): RegistryService {
+        return Services.all.registry;
     }
 
     public static getConfigService(): ConfigService {
@@ -51,6 +56,7 @@ export class Services {
         config: new ConfigService(),
         logger: new LoggerService(),
         registries: new RegistriesService(),
+        registry: new RegistryService(),
         users: new UsersService(),
     };
 

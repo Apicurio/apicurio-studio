@@ -20,6 +20,7 @@ import "./editor.css";
 import {PageComponent, PageProps, PageState} from "../basePage";
 import {PageSection, PageSectionVariants} from "@patternfly/react-core";
 import {OpenApiEditor} from "./components/openapi-editor";
+import {GraphQLSchemaEditor} from "./components/graphql-editor";
 import {Services} from "../../../services";
 import {ArtifactMetaData} from "../../../models/artifactMetaData.model";
 import {EditorToolbar} from "./components/editor-toolbar";
@@ -88,7 +89,12 @@ export class EditorPage extends PageComponent<EditorPageProps, EditorPageState> 
                                            saveButtonLabel="Save changes"
                                            revertButtonLabel="Revert changes" />
                         </If>
-                        <OpenApiEditor className="editor-flex-editor" content={ this.state.content as string } onChange={ this.onEditorChange } />
+                        <If condition={ this.state.artifactMetaData?.type == "OPENAPI"}>
+                            <OpenApiEditor className="editor-flex-editor" content={ this.state.content as string } onChange={ this.onEditorChange } />
+                        </If>
+                        <If condition={ this.state.artifactMetaData?.type == "GRAPHQL" }>
+                            <GraphQLSchemaEditor content={this.state.content as string} onChange={this.onEditorChange}></GraphQLSchemaEditor>
+                        </If>
                     </div>
                 </PageSection>
                 <SaveModal onSave={ this.doSave } onClose={ this.cancelSave } isOpen={ this.state.isSaveModalOpen } />
@@ -188,7 +194,12 @@ export class EditorPage extends PageComponent<EditorPageProps, EditorPageState> 
         this.pleaseWait(true, "Saving artifact, please wait.");
         const groupId: string = this.state.source?.registry?.groupId as string;
         const artifactId: string = this.state.source?.registry?.artifactId as string;
-        Services.getRegistryService().updateArtifactContent(this.state.registry as RegistryInstance, groupId, artifactId, this.state.content as string).then(vmd => {
+        Services.getRegistryService().updateArtifactContent(this.state.registry as RegistryInstance, {
+            type: this.state.artifactMetaData?.type,
+            groupId,
+            artifactId,
+            content: this.state.content as string
+        }).then(vmd => {
             this.setMultiState({
                 artifactMetaData: {
                     ...vmd,

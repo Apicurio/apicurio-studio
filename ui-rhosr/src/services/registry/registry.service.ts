@@ -24,6 +24,13 @@ import {ArtifactsSearchResults} from "../../models/artifactsSearchResults.model"
 import {ArtifactMetaData} from "../../models/artifactMetaData.model";
 import {VersionMetaData} from "../../models/versionMetaData.model";
 
+interface UpdateArtifactContentParams {
+    type?: string;
+    groupId: string;
+    artifactId: string;
+    content: string;
+}
+
 /**
  * The registry service.  Responsible for interacting with a single Service Registry instance.
  */
@@ -87,14 +94,23 @@ export class RegistryService extends BaseService {
         return this.httpGet<string>(endpoint, auth, options);
     }
 
-    public updateArtifactContent(registry: RegistryInstance, groupId: string, artifactId: string, content: string): Promise<VersionMetaData> {
+    public updateArtifactContent(registry: RegistryInstance, params: UpdateArtifactContentParams): Promise<VersionMetaData> {
         const endpoint: string = this.endpoint(registry.registryUrl,
             "/apis/registry/v2/groups/:groupId/artifacts/:artifactId",
-            { groupId, artifactId });
+            { groupId: params.groupId, artifactId: params.artifactId });
         const auth: AuthConfig = this.config.instancesConfig()?.auth;
 
         const headers: any = {};
-        headers["Content-Type"] = ContentTypes.APPLICATION_JSON;
-        return this.httpPutWithReturn<any, VersionMetaData>(endpoint, auth, content, this.options(headers));
+        headers["Content-Type"] = mapArtifactTypeToContentType(params.type);
+        return this.httpPutWithReturn<any, VersionMetaData>(endpoint, auth, params.content, this.options(headers));
+    }
+}
+
+const mapArtifactTypeToContentType = (artifactType: string): string => {
+    switch (artifactType) {
+        case "GRAPHQL":
+            return ContentTypes.APPLICATION_GRAPHQL;
+        default:
+            return ContentTypes.APPLICATION_JSON;
     }
 }

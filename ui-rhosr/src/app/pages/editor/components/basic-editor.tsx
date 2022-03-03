@@ -14,52 +14,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { PureComponent } from "react";
+import React, { PureComponent, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
-import { PureComponentProps, PureComponentState } from "src/app";
+import { PureComponentState } from "src/app";
 import { Services } from "src/services";
+import { usePrevious } from '../../../hooks';
+import { BaseEditorProps, Maybe } from "./base-editor";
 
-export interface CodeEditorProps extends PureComponentProps {
-	content: string | null
-  	onChange: (newContent: string ) => void
-	language: string | undefined
+export interface BasicEditorProps extends BaseEditorProps {
+	language: Maybe<string>
 }
 
-export interface CodeEditorState extends PureComponentState {
-	content: string
-}
+export const BasicEditor = (props: BasicEditorProps): JSX.Element => {
+	const mounted = useRef<boolean>();
+	const prevProps = usePrevious<BasicEditorProps>(props);
+	
+	useEffect(() => {
+		if (!mounted.current) {
+			// do componentDidMount logic
+			Services.getLoggerService().debug("[BasicEditor] Component did MOUNT.");
+			mounted.current = true;
+		} else {
+			// do componentDidUpdate logic
+			Services.getLoggerService().info("[BasicEditor] Component did UPDATE -- previous props: ", prevProps);
+		}
+	});
 
-export class CodeEditor extends PureComponent<CodeEditorProps, CodeEditorState> {
-	protected initializeState(): CodeEditorState {
-	  return {
-		content: this.props.content as string
-	  };
-	}
-  
-	constructor(props: Readonly<CodeEditorProps>) {
-		super(props);
-	}
-
-	public componentDidMount() {
-		Services.getLoggerService().debug("[CodeEditor] Component did MOUNT.");
-	}
-  
-	public componentDidUpdate(prevProps: Readonly<CodeEditorProps>, _prevState: Readonly<CodeEditorState>, _snapshot?: {}) {
-		Services.getLoggerService().debug("[CodeEditor] Component did UPDATE -- previous props: ", prevProps);
-	}
-
-	render(): React.ReactElement {
-		return <Editor
+	return (
+		<Editor
 			height="100vh"
-			defaultLanguage={getArtifactLanguage(this.props.language)}
-			defaultValue={ this.props.content as string }
-			onChange={(value) => this.props.onChange(value as string)}
+			defaultLanguage={getArtifactLanguage(props.language)}
+			defaultValue={ props.content as string }
+			onChange={(value) => props.onChange(value)}
 		/>
-	}
+	);
 }
 
 // maps the artifact type to the associated language type from the editor
-const getArtifactLanguage = (artifactType: string | undefined): string => {
+const getArtifactLanguage = (artifactType: Maybe<string>): string => {
 	if (artifactType == undefined) {
 		return textLanguage;
 	}

@@ -18,12 +18,13 @@ import React, {RefObject} from "react";
 import "./openapi-editor.css";
 import {PureComponent, PureComponentProps, PureComponentState} from "../../../components";
 import {Services} from "../../../../services";
+import { BaseEditorProps } from "./base-editor";
 
 
 /**
  * Properties
  */
-export interface OpenApiEditorProps extends PureComponentProps {
+export interface OpenApiEditorProps extends BaseEditorProps {
     className?: string;
     content: string;
     onChange: (newContent: string) => void;

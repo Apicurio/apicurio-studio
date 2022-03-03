@@ -21,6 +21,7 @@ import {PageComponent, PageProps, PageState} from "../basePage";
 import {PageSection, PageSectionVariants} from "@patternfly/react-core";
 import {OpenApiEditor} from "./components/openapi-editor";
 import {GraphQLSchemaEditor} from "./components/graphql-editor";
+import {CodeEditor} from "./components/code-editor";
 import {Services} from "../../../services";
 import {ArtifactMetaData} from "../../../models/artifactMetaData.model";
 import {EditorToolbar} from "./components/editor-toolbar";
@@ -89,12 +90,7 @@ export class EditorPage extends PageComponent<EditorPageProps, EditorPageState> 
                                            saveButtonLabel="Save changes"
                                            revertButtonLabel="Revert changes" />
                         </If>
-                        <If condition={ this.state.artifactMetaData?.type == "OPENAPI"}>
-                            <OpenApiEditor className="editor-flex-editor" content={ this.state.content as string } onChange={ this.onEditorChange } />
-                        </If>
-                        <If condition={ this.state.artifactMetaData?.type == "GRAPHQL" }>
-                            <GraphQLSchemaEditor content={this.state.content as string} onChange={this.onEditorChange}></GraphQLSchemaEditor>
-                        </If>
+                        { this.renderEditor(this.state.artifactMetaData?.type) }
                     </div>
                 </PageSection>
                 <SaveModal onSave={ this.doSave } onClose={ this.cancelSave } isOpen={ this.state.isSaveModalOpen } />
@@ -102,6 +98,23 @@ export class EditorPage extends PageComponent<EditorPageProps, EditorPageState> 
                                  isOpen={this.state.isPleaseWaitModalOpen} />
             </React.Fragment>
         );
+    }
+
+    renderEditor(artifactType?: string): React.ReactElement {
+        switch (artifactType) {
+            case 'OPENAPI':
+                return  (
+                    <OpenApiEditor className="editor-flex-editor" content={ this.state.content as string } onChange={ this.onEditorChange } />
+                )
+            case 'GRAPHQL':
+                return (
+                    <GraphQLSchemaEditor content={this.state.content as string} onChange={this.onEditorChange}></GraphQLSchemaEditor>
+                )
+            default:
+                return (
+                    <CodeEditor content={this.state.content} onChange={this.onEditorChange} language={artifactType}/>
+                )
+        };
     }
 
     protected initializePageState(): EditorPageState {

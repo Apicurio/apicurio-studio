@@ -17,3 +17,4 @@
 
 export * from "./openapi-editor";
 export * from "./graphql-editor";
+export * from "./code-editor";

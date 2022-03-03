@@ -51,12 +51,12 @@
     "tslint-react": "^3.6.0",
     "typescript": "^3.3.3333",
     "url-loader": "^1.1.2",
+    "web-vitals": "^2.1.4",
     "webpack": "^5.37.0",
     "webpack-bundle-analyzer": "^4.4.2",
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^3.11.2",
     "webpack-merge": "^5.7.3",
-    "web-vitals": "^2.1.4",
     "worker-loader": "^3.0.8"
   },
   "dependencies": {
@@ -66,8 +66,8 @@
     "@patternfly/react-icons": "^4.11.17",
     "@patternfly/react-table": "^4.30.3",
     "axios": "0.26.0",
-    "graphsource": "2.0.5",
     "graphql-editor": "^5.2.1",
+    "graphsource": "2.0.5",
     "keycloak-js": "^10.0.2",
     "mobx": "^4.3.1",
     "moment": "2.24.0",

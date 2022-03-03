@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { RefObject } from 'react';
+import React from 'react';
 import { GraphQLEditor, LightTheme } from 'graphql-editor';
 import { PassedSchema } from 'graphql-editor/lib/Models';
 import { PureComponent, PureComponentProps, PureComponentState } from 'src/app';
@@ -26,14 +26,11 @@ export interface GraphQLSchemaEditorProps extends PureComponentProps {
   onChange: (newContent: string) => void;
 }
 
-// tslint:disable-next-line:no-empty-interface
 export interface GraphQLSchemaEditorState extends PureComponentState {
   schema: PassedSchema
 }
 
 export class GraphQLSchemaEditor extends PureComponent<GraphQLSchemaEditorProps, GraphQLSchemaEditorState> {
-  private ref: RefObject<any>;
-
   protected initializeState(): GraphQLSchemaEditorState {
     return {
       schema: {code: this.props.content}
@@ -42,7 +39,6 @@ export class GraphQLSchemaEditor extends PureComponent<GraphQLSchemaEditorProps,
 
   constructor(props: Readonly<GraphQLSchemaEditorProps>) {
       super(props);
-      this.ref = React.createRef();
   }
 
   setSchema(props: PassedSchema) {

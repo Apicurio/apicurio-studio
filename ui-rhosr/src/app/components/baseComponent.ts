@@ -16,6 +16,7 @@
  */
 import React from "react";
 import {Services} from "../../services";
+import { linkTo } from '../../util/navigation'
 
 
 // tslint:disable-next-line:no-empty-interface
@@ -83,7 +84,6 @@ export abstract class PureComponent<P extends PureComponentProps, S extends Pure
     };
 
     protected linkTo(url: string): string {
-        return Services.getConfigService().uiNavPrefixPath() + url;
+        return linkTo(url);
     }
-
 }

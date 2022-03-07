@@ -68,6 +68,7 @@ const artifactTypeMonacoLanguageMap: {[key: string]: string} = {
 	'XML': xmlLanguage,
 	'GRAPHQL': 'graphql',
 	'AVRO': jsonLanguage,
+	'ASYNCAPI': jsonLanguage,
 	'WSDL': xmlLanguage,
 	'XSD': xmlLanguage,
 	'PROTOBUF': textLanguage,

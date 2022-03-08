@@ -638,7 +638,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             String getContentUrl = this.endpoint("/api/v4/projects/:id/repository/files/:path")
                     .bind("id", toEncodedId(resource))
                     .bind("path", toEncodedPath(resource))
-                    .queryParam("ref", toEncodedBranch(resource))
+                    .queryParam("ref", resource.getBranch())
                     .toString();
             
             HttpGet get = new HttpGet(getContentUrl);
@@ -691,7 +691,8 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     
     private String toId(String value) {
         try {
-            return URLEncoder.encode(value, StandardCharsets.UTF_8.name());
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.name())
+                    .replaceAll("\\+", "%20");
         } catch (UnsupportedEncodingException e) {
             return value;
         }

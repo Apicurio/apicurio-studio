@@ -29,14 +29,14 @@ spec:
           - name: APICURIO_DB_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: apicurio-secret
+                name: {{ include "apicurio-studio.secretName" . }}
                 key: db-password
           - name: APICURIO_DB_TYPE
             value: {{ .Values.database.type }}
           - name: APICURIO_DB_USER_NAME
             valueFrom:
               secretKeyRef:
-                name: apicurio-secret
+                name: {{ include "apicurio-studio.secretName" . }}
                 key: db-user
           - name: APICURIO_SHARE_FOR_EVERYONE
             value: {{ .Values.uiFeatureShareForEveryone | quote }}
@@ -47,6 +47,11 @@ spec:
           name: {{ .Values.ws.name }}
           ports:
             - containerPort: 8080
+          {{- if .Values.ws.resources }}
+          resources:
+          {{- toYaml .Values.ws.resources | nindent 12 }}
+          {{- end }}
+
           {{- if .Values.ws.extraVolumes }}
           volumeMounts:
             {{- range $volume := .Values.ws.extraVolumes }}

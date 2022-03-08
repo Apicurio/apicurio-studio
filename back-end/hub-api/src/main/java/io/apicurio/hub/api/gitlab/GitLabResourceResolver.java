@@ -83,7 +83,7 @@ public class GitLabResourceResolver {
             String group = AbstractResourceResolver.decode(matcher.group(1));
             String project = AbstractResourceResolver.decode(matcher.group(2));
             String branch = AbstractResourceResolver.decode(matcher.group(3));
-            String path = AbstractResourceResolver.decode(matcher.group(4));
+            String path = matcher.group(4);
             resource.setGroup(group);
             resource.setProject(project);
             resource.setBranch(branch);
@@ -97,7 +97,7 @@ public class GitLabResourceResolver {
             String subGroup = AbstractResourceResolver.decode(matcher.group(2));
             String project = AbstractResourceResolver.decode(matcher.group(3));
             String branch = AbstractResourceResolver.decode(matcher.group(4));
-            String path = AbstractResourceResolver.decode(matcher.group(5));
+            String path = matcher.group(5);
             resource.setGroup(group + "/" + subGroup);
             resource.setProject(project);
             resource.setBranch(branch);
@@ -112,7 +112,7 @@ public class GitLabResourceResolver {
             String subSubGroup = AbstractResourceResolver.decode(matcher.group(3));
             String project = AbstractResourceResolver.decode(matcher.group(4));
             String branch = AbstractResourceResolver.decode(matcher.group(5));
-            String path = AbstractResourceResolver.decode(matcher.group(6));
+            String path = matcher.group(6);
             resource.setGroup(group + "/" + subGroup + "/" + subSubGroup);
             resource.setProject(project);
             resource.setBranch(branch);

@@ -1,10 +1,13 @@
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: {{ .Values.api.name }}
   annotations:
     #if subpath needed uncomment line and add to path beneath in specs
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    {{- with .Values.ingress.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
   labels:
     module: {{ .Values.api.name }}
 spec:
@@ -13,16 +16,28 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ .Values.api.name }}
-              servicePort: {{ .Values.api.port }}
+              service:
+                name: {{ .Values.api.name }}
+                port:
+                  number: {{ .Values.api.port }}
             path: /studio-api/?(.*)
+            pathType: Prefix
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ui.hostname }}
+    secretName: {{ .Values.ui.hostname }}-tls
+  {{- end }}
 ---
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: {{ .Values.ui.name }}
   annotations:
   #    ingress.kubernetes.io/rewrite-target: /
+    {{- with .Values.ingress.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
   labels:
     module: {{ .Values.ui.name }}
 spec:
@@ -31,12 +46,21 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ .Values.ui.name }}
-              servicePort: {{ .Values.ui.port }}
+              service:
+                name: {{ .Values.ui.name }}
+                port:
+                  number: {{ .Values.ui.port }}
             path: /
+            pathType: Prefix
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ui.hostname }}
+    secretName: {{ .Values.ui.hostname }}-tls
+  {{- end }}
 ---
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: {{ .Values.ws.name }}
   annotations:
@@ -49,6 +73,9 @@ metadata:
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection $connection_upgrade;
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    {{- with .Values.ingress.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
   labels:
     module: {{ .Values.ws.name }}
 spec:
@@ -57,6 +84,15 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ .Values.ws.name }}
-              servicePort: {{ .Values.ws.port }}
+              service:
+                name: {{ .Values.ws.name }}
+                port:
+                  number: {{ .Values.ws.port }}
             path: /ws/?(.*)
+            pathType: Prefix
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.ui.hostname }}
+    secretName: {{ .Values.ui.hostname }}-tls
+  {{- end }}

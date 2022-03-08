@@ -29,7 +29,7 @@ spec:
           - name: APICURIO_KC_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
-                name: apicurio-secret
+                name: {{ include "apicurio-studio.secretName" . }}
                 key: apicurio-kc-client-secret
           - name: APICURIO_UI_FEATURE_MICROCKS
             value: {{ .Values.ui.feature.microcks | quote}}
@@ -52,13 +52,18 @@ spec:
           - name: APICURIO_MICROCKS_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
-                name: apicurio-secret
+                name: {{ include "apicurio-studio.secretName" . }}
                 key: apicurio-microcks-client-secret
           image: {{ .Values.ui.image }}
           imagePullPolicy: {{ .Values.ui.imagePullPolicy }}
           name: {{ .Values.ui.name }}
           ports:
             - containerPort: 8080
+          {{- if .Values.ui.resources }}
+          resources:
+          {{- toYaml .Values.ui.resources | nindent 12 }}
+          {{- end }}
+
           {{- if .Values.ui.extraVolumes }}
           volumeMounts:
             {{- range $volume := .Values.ui.extraVolumes }}

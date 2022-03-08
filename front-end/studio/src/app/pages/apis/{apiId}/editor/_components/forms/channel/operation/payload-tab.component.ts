@@ -15,30 +15,23 @@
  * limitations under the License.
  */
 
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
 import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    SimpleChanges,
-    ViewEncapsulation
-} from "@angular/core";
-import { 
+    Aai20Schema, AaiComponents,
     AaiDocument,
-    AaiMessage, 
+    AaiMessage,
     AaiOperation,
-    Aai20Schema,
     CommandFactory,
     ICommand,
-    SimplifiedType,
+    Library,
     ReferenceUtil,
-    Library
+    SimplifiedType
 } from "apicurio-data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {SelectionService} from "../../../../_services/selection.service";
-import { EditExampleEvent } from "../../../dialogs/edit-aai-example.component";
+import {EditExampleEvent} from "../../../dialogs/edit-aai-example.component";
 
 @Component({
     selector: "payload-tab",
@@ -123,13 +116,14 @@ export class PayloadTabComponent extends AbstractBaseComponent {
         nt.of = newType.of;
         nt.as = newType.as;
 
-        let command: ICommand = CommandFactory.createChangePayloadRefCommand_Aai20(nt.type, this.message.parent() as AaiOperation);
+        let command: ICommand = CommandFactory.createChangePayloadRefCommand_Aai20$java_lang_String$io_apicurio_datamodels_asyncapi_models_AaiMessage(nt.type, this.message);
         this.commandService.emit(command);
+
         this._model = nt;
     }
 
     public schemaForExamplePayload(): Aai20Schema {
-        if (this.message.payload.$ref) {
+        if (this.message.payload && this.message.payload.$ref) {
             return ReferenceUtil.resolveRef(this.message.payload.$ref, this.message) as Aai20Schema;
         }
         return null;

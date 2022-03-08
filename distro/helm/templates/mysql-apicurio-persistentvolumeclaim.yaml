@@ -1,3 +1,4 @@
+{{- if .Values.database.install }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -8,3 +9,4 @@ spec:
   resources:
     requests:
       storage: 4Gi
+{{- end }}

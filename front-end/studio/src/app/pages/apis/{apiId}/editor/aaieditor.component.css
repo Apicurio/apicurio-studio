@@ -153,6 +153,28 @@
     margin-right: 4px;
 }
 
+.aai-editor .editor-master .editor-outline .api-message:hover {
+    background-color: #d1eaf7;
+}
+
+.aai-editor .editor-master .editor-outline .api-message.selected {
+    background-color: #a5d6ef;
+    border-left: 2px solid #39a5dc;
+}
+
+.aai-editor .editor-master .editor-outline .api-response.contexted,
+.aai-editor .editor-master .editor-outline .api-response.contexted:hover,
+.aai-editor .editor-master .editor-outline .api-message.contexted,
+.aai-editor .editor-master .editor-outline .api-message.contexted:hover {
+    background-color: #FFCC87;
+    border-left: 2px dotted #E89F3D;
+}
+
+.aai-editor .editor-master .editor-outline .api-message>* {
+    margin-right: 4px;
+}
+
+
 .aai-editor .editor-master .editor-outline .api-response {
     -webkit-transition: background-color 200ms;
     -moz-transition: background-color 200ms;

@@ -1,5 +1,5 @@
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: apicurio-studio-api
   annotations:
@@ -12,12 +12,15 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: "apicurio-studio-api"
-          servicePort: 8091
+          service:
+            name: "apicurio-studio-api"
+            port:
+              number: 8091
         path: /studio-api/?(.*)
+        pathType: Prefix
 ---
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: apicurio-studio-ui
   labels:
@@ -28,12 +31,15 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: "apicurio-studio-ui"
-          servicePort: 8093
+          service:
+            name: "apicurio-studio-ui"
+            port:
+              number: 8093
         path: /
+        pathType: Prefix
 ---
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: apicurio-studio-ws
   annotations:
@@ -45,6 +51,9 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: "apicurio-studio-ws"
-          servicePort: 8092
+          service:
+            name: "apicurio-studio-ws"
+            port:
+              number: 8092
         path: /designs
+        pathType: Prefix

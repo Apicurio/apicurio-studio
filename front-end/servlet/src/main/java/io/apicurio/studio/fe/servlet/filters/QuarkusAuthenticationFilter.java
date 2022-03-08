@@ -29,6 +29,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -73,14 +74,18 @@ public class QuarkusAuthenticationFilter implements Filter {
             user.setEmail(principal.getClaim("email"));
             user.setLogin(principal.getClaim("preferred_username"));
             user.setName(principal.getClaim("name"));
-            user.setRoles(
-                    principal.<JsonObject>getClaim("realm_access")
-                            .getJsonArray("roles").stream()
-                            .map(JsonString.class::cast)
-                            .map(JsonString::getString)
-                            .map(StudioRole::forName)
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toUnmodifiableList()));
+            if (!principal.containsClaim("realm_access") || principal.<JsonObject>getClaim("realm_access").isNull("roles")) {
+                user.setRoles(Collections.emptyList());
+            } else {
+                user.setRoles(
+                        principal.<JsonObject>getClaim("realm_access")
+                                .getJsonArray("roles").stream()
+                                .map(JsonString.class::cast)
+                                .map(JsonString::getString)
+                                .map(StudioRole::forName)
+                                .filter(Objects::nonNull)
+                                .collect(Collectors.toUnmodifiableList()));
+            }
             httpSession.setAttribute(RequestAttributeKeys.USER_KEY, user);
 
             chain.doFilter(request, response);

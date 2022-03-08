@@ -1,9 +1,6 @@
 version: '3'
 
 services:
-
-  apicurio-studio-db:
-
   apicurio-studio-ws:
     image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
     depends_on: [apicurio-studio-db]

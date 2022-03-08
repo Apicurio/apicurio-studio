@@ -51,7 +51,6 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
-import io.apicurio.hub.core.beans.ApiDesignSharedContent;
 import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
@@ -76,7 +75,6 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignCollaboratorRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignCommandRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignContentRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignRowMapper;
-import io.apicurio.hub.core.storage.jdbc.mappers.ApiDesignSharedContentRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiMockRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiPublicationRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ApiTemplatePublicationRowMapper;
@@ -97,7 +95,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 public class JdbcStorage implements IStorage {
     
     private static Logger logger = LoggerFactory.getLogger(JdbcStorage.class);
-    private static int DB_VERSION = 13;
+    private static int DB_VERSION = 12;
     private static final Object dbMutex = new Object();
 
     @Inject
@@ -697,7 +695,7 @@ public class JdbcStorage implements IStorage {
      * @see io.apicurio.hub.core.storage.IStorage#getLatestContentDocumentForSharing(java.lang.String)
      */
     @Override
-    public ApiDesignSharedContent getLatestContentDocumentForSharing(String sharingUuid)
+    public ApiDesignContent getLatestContentDocumentForSharing(String sharingUuid)
             throws NotFoundException, StorageException {
         logger.debug("Selecting the most recent api_content row of type 'document' for sharing UUID: {}", sharingUuid);
         try {
@@ -705,7 +703,7 @@ public class JdbcStorage implements IStorage {
                 String statement = sqlStatements.selectLatestContentDocumentForSharing();
                 Query query = handle.createQuery(statement)
                         .bind(0, sharingUuid);
-                return query.map(ApiDesignSharedContentRowMapper.instance).one();
+                return query.map(ApiDesignContentRowMapper.instance).one();
             });
         } catch (IllegalStateException e) {
             throw new NotFoundException();

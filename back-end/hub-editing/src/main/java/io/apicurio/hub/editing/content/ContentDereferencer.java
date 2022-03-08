@@ -18,9 +18,9 @@ package io.apicurio.hub.editing.content;
 
 import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.core.models.Document;
-import io.apicurio.datamodels.core.util.IReferenceResolver;
 import io.apicurio.hub.core.content.AbsoluteReferenceResolver;
-import io.apicurio.hub.core.storage.IStorage;
+import io.apicurio.hub.core.content.SharedReferenceResolver;
+import io.apicurio.hub.core.exceptions.UnresolvableReferenceException;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -40,13 +40,13 @@ public class ContentDereferencer {
 
     @Inject
     private AbsoluteReferenceResolver absoluteResolver;
-    
     @Inject
-    private IStorage storage;
+    private SharedReferenceResolver sharedReferenceResolver;
 
     @PostConstruct
     void init() {
         Library.addReferenceResolver(absoluteResolver);
+        Library.addReferenceResolver(sharedReferenceResolver);
     }
     
     /**
@@ -54,14 +54,12 @@ public class ContentDereferencer {
      * @param content
      * @throws IOException
      */
-    public String dereference(String content, String userScope) throws IOException {
+    public String dereference(String content) throws UnresolvableReferenceException {
         Document doc = Library.readDocumentFromJSONString(content);
-        IReferenceResolver userScopedResolver = new UserScopedReferenceResolver(storage, userScope);
         try {
-            Library.addReferenceResolver(userScopedResolver);
-            doc = Library.dereferenceDocument(doc);
-        } finally {
-            Library.removeReferenceResolver(userScopedResolver);
+            doc = Library.dereferenceDocument(doc, true);
+        } catch (Exception e) {
+            throw new UnresolvableReferenceException(e);
         }
         return Library.writeDocumentToJSONString(doc);
     }

@@ -25,6 +25,8 @@ import javax.inject.Inject;
 import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.hub.core.content.AbsoluteReferenceResolver;
+import io.apicurio.hub.core.content.SharedReferenceResolver;
+import io.apicurio.hub.core.exceptions.UnresolvableReferenceException;
 
 /**
  * Used to take a {@link Document} and convert it to its dereferenced
@@ -41,11 +43,14 @@ public class ContentDereferencer {
     private AbsoluteReferenceResolver absoluteResolver;
     @Inject
     private InternalReferenceResolver apicurioResolver;
+    @Inject
+    private SharedReferenceResolver sharedReferenceResolver;
 
     @PostConstruct
     void init() {
         Library.addReferenceResolver(apicurioResolver);
         Library.addReferenceResolver(absoluteResolver);
+        Library.addReferenceResolver(sharedReferenceResolver);
     }
     
     /**
@@ -53,9 +58,13 @@ public class ContentDereferencer {
      * @param content
      * @throws IOException
      */
-    public String dereference(String content) throws IOException {
+    public String dereference(String content) throws UnresolvableReferenceException {
         Document doc = Library.readDocumentFromJSONString(content);
-        doc = Library.dereferenceDocument(doc);
+        try {
+            doc = Library.dereferenceDocument(doc, true);
+        } catch (Exception e) {
+            throw new UnresolvableReferenceException(e);
+        }
         return Library.writeDocumentToJSONString(doc);
     }
 

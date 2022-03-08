@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 JBoss Inc
+ * Copyright 2019 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,27 +19,42 @@ package io.apicurio.hub.core.beans;
 /**
  * @author c.desc2@gmail.com
  */
-public class ApiDesignSharedContent extends ApiDesignContent {
-
-    private String createdBy;
+public class DereferenceControlResult {
     
+    private boolean success = true;
+    private String error;
+
     /**
      * Constructor.
      */
-    public ApiDesignSharedContent() {
+    public DereferenceControlResult() {
     }
 
     /**
-     * @return the createdBy
+     * @return the success
      */
-    public String getCreatedBy() {
-        return createdBy;
+    public boolean isSuccess() {
+        return success;
     }
 
     /**
-     * @param createdBy the createdBy to set
+     * @param success the success to set
      */
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    /**
+     * @return the error
+     */
+    public String getError() {
+        return error;
+    }
+
+    /**
+     * @param error the error to set
+     */
+    public void setError(String error) {
+        this.error = error;
     }
 }

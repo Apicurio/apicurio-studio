@@ -31,6 +31,9 @@
                     </div>
                     <p style="margin-top: 5px"><a (click)="disableSharing()"><span class="fa fa-ban"></span> Disable sharing</a></p>
                 </div>
+                <p *ngIf="!loading && !!error" class="sharing-error">
+                    <span class="pf-icon-error-circle-o"></span> An error occurred: {{error.message}}
+                </p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" (click)="close()">Close</button>

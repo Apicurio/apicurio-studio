@@ -26,7 +26,6 @@ import io.apicurio.hub.core.beans.ApiDesignChange;
 import io.apicurio.hub.core.beans.ApiDesignCollaborator;
 import io.apicurio.hub.core.beans.ApiDesignCommand;
 import io.apicurio.hub.core.beans.ApiDesignContent;
-import io.apicurio.hub.core.beans.ApiDesignSharedContent;
 import io.apicurio.hub.core.beans.ApiDesignType;
 import io.apicurio.hub.core.beans.ApiMock;
 import io.apicurio.hub.core.beans.ApiPublication;
@@ -232,7 +231,7 @@ public interface IStorage {
      * @throws NotFoundException
      * @throws StorageException
      */
-    public ApiDesignSharedContent getLatestContentDocumentForSharing(String sharingUuid) throws NotFoundException, StorageException;
+    public ApiDesignContent getLatestContentDocumentForSharing(String sharingUuid) throws NotFoundException, StorageException;
     
     /**
      * Returns the full content row for the given API Design and content version.

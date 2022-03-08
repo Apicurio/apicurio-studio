@@ -226,7 +226,7 @@ public interface IStorage {
     public ApiDesignContent getLatestContentDocument(String userId, String designId) throws NotFoundException, StorageException;
 
     /**
-     * Returns the most recent full content row for the given API Design and some sharing info.
+     * Returns the most recent full content row for the given API Design.
      * @param sharingUuid
      * @throws NotFoundException
      * @throws StorageException

@@ -110,6 +110,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
     /**
      * @see io.apicurio.hub.api.connectors.AbstractSourceConnector#parseExternalTokenResponse(java.lang.String)
      */
+    @Override
     protected Map<String, String> parseExternalTokenResponse(String body) {
         try {
             Map<String, String> rval = new HashMap<>();
@@ -139,7 +140,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 throw new NotFoundException();
             }
             String content = getResourceContent(resource);
-            
+
             ApiDesignResourceInfo info = ApiDesignResourceInfo.fromContent(content);
             if (info.getName() == null) {
                 info.setName(resource.getResourcePath());
@@ -239,7 +240,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(new BasicNameValuePair("note", commitComment));
             post.setEntity(new UrlEncodedFormEntity(nvps));
-            
+
             try (CloseableHttpResponse response = httpClient.execute(post)) {
                 if (response.getStatusLine().getStatusCode() != 201) {
                     throw new SourceConnectorException("Unexpected response from GitLab: " + response.getStatusLine().toString());
@@ -267,7 +268,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
 
         Collection<GitLabGroup> rval = new HashSet<>();
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            
+
             // Get the user's personal group
             HttpGet get = new HttpGet(this.endpoint("/api/v4/user").toString());
             get.addHeader("Accept", "application/json");
@@ -292,10 +293,10 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                     }
                 }
             }
-            
+
             // Now get all the groups the user has access to
             Endpoint endpoint = pagedEndpoint("/api/v4/groups", 1, DEFAULT_PAGE_SIZE);
-            
+
             // Set the "all_available" and "min_access_level" params, if configured.
             String allAvailable = this.config.getGitLabGroupAllAvailable();
             if (allAvailable != null && !allAvailable.isEmpty()) {
@@ -323,7 +324,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      */
     private Collection<GitLabGroup> getAllGroups(CloseableHttpClient httpClient, Endpoint endpoint) throws IOException, SourceConnectorException {
         Collection<GitLabGroup> groups = new ArrayList<>();
-        
+
         String nextPageUrl = addGroups(httpClient, endpoint, groups);
         while (nextPageUrl != null) {
             Endpoint nextEndpoint = new Endpoint(nextPageUrl);
@@ -356,7 +357,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 if (node.isArray()) {
                     ArrayNode array = (ArrayNode) node;
                     array.forEach(obj -> {
-                        JsonNode org = (JsonNode) obj;
+                        JsonNode org = obj;
                         int id = org.get("id").asInt();
                         String name = org.get("name").asText();
                         String path = org.get("path").asText();
@@ -374,7 +375,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             return getNextPage(linkHeader);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.gitlab.IGitLabSourceConnector#getProjects(java.lang.String)
      */
@@ -403,7 +404,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                     }
                 }
             }
-            
+
             if (group != null && group.equalsIgnoreCase(gitLabUserId)) {
                 // List all user projects
                 //////////////////////////////
@@ -434,7 +435,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      */
     private Collection<GitLabProject> getAllProjects(CloseableHttpClient httpClient, Endpoint endpoint) throws IOException, SourceConnectorException {
         Collection<GitLabProject> projects = new ArrayList<>();
-        
+
         String nextPageUrl = addProjects(httpClient, endpoint, projects);
         while (nextPageUrl != null) {
             Endpoint nextEndpoint = new Endpoint(nextPageUrl);
@@ -464,7 +465,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 if (node.isArray()) {
                     ArrayNode array = (ArrayNode) node;
                     array.forEach(obj -> {
-                        JsonNode project = (JsonNode) obj;
+                        JsonNode project = obj;
                         int id = project.get("id").asInt();
                         String name = project.get("name").asText();
                         String path = project.get("path").asText();
@@ -510,7 +511,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      */
     private Collection<SourceCodeBranch> getAllBranches(CloseableHttpClient httpClient, Endpoint endpoint) throws IOException, SourceConnectorException {
         Collection<SourceCodeBranch> branches = new ArrayList<>();
-        
+
         String nextPageUrl = addBranches(httpClient, endpoint, branches);
         while (nextPageUrl != null) {
             Endpoint nextEndpoint = new Endpoint(nextPageUrl);
@@ -540,7 +541,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 if (node.isArray()) {
                     ArrayNode array = (ArrayNode) node;
                     array.forEach(obj -> {
-                        JsonNode branch = (JsonNode) obj;
+                        JsonNode branch = obj;
                         SourceCodeBranch glBranch = new SourceCodeBranch();
                         glBranch.setName(branch.get("name").asText());
                         glBranch.setCommitId(branch.get("commit").get("id").asText());
@@ -589,7 +590,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             String contentUrl = this.endpoint("/api/v4/projects/:id/repository/commits")
                     .bind("id", toEncodedId(resource))
                     .toString();
-            
+
             HttpPost post = new HttpPost(contentUrl);
             post.addHeader("Content-Type", "application/json");
             addSecurity(post);
@@ -597,7 +598,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             GitLabCreateFileRequest body = new GitLabCreateFileRequest();
             body.setBranch(resource.getBranch());
             body.setCommitMessage(commitMessage);
-            
+
             body.setActions(new ArrayList<>());
             GitLabAction action = new GitLabAction();
             String b64Content = Base64.encodeBase64String(content.getBytes(StandardCharsets.UTF_8));
@@ -609,10 +610,10 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             action.setContent(b64Content);
             action.setEncoding("base64");
             body.getActions().add(action);
-            
+
             // Set the POST body
             post.setEntity(new StringEntity(mapper.writeValueAsString(body),StandardCharsets.UTF_8));
-            
+
             try (CloseableHttpResponse response = httpClient.execute(post)) {
                 if (response.getStatusLine().getStatusCode() != 201) {
                     throw new SourceConnectorException("Unexpected response from GitLab: " + response.getStatusLine().toString());
@@ -640,21 +641,21 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                     .bind("path", toEncodedPath(resource))
                     .queryParam("ref", resource.getBranch())
                     .toString();
-            
+
             HttpGet get = new HttpGet(getContentUrl);
             get.addHeader("Accept", "application/json");
             get.addHeader("Cache-Control", "no-cache");
             get.addHeader("Postman-Token", "4d2517bb-72d0-9175-1cbe-04d61e9258a0");
             get.addHeader("DNT", "1");
             get.addHeader("Accept-Language", "en-US,en;q=0.8");
-            
+
             try {
                 addSecurity(get);
             } catch (Exception e) {
                 // If adding security fails, just go ahead and try without security.  If it's a public
                 // repository then this will work.  If not, then it will fail with a 404.
             }
-            
+
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 if (response.getStatusLine().getStatusCode() == 404) {
                     throw new NotFoundException();
@@ -662,16 +663,16 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
                 if (response.getStatusLine().getStatusCode() != 200) {
                     throw new SourceConnectorException("Unexpected response from GitLab: " + response.getStatusLine().toString());
                 }
-    
+
                 try (InputStream contentStream = response.getEntity().getContent()) {
                     Map<String, Object> jsonContent = mapper.readerFor(Map.class).readValue(contentStream);
                     String b64Content = jsonContent.get("content").toString();
                     String content = new String(Base64.decodeBase64(b64Content), StandardCharsets.UTF_8);
                     ResourceContent rval = new ResourceContent();
-        
+
                     rval.setContent(content);
                     rval.setSha(jsonContent.get("commit_id").toString());
-        
+
                     return rval;
                 }
             }
@@ -679,7 +680,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             throw new SourceConnectorException("Error getting GitLab resource content.", e);
         }
     }
-    
+
     /**
      * @see io.apicurio.hub.api.connectors.ISourceConnector#createPullRequestFromZipContent(java.lang.String, java.lang.String, java.util.zip.ZipInputStream)
      */
@@ -688,7 +689,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
             ZipInputStream generatedContent) throws SourceConnectorException {
         return null;
     }
-    
+
     private String toId(String value) {
         try {
             return URLEncoder.encode(value, StandardCharsets.UTF_8.name())
@@ -714,10 +715,6 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
         return toId(resource.getResourcePath());
     }
 
-    private String toEncodedBranch(GitLabResource resource) {
-        return toId(resource.getBranch());
-    }
-    
     private String getNextPage(Header linkHeader) {
         if (linkHeader != null) {
             String linkValue = linkHeader.getValue();

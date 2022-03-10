@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,10 +31,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.exceptions.NotFoundException;
@@ -46,7 +46,7 @@ import io.apicurio.hub.editing.content.ContentDereferencer;
 
 /**
  * Used when showing generated documentation.
- * 
+ *
  * @author eric.wittmann@gmail.com
  */
 @ApplicationScoped
@@ -84,9 +84,9 @@ public class SharingServlet extends HttpServlet {
             ));
             return;
         }
-        
+
         String uuid = path.replaceAll("/", "");
-        
+
         try {
             ApiDesignContent adc = storage.getLatestContentDocumentForSharing(uuid);
             if (adc == null) {
@@ -131,14 +131,14 @@ public class SharingServlet extends HttpServlet {
             writer.flush();
         }
     }
-    
+
     private void doGetTemplate(HttpServletResponse resp, String uuid)
             throws IOException {
         logger.debug("Rendering documentation for UUID: {}", uuid);
-        
+
         String specURL = uuid + "?content=true";
         logger.debug("Spec URL: {}", specURL);
-        
+
         String content = TEMPLATE_REDOC.replace("SPEC_URL", specURL);
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentLength(content.length());
@@ -156,7 +156,7 @@ public class SharingServlet extends HttpServlet {
         final Map<String, Object> payload = new HashMap<>(details);
         payload.put("status", status);
         String jsonPayload = objectMapper.writeValueAsString(payload);
-        
+
         resp.setStatus(status);
         resp.setContentLength(jsonPayload.length());
         resp.setContentType("application/json");

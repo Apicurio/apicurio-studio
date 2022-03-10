@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-package io.apicurio.hub.api.content;
-
-import java.io.IOException;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+package io.apicurio.hub.editing.content;
 
 import io.apicurio.datamodels.Library;
 import io.apicurio.datamodels.core.models.Document;
 import io.apicurio.hub.core.content.AbsoluteReferenceResolver;
 import io.apicurio.hub.core.content.SharedReferenceResolver;
 import io.apicurio.hub.core.exceptions.UnresolvableReferenceException;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.io.IOException;
 
 /**
  * Used to take a {@link Document} and convert it to its dereferenced
@@ -42,13 +41,10 @@ public class ContentDereferencer {
     @Inject
     private AbsoluteReferenceResolver absoluteResolver;
     @Inject
-    private InternalReferenceResolver apicurioResolver;
-    @Inject
     private SharedReferenceResolver sharedReferenceResolver;
 
     @PostConstruct
     void init() {
-        Library.addReferenceResolver(apicurioResolver);
         Library.addReferenceResolver(absoluteResolver);
         Library.addReferenceResolver(sharedReferenceResolver);
     }

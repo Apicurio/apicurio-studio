@@ -20,8 +20,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -34,14 +35,18 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.apicurio.hub.core.beans.ApiDesignContent;
 import io.apicurio.hub.core.exceptions.NotFoundException;
+import io.apicurio.hub.core.exceptions.UnresolvableReferenceException;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
+import io.apicurio.hub.editing.content.ContentDereferencer;
 
 /**
  * Used when showing generated documentation.
- * 
+ *
  * @author eric.wittmann@gmail.com
  */
 @ApplicationScoped
@@ -54,14 +59,17 @@ public class SharingServlet extends HttpServlet {
     {
         URL templateURL = SharingServlet.class.getResource("preview_redoc.template");
         try {
-            TEMPLATE_REDOC = IOUtils.toString(templateURL, Charset.forName("UTF-8"));
+            TEMPLATE_REDOC = IOUtils.toString(templateURL, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            logger.error("Failed to load previe template resource: preview_redoc.template", e);
+            logger.error("Failed to load preview template resource: preview_redoc.template", e);
         }
     }
 
     @Inject
     private IStorage storage;
+
+    @Inject
+    private ContentDereferencer dereferencer;
 
     /**
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest,
@@ -71,65 +79,90 @@ public class SharingServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
         if (path == null) {
-            // TODO respond with an error and a response payload in JSON
-            throw new ServletException("Missing path parameter: UUID");
+            errorPayload(resp, HttpServletResponse.SC_BAD_REQUEST, Map.of(
+                    "error", "Missing path parameter: UUID"
+            ));
+            return;
         }
-        
+
         String uuid = path.replaceAll("/", "");
 
-        boolean content = "true".equals(req.getParameter("content"));
-        if (content) {
-            doGetContent(resp, uuid);
-        } else {
-            doGetTemplate(resp, uuid);
+        try {
+            ApiDesignContent adc = storage.getLatestContentDocumentForSharing(uuid);
+            if (adc == null) {
+                errorPayload(resp, HttpServletResponse.SC_NOT_FOUND, Map.of(
+                        "error", "Unknown sharing UUID: " + uuid
+                ));
+                return;
+            }
+            String document = dereferencer.dereference(adc.getDocument());
+            boolean content = "true".equals(req.getParameter("content"));
+            if (content) {
+                doGetContent(resp, document);
+            } else {
+                doGetTemplate(resp, uuid);
+            }
+        } catch (StorageException | NotFoundException e) {
+            logger.error("Error detected getting content.", e);
+            errorPayload(resp, HttpServletResponse.SC_NOT_FOUND, Map.of(
+                    "error", "Unknown sharing UUID: " + uuid
+            ));
+        } catch (UnresolvableReferenceException e) {
+            logger.error("Error detected dereferencing content.", e);
+            errorPayload(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Map.of(
+                    "error", e.getCause().getMessage()
+            ));
         }
-
     }
 
     /**
      * Gets the content for the given sharing UUID.
      * @param resp
-     * @param uuid
-     * @throws ServletException
+     * @param document
      * @throws IOException
      */
-    private void doGetContent(HttpServletResponse resp, String uuid) throws ServletException, IOException {
-        try {
-            ApiDesignContent adc = storage.getLatestContentDocumentForSharing(uuid);
-            if (adc == null) {
-                // TODO respond with an error and a response payload in JSON
-                throw new ServletException("Unknown sharing UUID: " + uuid);
-            }
-            String content = adc.getDocument();
-            
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+    private void doGetContent(HttpServletResponse resp, String document) throws IOException {
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-            try (Writer writer = resp.getWriter()) {
-                writer.write(content);
-                writer.flush();
-            }
-        } catch (StorageException | NotFoundException e) {
-            logger.error("Error detected getting content.", e);
-            throw new ServletException("Unknown sharing UUID: " + uuid);
+        try (Writer writer = resp.getWriter()) {
+            writer.write(document);
+            writer.flush();
         }
     }
-    
+
     private void doGetTemplate(HttpServletResponse resp, String uuid)
-            throws ServletException, IOException {
+            throws IOException {
         logger.debug("Rendering documentation for UUID: {}", uuid);
-        
+
         String specURL = uuid + "?content=true";
         logger.debug("Spec URL: {}", specURL);
-        
+
         String content = TEMPLATE_REDOC.replace("SPEC_URL", specURL);
-        resp.setStatus(200);
+        resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentLength(content.length());
         resp.setContentType("text/html");
-        resp.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
         PrintWriter writer = resp.getWriter();
         writer.print(content);
+        writer.flush();
+    }
+
+    private void errorPayload(HttpServletResponse resp, int status, Map<String, Object> details)
+            throws IOException {
+        logger.debug("Preparing error payload for status: {}, details: {}", status, details);
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final Map<String, Object> payload = new HashMap<>(details);
+        payload.put("status", status);
+        String jsonPayload = objectMapper.writeValueAsString(payload);
+
+        resp.setStatus(status);
+        resp.setContentLength(jsonPayload.length());
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        PrintWriter writer = resp.getWriter();
+        writer.print(jsonPayload);
         writer.flush();
     }
 

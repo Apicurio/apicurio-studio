@@ -38,6 +38,7 @@ export class SharingDialogComponent {
     sharing: boolean = false;
     apiId: string;
     config: SharingConfiguration;
+    error: any;
 
     constructor(private apis: ApisService, private clipboardService: ClipboardService, private configService: ConfigService) {}
 
@@ -49,6 +50,7 @@ export class SharingDialogComponent {
         this.loading = true;
         this.copied = false;
         this._isOpen = true;
+        this.error = null;
         this.sharing = false;
         this.sharingModal.changes.subscribe( thing => {
             if (this.sharingModal.first) {
@@ -109,10 +111,13 @@ export class SharingDialogComponent {
         this.apis.configureSharing(this.apiId, "DOCUMENTATION").then( config => {
             this.config = config;
             this.sharing = false;
+            this.error = null;
             this.copyToClipboard();
         }).catch( error => {
             console.error("[SharingDialogComponent] Error configuring sharing: ", error);
             // TODO handle errors!
+            this.sharing = false;
+            this.error = error.error;
         });
     }
 
@@ -124,9 +129,12 @@ export class SharingDialogComponent {
         this.apis.configureSharing(this.apiId, "NONE").then( config => {
             this.config = config;
             this.sharing = false;
+            this.error = null;
         }).catch( error => {
             console.error("[SharingDialogComponent] Error configuring sharing: ", error);
             // TODO handle errors!
+            this.sharing = false;
+            this.error = error.error;
         });
     }
 

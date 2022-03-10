@@ -33,8 +33,6 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
-import io.apicurio.hub.core.beans.StoredApiTemplate;
-import io.apicurio.hub.core.storage.jdbc.mappers.StoredApiTemplateRowMapper;
 import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.core.argument.CharacterStreamArgument;
@@ -65,6 +63,7 @@ import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.beans.SharingConfiguration;
 import io.apicurio.hub.core.beans.SharingInfo;
 import io.apicurio.hub.core.beans.SharingLevel;
+import io.apicurio.hub.core.beans.StoredApiTemplate;
 import io.apicurio.hub.core.beans.ValidationProfile;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
@@ -84,6 +83,7 @@ import io.apicurio.hub.core.storage.jdbc.mappers.ContributorRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.InvitationRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.SharingConfigurationRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.SharingInfoRowMapper;
+import io.apicurio.hub.core.storage.jdbc.mappers.StoredApiTemplateRowMapper;
 import io.apicurio.hub.core.storage.jdbc.mappers.ValidationProfileRowMapper;
 
 /**

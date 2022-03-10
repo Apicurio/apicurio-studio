@@ -22,3 +22,7 @@ a.sharing {
     margin-bottom: 0px;
     text-align: right;
 }
+
+.sharing-error {
+    color: #CC0000;
+}

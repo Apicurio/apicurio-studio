@@ -61,6 +61,9 @@ import io.apicurio.hub.core.beans.SharingLevel;
 import io.apicurio.hub.core.beans.UpdateSharingConfiguration;
 import io.apicurio.hub.core.cmd.OaiCommandExecutor;
 import io.apicurio.hub.core.config.HubConfiguration;
+import io.apicurio.hub.core.content.AbsoluteReferenceResolver;
+import io.apicurio.hub.core.content.ContentAccessibilityAsserter;
+import io.apicurio.hub.core.content.SharedReferenceResolver;
 import io.apicurio.hub.core.exceptions.AccessDeniedException;
 import io.apicurio.hub.core.exceptions.AlreadyExistsException;
 import io.apicurio.hub.core.exceptions.ApiValidationException;
@@ -81,7 +84,7 @@ import test.io.apicurio.hub.api.MockStorage.MockContentRow;
 public class DesignsResourceTest {
 
     private IDesignsResource resource;
-    
+
     private MockStorage storage;
     private MockSecurityContext security;
     private MockGitHubService github;
@@ -95,6 +98,9 @@ public class DesignsResourceTest {
     private MockMetrics metrics;
     private MockEventsService eventsService;
     private IAuthorizationService authorizationService;
+    private ContentAccessibilityAsserter accessibilityAsserter;
+    private AbsoluteReferenceResolver absoluteResolver;
+    private SharedReferenceResolver sharedReferenceResolver;
 
     @Before
     public void setUp() {
@@ -111,6 +117,9 @@ public class DesignsResourceTest {
         bitbucketResolver = new BitbucketResourceResolver();
         eventsService = new MockEventsService();
         authorizationService = new AuthorizationService();
+        accessibilityAsserter = new ContentAccessibilityAsserter();
+        absoluteResolver = new AbsoluteReferenceResolver();
+        sharedReferenceResolver = new SharedReferenceResolver();
 
         sourceConnectorFactory = new SourceConnectorFactory();
         github = new MockGitHubService();
@@ -128,7 +137,12 @@ public class DesignsResourceTest {
 
         TestUtil.setPrivateField(authorizationService, "config", config);
         TestUtil.setPrivateField(authorizationService, "storage", storage);
-        
+
+        TestUtil.setPrivateField(accessibilityAsserter, "absoluteResolver", absoluteResolver);
+        TestUtil.setPrivateField(accessibilityAsserter, "sharedReferenceResolver", sharedReferenceResolver);
+
+        TestUtil.setPrivateField(sharedReferenceResolver, "storage", storage);
+
         TestUtil.setPrivateField(resource, "storage", storage);
         TestUtil.setPrivateField(resource, "sourceConnectorFactory", sourceConnectorFactory);
         TestUtil.setPrivateField(resource, "security", security);
@@ -140,6 +154,7 @@ public class DesignsResourceTest {
         TestUtil.setPrivateField(resource, "bitbucketResolver", bitbucketResolver);
         TestUtil.setPrivateField(resource, "eventsService", eventsService);
         TestUtil.setPrivateField(resource, "authorizationService", authorizationService);
+        TestUtil.setPrivateField(resource, "accessibilityAsserter", accessibilityAsserter);
     }
 
     @After
@@ -160,11 +175,11 @@ public class DesignsResourceTest {
         info = new ImportApiDesign();
         info.setUrl("https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json");
         resource.importDesign(info);
-        
+
         Collection<ApiDesign> apis = resource.listDesigns();
         Assert.assertNotNull(apis);
         Assert.assertEquals(2, apis.size());
-        
+
         TreeSet<ApiDesign> sortedApis = new TreeSet<>(new Comparator<ApiDesign>() {
             @Override
             public int compare(ApiDesign o1, ApiDesign o2) {
@@ -172,11 +187,11 @@ public class DesignsResourceTest {
             }
         });
         sortedApis.addAll(apis);
-        
+
         Iterator<ApiDesign> iter = sortedApis.iterator();
         ApiDesign design1 = iter.next();
         ApiDesign design2 = iter.next();
-        
+
         Assert.assertNotNull(design1);
         Assert.assertNotNull(design2);
 
@@ -186,12 +201,12 @@ public class DesignsResourceTest {
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
-                "---\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json\n" + 
-                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json\n" + 
-                "---", 
+                "---\n" +
+                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json\n" +
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/apiman-rls/apiman-rls.json\n" +
+                "---",
                 ghLog);
     }
 
@@ -207,17 +222,17 @@ public class DesignsResourceTest {
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
-                "---\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "---", 
+                "---\n" +
+                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "---",
                 ghLog);
     }
 
     @Test
     public void testImportDesign_Url() throws ServerError, AlreadyExistsException, NotFoundException, ApiValidationException {
         URL resourceUrl = getClass().getResource("DesignsResourceTest_import.json");
-        
+
         ImportApiDesign info = new ImportApiDesign();
         info.setUrl(resourceUrl.toExternalForm());
         ApiDesign design = resource.importDesign(info);
@@ -229,7 +244,7 @@ public class DesignsResourceTest {
 
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
-        Assert.assertEquals("---\n" + 
+        Assert.assertEquals("---\n" +
                 "---", ghLog);
     }
 
@@ -238,7 +253,7 @@ public class DesignsResourceTest {
         URL resourceUrl = getClass().getResource("DesignsResourceTest_import.json");
         String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
         String b64Data = Base64.encodeBase64String(rawData.getBytes());
-        
+
         ImportApiDesign info = new ImportApiDesign();
         info.setData(b64Data);
         ApiDesign design = resource.importDesign(info);
@@ -250,9 +265,9 @@ public class DesignsResourceTest {
 
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
-        Assert.assertEquals("---\n" + 
+        Assert.assertEquals("---\n" +
                 "---", ghLog);
-        
+
         info.setData("Invalid Data");
         try {
             resource.importDesign(info);
@@ -267,7 +282,7 @@ public class DesignsResourceTest {
         URL resourceUrl = getClass().getResource("DesignsResourceTest_import.graphql");
         String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
         String b64Data = Base64.encodeBase64String(rawData.getBytes());
-        
+
         ImportApiDesign info = new ImportApiDesign();
         info.setData(b64Data);
         ApiDesign design = resource.importDesign(info);
@@ -294,10 +309,10 @@ public class DesignsResourceTest {
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
-                "---\n" + 
+                "---\n" +
                 "---",
                 ghLog);
-        
+
         Response response = resource.getContent(design.getId(), "json", null);
         String content = response.getEntity().toString();
         JsonNode jsonData = new ObjectMapper().reader().readTree(content);
@@ -305,8 +320,8 @@ public class DesignsResourceTest {
         Assert.assertEquals("1.0.0", version);
         String oaiVersion = jsonData.get("swagger").asText();
         Assert.assertEquals("2.0", oaiVersion);
-        
-        
+
+
         // 3.0 document
         info = new NewApiDesign();
         info.setSpecVersion("3.0.2");
@@ -318,7 +333,7 @@ public class DesignsResourceTest {
         Assert.assertEquals(info.getDescription(), design.getDescription());
         Assert.assertEquals("2", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
-        
+
         response = resource.getContent(design.getId(), "json", null);
         content = response.getEntity().toString();
         jsonData = new ObjectMapper().reader().readTree(content);
@@ -326,7 +341,7 @@ public class DesignsResourceTest {
         Assert.assertEquals("1.0.0", version);
         oaiVersion = jsonData.get("openapi").asText();
         Assert.assertEquals("3.0.2", oaiVersion);
-        
+
         // 3.0 document (type)
         info = new NewApiDesign();
         info.setType(ApiDesignType.OpenAPI30);
@@ -336,7 +351,7 @@ public class DesignsResourceTest {
         Assert.assertNotNull(design);
         Assert.assertEquals(info.getName(), design.getName());
         Assert.assertEquals(info.getDescription(), design.getDescription());
-        
+
         response = resource.getContent(design.getId(), "json", null);
         content = response.getEntity().toString();
         jsonData = new ObjectMapper().reader().readTree(content);
@@ -354,7 +369,7 @@ public class DesignsResourceTest {
         Assert.assertNotNull(design);
         Assert.assertEquals(info.getName(), design.getName());
         Assert.assertEquals(info.getDescription(), design.getDescription());
-        
+
         response = resource.getContent(design.getId(), "json", null);
         content = response.getEntity().toString();
         jsonData = new ObjectMapper().reader().readTree(content);
@@ -362,7 +377,7 @@ public class DesignsResourceTest {
         Assert.assertEquals("1.0.0", version);
         oaiVersion = jsonData.get("asyncapi").asText();
         Assert.assertEquals("2.0.0", oaiVersion);
-        
+
         // GraphQL document
         info = new NewApiDesign();
         info.setType(ApiDesignType.GraphQL);
@@ -388,7 +403,7 @@ public class DesignsResourceTest {
         Assert.assertEquals("1", designId);
 
         resource.deleteDesign(designId);
-        
+
         try {
             resource.getDesign(designId);
             Assert.fail("Expected a NotFoundException");
@@ -399,13 +414,13 @@ public class DesignsResourceTest {
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
-                "---\n" + 
+                "---\n" +
                 "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
-                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "---", 
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "---",
                 ghLog);
     }
-    
+
     @Test
     public void testUpdateDesign() throws Exception {
         NewApiDesign info = new NewApiDesign();
@@ -418,7 +433,7 @@ public class DesignsResourceTest {
         Assert.assertEquals(info.getDescription(), design.getDescription());
         Assert.assertEquals("1", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
-        
+
         Response response = resource.getContent(design.getId(), "json", null);
         String content = response.getEntity().toString();
         JsonNode jsonData = new ObjectMapper().reader().readTree(content);
@@ -432,7 +447,7 @@ public class DesignsResourceTest {
         String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
         ByteArrayInputStream istream = new ByteArrayInputStream(rawData.getBytes());
         resource.updateDesign(design.getId(), istream);
-        
+
         // Make sure that worked!
         response = resource.getContent(design.getId(), "json", null);
         content = response.getEntity().toString();
@@ -456,7 +471,7 @@ public class DesignsResourceTest {
         Assert.assertEquals(info.getDescription(), design.getDescription());
         Assert.assertEquals("1", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
-        
+
         Response response = resource.getContent(design.getId(), "sdl", null);
         String content = response.getEntity().toString();
         Assert.assertTrue(content.startsWith("# GraphQL Schema 'My GraphQL API'"));
@@ -466,7 +481,7 @@ public class DesignsResourceTest {
         String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
         ByteArrayInputStream istream = new ByteArrayInputStream(rawData.getBytes());
         resource.updateDesign(design.getId(), istream);
-        
+
         // Make sure that worked!
         response = resource.getContent(design.getId(), "sdl", null);
         content = response.getEntity().toString();
@@ -480,9 +495,9 @@ public class DesignsResourceTest {
         ApiDesign design = resource.importDesign(info);
         Assert.assertEquals("1", design.getId());
         Assert.assertEquals("user", design.getCreatedBy());
-        
+
         String designId = design.getId();
-        
+
         Response content = resource.editDesign(designId);
         Assert.assertNotNull(content);
         Assert.assertEquals(new MediaType("application", "json", StandardCharsets.UTF_8.name()), content.getMediaType());
@@ -494,10 +509,10 @@ public class DesignsResourceTest {
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
-                "---\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "---", 
+                "---\n" +
+                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "---",
                 ghLog);
     }
 
@@ -518,10 +533,10 @@ public class DesignsResourceTest {
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
-                "---\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "---", 
+                "---\n" +
+                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "---",
                 ghLog);
     }
 
@@ -530,13 +545,13 @@ public class DesignsResourceTest {
         ImportApiDesign info = new ImportApiDesign();
         info.setUrl("https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json");
         ApiDesign design = resource.importDesign(info);
-        
+
         // Add a command to change the title
         MockContentRow contentRow = new MockContentRow();
         contentRow.createdBy = "user";
-        contentRow.data = "{\r\n" + 
-                "  \"__type\": \"ChangeTitleCommand_20\",\r\n" + 
-                "  \"_newTitle\": \"testGetContent\"\r\n" + 
+        contentRow.data = "{\r\n" +
+                "  \"__type\": \"ChangeTitleCommand_20\",\r\n" +
+                "  \"_newTitle\": \"testGetContent\"\r\n" +
                 "}";
         contentRow.designId = design.getId();
         contentRow.type = ApiContentType.Command;
@@ -545,9 +560,9 @@ public class DesignsResourceTest {
         // Add a command to change the description
         contentRow = new MockContentRow();
         contentRow.createdBy = "user";
-        contentRow.data = "{\r\n" + 
-                "  \"__type\": \"ChangeDescriptionCommand_20\",\r\n" + 
-                "  \"_newDescription\": \"Ut enim ad minim veniam.\"\r\n" + 
+        contentRow.data = "{\r\n" +
+                "  \"__type\": \"ChangeDescriptionCommand_20\",\r\n" +
+                "  \"_newDescription\": \"Ut enim ad minim veniam.\"\r\n" +
                 "}";
         contentRow.designId = design.getId();
         contentRow.type = ApiContentType.Command;
@@ -558,23 +573,23 @@ public class DesignsResourceTest {
         Response content = resource.getContent(design.getId(), null, null);
         Assert.assertNotNull(content);
         Assert.assertEquals(new MediaType("application", "json", StandardCharsets.UTF_8.name()), content.getMediaType());
-        
+
         String expectedOaiDoc = MockGitHubService.STATIC_CONTENT.replace("Swagger Sample App", "testGetContent")
                 .replace("This is a sample server Petstore server.", "Ut enim ad minim veniam.");
         String actualOaiDoc = content.getEntity().toString();
         String expected = normalizeJson(expectedOaiDoc);
         String actual = normalizeJson(actualOaiDoc);
         Assert.assertEquals(expected, actual);
-        
+
         String ghLog = github.auditLog();
         Assert.assertNotNull(ghLog);
         Assert.assertEquals(
-                "---\n" + 
-                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" + 
-                "---", 
+                "---\n" +
+                "validateResourceExists::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "getResourceContent::https://github.com/Apicurio/api-samples/blob/master/pet-store/pet-store.json\n" +
+                "---",
                 ghLog);
-        
+
         content = resource.getContent(design.getId(), "yaml", null);
         Assert.assertNotNull(content);
         Assert.assertEquals(new MediaType("application", "x-yaml", StandardCharsets.UTF_8.name()), content.getMediaType());
@@ -590,7 +605,7 @@ public class DesignsResourceTest {
         URL resourceUrl = getClass().getResource("DesignsResourceTest_import.graphql");
         String rawData = IOUtils.toString(resourceUrl, Charset.forName("UTF-8"));
         String b64Data = Base64.encodeBase64String(rawData.getBytes());
-        
+
         ImportApiDesign info = new ImportApiDesign();
         info.setData(b64Data);
         ApiDesign design = resource.importDesign(info);
@@ -603,7 +618,7 @@ public class DesignsResourceTest {
         String actualContent = content.getEntity().toString();
         String expected = rawData;
         Assert.assertEquals(expected, actualContent);
-        
+
         // TODO enable this when serializing as JSON is supported
 //        content = resource.getContent(design.getId(), "json");
 //        Assert.assertNotNull(content);
@@ -627,7 +642,7 @@ public class DesignsResourceTest {
         Assert.assertEquals("user", invite.getCreatedBy());
         Assert.assertEquals(design.getId(), invite.getDesignId());
         Assert.assertEquals("pending", invite.getStatus());
-        
+
         this.security.getCurrentUser().setLogin("user2");
         try {
             resource.createInvitation(design.getId());
@@ -653,7 +668,7 @@ public class DesignsResourceTest {
         Assert.assertNotNull(invite2);
         Invitation invite3 = resource.createInvitation(design.getId());
         Assert.assertNotNull(invite3);
-        
+
         Collection<Invitation> invitations = resource.getInvitations(design.getId());
         Assert.assertNotNull(invitations);
         Assert.assertEquals(3, invitations.size());
@@ -669,7 +684,7 @@ public class DesignsResourceTest {
 
         Invitation invite = resource.createInvitation(design.getId());
         Assert.assertNotNull(invite);
-        
+
         Invitation theInvite = resource.getInvitation(design.getId(), invite.getInviteId());
         Assert.assertNotNull(theInvite);
         Assert.assertNotNull(theInvite.getInviteId());
@@ -689,7 +704,7 @@ public class DesignsResourceTest {
 
         Invitation invite = resource.createInvitation(design.getId());
         Assert.assertNotNull(invite);
-        
+
         try {
             resource.acceptInvitation(design.getId(), invite.getInviteId());
             Assert.fail("Expected NotFound");
@@ -704,7 +719,7 @@ public class DesignsResourceTest {
             this.security.getCurrentUser().setLogin("user");
         }
 
-        
+
         Invitation theInvite = resource.getInvitation(design.getId(), invite.getInviteId());
         Assert.assertNotNull(theInvite);
         Assert.assertEquals("accepted", theInvite.getStatus());
@@ -736,7 +751,7 @@ public class DesignsResourceTest {
         info.setName("API: testGetCollaborators");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
-        
+
         Collection<ApiDesignCollaborator> collaborators = resource.getCollaborators(design.getId());
         Assert.assertNotNull(collaborators);
         Assert.assertEquals(1, collaborators.size());
@@ -745,7 +760,7 @@ public class DesignsResourceTest {
 
         Invitation invite = resource.createInvitation(design.getId());
         Assert.assertNotNull(invite);
-        
+
         this.security.getCurrentUser().setLogin("user2");
         try {
             resource.acceptInvitation(design.getId(), invite.getInviteId());
@@ -765,7 +780,7 @@ public class DesignsResourceTest {
         info.setName("API: testDeleteCollaborator");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
-        
+
         Collection<ApiDesignCollaborator> collaborators = resource.getCollaborators(design.getId());
         Assert.assertNotNull(collaborators);
         Assert.assertEquals(1, collaborators.size());
@@ -774,7 +789,7 @@ public class DesignsResourceTest {
 
         Invitation invite = resource.createInvitation(design.getId());
         Assert.assertNotNull(invite);
-        
+
         this.security.getCurrentUser().setLogin("user2");
         try {
             resource.acceptInvitation(design.getId(), invite.getInviteId());
@@ -785,7 +800,7 @@ public class DesignsResourceTest {
         collaborators = resource.getCollaborators(design.getId());
         Assert.assertNotNull(collaborators);
         Assert.assertEquals(2, collaborators.size());
-        
+
         resource.deleteCollaborator(design.getId(), "user2");
 
         collaborators = resource.getCollaborators(design.getId());
@@ -800,7 +815,7 @@ public class DesignsResourceTest {
         info.setName("API: testUpdateCollaborator");
         ApiDesign design = resource.createDesign(info);
         Assert.assertNotNull(design);
-        
+
         Collection<ApiDesignCollaborator> collaborators = resource.getCollaborators(design.getId());
         Assert.assertNotNull(collaborators);
         Assert.assertEquals(1, collaborators.size());
@@ -809,7 +824,7 @@ public class DesignsResourceTest {
 
         Invitation invite = resource.createInvitation(design.getId());
         Assert.assertNotNull(invite);
-        
+
         this.security.getCurrentUser().setLogin("user2");
         try {
             resource.acceptInvitation(design.getId(), invite.getInviteId());
@@ -825,7 +840,7 @@ public class DesignsResourceTest {
         ApiDesignCollaborator collaborator = iterator.next();
         Assert.assertEquals("user2", collaborator.getUserId());
         Assert.assertEquals("collaborator", collaborator.getRole());
-        
+
         UpdateCollaborator update = new UpdateCollaborator();
         update.setNewRole("owner");
         resource.updateCollaborator(design.getId(), "user2", update);
@@ -851,23 +866,23 @@ public class DesignsResourceTest {
         Assert.assertEquals(info.getName(), design.getName());
         Assert.assertEquals(info.getDescription(), design.getDescription());
         Assert.assertEquals("1", design.getId());
-        
+
         SharingConfiguration configuration = resource.getSharingConfiguration("1");
         Assert.assertEquals(SharingLevel.NONE, configuration.getLevel());
         Assert.assertNull(configuration.getUuid());
-        
+
         UpdateSharingConfiguration update = new UpdateSharingConfiguration();
         update.setLevel(SharingLevel.DOCUMENTATION);
         resource.configureSharing("1", update);
-        
+
         configuration = resource.getSharingConfiguration("1");
         Assert.assertEquals(SharingLevel.DOCUMENTATION, configuration.getLevel());
         Assert.assertNotNull(configuration.getUuid());
-        
+
         update = new UpdateSharingConfiguration();
         update.setLevel(SharingLevel.NONE);
         resource.configureSharing("1", update);
-        
+
         configuration = resource.getSharingConfiguration("1");
         Assert.assertEquals(SharingLevel.NONE, configuration.getLevel());
         Assert.assertNotNull(configuration.getUuid());
@@ -876,8 +891,8 @@ public class DesignsResourceTest {
     /**
      * Normalizes JSON into a standard format.
      * @param jsonContent
-     * @throws IOException 
-     * @throws JsonProcessingException 
+     * @throws IOException
+     * @throws JsonProcessingException
      */
     private String normalizeJson(String jsonContent) throws JsonProcessingException, IOException {
         ObjectMapper mapper = new ObjectMapper();

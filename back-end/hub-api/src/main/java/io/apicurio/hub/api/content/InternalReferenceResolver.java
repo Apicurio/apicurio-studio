@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import io.apicurio.hub.api.security.ISecurityContext;
 import io.apicurio.hub.core.beans.ApiDesignContent;
+import io.apicurio.hub.core.content.AbstractReferenceResolver;
 import io.apicurio.hub.core.exceptions.NotFoundException;
 import io.apicurio.hub.core.storage.IStorage;
 import io.apicurio.hub.core.storage.StorageException;
@@ -54,7 +55,7 @@ public class InternalReferenceResolver extends AbstractReferenceResolver {
     }
     
     /**
-     * @see io.apicurio.hub.api.content.AbstractReferenceResolver#accepts(java.net.URI)
+     * @see io.apicurio.hub.core.content.AbstractReferenceResolver#accepts(java.net.URI)
      */
     @Override
     protected boolean accepts(URI uri) {
@@ -63,7 +64,7 @@ public class InternalReferenceResolver extends AbstractReferenceResolver {
     }
     
     /**
-     * @see io.apicurio.hub.api.content.AbstractReferenceResolver#fetchUriContent(java.net.URI)
+     * @see io.apicurio.hub.core.content.AbstractReferenceResolver#fetchUriContent(java.net.URI)
      */
     @Override
     protected String fetchUriContent(URI referenceUri) throws IOException {

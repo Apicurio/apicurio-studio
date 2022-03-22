@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'Apicurio'
     steps:
-      - name: Set up Node.js v10
+      - name: Set up Node.js v14
         uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 14
       - name: Set up JDK 11
         uses: AdoptOpenJDK/install-jdk@v1
         with:

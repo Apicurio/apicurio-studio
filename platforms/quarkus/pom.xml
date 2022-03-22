@@ -6,7 +6,7 @@
     <parent>
         <groupId>io.apicurio</groupId>
         <artifactId>apicurio-studio-platforms</artifactId>
-        <version>0.2.52-SNAPSHOT</version>
+        <version>0.2.52.Final</version>
     </parent>
     <artifactId>apicurio-studio-platforms-quarkus</artifactId>
     <packaging>pom</packaging>

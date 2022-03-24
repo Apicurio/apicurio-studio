@@ -112,9 +112,9 @@ jobs:
       - name: Building Docker Images
         run: |
           cd studio
-          docker build -t="apicurio/apicurio-studio-api" -t="apicurio/apicurio-studio-api:latest-release" -t="apicurio/apicurio-studio-api:${{ github.event.inputs.release-version }}" -t="quay.io/apicurio/apicurio-studio-api:latest-release" -t="quay.io/apicurio/apicurio-studio-api:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/api/
-          docker build -t="apicurio/apicurio-studio-ws" -t="apicurio/apicurio-studio-ws:latest-release" -t="apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version }}" -t="quay.io/apicurio/apicurio-studio-ws:latest-release" -t="quay.io/apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/ws/
-          docker build -t="apicurio/apicurio-studio-ui" -t="apicurio/apicurio-studio-ui:latest-release" -t="apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version }}" -t="quay.io/apicurio/apicurio-studio-ui:latest-release" -t="quay.io/apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/ui/
+          docker build -t="apicurio/apicurio-studio-api" -t="apicurio/apicurio-studio-api:latest-release" -t="apicurio/apicurio-studio-api:${{ github.event.inputs.release-version }}" -t="quay.io/apicurio/apicurio-studio-api" -t="quay.io/apicurio/apicurio-studio-api:latest-release" -t="quay.io/apicurio/apicurio-studio-api:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/api/
+          docker build -t="apicurio/apicurio-studio-ws" -t="apicurio/apicurio-studio-ws:latest-release" -t="apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version }}" -t="quay.io/apicurio/apicurio-studio-ws" -t="quay.io/apicurio/apicurio-studio-ws:latest-release" -t="quay.io/apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/ws/
+          docker build -t="apicurio/apicurio-studio-ui" -t="apicurio/apicurio-studio-ui:latest-release" -t="apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version }}" -t="quay.io/apicurio/apicurio-studio-ws" -t="quay.io/apicurio/apicurio-studio-ui:latest-release" -t="quay.io/apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/ui/
       - name: Fetch Latest Commit SHA For Apicurio Studio
         run: |
           cd studio

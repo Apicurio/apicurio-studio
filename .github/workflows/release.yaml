@@ -36,6 +36,10 @@ jobs:
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      - name: Login to Quay.io Registry
+        run: echo ${{ secrets.QUAY_PASSWORD }} | docker login quay.io -u ${{ secrets.QUAY_USERNAME }} --password-stdin
       - name: Apicurio Studio Code Checkout
         run: |
           mkdir studio
@@ -105,14 +109,12 @@ jobs:
           mkdir -p releases
           cp distro/quickstart/target/apicurio-studio-${{ github.event.inputs.release-version }}-quickstart.zip releases/.
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apicurio-studio-${{ github.event.inputs.release-version }}-quickstart.zip
-      - name: Login to DockerHub Registry
-        run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Building Docker Images
         run: |
           cd studio
-          docker build -t="apicurio/apicurio-studio-api" -t="apicurio/apicurio-studio-api:latest-release" -t="apicurio/apicurio-studio-api:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/api/
-          docker build -t="apicurio/apicurio-studio-ws" -t="apicurio/apicurio-studio-ws:latest-release" -t="apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/ws/
-          docker build -t="apicurio/apicurio-studio-ui" -t="apicurio/apicurio-studio-ui:latest-release" -t="apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/ui/
+          docker build -t="apicurio/apicurio-studio-api" -t="apicurio/apicurio-studio-api:latest-release" -t="apicurio/apicurio-studio-api:${{ github.event.inputs.release-version }}" -t="quay.io/apicurio/apicurio-studio-api:latest-release" -t="quay.io/apicurio/apicurio-studio-api:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/api/
+          docker build -t="apicurio/apicurio-studio-ws" -t="apicurio/apicurio-studio-ws:latest-release" -t="apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version }}" -t="quay.io/apicurio/apicurio-studio-ws:latest-release" -t="quay.io/apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/ws/
+          docker build -t="apicurio/apicurio-studio-ui" -t="apicurio/apicurio-studio-ui:latest-release" -t="apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version }}" -t="quay.io/apicurio/apicurio-studio-ui:latest-release" -t="quay.io/apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version }}" --rm platforms/thorntail/ui/
       - name: Fetch Latest Commit SHA For Apicurio Studio
         run: |
           cd studio
@@ -171,6 +173,16 @@ jobs:
           docker push apicurio/apicurio-studio-api:${{ github.event.inputs.release-version }}
           docker push apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version }}
           docker push apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version }}
+          docker push quay.io/apicurio/apicurio-studio-api:latest
+          docker push quay.io/apicurio/apicurio-studio-ws:latest
+          docker push quay.io/apicurio/apicurio-studio-ui:latest
+          docker push quay.io/apicurio/apicurio-studio-api:latest-release
+          docker push quay.io/apicurio/apicurio-studio-ws:latest-release
+          docker push quay.io/apicurio/apicurio-studio-ui:latest-release
+          docker push quay.io/apicurio/apicurio-studio-api:${{ github.event.inputs.release-version }}
+          docker push quay.io/apicurio/apicurio-studio-ws:${{ github.event.inputs.release-version }}
+          docker push quay.io/apicurio/apicurio-studio-ui:${{ github.event.inputs.release-version }}
+
       - name: Updating Project Website for Release ${{ github.event.inputs.release-version }}
         run: |
           cd website

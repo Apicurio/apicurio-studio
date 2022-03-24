@@ -100,7 +100,7 @@
         <!-- Dependency Versions -->
         <version.com.fasterxml.jackson>2.12.5</version.com.fasterxml.jackson>
         <version.com.google.inject>4.1.0</version.com.google.inject>
-        <version.com.graphql-java>17.3</version.com.graphql-java>
+        <version.com.graphql-java>18.0</version.com.graphql-java>
         <version.com.h2database>1.4.200</version.com.h2database>
         <version.com.mashape.unirest>1.4.9</version.com.mashape.unirest>
         <version.com.squareup.javapoet>1.13.0</version.com.squareup.javapoet>

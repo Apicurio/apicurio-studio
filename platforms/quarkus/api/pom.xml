@@ -72,6 +72,11 @@
       <artifactId>keycloak-common</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+
     <!-- Provided dependencies -->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>

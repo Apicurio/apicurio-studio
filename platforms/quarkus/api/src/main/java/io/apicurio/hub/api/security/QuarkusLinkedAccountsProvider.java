@@ -125,8 +125,6 @@ public class QuarkusLinkedAccountsProvider
                     .queryParam("hash", hash).queryParam("client_id", clientId)
                     .queryParam("redirect_uri", redirectUri).build(realm, provider).toString();
 
-            logger.log(Level.DEBUG, "Account Link URL: {}", accountLinkUrl);
-
             // Return the URL that the browser should use to initiate the account linking
             InitiatedLinkedAccount rval = new InitiatedLinkedAccount();
             rval.setAuthUrl(accountLinkUrl);
@@ -144,23 +142,22 @@ public class QuarkusLinkedAccountsProvider
     @Override
     public void deleteLinkedAccount(LinkedAccountType type) throws IOException {
         try {
-            KeycloakSecurityContext session = (KeycloakSecurityContext) request
-                    .getAttribute(KeycloakSecurityContext.class.getName());
-
             String authServerRootUrl = config.getKeycloakAuthUrl();
             String realm = config.getKeycloakRealm();
+
             String provider = type.alias();
 
-            session.getToken().getSessionState();
+            JWTCallerPrincipal principal = (JWTCallerPrincipal) request.getUserPrincipal();
+
+            AccessToken token = RSATokenVerifier.create(principal.getRawToken()).getToken();
 
             String url = KeycloakUriBuilder.fromUri(authServerRootUrl)
                     .path("/realms/{realm}/account/federated-identity-update").queryParam("action", "REMOVE")
                     .queryParam("provider_id", provider).build(realm).toString();
-            logger.log(Level.DEBUG, "Deleting identity provider using URL: {}", url);
 
             HttpGet get = new HttpGet(url);
             get.addHeader("Accept", "application/json");
-            get.addHeader("Authorization", "Bearer " + session.getTokenString());
+            get.addHeader("Authorization", "Bearer " + token.toString());
 
             try (CloseableHttpResponse response = httpClient.execute(get)) {
                 if (response.getStatusLine().getStatusCode() != 200) {

@@ -44,7 +44,7 @@ import {
     AaiMessageTraitDefinition,
     OtCommand,
     OtEngine,
-    ValidationProblem, AaiMessage
+    ValidationProblem, AaiMessage, IDocumentValidatorExtension
 } from "apicurio-data-models";
 import {AsyncApiEditorMasterComponent} from "./_components/aaimaster.component";
 import {VersionedAck} from "../../../../models/ack.model";
@@ -89,6 +89,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     @Input() embedded: boolean;
     @Input() features: ApiEditorComponentFeatures;
     @Input() validationRegistry: IValidationSeverityRegistry;
+    @Input() validationExtensions: IDocumentValidatorExtension[] = [];
     @Input() contentFetcher: (externalReference: string) => Promise<any>;
     @Input() componentImporter: (componentType: ComponentType) => Promise<ImportedComponent[]>;
 
@@ -152,9 +153,10 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         this._catalogSubscription = this.catalog.changes().subscribe( () => {
             console.debug("[AsyncApiEditorComponent] Re-validating model due to API Catalog change.");
             // Re-validate whenever the contents of the API catalog change
-            this.validateModel();
-            // Make sure any validation widgets refresh themselves
-            this.documentService.emitChange();
+            this.validateModel().then(() => {
+                // Make sure any validation widgets refresh themselves
+                this.documentService.emitChange();
+            });
         });
     }
 
@@ -224,8 +226,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         }
 
         if (changes["validationRegistry"]) {
-            this.validateModel();
-            this.documentService.emitChange();
+            this.validateModel().then(() => this.documentService.emitChange());
         }
     }
 
@@ -456,11 +457,11 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     /**
      * Called to validate the model.
      */
-    public validateModel(): void {
+    public async validateModel(): Promise<void> {
         try {
             let doc: AaiDocument = this.document();
             let oldValidationErrors: ValidationProblem[] = this.validationErrors;
-            this.validationErrors = Library.validate(doc, this.validationRegistry);
+            this.validationErrors = await Library.validateDocument(doc, this.validationRegistry, this.validationExtensions);
             if (!ArrayUtils.equals(oldValidationErrors, this.validationErrors)) {
                 this.onValidationChanged.emit(this.validationErrors);
             }
@@ -531,20 +532,20 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         this.selectionService.reselectAll();
 
         // After changing the model, we should re-validate it
-        this.validateModel();
+        this.validateModel().then(() => {
+            // Update the form being displayed (this might change if the thing currently selected was deleted)
+            this.updateFormDisplay(this.selectionService.currentSelection());
 
-        // Update the form being displayed (this might change if the thing currently selected was deleted)
-        this.updateFormDisplay(this.selectionService.currentSelection());
+            // Potentially update the API catalog
+            this.catalog.update(this.documentService.currentDocument());
 
-        // Potentially update the API catalog
-        this.catalog.update(this.documentService.currentDocument());
+            // Set the current state
+            this.sourceOriginal = this.sourceValue;
+            this.sourceIsValid = true;
 
-        // Set the current state
-        this.sourceOriginal = this.sourceValue;
-        this.sourceIsValid = true;
-
-        // Fire a change event in the document service
-        this.documentService.emitChange();
+            // Fire a change event in the document service
+            this.documentService.emitChange();
+        });
     }
 
     /**

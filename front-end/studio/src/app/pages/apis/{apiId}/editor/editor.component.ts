@@ -34,6 +34,7 @@ import {
     DocumentType,
     ICommand,
     IDefinition,
+    IDocumentValidatorExtension,
     IReferenceResolver,
     IValidationSeverityRegistry,
     Library,
@@ -95,6 +96,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     @Input() validationRegistry: IValidationSeverityRegistry;
     @Input() contentFetcher: (externalReference: string) => Promise<any>;
     @Input() componentImporter: (componentType: ComponentType) => Promise<ImportedComponent[]>;
+    @Input() validationExtensions: IDocumentValidatorExtension[] = [];
 
     @Output() onCommandExecuted: EventEmitter<OtCommand> = new EventEmitter<OtCommand>();
     @Output() onSelectionChanged: EventEmitter<string> = new EventEmitter<string>();
@@ -151,9 +153,10 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         this._catalogSubscription = this.catalog.changes().subscribe(() => {
             console.debug("[ApiEditorComponent] Re-validating model due to API Catalog change.");
             // Re-validate whenever the contents of the API catalog change
-            this.validateModel();
-            // Make sure any validation widgets refresh themselves
-            this.documentService.emitChange();
+            this.validateModel().then(() => {
+                // Make sure any validation widgets refresh themselves
+                this.documentService.emitChange();
+            });
         });
     }
 
@@ -228,8 +231,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         }
 
         if (changes["validationRegistry"]) {
-            this.validateModel();
-            this.documentService.emitChange();
+            this.validateModel().then(() => this.documentService.emitChange());
         }
     }
 
@@ -456,11 +458,11 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     /**
      * Called to validate the model.
      */
-    public validateModel(): void {
+    public async validateModel(): Promise<void> {
         try {
             let doc: OasDocument = this.document();
             let oldValidationErrors: ValidationProblem[] = this.validationErrors;
-            this.validationErrors = Library.validate(doc, this.validationRegistry);
+            this.validationErrors = await Library.validateDocument(doc, this.validationRegistry, this.validationExtensions);
             if (!ArrayUtils.equals(oldValidationErrors, this.validationErrors)) {
                 this.onValidationChanged.emit(this.validationErrors);
             }
@@ -526,16 +528,16 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
         this.selectionService.reselectAll();
 
         // After changing the model, we should re-validate it
-        this.validateModel();
+        this.validateModel().then(() => {
+            // Update the form being displayed (this might change if the thing currently selected was deleted)
+            this.updateFormDisplay(this.selectionService.currentSelection());
 
-        // Update the form being displayed (this might change if the thing currently selected was deleted)
-        this.updateFormDisplay(this.selectionService.currentSelection());
+            // Potentially update the API catalog
+            this.catalog.update(this.documentService.currentDocument());
 
-        // Potentially update the API catalog
-        this.catalog.update(this.documentService.currentDocument());
-
-        // Fire a change event in the document service
-        this.documentService.emitChange();
+            // Fire a change event in the document service
+            this.documentService.emitChange();
+        });
     }
 
     /**

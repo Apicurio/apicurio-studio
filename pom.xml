@@ -77,7 +77,7 @@
         <version.antrun.plugin>3.0.0</version.antrun.plugin>
         <version.assembly.plugin>3.3.0</version.assembly.plugin>
         <version.buildnumber.plugin>3.0.0</version.buildnumber.plugin>
-        <version.clean.plugin>3.1.0</version.clean.plugin>
+        <version.clean.plugin>3.2.0</version.clean.plugin>
         <version.compiler.plugin>3.10.1</version.compiler.plugin>
         <version.dependency.plugin>3.3.0</version.dependency.plugin>
         <version.deploy.plugin>2.8.2</version.deploy.plugin>

@@ -22,7 +22,6 @@
             "assets": [
               "src/assets",
               "src/keycloak.json",
-              "src/keycloak.js",
               "src/version.js",
               "src/config.js"
             ],

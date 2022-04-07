@@ -9,7 +9,7 @@ Make sure the KC's apicurio client lists the UI's address as a valid redirection
 Rebuild the local dependencies
 
 ```bash
-mvn clean install -am -pl platforms/quarkus/api -pl platforms/quarkus/ws
+mvn clean install -am -pl platforms/quarkus/api -pl platforms/quarkus/ws -pl platforms/quarkus/ui
 ```
 
 To start the API
@@ -26,8 +26,7 @@ mvn $(test -f "$qWsPath/java.env" && sed -e "/^$/d" -e "/^#/d" "$qWsPath/java.en
 
 To start the UI (Tested with node 10)
 
-Read https://www.apicur.io/studio/docs/setting-up-a-development-environment for the main KC setup steps
 ```bash
-cd front-end/studio
-yarn start
+qUIPath=platforms/quarkus/ui
+mvn $(test -f "$qUIPath/java.env" && sed -e "/^$/d" -e "/^#/d" "$qUIPath/java.env" | xargs -r -n1 printf -- "-D%s ") -f $qUIPath/pom.xml quarkus:dev
 ```

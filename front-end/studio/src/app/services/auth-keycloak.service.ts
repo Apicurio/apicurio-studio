@@ -23,7 +23,7 @@ import {Topic} from "apicurio-ts-core";
 import {ApicurioRole} from "../models/apicurio-role.enum";
 
 /**
- * A version of the authentication service that uses keycloak.js to provide
+ * A version of the authentication service that uses keycloak-js to provide
  * authentication services.
  */
 export class KeycloakAuthenticationService extends IAuthenticationService {

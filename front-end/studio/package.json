@@ -1,5 +1,5 @@
 {
-  "name": "apicurio-design-studio",
+  "name": "@apicurio/studio",
   "version": "0.2.53",
   "description": "A web application to help design restful APIs.",
   "author": "Eric Wittmann",

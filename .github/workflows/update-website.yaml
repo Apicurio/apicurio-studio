@@ -17,7 +17,7 @@ jobs:
       - name: Checkout Apicurio Website
         uses: actions/checkout@v2
         with:
-           repository: Apicurio/Apicurio/apicurio.github.io
+           repository: Apicurio/apicurio.github.io
            path: website
            token: ${{ secrets.ACCESS_TOKEN }}
       

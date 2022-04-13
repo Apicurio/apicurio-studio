@@ -45,8 +45,8 @@ jobs:
           mkdir studio
           cd studio
           git init
-          git config --global user.name "apicurio-ci"
-          git config --global user.email "eric.wittmann+apicurio-ci@gmail.com"
+          git config --global user.name "apicurio-ci[bot]"
+          git config --global user.email "apicurio-ci@users.noreply.github.com"
           git remote add origin "https://apicurio-ci:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
           git fetch
           git checkout ${{ github.event.inputs.branch }}
@@ -57,8 +57,8 @@ jobs:
           mkdir website
           cd website
           git init
-          git config --global user.name "apicurio-ci"
-          git config --global user.email "apicurio.ci@gmail.com"
+          git config --global user.name "apicurio-ci[bot]"
+          git config --global user.email "apicurio-ci@users.noreply.github.com"
           git remote add origin "https://apicurio-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apicurio/apicurio.github.io.git"
           git fetch
           git checkout master

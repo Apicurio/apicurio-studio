@@ -67,7 +67,7 @@ the `package.json` file:
 
 ```json
 {
-  "name": "apicurio-design-studio",
+  "name": "@apicurio/studio",
   "version": "1.0.1",
   "description": "A web application to help design restful APIs.",
   "license": "Apache-2.0"

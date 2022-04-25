@@ -17,7 +17,7 @@
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap/modal";
-import {ExtensibleNode, OasDocument} from "apicurio-data-models";
+import {ExtensibleNode, OasDocument} from "@apicurio/data-models";
 import {CodeEditorMode} from "../../../../../../components/common/code-editor.component";
 
 

@@ -17,7 +17,7 @@
 
 import {Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap/modal";
-import {Aai20Schema, AaiDocument, AaiMessage} from "apicurio-data-models";
+import {Aai20Schema, AaiDocument, AaiMessage} from "@apicurio/data-models";
 import {ConfigService} from "../../../../../../services/config.service";
 import {
     DIVIDER,

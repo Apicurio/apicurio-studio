@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {ChangeLicenseCommand, CommandFactory, ICommand, Library, AaiDocument, AaiLicense} from "apicurio-data-models";
+import {ChangeLicenseCommand, CommandFactory, ICommand, Library, AaiDocument, AaiLicense} from "@apicurio/data-models";
 import {CommandService} from "../../../_services/command.service";
 import {ILicense, LicenseService} from "../../../_services/license.service";
 import {AbstractBaseComponent} from "../../common/base-component";

@@ -35,8 +35,8 @@ import {
     OasOperation,
     OasPathItem,
     ICommand, OasParameter, CommandFactory
-} from "apicurio-data-models";
-import {ModelUtils as OaiModelUtils} from "apicurio-data-models";
+} from "@apicurio/data-models";
+import {ModelUtils as OaiModelUtils} from "@apicurio/data-models";
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {AbstractBaseComponent} from "../../common/base-component";

@@ -23,7 +23,7 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {CommandFactory, ICommand, OasTag} from "apicurio-data-models";
+import {CommandFactory, ICommand, OasTag} from "@apicurio/data-models";
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";

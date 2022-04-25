@@ -45,7 +45,7 @@ import {
     OtCommand,
     OtEngine,
     ValidationProblem, AaiMessage, IDocumentValidatorExtension
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {AsyncApiEditorMasterComponent} from "./_components/aaimaster.component";
 import {VersionedAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";

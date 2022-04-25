@@ -20,7 +20,7 @@ import {
     Aai20Document, Aai20SecurityRequirement, Aai20Server, Aai20ServerVariable, AaiServer, CombinedVisitorAdapter,
     CommandFactory,
     ICommand, Server, TraverserDirection, VisitorUtil
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {AaiServerData, AaiServerEditorComponent, AaiServerEditorEvent} from "../../editors/aaiserver-editor.component";

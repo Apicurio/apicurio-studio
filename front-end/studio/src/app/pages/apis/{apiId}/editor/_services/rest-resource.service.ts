@@ -33,7 +33,7 @@ import {
     OasPathItem,
     OasResponse,
     OasResponses
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 
 /**
  * A service providing functionality related to managing standard REST resources.

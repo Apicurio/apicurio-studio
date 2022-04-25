@@ -22,7 +22,7 @@ import {
     ValidationProblem,
     ValidationProblemSeverity,
     VisitorUtil
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {ProblemFinder} from "./validation-aggregate.component";
 import {ProblemsService} from "../../_services/problems.service";
 import {DocumentService} from "../../_services/document.service";

@@ -17,7 +17,7 @@
 
 
 import {Injectable} from "@angular/core";
-import {ICommand} from "apicurio-data-models";
+import {ICommand} from "@apicurio/data-models";
 import {Topic} from "apicurio-ts-core";
 
 /**

@@ -34,7 +34,7 @@ import {
     Oas30Response,
     OasDocument,
     OasResponse
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {EditorsService} from "../../../../_services/editors.service";
 import {AddResponseDialogComponent, AddResponseDialogData} from "../../../dialogs/add-response.component";

@@ -21,7 +21,7 @@ import {
     AaiDocument,
     TraverserDirection,
     VisitorUtil
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {FindMessageTraitDefinitionsVisitor} from "../../_visitors/messagetrait-definitions.visitor";
 

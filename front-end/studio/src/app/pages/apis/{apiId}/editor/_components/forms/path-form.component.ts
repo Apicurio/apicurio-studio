@@ -34,7 +34,7 @@ import {
     OasPathItem,
     OasPaths,
     SimplifiedParameterType
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {SourceFormComponent} from "./source-form.base";
 import {ClonePathDialogComponent} from "../dialogs/clone-path.component";
 import {AddPathDialogComponent} from "../dialogs/add-path.component";

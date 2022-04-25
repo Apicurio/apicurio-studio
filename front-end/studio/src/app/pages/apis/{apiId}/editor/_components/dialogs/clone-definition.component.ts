@@ -26,7 +26,7 @@ import {
     DocumentType,
     TraverserDirection,
     VisitorUtil
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {FindSchemaDefinitionsVisitor, FindAaiSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 
 

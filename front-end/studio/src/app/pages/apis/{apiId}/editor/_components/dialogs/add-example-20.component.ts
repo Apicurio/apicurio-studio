@@ -25,7 +25,7 @@ import {
 import {ObjectUtils} from "../../../../../../util/common";
 import * as YAML from 'js-yaml';
 import {ModelUtils} from "../../_util/model.util";
-import {Oas20Schema} from "apicurio-data-models";
+import {Oas20Schema} from "@apicurio/data-models";
 import {StringUtils} from "apicurio-ts-core";
 
 

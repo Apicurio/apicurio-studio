@@ -36,7 +36,7 @@ import {
     OasOperation,
     OasParameter,
     OasPathItem
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {EditorsService} from "../../../_services/editors.service";

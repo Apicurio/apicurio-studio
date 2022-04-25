@@ -30,7 +30,7 @@ import {
     Library,
     AaiChannelItem,
     AaiDocument
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {SourceFormComponent} from "./source-form.base";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";

@@ -23,7 +23,7 @@ import {
     OasDocument,
     TraverserDirection,
     VisitorUtil
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {FindResponseDefinitionsVisitor} from "../../_visitors/response-definitions.visitor";
 
 

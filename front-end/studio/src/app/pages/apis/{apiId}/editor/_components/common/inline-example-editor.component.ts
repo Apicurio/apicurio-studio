@@ -18,7 +18,7 @@
 import {AfterViewInit, Component, Input, QueryList, ViewChildren, ViewEncapsulation} from "@angular/core";
 import {TextAreaEditorComponent} from "./inline-editor.base";
 import {CodeEditorComponent, CodeEditorMode} from "../../../../../../components/common/code-editor.component";
-import {OasSchema} from "apicurio-data-models";
+import {OasSchema} from "@apicurio/data-models";
 import {ModelUtils} from "../../_util/model.util";
 import {SelectionService} from "../../_services/selection.service";
 import {StringUtils} from "apicurio-ts-core";

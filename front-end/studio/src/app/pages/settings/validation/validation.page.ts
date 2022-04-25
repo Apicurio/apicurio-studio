@@ -22,7 +22,7 @@ import {ActivatedRoute} from "@angular/router";
 import {Title} from "@angular/platform-browser";
 import {ValidationProfileExt, ValidationService} from "../../../services/validation.service";
 import {CreateValidationProfile, UpdateValidationProfile, ValidationProfile} from "../../../models/validation.model";
-import {ValidationProblemSeverity, ValidationRuleSet} from "apicurio-data-models";
+import {ValidationProblemSeverity, ValidationRuleSet} from "@apicurio/data-models";
 
 /**
  * The Settings/Profile Page component.

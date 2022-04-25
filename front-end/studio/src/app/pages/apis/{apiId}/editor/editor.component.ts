@@ -51,7 +51,7 @@ import {
     OtEngine,
     ReferenceUtil,
     ValidationProblem
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {EditorMasterComponent} from "./_components/master.component";
 import {VersionedAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";

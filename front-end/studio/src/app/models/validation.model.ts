@@ -1,4 +1,4 @@
-import {ValidationProblemSeverity} from "apicurio-data-models";
+import {ValidationProblemSeverity} from "@apicurio/data-models";
 
 /**
  * @license

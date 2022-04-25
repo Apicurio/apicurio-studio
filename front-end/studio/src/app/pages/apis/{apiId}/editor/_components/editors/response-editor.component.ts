@@ -22,7 +22,7 @@ import {
     OasDocument,
     TraverserDirection,
     VisitorUtil
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {FindResponseDefinitionsVisitor} from "../../_visitors/response-definitions.visitor";
 

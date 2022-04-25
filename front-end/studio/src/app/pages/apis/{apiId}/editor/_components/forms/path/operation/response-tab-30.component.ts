@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {CommandFactory, DocumentType, ICommand, NodePath, Oas30Response} from "apicurio-data-models";
+import {CommandFactory, DocumentType, ICommand, NodePath, Oas30Response} from "@apicurio/data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";

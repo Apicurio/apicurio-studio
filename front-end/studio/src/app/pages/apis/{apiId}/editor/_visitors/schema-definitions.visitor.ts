@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Oas20SchemaDefinition, Oas30SchemaDefinition, Aai20SchemaDefinition, CombinedVisitorAdapter} from "apicurio-data-models";
+import {Oas20SchemaDefinition, Oas30SchemaDefinition, Aai20SchemaDefinition, CombinedVisitorAdapter} from "@apicurio/data-models";
 
 /**
  * Visitor used to find schema definitions.

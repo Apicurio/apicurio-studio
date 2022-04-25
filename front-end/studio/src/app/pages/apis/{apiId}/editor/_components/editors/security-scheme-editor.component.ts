@@ -27,7 +27,7 @@ import {
     SecurityScheme,
     TraverserDirection,
     VisitorUtil
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {Scope} from "../../_models/scope.model";
 import {NgModel} from "@angular/forms";

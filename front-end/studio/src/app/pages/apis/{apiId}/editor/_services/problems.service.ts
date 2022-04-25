@@ -17,7 +17,7 @@
 
 
 import {Injectable} from "@angular/core";
-import {ValidationProblem} from "apicurio-data-models";
+import {ValidationProblem} from "@apicurio/data-models";
 
 var PROBLEM_SUMMARIES = {
     // OpenAPI 2.0 Problems

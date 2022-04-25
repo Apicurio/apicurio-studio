@@ -24,7 +24,7 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {ValidationProblem, ValidationProblemSeverity} from "apicurio-data-models";
+import {ValidationProblem, ValidationProblemSeverity} from "@apicurio/data-models";
 import {SelectionService} from "../_services/selection.service";
 import {ProblemsService} from "../_services/problems.service";
 import {AbstractBaseComponent} from "./common/base-component";

@@ -41,7 +41,7 @@ import {
     AaiOperationTraitDefinition,
     TraverserDirection,
     VisitorUtil, AaiMessage
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {AddChannelDialogComponent} from "./dialogs/add-channel.component";
 import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.component";
 import {FindChannelItemsVisitor} from "../_visitors/channel-items.visitor";

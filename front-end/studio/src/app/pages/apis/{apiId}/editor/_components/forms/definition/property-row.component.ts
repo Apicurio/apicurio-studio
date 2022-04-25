@@ -35,7 +35,7 @@ import {
     Oas30Schema,
     SimplifiedParameterType,
     SimplifiedPropertyType, SimplifiedType
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
 import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
 

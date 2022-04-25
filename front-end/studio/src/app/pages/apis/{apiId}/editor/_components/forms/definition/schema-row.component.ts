@@ -27,7 +27,7 @@ import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
-import {DocumentType, NodePath, OasSchema} from "apicurio-data-models";
+import {DocumentType, NodePath, OasSchema} from "@apicurio/data-models";
 
 
 @Component({

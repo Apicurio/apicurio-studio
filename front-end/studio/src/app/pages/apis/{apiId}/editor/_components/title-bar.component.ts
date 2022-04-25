@@ -29,7 +29,7 @@ import {
     ViewChildren,
     ViewEncapsulation
 } from "@angular/core";
-import {CommandFactory, Document, DocumentType, ICommand, ValidationProblem} from "apicurio-data-models";
+import {CommandFactory, Document, DocumentType, ICommand, ValidationProblem} from "@apicurio/data-models";
 import {ModelUtils} from "../_util/model.util";
 import {SelectionService} from "../_services/selection.service";
 import {CommandService} from "../_services/command.service";

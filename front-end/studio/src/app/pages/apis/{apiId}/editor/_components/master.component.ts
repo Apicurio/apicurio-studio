@@ -45,7 +45,7 @@ import {
     OasPathItem,
     TraverserDirection,
     VisitorUtil
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {AddPathDialogComponent} from "./dialogs/add-path.component";
 import {ClonePathDialogComponent} from "./dialogs/clone-path.component";
 import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.component";

@@ -23,7 +23,7 @@ import {Api} from "../../models/api.model";
 import {ArrayUtils} from "../../util/common";
 import {AbstractPageComponent} from "../../components/page-base.component";
 import {Title} from "@angular/platform-browser";
-import {CommandFactory, ICommand, MarshallCompat} from "apicurio-data-models";
+import {CommandFactory, ICommand, MarshallCompat} from "@apicurio/data-models";
 
 
 const API_FILTERS_KEY = "apicurio.studio.pages.apis.filters";

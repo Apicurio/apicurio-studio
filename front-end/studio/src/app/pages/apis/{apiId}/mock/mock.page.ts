@@ -23,7 +23,7 @@ import {MockReference} from "../../../../models/mock-api.model";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
 import {Title} from "@angular/platform-browser";
 import {ApisService} from "../../../../services/apis.service";
-import {OasDocument, Library} from "apicurio-data-models";
+import {OasDocument, Library} from "@apicurio/data-models";
 
 
 @Component({

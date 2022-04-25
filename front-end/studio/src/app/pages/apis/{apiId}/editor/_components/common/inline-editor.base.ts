@@ -17,7 +17,7 @@
 
 import { AfterViewInit, ElementRef, EventEmitter, Input, OnChanges, Output, QueryList, SimpleChanges, ViewChildren, Directive } from "@angular/core";
 import {SelectionService} from "../../_services/selection.service";
-import {Node} from "apicurio-data-models";
+import {Node} from "@apicurio/data-models";
 import {ModelUtils} from "../../_util/model.util";
 import {KeypressUtils} from "../../_util/keypress.util";
 

@@ -37,7 +37,7 @@ import {
     SimplifiedType,
     TraverserDirection,
     VisitorUtil,
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 
 import {SourceFormComponent} from "./source-form.base";
 import {CloneDefinitionDialogComponent} from "../dialogs/clone-definition.component";

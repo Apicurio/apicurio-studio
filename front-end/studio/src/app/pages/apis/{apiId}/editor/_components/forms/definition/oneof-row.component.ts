@@ -37,7 +37,7 @@ import {
     ReferenceUtil,
     SimplifiedPropertyType,
     SimplifiedType
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 
 /**
  * @author vvilerio

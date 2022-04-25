@@ -11,8 +11,8 @@ jobs:
     steps:
       - name: Configure Git
         run: |
-          git config --global user.name "apicurio-ci"
-          git config --global user.email "apicurio.ci@gmail.com"
+          git config --global user.name "apicurio-ci[bot]"
+          git config --global user.email "apicurio-ci@users.noreply.github.com"
 
       - name: Checkout Apicurio Website
         uses: actions/checkout@v2

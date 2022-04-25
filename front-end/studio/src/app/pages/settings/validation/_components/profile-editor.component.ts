@@ -18,7 +18,7 @@
 import {Component, EventEmitter, Input, Output, ViewEncapsulation} from "@angular/core";
 import {KeypressUtils} from "../../../apis/{apiId}/editor/_util/keypress.util";
 import {ValidationProfile} from "../../../../models/validation.model";
-import {DocumentType, ValidationProblemSeverity, ValidationRuleMetaData, ValidationRuleSet} from "apicurio-data-models";
+import {DocumentType, ValidationProblemSeverity, ValidationRuleMetaData, ValidationRuleSet} from "@apicurio/data-models";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
 
 export interface ValidationRuleFilter {

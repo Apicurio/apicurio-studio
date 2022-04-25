@@ -37,14 +37,14 @@ import {
     Oas30Parameter,
     Oas30Example,
     Schema, DocumentType
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {DropDownOption, DropDownOptionValue as Value} from '../../../../../../../components/common/drop-down.component';
 import {CommandService} from "../../../_services/command.service";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractRowComponent} from "../../common/item-row.abstract";
 import { EditExampleEvent } from "../../dialogs/edit-example.component";
-import {IExampleParent} from "apicurio-data-models/src/io/apicurio/datamodels/core/models/common/IExampleParent";
+import {IExampleParent} from "@apicurio/data-models/src/io/apicurio/datamodels/core/models/common/IExampleParent";
 
 @Component({
     selector: "header-param-row",

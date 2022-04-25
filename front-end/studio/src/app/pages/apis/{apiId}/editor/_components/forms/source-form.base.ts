@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {ICommand, Library, Node} from "apicurio-data-models";
+import {ICommand, Library, Node} from "@apicurio/data-models";
 
 import * as YAML from 'js-yaml';
 import {CodeEditorMode, CodeEditorTheme} from "../../../../../../components/common/code-editor.component";

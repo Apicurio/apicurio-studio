@@ -34,7 +34,7 @@ import {
     SimplifiedType,
     TraverserDirection,
     VisitorUtil, AaiOperation
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 
 import {SourceFormComponent} from "./source-form.base";
 import {SelectionService} from "../../_services/selection.service";

@@ -40,7 +40,7 @@ import {
     OasSchema,
     SimplifiedParameterType,
     SimplifiedType
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {
     IParameterEditorHandler,

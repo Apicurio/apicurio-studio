@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {CombinedVisitorAdapter, AaiChannelItem} from "apicurio-data-models";
+import {CombinedVisitorAdapter, AaiChannelItem} from "@apicurio/data-models";
 
 /**
  * Visitor used to find path items.

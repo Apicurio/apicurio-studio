@@ -16,7 +16,7 @@
  */
 
 import {Component, ViewChildren, QueryList} from "@angular/core";
-import {Aai20Server, AaiSecurityRequirement, AaiServerBindings} from "apicurio-data-models";
+import {Aai20Server, AaiSecurityRequirement, AaiServerBindings} from "@apicurio/data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {NgModel} from "@angular/forms";
 

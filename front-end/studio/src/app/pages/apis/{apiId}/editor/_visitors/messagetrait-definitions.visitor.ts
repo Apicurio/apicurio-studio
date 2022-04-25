@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {CombinedVisitorAdapter, AaiMessageTraitDefinition} from "apicurio-data-models";
+import {CombinedVisitorAdapter, AaiMessageTraitDefinition} from "@apicurio/data-models";
 
 /**
  * Visitor used to find message trait definitions.

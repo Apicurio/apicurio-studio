@@ -21,7 +21,7 @@ import {
     IValidationSeverityRegistry,
     ValidationProblemSeverity,
     ValidationRuleMetaData
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {AbstractHubService} from "./hub";
 import {HttpClient} from "@angular/common/http";
 import {IAuthenticationService} from "./auth.service";

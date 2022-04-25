@@ -24,7 +24,7 @@ import {
     Node,
     OasOperation,
     OasPathItem, IDefinition, OasSchema, AaiSchema, Oas20Schema, Oas30Schema, AaiServer
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation} from "@angular/core";
 import {KeypressUtils} from "../../_util/keypress.util";
 

@@ -39,7 +39,7 @@ import {
     SimplifiedPropertyType,
     TraverserDirection,
     VisitorUtil, OasResponse, ReferenceUtil,
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 
 import {SourceFormComponent} from "./source-form.base";
 import {CloneResponseDialogComponent} from "../dialogs/clone-response.component";

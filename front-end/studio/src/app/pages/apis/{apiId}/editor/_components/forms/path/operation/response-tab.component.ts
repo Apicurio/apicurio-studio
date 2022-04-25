@@ -23,7 +23,7 @@ import {
     SimpleChanges,
     ViewEncapsulation
 } from "@angular/core";
-import {CommandFactory, DocumentType, ICommand, Library, NodePath, Oas20Response, OasDocument, SimplifiedType} from "apicurio-data-models";
+import {CommandFactory, DocumentType, ICommand, Library, NodePath, Oas20Response, OasDocument, SimplifiedType} from "@apicurio/data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {EditExample20Event} from "../../../dialogs/edit-example-20.component";

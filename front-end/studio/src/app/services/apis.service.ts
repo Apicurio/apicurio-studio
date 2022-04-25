@@ -19,7 +19,7 @@ import {Api, ApiDefinition, EditableApiDefinition} from "../models/api.model";
 import {ApiContributor, ApiContributors} from "../models/api-contributors.model";
 import {NewApi} from "../models/new-api.model";
 import {ImportApi} from "../models/import-api.model";
-import {ICommand, MarshallCompat, OtCommand} from "apicurio-data-models";
+import {ICommand, MarshallCompat, OtCommand} from "@apicurio/data-models";
 import {VersionedAck} from "../models/ack.model";
 import {ApiCollaborator} from "../models/api-collaborator.model";
 import {Invitation} from "../models/invitation.model";

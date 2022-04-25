@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {AaiMessage} from "apicurio-data-models";
+import {AaiMessage} from "@apicurio/data-models";
 import {AbstractBaseComponent} from "../common/base-component";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";

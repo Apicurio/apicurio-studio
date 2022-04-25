@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Node} from "apicurio-data-models";
+import {Node} from "@apicurio/data-models";
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,

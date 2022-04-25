@@ -30,7 +30,7 @@ import {
     Oas30Operation,
     Oas30PathItem,
     Oas30Server
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {ServerEditorComponent, ServerEditorEvent} from "../../editors/server-editor.component";

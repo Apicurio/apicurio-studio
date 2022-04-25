@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {CombinedVisitorAdapter, AaiOperationTraitDefinition} from "apicurio-data-models";
+import {CombinedVisitorAdapter, AaiOperationTraitDefinition} from "@apicurio/data-models";
 
 /**
  * Visitor used to find operation trait definitions.

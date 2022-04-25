@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap/modal";
-import {Library, Document, TraverserDirection, OasDocument} from "apicurio-data-models";
+import {Library, Document, TraverserDirection, OasDocument} from "@apicurio/data-models";
 import {DropDownOption, DropDownOptionValue} from "../../../../../../components/common/drop-down.component";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 

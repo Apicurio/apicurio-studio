@@ -17,7 +17,7 @@
 
 import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap/modal";
-import {AaiChannelItem, AaiDocument} from "apicurio-data-models";
+import {AaiChannelItem, AaiDocument} from "@apicurio/data-models";
 import {ConfigService} from "../../../../../../services/config.service";
 
 

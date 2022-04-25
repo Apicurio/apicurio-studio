@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap/modal";
-import {Library, Oas20Operation, Oas30Operation, OasDocument, TraverserDirection} from "apicurio-data-models";
+import {Library, Oas20Operation, Oas30Operation, OasDocument, TraverserDirection} from "@apicurio/data-models";
 import {DropDownOption, DropDownOptionValue} from "../../../../../../components/common/drop-down.component";
 import {HttpCodeService} from "../../_services/httpcode.service";
 import {FindResponseDefinitionsVisitor} from "../../_visitors/response-definitions.visitor";

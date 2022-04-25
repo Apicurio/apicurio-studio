@@ -17,7 +17,7 @@
 
 import {Injectable} from "@angular/core";
 import {Topic} from "apicurio-ts-core";
-import {CombinedAllNodeVisitor, Document, Library, Node, TraverserDirection} from "apicurio-data-models";
+import {CombinedAllNodeVisitor, Document, Library, Node, TraverserDirection} from "@apicurio/data-models";
 import * as YAML from 'js-yaml';
 
 

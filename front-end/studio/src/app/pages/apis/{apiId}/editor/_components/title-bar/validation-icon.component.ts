@@ -24,7 +24,7 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {ValidationProblem} from "apicurio-data-models";
+import {ValidationProblem} from "@apicurio/data-models";
 import {AbstractBaseComponent} from "../common/base-component";
 import {DocumentService} from "../../_services/document.service";
 import {CommandService} from "../../_services/command.service";

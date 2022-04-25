@@ -32,7 +32,7 @@ import {
     Oas20Document,
     Oas20Operation,
     Oas30Operation
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {InlineArrayEditorComponent} from "../../../common/inline-array-editor.component";
 import {CommandService} from "../../../../_services/command.service";
 import {AbstractBaseComponent} from "../../../common/base-component";

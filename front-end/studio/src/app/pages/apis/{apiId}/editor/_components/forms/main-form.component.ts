@@ -16,12 +16,12 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from "@angular/core";
-import {OasDocument, Library, CommandFactory} from "apicurio-data-models";
+import {OasDocument, Library, CommandFactory} from "@apicurio/data-models";
 import {SourceFormComponent} from "./source-form.base";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
-import {ICommand} from "apicurio-data-models";
+import {ICommand} from "@apicurio/data-models";
 import {EditorsService} from "../../_services/editors.service";
 
 

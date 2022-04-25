@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from "@angular/core";
-import {SimplifiedType} from "apicurio-data-models";
+import {SimplifiedType} from "@apicurio/data-models";
 import {AbstractBaseComponent} from "./base-component";
 import {DocumentService} from "../../_services/document.service";
 import {SelectionService} from "../../_services/selection.service";

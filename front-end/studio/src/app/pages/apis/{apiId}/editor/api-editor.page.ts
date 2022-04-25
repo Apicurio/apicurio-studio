@@ -33,7 +33,7 @@ import {
 import {EditableApiDefinition} from "../../../../models/api.model";
 import {ApisService, IApiEditingSession} from "../../../../services/apis.service";
 import {AbstractPageComponent} from "../../../../components/page-base.component";
-import {DefaultSeverityRegistry, IValidationSeverityRegistry, Library, OtCommand} from "apicurio-data-models";
+import {DefaultSeverityRegistry, IValidationSeverityRegistry, Library, OtCommand} from "@apicurio/data-models";
 import {EditorDisconnectedDialogComponent} from "./_components/dialogs/editor-disconnected.component";
 import {VersionedAck} from "../../../../models/ack.model";
 import {ApiEditorUser} from "../../../../models/editor-user.model";

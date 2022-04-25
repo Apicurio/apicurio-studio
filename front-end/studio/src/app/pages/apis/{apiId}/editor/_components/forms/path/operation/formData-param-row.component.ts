@@ -23,7 +23,7 @@ import {
     Output,
     ViewEncapsulation
 } from "@angular/core";
-import {CommandFactory, ICommand, OasParameter, SimplifiedParameterType, SimplifiedType} from "apicurio-data-models";
+import {CommandFactory, ICommand, OasParameter, SimplifiedParameterType, SimplifiedType} from "@apicurio/data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {DocumentService} from "../../../../_services/document.service";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../../../../../components/common/drop-down.component";

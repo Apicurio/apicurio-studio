@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap/modal";
-import {Oas20PathItem, Oas30PathItem, OasDocument, TraverserDirection, VisitorUtil} from "apicurio-data-models";
+import {Oas20PathItem, Oas30PathItem, OasDocument, TraverserDirection, VisitorUtil} from "@apicurio/data-models";
 import {FindPathItemsVisitor} from "../../_visitors/path-items.visitor";
 
 

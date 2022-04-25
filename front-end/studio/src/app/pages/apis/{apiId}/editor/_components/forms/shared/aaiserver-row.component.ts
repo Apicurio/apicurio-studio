@@ -30,7 +30,7 @@ import {
     AaiSecurityRequirement,
     CommandFactory,
     ICommand
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {CommandService} from "../../../_services/command.service";
 import {EditorsService} from "../../../_services/editors.service";
 import {DocumentService} from "../../../_services/document.service";

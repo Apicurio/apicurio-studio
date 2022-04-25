@@ -25,7 +25,7 @@ import {
     Oas30RequestBody,
     Oas30Response,
     SimplifiedType
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";
 import {SelectionService} from "../../../../_services/selection.service";

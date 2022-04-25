@@ -34,7 +34,7 @@ import {
     SimplifiedType,
     TraverserDirection,
     VisitorUtil
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {
     DIVIDER,
     DropDownOption,

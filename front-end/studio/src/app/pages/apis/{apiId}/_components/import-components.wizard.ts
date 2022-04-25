@@ -33,7 +33,7 @@ import {
     Library,
     NodeCompat,
     TraverserDirection
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 
 
 @Component({

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {AaiSchema, Library, Node, OasSchema, ReferenceUtil} from "apicurio-data-models";
+import {AaiSchema, Library, Node, OasSchema, ReferenceUtil} from "@apicurio/data-models";
 import {ApiEditorUser} from "../../../../../models/editor-user.model";
 
 export class ModelUtils {

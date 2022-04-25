@@ -25,7 +25,7 @@ import {
     Library,
     NodePath,
     ReferenceUtil
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {CommandService} from "../../../../_services/command.service";
 import {AbstractBaseComponent} from "../../../common/base-component";
 import {DocumentService} from "../../../../_services/document.service";

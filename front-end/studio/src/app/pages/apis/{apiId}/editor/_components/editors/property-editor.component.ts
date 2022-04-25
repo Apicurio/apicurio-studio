@@ -30,7 +30,7 @@ import {
     SimplifiedType,
     TraverserDirection,
     VisitorUtil, Aai20Schema
-} from "apicurio-data-models";
+} from "@apicurio/data-models";
 import {EntityEditor, EntityEditorEvent, IEntityEditorHandler} from "./entity-editor.component";
 import {
     DIVIDER,

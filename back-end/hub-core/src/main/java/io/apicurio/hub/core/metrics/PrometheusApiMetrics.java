@@ -16,27 +16,28 @@
 
 package io.apicurio.hub.core.metrics;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+
 import io.apicurio.hub.core.editing.IEditingMetrics;
 import io.prometheus.client.CollectorRegistry;
 import io.prometheus.client.Counter;
 import io.prometheus.client.exporter.common.TextFormat;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import java.io.IOException;
-import java.io.StringWriter;
-
 /**
  * An implementation of the metrics interface that exposes metrics to
- * Prometheus.  Uses the prometheus simple client to collect the metric 
- * information.  The /metrics endpoint is then available for 
+ * Prometheus.  Uses the prometheus simple client to collect the metric
+ * information.  The /metrics endpoint is then available for
  * prometheus to scrape.
  * @author eric.wittmann@gmail.com
  */
 @ApplicationScoped
 public class PrometheusApiMetrics implements IEditingMetrics {
-    
-    static final Counter sockets = Counter.build().labelNames("designId", "user")
+
+    static final Counter sockets = Counter.build().labelNames("designId", "domain")
             .name("apicurio_websockets_total").help("Total number of Web Sockets connected.").register();
     static final Counter sessions = Counter.build().labelNames("designId")
             .name("apicurio_sessions_total").help("Total number of editing sessions created.").register();
@@ -46,16 +47,16 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     @PostConstruct
     void postConstruct() {
     }
-    
+
     /**
      * @see IEditingMetrics#socketConnected(java.lang.String, java.lang.String)
      */
     @Override
     public void socketConnected(String designId, String user) {
-        sockets.labels(designId, user).inc();
-        
+        String domain = domainFromUser(user);
+        sockets.labels(designId, domain).inc();
     }
-    
+
     /**
      * @see IEditingMetrics#editingSessionCreated(java.lang.String)
      */
@@ -63,7 +64,7 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     public void editingSessionCreated(String designId) {
         sessions.labels(designId).inc();
     }
-    
+
     /**
      * @see IEditingMetrics#contentCommand(java.lang.String)
      */
@@ -83,7 +84,7 @@ public class PrometheusApiMetrics implements IEditingMetrics {
         String content = writer.getBuffer().toString();
         return content;
     }
-    
+
     /**
      * @see io.apicurio.hub.core.editing.IEditingMetrics#batchCommand(java.lang.String, int)
      */
@@ -91,7 +92,7 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     public void batchCommand(String designId, int count) {
         commands.labels(designId).inc(count);
     }
-    
+
     /**
      * @see IEditingMetrics#undoCommand(java.lang.String, long)
      */
@@ -99,7 +100,7 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     public void undoCommand(String designId, long contentVersion) {
         // Nothing yet.
     }
-    
+
     /**
      * @see IEditingMetrics#redoCommand(java.lang.String, long)
      */
@@ -107,4 +108,12 @@ public class PrometheusApiMetrics implements IEditingMetrics {
     public void redoCommand(String designId, long contentVersion) {
         // Nothing yet
     }
+
+    protected static String domainFromUser(String user) {
+        if (user != null && user.indexOf("@") > 0) {
+            return user.split("@")[1];
+        }
+        return user;
+    }
+
 }

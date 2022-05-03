@@ -74,7 +74,7 @@
         <version.apache-artemis>2.6.4</version.apache-artemis>
 
         <!-- Plugin Versions -->
-        <version.antrun.plugin>3.0.0</version.antrun.plugin>
+        <version.antrun.plugin>3.1.0</version.antrun.plugin>
         <version.assembly.plugin>3.3.0</version.assembly.plugin>
         <version.buildnumber.plugin>3.0.0</version.buildnumber.plugin>
         <version.clean.plugin>3.2.0</version.clean.plugin>

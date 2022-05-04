@@ -22,7 +22,7 @@ jobs:
            token: ${{ secrets.ACCESS_TOKEN }}
       
       - name: Fetch required Details
-        run: echo "RELEASE_VERSION=$(curl https://api.github.com/repos/${GITHUB_REPOSITORY}/releases | jq -r '.name')" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=$(curl https://api.github.com/repos/${GITHUB_REPOSITORY}/releases | jq -r '.tag_name')" >> $GITHUB_ENV
 
       - name: Updating Project Website for Release ${{ env.RELEASE_VERSION }}
         run: |

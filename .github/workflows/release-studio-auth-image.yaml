@@ -40,7 +40,7 @@ jobs:
       - name: Login to Quay.io Registry
         run: docker login -u "${{ secrets.QUAY_USERNAME }}" -p "${{ secrets.QUAY_PASSWORD }}" quay.io
 
-      - name: Build and Publish Studio API
+      - name: Build and Publish Studio Auth
         uses: docker/build-push-action@v2
         with:
          context: ./distro/openshift/auth

@@ -1,0 +1,49 @@
+name: Release Studio Auth Multiarch Image
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Image version being published'
+        required: true
+env:
+  PLATFORMS: linux/amd64,linux/arm64
+
+jobs:
+  release-studio-auth-image:
+    name: Release Studio Auth Multiarch Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      # Open-Source Machine emulator that allows you to emulate multiple CPU architectures on your machine
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        
+      # Docker CLI plugin for extended build capabilities with BuildKit
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+        
+      - name: Inspect builder
+        run: |
+          echo "Name:      ${{ steps.buildx.outputs.name }}"
+          echo "Endpoint:  ${{ steps.buildx.outputs.endpoint }}"
+          echo "Status:    ${{ steps.buildx.outputs.status }}"
+          echo "Flags:     ${{ steps.buildx.outputs.flags }}"
+          echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
+
+      - name: Build and Publish Studio API
+        uses: docker/build-push-action@v2
+        with:
+         context: ./distro/openshift/auth
+         file: ./distro/openshift/auth/Dockerfile
+         platforms: ${{env.PLATFORMS}}
+         push: false
+         tags: |
+           docker.io/apicurio/apicurio-studio-auth:latest
+           quay.io/apicurio/apicurio-studio-auth:latest
+           docker.io/apicurio/apicurio-studio-auth:latest-release
+           quay.io/apicurio/apicurio-studio-auth:latest-release
+           docker.io/apicurio/apicurio-studio-auth:${{ github.event.inputs.version }}
+           quay.io/apicurio/apicurio-studio-auth:${{ github.event.inputs.version }}

@@ -79,9 +79,8 @@ public class QuarkusAuthenticationFilter implements Filter {
             }
             ((SecurityContext) security).setUser(user);
             ((SecurityContext) security).setToken(principal.getRawToken());
-
-            chain.doFilter(request, response);
         }
+        chain.doFilter(request, response);
     }
 
     @Override public void destroy() { }

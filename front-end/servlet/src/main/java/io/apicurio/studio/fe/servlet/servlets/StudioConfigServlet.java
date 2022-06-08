@@ -104,6 +104,7 @@ public class StudioConfigServlet extends HttpServlet {
             config.getApis().setType(StudioConfigApisType.hub);
             config.getApis().setHubUrl(generateHubApiUrl(request));
             config.getApis().setEditingUrl(generateEditingUrl(request));
+            config.getApis().setSpectralApiUrl(generateSpectralApiUrl(request));
             
             config.setUser(user);
             
@@ -161,4 +162,22 @@ public class StudioConfigServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Generate a URL that the UI will use to perform Spectral validation requests
+     *
+     * @param request
+     * @return
+     */
+    private String generateSpectralApiUrl(HttpServletRequest request) {
+        try {
+            String url = this.uiConfig.getSpectralApiUrl();
+            if (url == null) {
+                url = request.getRequestURL().toString();
+                url = new URI(url).resolve("/spectral-api").toString();
+            }
+            return url;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

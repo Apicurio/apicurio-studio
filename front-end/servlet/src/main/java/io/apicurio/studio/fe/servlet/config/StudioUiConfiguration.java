@@ -42,6 +42,9 @@ public class StudioUiConfiguration extends Configuration {
     private static final String HUB_UI_URL_ENV = "APICURIO_UI_HUB_UI_URL";
     private static final String HUB_UI_URL_SYSPROP = "apicurio-ui.url";
 
+    private static final String SPECTRAL_API_URL_ENV = "APICURIO_UI_SPECTRAL_API_URL";
+    private static final String SPECTRAL_API_URL_SYSPROP = "apicurio-ui.spectral-api.url";
+
     private static final String FEATURE_MICROCKS_ENV = "APICURIO_UI_FEATURE_MICROCKS";
     private static final String FEATURE_MICROCKS_SYSPROP = "apicurio-ui.feature.microcks";
 
@@ -69,6 +72,13 @@ public class StudioUiConfiguration extends Configuration {
      */
     public String getEditingUrl() {
         return getConfigurationProperty(EDITING_URL_ENV, EDITING_URL_SYSPROP, null);
+    }
+
+    /**
+     * Returns the URI of the Spectral Validation Microservice API
+     */
+    public String getSpectralApiUrl() {
+        return getConfigurationProperty(SPECTRAL_API_URL_ENV, SPECTRAL_API_URL_SYSPROP, null);
     }
 
     /**

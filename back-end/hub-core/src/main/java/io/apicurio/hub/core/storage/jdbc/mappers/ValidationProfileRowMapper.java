@@ -51,6 +51,7 @@ public class ValidationProfileRowMapper implements RowMapper<ValidationProfile> 
             profile.setName(rs.getString("name"));
             profile.setDescription(rs.getString("description"));
             profile.setSeverities(ValidationProfileRowMapper.toSeverities(IOUtils.toString(rs.getCharacterStream("severities"))));
+            profile.setExternalRuleset(rs.getString("external_ruleset"));
             return profile;
         } catch (IOException e) {
             throw new SQLException(e);

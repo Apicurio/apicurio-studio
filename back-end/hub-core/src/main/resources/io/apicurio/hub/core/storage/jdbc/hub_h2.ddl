@@ -42,7 +42,7 @@ ALTER TABLE codegen ADD CONSTRAINT FK_codegen_1 FOREIGN KEY (design_id) REFERENC
 CREATE INDEX IDX_codegen_1 ON codegen(ptype);
 CREATE INDEX IDX_codegen_2 ON codegen(design_id);
 
-CREATE TABLE validation_profiles (id BIGINT AUTO_INCREMENT NOT NULL, owner VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024), severities CLOB NOT NULL);
+CREATE TABLE validation_profiles (id BIGINT AUTO_INCREMENT NOT NULL, owner VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024), severities CLOB NOT NULL, external_ruleset VARCHAR);
 ALTER TABLE validation_profiles ADD PRIMARY KEY (id);
 CREATE INDEX IDX_vprof_1 ON validation_profiles(owner);
 

@@ -1493,7 +1493,7 @@ public class JdbcStorage implements IStorage {
      */
     @Override
     public long createValidationProfile(String userId, ValidationProfile profile) throws StorageException {
-        logger.debug("Inserting a validation profile for: {}  name: ", userId, profile.getName());
+        logger.debug("Inserting a validation profile for: {}  name: {}", userId, profile.getName());
         try {
             return this.jdbi.withHandle( handle -> {
                 String statement = sqlStatements.insertValidationProfile();
@@ -1504,6 +1504,7 @@ public class JdbcStorage implements IStorage {
                       .bind(1, profile.getName())
                       .bind(2, profile.getDescription())
                       .bind(3, severitiesClob)
+                      .bind(4, profile.getExternalRuleset())
                       .executeAndReturnGeneratedKeys("id")
                       .mapTo(Long.class)
                       .one();
@@ -1529,8 +1530,9 @@ public class JdbcStorage implements IStorage {
                         .bind(0, profile.getName())
                         .bind(1, profile.getDescription())
                         .bind(2, severitiesClob)
-                        .bind(3, profile.getId())
-                        .bind(4, userId)
+                        .bind(3, profile.getExternalRuleset())
+                        .bind(4, profile.getId())
+                        .bind(5, userId)
                         .execute();
                 if (rowCount == 0) {
                     throw new NotFoundException();

@@ -28,6 +28,7 @@ public class ValidationProfile {
     private String name;
     private String description;
     private Map<String, ValidationSeverity> severities = new HashMap<>();
+    private String externalRuleset;
     
     /**
      * Constructor.
@@ -91,4 +92,19 @@ public class ValidationProfile {
         this.severities = severities;
     }
 
+    /**
+     * @return the (optional) external ruleset
+     */
+    public String getExternalRuleset() {
+        return externalRuleset;
+    }
+
+    /**
+     * Set the external ruleset value
+     *
+     * @param externalRuleset the external ruleset value
+     */
+    public void setExternalRuleset(String externalRuleset) {
+        this.externalRuleset = externalRuleset;
+    }
 }

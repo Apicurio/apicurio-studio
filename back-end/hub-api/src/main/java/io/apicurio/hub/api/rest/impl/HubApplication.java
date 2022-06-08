@@ -66,11 +66,9 @@ public class HubApplication extends Application {
 
     @PostConstruct
     public void postConstruct() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("\n------------------------------------------------");
-        builder.append("\nStarting up Apicurio Hub API");
-        builder.append("\n------------------------------------------------");
-        logger.info(builder.toString());
+        String builder = "\n------------------------------------------------" +
+                "\nStarting up Apicurio Hub API" +
+                "\n------------------------------------------------";
+        logger.info(builder);
     }
-
 }

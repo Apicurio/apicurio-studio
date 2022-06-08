@@ -46,10 +46,9 @@ services:
       APICURIO_BITBUCKET_API_URL: ${APICURIO_BITBUCKET_API_URL}
       APICURIO_SHARE_FOR_EVERYONE: ${APICURIO_SHARE_FOR_EVERYONE}
 
-
   apicurio-studio-ui:
-    image: 'apicurio/apicurio-studio-ui:${APICURIO_UI_VERSION}'
-    depends_on: [apicurio-studio-db, apicurio-studio-api, apicurio-studio-ws]
+    image: 'quay.io/ephelan/apicurio-studio-ui'
+    depends_on: [apicurio-studio-db, apicurio-studio-api, apicurio-studio-ws, apicurio-studio-spectral-api]
     ports:
       - '8093:8080'
     environment:
@@ -65,3 +64,13 @@ services:
       APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE: ${APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE}
       APICURIO_UI_LOGOUT_REDIRECT_URI: /
       APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP: ${APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP}
+      APICURIO_UI_SPECTRAL_API_URL: ${APICURIO_UI_SPECTRAL_API_URL}
+
+  apicurio-studio-spectral-api:
+    image: quay.io/ephelan/apicurio-studio-spectral-api
+    ports:
+      - 8094:8080
+    environment:
+      ALLOWED_ORIGINS: '${APICURIO_UI_URL},http://localhost:8093'
+      HTTP_HOST: '0.0.0.0'
+

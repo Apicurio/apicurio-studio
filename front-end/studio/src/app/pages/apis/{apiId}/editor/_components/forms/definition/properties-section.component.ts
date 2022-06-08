@@ -110,7 +110,7 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
             let schemas: OasSchema[] = this.definition[this.inheritanceType()];
             if (schemas) {
                 schemas.forEach(schema => {
-                    if (schema.properties) {
+                    if (schema.type == "object") {
                         pschema = schema;
                     }
                 });

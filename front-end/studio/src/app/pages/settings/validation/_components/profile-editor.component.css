@@ -48,6 +48,11 @@
   padding-bottom: 30px;
 }
 
+.profile-editor .spectral-section {
+  width: 80%;
+  min-width: 400px;
+}
+
 .profile-editor .action-header {
   display: flex;
   width: 80%;

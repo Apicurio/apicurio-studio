@@ -366,6 +366,10 @@ export class ProfileEditorComponent {
         }
     }
 
+    isExternalRuleset() {
+        return !!this.profile.externalRuleset && this.profile.externalRuleset.length > 0;
+    }
+
     isOpenApi20(rule: ValidationRuleMetaData): boolean {
         return rule.versions.indexOf(DocumentType.openapi2) != -1;
     }

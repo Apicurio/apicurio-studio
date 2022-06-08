@@ -106,11 +106,13 @@ export class ValidationPageComponent extends AbstractPageComponent {
             this.editorModel.name = profile.name;
             this.editorModel.description = profile.description;
             this.editorModel.severities = this.copySeverities(profile.severities);
+            this.editorModel.externalRuleset = profile.externalRuleset;
         } else {
             this.editorModel.id = null;
             this.editorModel.name = null;
             this.editorModel.description = "";
             this.editorModel.severities = {};
+            this.editorModel.externalRuleset = null;
         }
         this.editorOpen = true;
     }
@@ -164,7 +166,8 @@ export class ValidationPageComponent extends AbstractPageComponent {
             let info: CreateValidationProfile = {
                 name: this.editorModel.name,
                 description: this.editorModel.description,
-                severities: this.editorModel.severities
+                severities: this.editorModel.severities,
+                externalRuleset: this.editorModel.externalRuleset
             };
             this.validationService.createValidationProfile(info).then( profile => {
                 this.profiles.push(profile);
@@ -179,7 +182,8 @@ export class ValidationPageComponent extends AbstractPageComponent {
             let update: UpdateValidationProfile = {
                 name: this.editorModel.name,
                 description: this.editorModel.description,
-                severities: this.editorModel.severities
+                severities: this.editorModel.severities,
+                externalRuleset: this.editorModel.externalRuleset
             };
             this.validationService.updateValidationProfile(this.editorModel.id, update).then( newProfile => {
                 let idx: number = -1;

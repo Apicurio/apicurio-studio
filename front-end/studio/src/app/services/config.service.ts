@@ -27,6 +27,7 @@ let DEFAULT_CONFIG: any = {
         type: "hub",
         hubUrl: "http://localhost:8080/api-hub",
         editingUrl: "http://localhost:8080/api-editing",
+        spectralApiUrl: "http://localhost:8080/spectral-api",
     },
     ui: {
         uiUrl: "http://localhost:8080/studio/",
@@ -118,6 +119,13 @@ export class ConfigService {
             return null;
         }
         return this.config.apis.editingUrl;
+    }
+
+    public spectralApiUrl(): string {
+        if (!this.config.apis) {
+            return null;
+        }
+        return this.config.apis.spectralApiUrl;
     }
 
     public isMicrocksEnabled(): boolean {

@@ -34,7 +34,6 @@ import {
     CombinedVisitorAdapter, CommandFactory,
     DocumentType,
     ICommand,
-    IDefinition,
     IValidationSeverityRegistry,
     Library,
     Node,
@@ -75,6 +74,8 @@ import * as YAML from 'js-yaml';
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 import {MessageEditorComponent} from "./_components/editors/message-editor.component";
 import {OneOfInMessageEditorComponent} from "./_components/editors/oneof-in-message-editor.component";
+import { createSpectralValidationExtension, ValidationProfileExt } from "../../../../services/validation.service";
+import { SpectralValidationService } from "../../../../services/spectral-api.service.impl";
 
 
 @Component({
@@ -90,6 +91,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     @Input() features: ApiEditorComponentFeatures;
     @Input() validationRegistry: IValidationSeverityRegistry;
     @Input() validationExtensions: IDocumentValidatorExtension[] = [];
+    @Input() validationProfile: ValidationProfileExt;
     @Input() contentFetcher: (externalReference: string) => Promise<any>;
     @Input() componentImporter: (componentType: ComponentType) => Promise<ImportedComponent[]>;
 
@@ -146,7 +148,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     constructor(private selectionService: SelectionService, private commandService: CommandService,
                 private documentService: DocumentService, private editorsService: EditorsService,
                 private featuresService: FeaturesService, private collaboratorService: CollaboratorService,
-                private catalog: ApiCatalogService) {
+                private catalog: ApiCatalogService, private spectralValidationService: SpectralValidationService) {
         super();
 
         console.debug("[AsyncApiEditorComponent] Subscribing to API Catalog changes.");
@@ -225,7 +227,16 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
             }
         }
 
-        if (changes["validationRegistry"]) {
+        if (changes["validationProfile"]) {
+            this.validationExtensions = [];
+            if (this.validationProfile?.externalRuleset) {
+                const spectralValidationExtensions = createSpectralValidationExtension(this.spectralValidationService, this.validationProfile);
+                this.validationExtensions.push(spectralValidationExtensions);
+            }
+            this.validateModel().then(() => this.documentService.emitChange());
+        }
+
+        if (changes["validationRegistry"] || changes["validationRegistry"]) {
             this.validateModel().then(() => this.documentService.emitChange());
         }
     }
@@ -461,6 +472,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         try {
             let doc: AaiDocument = this.document();
             let oldValidationErrors: ValidationProblem[] = this.validationErrors;
+
             this.validationErrors = await Library.validateDocument(doc, this.validationRegistry, this.validationExtensions);
             if (!ArrayUtils.equals(oldValidationErrors, this.validationErrors)) {
                 this.onValidationChanged.emit(this.validationErrors);

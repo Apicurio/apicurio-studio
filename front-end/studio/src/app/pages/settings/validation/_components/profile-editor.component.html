@@ -55,27 +55,29 @@
                     Validation rules provide a way to check the content of an API.  Use any of the rules,
                     provided here, to check that the API is correct.  If the content violates a rule, an issue
                     will be created to alert the user.
+
                 </p>
             </div>
             <!-- Filters -->
             <div class="col-sm-12 filters">
-                <drop-down [id]="'filter-type'" [value]="filterType" [options]="filterTypeOptions()"
-                           (onValueChange)="filterType = $event; filterValue = null"></drop-down>
+                    <drop-down [id]="'filter-type'" [value]="filterType" [options]="filterTypeOptions()"
+                            (onValueChange)="filterType = $event; filterValue = null"></drop-down>
 
-                <input name="name-filter" type="text" id="name-filter" class="form-control" [(ngModel)]="filterValue"
-                       (keydown)="onNameFilterKeypress($event)" placeholder="Filter by name" *ngIf="filterType == 'name'">
-                <drop-down [id]="'severity-filter'" [value]="filterValue" [options]="severityOptions()" [classes]="'dd-filter'"
-                           (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by severity"
-                           *ngIf="filterType == 'severity'"></drop-down>
-                <drop-down [id]="'rule-type-filter'" [value]="filterValue" [options]="ruleTypeOptions()" [classes]="'dd-filter'"
-                           (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by rule type"
-                           *ngIf="filterType == 'ruleType'"></drop-down>
-                <drop-down [id]="'entity-type-filter'" [value]="filterValue" [options]="entityTypeOptions()" [classes]="'dd-filter'"
-                           (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by entity type"
-                           *ngIf="filterType == 'entityType'"></drop-down>
-                <drop-down [id]="'version-filter'" [value]="filterValue" [options]="versionOptions()" [classes]="'dd-filter'"
-                           (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by version"
-                           *ngIf="filterType == 'version'"></drop-down>
+                    <!-- TODO: Disable only when external ruleset is set -->
+                    <input name="name-filter" type="text" id="name-filter" class="form-control" [(ngModel)]="filterValue"
+                        (keydown)="onNameFilterKeypress($event)" placeholder="Filter by name" *ngIf="filterType == 'name'">
+                    <drop-down [id]="'severity-filter'" [value]="filterValue" [options]="severityOptions()" [classes]="'dd-filter'"
+                            (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by severity"
+                            *ngIf="filterType == 'severity'"></drop-down>
+                    <drop-down [id]="'rule-type-filter'" [value]="filterValue" [options]="ruleTypeOptions()" [classes]="'dd-filter'"
+                            (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by rule type"
+                            *ngIf="filterType == 'ruleType'"></drop-down>
+                    <drop-down [id]="'entity-type-filter'" [value]="filterValue" [options]="entityTypeOptions()" [classes]="'dd-filter'"
+                            (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by entity type"
+                            *ngIf="filterType == 'entityType'"></drop-down>
+                    <drop-down [id]="'version-filter'" [value]="filterValue" [options]="versionOptions()" [classes]="'dd-filter'"
+                            (onValueChange)="filterValue = $event; addFilter()" noSelectionLabel="Filter by version"
+                            *ngIf="filterType == 'version'"></drop-down>
             </div>
             <!-- Filter Results -->
             <div class="col-sm-12 filter-results" *ngIf="hasActiveFilters()">
@@ -103,7 +105,7 @@
                         <div class="header">
                             <div class="expand column"></div>
                             <div class="check column">
-                                <button (click)="toggleAll()">
+                                <button (click)="toggleAll()" *ngIf="!isExternalRuleset()">
                                     <span class="fa"
                                           [class.fa-square-o]="isNoneSelected()"
                                           [class.fa-check-square-o]="isAllSelected()"
@@ -171,11 +173,7 @@
                                 <div class="header">
                                     <div class="expand column"><span class="fa fa-angle-right"></span></div>
                                     <div class="check column">
-                                        <button (click)="toggleRuleSelection(rule)">
-                                        <span class="fa"
-                                              [class.fa-square-o]="!isSelected(rule)"
-                                              [class.fa-check-square-o]="isSelected(rule)"></span>
-                                        </button>
+                                        <input type="checkbox" [disabled]="isExternalRuleset()" (click)="toggleRuleSelection(rule)"/>
                                     </div>
                                     <div class="icon column" title="{{ rule.code }}"><span class="fa"
                                                                    [class.fa-ban]="isIgnore(rule)"
@@ -199,6 +197,21 @@
             </div>
         </div>
 
+        <div class="row-fluid spectral-section">
+            <div class="col-sm-12 col-md-8">
+                <div>
+                    <p>
+                        <i>Alternatively</i> you can provide a URL to a <a href="https://stoplight.io/open-source/spectral">Spectral ruleset</a>. When this value is set it all other validation rules are ignored.
+                        When this field is not empty, the validation rules section will be disabled.
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="ruleset" class="control-label">Spectral Ruleset URL</label>
+                    <div><input type="url" name="ruleset" id="ruleset" class="form-control" [(ngModel)]="profile.externalRuleset"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Divider after the rules -->
         <div class="row-fluid divider-section">
             <div class="col-md-12">
@@ -208,6 +221,7 @@
 
         <div class="row-fluid actions-section">
             <div class="col-md-12">
+                
                 <div class="actions">
                     <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!entityEditorForm.valid">Save</button>
                     <button class="btn btn-default" (click)="onClose.emit()">Cancel</button>

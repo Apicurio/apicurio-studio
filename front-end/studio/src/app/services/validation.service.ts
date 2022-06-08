@@ -18,7 +18,11 @@
 import {Injectable} from "@angular/core";
 import {
     DefaultSeverityRegistry,
+    IDocumentValidatorExtension,
     IValidationSeverityRegistry,
+    Library,
+    Node,
+    ValidationProblem,
     ValidationProblemSeverity,
     ValidationRuleMetaData
 } from "@apicurio/data-models";
@@ -27,6 +31,7 @@ import {HttpClient} from "@angular/common/http";
 import {IAuthenticationService} from "./auth.service";
 import {ConfigService} from "./config.service";
 import {CreateValidationProfile, UpdateValidationProfile, ValidationProfile} from "../models/validation.model";
+import { ISpectralValidationService } from "./spectral-api.service";
 
 
 export class StrictSeverityRegistry implements IValidationSeverityRegistry {
@@ -44,6 +49,16 @@ export class NoValidationRegistry implements IValidationSeverityRegistry {
         return ValidationProblemSeverity.ignore;
     }
 
+}
+
+// create a validation extension which makes a request to the Spectral micro-service
+export function createSpectralValidationExtension(validationService: ISpectralValidationService, validationProfile: ValidationProfileExt): IDocumentValidatorExtension {
+    const ruleset = validationProfile.externalRuleset;
+    return {
+        async validateDocument(document: Node): Promise<ValidationProblem[]> {
+            return await validationService.validate(Library.writeDocumentToJSONString(document as any), ruleset);
+        }
+    }
 }
 
 
@@ -147,6 +162,7 @@ export class ValidationService extends AbstractHubService {
         if (val !== null) {
             let validationId: number = parseInt(val);
             let profile: ValidationProfileExt = this.getProfile(validationId);
+            
             if (profile) { return profile; }
         }
         return this.getDefaultProfile();
@@ -185,7 +201,9 @@ export class ValidationService extends AbstractHubService {
                     description: profile.description,
                     builtIn: false,
                     severities: severities,
-                    registry: new MappedValidationSeverityRegistry(severities)
+                    // if there is an external ruleset attached, ignore built in rules
+                    registry: profile.externalRuleset ? new NoValidationRegistry() : new MappedValidationSeverityRegistry(severities),
+                    externalRuleset: profile.externalRuleset
                 }
             });
             return this.profiles;
@@ -197,7 +215,7 @@ export class ValidationService extends AbstractHubService {
      * @param info
      */
     public createValidationProfile(info: CreateValidationProfile): Promise<ValidationProfileExt> {
-        console.info("[ValidationService] Creating a validation profile named %s", info.name);
+        console.info("[ValidationService] Creating a validation profile named %s", info.name, info.externalRuleset);
 
         let createUrl: string = this.endpoint("/validationProfiles");
         let options: any = this.options({ "Accept": "application/json", "Content-Type": "application/json" });
@@ -211,7 +229,8 @@ export class ValidationService extends AbstractHubService {
                 description: p.description,
                 builtIn: false,
                 severities: severities,
-                registry: new MappedValidationSeverityRegistry(severities)
+                registry: new MappedValidationSeverityRegistry(severities),
+                externalRuleset: p.externalRuleset
             };
             this.profiles.push(newProfile);
             return newProfile;
@@ -239,6 +258,7 @@ export class ValidationService extends AbstractHubService {
                 description: update.description,
                 builtIn: false,
                 severities: update.severities,
+                externalRuleset: update.externalRuleset,
                 registry: new MappedValidationSeverityRegistry(update.severities)
             };
             let profileIndex: number = -1;

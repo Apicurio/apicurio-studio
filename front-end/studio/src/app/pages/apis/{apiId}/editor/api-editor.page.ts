@@ -211,6 +211,7 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     private currentEditorSelection: string;
 
     protected validationRegistry: IValidationSeverityRegistry = new DefaultSeverityRegistry();
+    private validationProfile: ValidationProfileExt;
 
     private previewWindow: Window = null;
 
@@ -451,11 +452,12 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     }
 
     /**
-     * When the API is loaded, we need to load the validation profile for this API from the
-     * validation service.
-     */
+      * When the API is loaded, we need to load the validation profile for this API from the
+      * validation service.
+      */
     protected updateValidationProfile(): void {
-        let profile: ValidationProfileExt = this.validationService.getProfileForApi(this.apiDefinition.id);
+        const profile = this.validationService.getProfileForApi(this.apiDefinition.id);
+
         if (profile) {
             this.validationRegistry = profile.registry;
         } else {
@@ -464,15 +466,19 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
     }
 
     public ngAfterViewInit(): void {
-        this._apiEditor.changes.subscribe( () => {
+        this._apiEditor.changes.subscribe(() => {
             if (this._apiEditor.first && !this.editorAvailable) {
                 this.editorAvailable = true;
-                this.pendingCommandQueue.subscribe( command => {
+                this.pendingCommandQueue.subscribe(command => {
                     this._apiEditor.first.executeCommand(command);
                 });
             }
         });
-    }
+        
+        this.validationService.getValidationProfiles().then(() => {
+            this.validationProfile = this.validationService.getProfileForApi(this.apiDefinition.id);
+        })
+    } 
 
     public loadingState(): string {
         if (this.isLoaded("session")) {
@@ -692,8 +698,9 @@ export class ApiEditorPageComponent extends AbstractPageComponent implements Aft
      * @param profile
      */
     public changeValidationProfile(profile: ValidationProfileExt): void {
-        this.validationService.setProfileForApi(this.apiDefinition.id, profile);
+        this.validationProfile = profile;
         this.validationRegistry = profile.registry;
+        this.validationService.setProfileForApi(this.apiDefinition.id, profile);
     }
 
     /**

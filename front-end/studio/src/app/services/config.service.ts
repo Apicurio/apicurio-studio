@@ -27,6 +27,7 @@ let DEFAULT_CONFIG: any = {
         type: "hub",
         hubUrl: "http://localhost:8080/api-hub",
         editingUrl: "http://localhost:8080/api-editing",
+        spectralApiUrl: "http://localhost:8080/spectral-api",
     },
     ui: {
         uiUrl: "http://localhost:8080/studio/",
@@ -35,7 +36,8 @@ let DEFAULT_CONFIG: any = {
     features: {
         "microcks": true,
         "graphql": true,
-        "asyncapi": true
+        "asyncapi": true,
+        "spectralValidation": false
     }
 };
 
@@ -120,6 +122,13 @@ export class ConfigService {
         return this.config.apis.editingUrl;
     }
 
+    public spectralApiUrl(): string {
+        if (!this.config.apis) {
+            return null;
+        }
+        return this.config.apis.spectralApiUrl;
+    }
+
     public isMicrocksEnabled(): boolean {
         if (!this.config.features) {
             return false;
@@ -139,6 +148,10 @@ export class ConfigService {
             return false;
         }
         return this.config.features.graphql;
+    }
+
+    public isSpectralValidationEnabled(): boolean {
+        return !!this.config.features?.spectralValidation;
     }
 
     public uiUrl(): string {

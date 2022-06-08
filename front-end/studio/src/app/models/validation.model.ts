@@ -22,12 +22,14 @@ export class ValidationProfile {
     public name: string;
     public description: string;
     public severities: {[key: string]: ValidationProblemSeverity};
+    public externalRuleset?: string;
 }
 
 export class CreateValidationProfile {
     public name: string;
     public description: string;
     public severities: {[key: string]: ValidationProblemSeverity};
+    public externalRuleset?: string;
 }
 
 export class UpdateValidationProfile extends CreateValidationProfile {

@@ -586,7 +586,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String insertValidationProfile() {
-        return "INSERT INTO validation_profiles (owner, name, description, severities) VALUES (?, ?, ?, ?)";
+        return "INSERT INTO validation_profiles (owner, name, description, severities, external_ruleset) VALUES (?, ?, ?, ?, ?)";
     }
 
     /**
@@ -594,7 +594,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
      */
     @Override
     public String updateValidationProfile() {
-        return "UPDATE validation_profiles SET name = ?, description = ?, severities = ? WHERE id = ? AND owner = ?";
+        return "UPDATE validation_profiles SET name = ?, description = ?, severities = ?, external_ruleset = ? WHERE id = ? AND owner = ?";
     }
 
     /**

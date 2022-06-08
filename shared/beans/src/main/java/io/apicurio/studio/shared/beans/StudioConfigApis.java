@@ -30,6 +30,7 @@ public class StudioConfigApis {
     private StudioConfigApisType type;
     private String hubUrl;
     private String editingUrl;
+    private String spectralApiUrl;
     
     /**
      * Constructor.
@@ -79,4 +80,14 @@ public class StudioConfigApis {
         this.editingUrl = editingUrl;
     }
 
+    public String getSpectralApiUrl() {
+        return spectralApiUrl;
+    }
+
+    /**
+     * @param apiUrl the Spectral microservice base URL
+     */
+    public void setSpectralApiUrl(String apiUrl) {
+        this.spectralApiUrl = apiUrl;
+    }
 }

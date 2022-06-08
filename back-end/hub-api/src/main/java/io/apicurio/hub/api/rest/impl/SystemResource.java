@@ -18,6 +18,7 @@ package io.apicurio.hub.api.rest.impl;
 
 import java.io.IOException;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;

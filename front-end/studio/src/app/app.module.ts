@@ -82,6 +82,7 @@ import {LoadingComponent} from "./components/common/loading.component";
 import {TemplatePublicationPageComponent} from "./pages/apis/{apiId}/template/template-publication.page";
 import {TemplatesPageComponent} from "./pages/templates/templates.page";
 import {TemplateEditorComponent} from "./pages/templates/_components/template-editor.component";
+import { SpectralValidationService } from "./services/spectral-api.service.impl";
 
 @NgModule({
     imports: [
@@ -103,7 +104,7 @@ import {TemplateEditorComponent} from "./pages/templates/_components/template-ed
     ],
     providers: [
         ApisService, AuthenticationServiceProvider, ConfigService, LinkedAccountsService, ValidationService,
-        AuthenticationCanActivateGuard, ApiEditorPageGuard, CurrentUserService, TemplateService
+        AuthenticationCanActivateGuard, ApiEditorPageGuard, CurrentUserService, TemplateService, SpectralValidationService
     ],
     bootstrap: [AppComponent]
 })

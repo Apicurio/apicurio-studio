@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  spectral-api:
+    build:
+      context: .
+    ports:
+      - 8094:8080
+    environment:
+      - HTTP_HOST=0.0.0.0
+    networks:
+      - spectral
+
+networks:
+  spectral:

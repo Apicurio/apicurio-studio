@@ -8,16 +8,16 @@ metadata:
     module: apicurio-studio-api
 spec:
   rules:
-  - host: localhost
-    http:
-      paths:
-      - backend:
-          service:
-            name: "apicurio-studio-api"
-            port:
-              number: 8091
-        path: /studio-api/?(.*)
-        pathType: Prefix
+    - host: localhost
+      http:
+        paths:
+          - backend:
+              service:
+                name: "apicurio-studio-api"
+                port:
+                  number: 8091
+            path: /studio-api/?(.*)
+            pathType: Prefix
 ---
 kind: Ingress
 apiVersion: networking.k8s.io/v1
@@ -27,16 +27,16 @@ metadata:
     module: apicurio-studio-ui
 spec:
   rules:
-  - host: localhost
-    http:
-      paths:
-      - backend:
-          service:
-            name: "apicurio-studio-ui"
-            port:
-              number: 8093
-        path: /
-        pathType: Prefix
+    - host: localhost
+      http:
+        paths:
+          - backend:
+              service:
+                name: "apicurio-studio-ui"
+                port:
+                  number: 8093
+            path: /
+            pathType: Prefix
 ---
 kind: Ingress
 apiVersion: networking.k8s.io/v1
@@ -47,13 +47,34 @@ metadata:
     module: apicurio-studio-ws
 spec:
   rules:
-  - host: localhost
-    http:
-      paths:
-      - backend:
-          service:
-            name: "apicurio-studio-ws"
-            port:
-              number: 8092
-        path: /designs
-        pathType: Prefix
+    - host: localhost
+      http:
+        paths:
+          - backend:
+              service:
+                name: "apicurio-studio-ws"
+                port:
+                  number: 8092
+            path: /designs
+            pathType: Prefix
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: apicurio-studio-spectral-api
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+  labels:
+    module: apicurio-studio-spectral-api
+spec:
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - backend:
+              service:
+                name: "apicurio-studio-spectral-api"
+                port:
+                  number: 8094
+            path: /spectral-api/?(.*)
+            pathType: Prefix

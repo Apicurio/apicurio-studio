@@ -9,6 +9,7 @@ Here is the port mapping:
 - 8091 for the API
 - 8092 for the websockets
 - 8093 for the UI
+- 8094 for the Spectral Microservice API
 - 8900 for Microcks
 
 ## Setup
@@ -81,7 +82,7 @@ Note: make sure you use the external IP address of your host here.  `localhost` 
 
 ## Environment customisation
 
-After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want.
+After the successful run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want.
 
 The passwords for DBs, KeyCloak, and the uuid of the microcks-service-account is generated dynamically with every run of the setup script.
 

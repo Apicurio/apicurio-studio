@@ -17,6 +17,7 @@
 package io.apicurio.hub.api.rest.impl;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -82,6 +83,9 @@ public class ValidationProfilesResource implements IValidationProfilesResource {
             if (info.getSeverities() != null) {
                 profile.setSeverities(info.getSeverities());
             }
+            if (info.getExternalRuleset() != null) {
+                profile.setExternalRuleset(info.getExternalRuleset());
+            }
             long pid = storage.createValidationProfile(user, profile);
             profile.setId(pid);
             return profile;
@@ -107,6 +111,9 @@ public class ValidationProfilesResource implements IValidationProfilesResource {
             profile.setDescription(update.getDescription());
             if (update.getSeverities() != null) {
                 profile.setSeverities(update.getSeverities());
+            }
+            if (update.getExternalRuleset() != null) {
+                profile.setExternalRuleset(update.getExternalRuleset());
             }
             storage.updateValidationProfile(user, profile);
         } catch (StorageException e) {

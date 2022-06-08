@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log
+.env
+./database
+./dist
+yarn-error.log
+Dockerfile
+docker-compose*.yaml

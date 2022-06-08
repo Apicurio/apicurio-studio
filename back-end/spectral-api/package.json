@@ -1,0 +1,32 @@
+{
+  "name": "@apicurio/spectral-microservice",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "license": "Apache-2.0",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "start:watch": "nodemon src/*.ts"
+  },
+  "dependencies": {
+    "@apicurio/data-models": "^1.1.26",
+    "@fastify/cors": "^7.0.0",
+    "@stoplight/spectral-functions": "^1.6.1",
+    "@stoplight/spectral-ruleset-bundler": "^1.2.1",
+    "@types/node-fetch": "^2.6.1",
+    "fastify": "^3.28.0",
+    "file-type": "^17.1.1",
+    "js-yaml": "^4.1.0",
+    "node-fetch": "2.6.7"
+  },
+  "devDependencies": {
+    "@stoplight/spectral-core": "^1.11.1",
+    "@types/js-yaml": "^4.0.5",
+    "dotenv": "^16.0.0",
+    "nodemon": "^2.0.15",
+    "openapi-typescript": "^5.2.0",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.7.0-dev.20220421"
+  }
+}

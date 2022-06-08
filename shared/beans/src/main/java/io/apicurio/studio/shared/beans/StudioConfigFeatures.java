@@ -30,6 +30,7 @@ public class StudioConfigFeatures {
     private boolean microcks;
     private boolean asyncapi;
     private boolean graphql;
+    private boolean spectralValidation;
     private boolean shareWithEveryone;
     
     /**
@@ -57,6 +58,13 @@ public class StudioConfigFeatures {
      */
     public boolean isShareWithEveryone() {
         return shareWithEveryone;
+    }
+
+    /**
+     * @return the spectralValidation config property to set
+     */
+    public boolean isSpectralValidation() {
+        return spectralValidation;
     }
 
     /**
@@ -92,5 +100,12 @@ public class StudioConfigFeatures {
      */
     public void setGraphql(boolean graphql) {
         this.graphql = graphql;
+    }
+
+    /**
+     * @param spectralValidation the spectralValidation to set
+     */
+    public void setSpectralValidation(boolean spectralValidation) {
+        this.spectralValidation = spectralValidation;
     }
 }

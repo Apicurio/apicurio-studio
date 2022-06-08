@@ -54,4 +54,16 @@ spec:
     targetPort: 3306
   selector:
     module: apicurio-studio-db
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apicurio-studio-spectral-api
+  labels:
+    module: apicurio-studio-spectral-api
+spec:
+  ports:
+  - port: 8094
+    targetPort: 8080
+  selector:
+    module: apicurio-studio-spectral-api

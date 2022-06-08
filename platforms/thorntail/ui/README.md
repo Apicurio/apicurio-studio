@@ -33,3 +33,4 @@ The following environment variables control configuration of the app:
 	APICURIO_UI_EDITING_URL=http://localhost:8091/
 	APICURIO_UI_FEATURE_MICROCKS=false
 	APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE=false
+	APICURIO_UI_FEATURE_SPECTRAL_VALIDATION=false

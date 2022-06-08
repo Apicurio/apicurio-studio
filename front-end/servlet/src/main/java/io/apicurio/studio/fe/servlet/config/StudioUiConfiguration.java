@@ -42,6 +42,9 @@ public class StudioUiConfiguration extends Configuration {
     private static final String HUB_UI_URL_ENV = "APICURIO_UI_HUB_UI_URL";
     private static final String HUB_UI_URL_SYSPROP = "apicurio-ui.url";
 
+    private static final String SPECTRAL_API_URL_ENV = "APICURIO_UI_SPECTRAL_API_URL";
+    private static final String SPECTRAL_API_URL_SYSPROP = "apicurio-ui.spectral-api.url";
+
     private static final String FEATURE_MICROCKS_ENV = "APICURIO_UI_FEATURE_MICROCKS";
     private static final String FEATURE_MICROCKS_SYSPROP = "apicurio-ui.feature.microcks";
 
@@ -53,6 +56,9 @@ public class StudioUiConfiguration extends Configuration {
 
     private static final String FEATURE_SHARE_WITH_EVERYONE_ENV = "APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE";
     private static final String FEATURE_SHARE_WITH_EVERYONE_SYSPROP = "apicurio-ui.feature.shareWithEveryone";
+
+    private static final String FEATURE_SPECTRAL_VALIDATION_ENV = "APICURIO_UI_FEATURE_SPECTRAL_VALIDATION";
+    private static final String FEATURE_SPECTRAL_VALIDATION_SYSPROP = "apicurio-ui.feature.spectralValidation";
 
     private static final String VALIDATION_CHANNELNAME_REGEXP_ENV= "APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP";
     private static final String VALIDATION_CHANNELNAME_REGEXP_SYSPROP = "apicurio-ui.validation.channelName.regexp";
@@ -69,6 +75,13 @@ public class StudioUiConfiguration extends Configuration {
      */
     public String getEditingUrl() {
         return getConfigurationProperty(EDITING_URL_ENV, EDITING_URL_SYSPROP, null);
+    }
+
+    /**
+     * Returns the URI of the Spectral Validation Microservice API
+     */
+    public String getSpectralApiUrl() {
+        return getConfigurationProperty(SPECTRAL_API_URL_ENV, SPECTRAL_API_URL_SYSPROP, null);
     }
 
     /**
@@ -112,6 +125,13 @@ public class StudioUiConfiguration extends Configuration {
      */
     public boolean isShareWithEveryoneEnabled() {
         return "true".equals(getConfigurationProperty(FEATURE_SHARE_WITH_EVERYONE_ENV, FEATURE_SHARE_WITH_EVERYONE_SYSPROP, "false"));
+    }
+
+    /**
+     * Returns true if Spectral validation is enabled in the UI
+     */
+    public boolean isSpectralValidationEnabled() {
+        return "true".equals(getConfigurationProperty(FEATURE_SPECTRAL_VALIDATION_ENV, FEATURE_SPECTRAL_VALIDATION_SYSPROP, "false"));
     }
 
     /**

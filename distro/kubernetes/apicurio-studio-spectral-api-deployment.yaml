@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    module: apicurio-studio-spectral-api
+  name: apicurio-studio-spectral-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      module: apicurio-studio-spectral-api
+  template:
+    metadata:
+      labels:
+        module: apicurio-studio-spectral-api
+    spec:
+      containers:
+        - name: apicurio-studio-spectral-api
+          image: quay.io/ephelan/apicurio-studio-spectral-api
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ALLOWED_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: apicurio-configmap
+                  key: apicurio-ui-base-url
+      restartPolicy: Always
+    
+            

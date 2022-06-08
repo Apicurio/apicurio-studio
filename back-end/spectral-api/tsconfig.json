@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"module": "nodenext",
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"target": "es2017",
+		"noImplicitAny": false,
+		"sourceMap": false,
+		"outDir": "dist",
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
+	},
+	"exclude": [
+		"node_modules"
+	],
+	"include": [
+		"src/**/*.ts"
+	]
+}

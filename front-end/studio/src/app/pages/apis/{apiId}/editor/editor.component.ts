@@ -58,6 +58,7 @@ import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {SelectionService} from "./_services/selection.service";
 import {CommandService} from "./_services/command.service";
 import {DocumentService} from "./_services/document.service";
+import {ConfigService} from "../../../../services/config.service";
 import {ServerEditorComponent} from "./_components/editors/server-editor.component";
 import {EditorsService, IEditorsProvider} from "./_services/editors.service";
 import {SecuritySchemeEditorComponent} from "./_components/editors/security-scheme-editor.component";
@@ -79,7 +80,8 @@ import {MessageTraitEditorComponent} from "./_components/editors/messagetrait-ed
 import {MessageEditorComponent} from "./_components/editors/message-editor.component";
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 import { OneOfInMessageEditorComponent } from "./_components/editors/oneof-in-message-editor.component";
-
+import { SpectralValidationService } from "../../../../services/spectral-api.service.impl";
+import { createSpectralValidationExtension, ValidationProfileExt } from "../../../../services/validation.service";
 
 @Component({
     selector: "api-editor",
@@ -94,6 +96,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     @Input() embedded: boolean;
     @Input() features: ApiEditorComponentFeatures;
     @Input() validationRegistry: IValidationSeverityRegistry;
+    @Input() validationProfile: ValidationProfileExt;
     @Input() contentFetcher: (externalReference: string) => Promise<any>;
     @Input() componentImporter: (componentType: ComponentType) => Promise<ImportedComponent[]>;
     @Input() validationExtensions: IDocumentValidatorExtension[] = [];
@@ -145,7 +148,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     constructor(private selectionService: SelectionService, private commandService: CommandService,
                 private documentService: DocumentService, private editorsService: EditorsService,
                 private featuresService: FeaturesService, private collaboratorService: CollaboratorService,
-                private catalog: ApiCatalogService) {
+                private catalog: ApiCatalogService, private spectralValidationService: SpectralValidationService, private config: ConfigService) {
         super();
 
         Library.addReferenceResolver(this);
@@ -228,6 +231,15 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
             } else {
                 this.featuresService.setFeatures(new ApiEditorComponentFeatures());
             }
+        }
+
+        if (changes["validationProfile"]) {
+            this.validationExtensions = [];
+            if (this.config.isSpectralValidationEnabled() && this.validationProfile?.externalRuleset) {
+                const spectralValidationExtensions = createSpectralValidationExtension(this.spectralValidationService, this.validationProfile);
+                this.validationExtensions.push(spectralValidationExtensions);
+            }
+            this.validateModel().then(() => this.documentService.emitChange());
         }
 
         if (changes["validationRegistry"]) {
@@ -459,9 +471,11 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
      * Called to validate the model.
      */
     public async validateModel(): Promise<void> {
+        
         try {
             let doc: OasDocument = this.document();
             let oldValidationErrors: ValidationProblem[] = this.validationErrors;
+
             this.validationErrors = await Library.validateDocument(doc, this.validationRegistry, this.validationExtensions);
             if (!ArrayUtils.equals(oldValidationErrors, this.validationErrors)) {
                 this.onValidationChanged.emit(this.validationErrors);

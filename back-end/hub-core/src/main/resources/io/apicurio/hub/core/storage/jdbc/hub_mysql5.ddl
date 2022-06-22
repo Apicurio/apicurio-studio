@@ -4,7 +4,7 @@
 
 CREATE TABLE apicurio (prop_name VARCHAR(255) NOT NULL, prop_value VARCHAR(255));
 ALTER TABLE apicurio ADD PRIMARY KEY (prop_name);
-INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 12);
+INSERT INTO apicurio (prop_name, prop_value) VALUES ('db_version', 13);
 
 CREATE TABLE accounts (user_id VARCHAR(255) NOT NULL, type VARCHAR(32) NOT NULL, linked_on DATETIME, used_on DATETIME, nonce VARCHAR(255));
 ALTER TABLE accounts ADD PRIMARY KEY (user_id, type);
@@ -39,7 +39,7 @@ ALTER TABLE codegen ADD CONSTRAINT FK_codegen_1 FOREIGN KEY (design_id) REFERENC
 CREATE INDEX IDX_codegen_1 ON codegen(ptype);
 CREATE INDEX IDX_codegen_2 ON codegen(design_id);
 
-CREATE TABLE validation_profiles (id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, owner VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024), severities MEDIUMTEXT NOT NULL);
+CREATE TABLE validation_profiles (id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY, owner VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(1024), severities MEDIUMTEXT NOT NULL, external_ruleset VARCHAR(255));
 CREATE INDEX IDX_vprof_1 ON validation_profiles(owner);
 
 CREATE TABLE sharing (design_id BIGINT NOT NULL PRIMARY KEY, uuid VARCHAR(255) NOT NULL, level VARCHAR(64) NOT NULL);

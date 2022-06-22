@@ -20,6 +20,7 @@ import {KeypressUtils} from "../../../apis/{apiId}/editor/_util/keypress.util";
 import {ValidationProfile} from "../../../../models/validation.model";
 import {DocumentType, ValidationProblemSeverity, ValidationRuleMetaData, ValidationRuleSet} from "@apicurio/data-models";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../components/common/drop-down.component";
+import { ConfigService } from "../../../../services/config.service";
 
 export interface ValidationRuleFilter {
     type: string;
@@ -51,7 +52,7 @@ export class ProfileEditorComponent {
     /**
      * Constructor.
      */
-    constructor() {
+    constructor(private config: ConfigService) {
         let ruleset: ValidationRuleSet = new ValidationRuleSet();
         this.rules = ruleset.getAllRules();
         this.filter();
@@ -377,6 +378,10 @@ export class ProfileEditorComponent {
     }
     isGraphQL(rule: ValidationRuleMetaData): boolean {
         return false;
+    }
+    
+    isSpectralValidationFeatureEnabled(): boolean {
+        return this.config.isSpectralValidationEnabled();
     }
 
     ruleVersions(rule: ValidationRuleMetaData): string {

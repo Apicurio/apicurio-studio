@@ -36,7 +36,8 @@ let DEFAULT_CONFIG: any = {
     features: {
         "microcks": true,
         "graphql": true,
-        "asyncapi": true
+        "asyncapi": true,
+        "spectralValidation": false
     }
 };
 
@@ -147,6 +148,10 @@ export class ConfigService {
             return false;
         }
         return this.config.features.graphql;
+    }
+
+    public isSpectralValidationEnabled(): boolean {
+        return !!this.config.features?.spectralValidation;
     }
 
     public uiUrl(): string {

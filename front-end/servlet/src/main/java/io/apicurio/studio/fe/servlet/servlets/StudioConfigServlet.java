@@ -116,13 +116,13 @@ public class StudioConfigServlet extends HttpServlet {
             config.getFeatures().setMicrocks(uiConfig.isMicrocksEnabled());
             config.getFeatures().setGraphql(uiConfig.isGraphQLEnabled());
             config.getFeatures().setAsyncapi(uiConfig.isAsyncAPIEnabled());
+            config.getFeatures().setSpectralValidation(uiConfig.isSpectralValidationEnabled());
             config.getFeatures().setShareWithEveryone(uiConfig.isShareWithEveryoneEnabled());
 
-            
             g.writeObject(config);
 
             g.flush();
-            response.getOutputStream().write(";".getBytes("UTF-8")); //$NON-NLS-1$ //$NON-NLS-2$
+            response.getOutputStream().write(";".getBytes(StandardCharsets.UTF_8)); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (Exception e) {
             throw new ServletException(e);
         }

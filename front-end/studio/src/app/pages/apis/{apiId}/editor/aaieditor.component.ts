@@ -76,6 +76,7 @@ import {MessageEditorComponent} from "./_components/editors/message-editor.compo
 import {OneOfInMessageEditorComponent} from "./_components/editors/oneof-in-message-editor.component";
 import { createSpectralValidationExtension, ValidationProfileExt } from "../../../../services/validation.service";
 import { SpectralValidationService } from "../../../../services/spectral-api.service.impl";
+import { ConfigService } from "../../../../services/config.service";
 
 
 @Component({
@@ -148,7 +149,8 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     constructor(private selectionService: SelectionService, private commandService: CommandService,
                 private documentService: DocumentService, private editorsService: EditorsService,
                 private featuresService: FeaturesService, private collaboratorService: CollaboratorService,
-                private catalog: ApiCatalogService, private spectralValidationService: SpectralValidationService) {
+                private catalog: ApiCatalogService, private spectralValidationService: SpectralValidationService, 
+                private config: ConfigService) {
         super();
 
         console.debug("[AsyncApiEditorComponent] Subscribing to API Catalog changes.");
@@ -229,7 +231,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
 
         if (changes["validationProfile"]) {
             this.validationExtensions = [];
-            if (this.validationProfile?.externalRuleset) {
+            if (this.config.isSpectralValidationEnabled() && this.validationProfile?.externalRuleset) {
                 const spectralValidationExtensions = createSpectralValidationExtension(this.spectralValidationService, this.validationProfile);
                 this.validationExtensions.push(spectralValidationExtensions);
             }

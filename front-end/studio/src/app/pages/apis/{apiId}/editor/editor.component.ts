@@ -58,6 +58,7 @@ import {ApiEditorUser} from "../../../../models/editor-user.model";
 import {SelectionService} from "./_services/selection.service";
 import {CommandService} from "./_services/command.service";
 import {DocumentService} from "./_services/document.service";
+import {ConfigService} from "../../../../services/config.service";
 import {ServerEditorComponent} from "./_components/editors/server-editor.component";
 import {EditorsService, IEditorsProvider} from "./_services/editors.service";
 import {SecuritySchemeEditorComponent} from "./_components/editors/security-scheme-editor.component";
@@ -147,7 +148,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
     constructor(private selectionService: SelectionService, private commandService: CommandService,
                 private documentService: DocumentService, private editorsService: EditorsService,
                 private featuresService: FeaturesService, private collaboratorService: CollaboratorService,
-                private catalog: ApiCatalogService, private spectralValidationService: SpectralValidationService) {
+                private catalog: ApiCatalogService, private spectralValidationService: SpectralValidationService, private config: ConfigService) {
         super();
 
         Library.addReferenceResolver(this);
@@ -234,7 +235,7 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
 
         if (changes["validationProfile"]) {
             this.validationExtensions = [];
-            if (this.validationProfile?.externalRuleset) {
+            if (this.config.isSpectralValidationEnabled() && this.validationProfile?.externalRuleset) {
                 const spectralValidationExtensions = createSpectralValidationExtension(this.spectralValidationService, this.validationProfile);
                 this.validationExtensions.push(spectralValidationExtensions);
             }

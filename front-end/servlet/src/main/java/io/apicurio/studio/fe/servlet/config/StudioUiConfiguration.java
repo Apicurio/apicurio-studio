@@ -57,6 +57,9 @@ public class StudioUiConfiguration extends Configuration {
     private static final String FEATURE_SHARE_WITH_EVERYONE_ENV = "APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE";
     private static final String FEATURE_SHARE_WITH_EVERYONE_SYSPROP = "apicurio-ui.feature.shareWithEveryone";
 
+    private static final String FEATURE_SPECTRAL_VALIDATION_ENV = "APICURIO_UI_FEATURE_SPECTRAL_VALIDATION";
+    private static final String FEATURE_SPECTRAL_VALIDATION_SYSPROP = "apicurio-ui.feature.spectralValidation";
+
     private static final String VALIDATION_CHANNELNAME_REGEXP_ENV= "APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP";
     private static final String VALIDATION_CHANNELNAME_REGEXP_SYSPROP = "apicurio-ui.validation.channelName.regexp";
 
@@ -122,6 +125,13 @@ public class StudioUiConfiguration extends Configuration {
      */
     public boolean isShareWithEveryoneEnabled() {
         return "true".equals(getConfigurationProperty(FEATURE_SHARE_WITH_EVERYONE_ENV, FEATURE_SHARE_WITH_EVERYONE_SYSPROP, "false"));
+    }
+
+    /**
+     * Returns true if Spectral validation is enabled in the UI
+     */
+    public boolean isSpectralValidationEnabled() {
+        return "true".equals(getConfigurationProperty(FEATURE_SPECTRAL_VALIDATION_ENV, FEATURE_SPECTRAL_VALIDATION_SYSPROP, "false"));
     }
 
     /**

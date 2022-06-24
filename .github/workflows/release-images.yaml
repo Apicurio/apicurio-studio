@@ -111,6 +111,21 @@ jobs:
            quay.io/apicurio/apicurio-studio-ui:latest-release
            quay.io/apicurio/apicurio-studio-ui:${{env.RELEASE_VERSION}}
 
+      - name: Build and Publish Studio Spectral API
+        uses: docker/build-push-action@v2
+        with:
+          context: ./back-end/spectral-api
+          platforms: ${{env.PLATFORMS}}
+          push: true
+          tags: |
+            docker.io/apicurio/apicurio-studio-spectral-api:latest
+            docker.io/apicurio/apicurio-studio-spectral-api:latest-release
+            docker.io/apicurio/apicurio-studio-spectral-api:${{env.RELEASE_VERSION}}
+            quay.io/apicurio/apicurio-studio-spectral-api:latest
+            quay.io/apicurio/apicurio-studio-spectral-api:latest-release
+            quay.io/apicurio/apicurio-studio-spectral-api:${{env.RELEASE_VERSION}}
+
+
       - name: Google Chat Notification
         if: ${{ failure() }}
         uses: Co-qn/google-chat-notification@releases/v1

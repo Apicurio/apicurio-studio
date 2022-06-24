@@ -1,3 +1,3 @@
-FROM jboss/keycloak:16.1.0
+FROM quay.io/keycloak/keycloak:16.1.1
 
 ADD apicurio /opt/jboss/keycloak/themes/apicurio

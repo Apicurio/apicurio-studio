@@ -54,13 +54,13 @@ else
   sed 's/$DB_CONN_URL/'"jdbc:postgresql:\\/\\/apicurio-studio-db\\/apicuriodb"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
 fi
 
-
-
 sed 's/$HOST/'"$HOST_IP"'/g' $P/config/keycloak/apicurio-realm.json.template > $P/config/keycloak/apicurio-realm.json
 sed 's/$HOST/'"$HOST_IP"'/g' $P/config/keycloak/microcks-realm.json.template > $P/config/keycloak/microcks-realm.json.tmp
 sed 's/$SERVICE_CLIENT_SECRET/'"$SERVICE_CLIENT_SECRET"'/g' $P/config/keycloak/microcks-realm.json.tmp > $P/config/keycloak/microcks-realm.json
 
 rm -rf $P/config/keycloak/microcks-realm.json.tmp
+
+APICURIO_UI_URL=$HOST_IP:8093
 
 echo "Keycloak username: admin"
 echo "Keycloak password: $KC_PASSWORD"

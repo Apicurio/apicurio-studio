@@ -69,8 +69,8 @@ jobs:
       - name: Build and Publish Studio API
         uses: docker/build-push-action@v2
         with:
-         context: ./studio/platforms/thorntail/api
-         file: ./studio/platforms/thorntail/api/Dockerfile
+         context: ./studio/platforms/quarkus/api
+         file: ./studio/platforms/quarkus/api/Dockerfile
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
@@ -84,8 +84,8 @@ jobs:
       - name: Build and Publish Studio WS
         uses: docker/build-push-action@v2
         with:
-         context: ./studio/platforms/thorntail/ws
-         file: ./studio/platforms/thorntail/ws/Dockerfile
+         context: ./studio/platforms/quarkus/ws
+         file: ./studio/platforms/quarkus/ws/Dockerfile
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
@@ -99,8 +99,8 @@ jobs:
       - name: Build and Publish Studio UI
         uses: docker/build-push-action@v2
         with:
-         context: ./studio/platforms/thorntail/ui
-         file: ./studio/platforms/thorntail/ui/Dockerfile
+         context: ./studio/platforms/quarkus/ui
+         file: ./studio/platforms/quarkus/ui/Dockerfile
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |

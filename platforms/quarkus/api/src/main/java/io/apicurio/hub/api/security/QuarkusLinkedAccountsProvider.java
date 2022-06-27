@@ -1,5 +1,37 @@
 package io.apicurio.hub.api.security;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Logger;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.net.ssl.SSLContext;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.jboss.logmanager.Level;
+import org.keycloak.RSATokenVerifier;
+import org.keycloak.common.VerificationException;
+import org.keycloak.common.util.Base64Url;
+import org.keycloak.common.util.KeycloakUriBuilder;
+import org.keycloak.representations.AccessToken;
+
 /*
  * Copyright 2021 Red Hat
  *
@@ -20,37 +52,6 @@ import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.config.HubConfiguration;
 import io.smallrye.jwt.auth.principal.JWTCallerPrincipal;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.ssl.SSLContexts;
-import org.jboss.logmanager.Level;
-import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.RSATokenVerifier;
-import org.keycloak.common.VerificationException;
-import org.keycloak.common.util.Base64Url;
-import org.keycloak.common.util.KeycloakUriBuilder;
-import org.keycloak.representations.AccessToken;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
-import javax.inject.Inject;
-import javax.net.ssl.SSLContext;
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.logging.Logger;
 
 /**
  * An implementation of {@link ILinkedAccountsProvider} that used Keycloak to manage

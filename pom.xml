@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.apicurio</groupId>
@@ -56,11 +56,10 @@
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
 
+        <tar.long.file.mode>gnu</tar.long.file.mode>
+
         <!-- Wildfly Version -->
         <version.wildfly>17.0.1.Final</version.wildfly>
-
-        <!-- Thorntail Version -->
-        <version.io.thorntail>2.7.0.Final</version.io.thorntail>
 
         <!-- Quarkus Version -->
         <version.io.quarkus>2.7.0.Final</version.io.quarkus>
@@ -141,15 +140,6 @@
 
     <dependencyManagement>
         <dependencies>
-
-            <!-- Thorntail -->
-            <dependency>
-                <groupId>io.thorntail</groupId>
-                <artifactId>bom-all</artifactId>
-                <version>${version.io.thorntail}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
 
             <!-- Quarkus -->
             <dependency>

@@ -73,8 +73,8 @@ jobs:
         if: github.event_name == 'push'
         uses: docker/build-push-action@v2
         with:
-         context: ./platforms/thorntail/api
-         file: ./platforms/thorntail/api/Dockerfile
+         context: ./platforms/quarkus/api
+         file: ./platforms/quarkus/api/Dockerfile
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
@@ -85,8 +85,8 @@ jobs:
         if: github.event_name == 'push'
         uses: docker/build-push-action@v2
         with:
-         context: ./platforms/thorntail/ws
-         file: ./platforms/thorntail/ws/Dockerfile
+         context: ./platforms/quarkus/ws
+         file: ./platforms/quarkus/ws/Dockerfile
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
@@ -97,8 +97,8 @@ jobs:
         if: github.event_name == 'push'
         uses: docker/build-push-action@v2
         with:
-         context: ./platforms/thorntail/ui
-         file: ./platforms/thorntail/ui/Dockerfile
+         context: ./platforms/quarkus/ui
+         file: ./platforms/quarkus/ui/Dockerfile
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |

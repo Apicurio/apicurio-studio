@@ -68,9 +68,9 @@ services:
       APICURIO_UI_FEATURE_SPECTRAL_VALIDATION: ${APICURIO_UI_FEATURE_SPECTRAL_VALIDATION}
 
   apicurio-studio-spectral-api:
-    image: quay.io/apicurio/apicurio-studio-spectral-api
+    image: 'quay.io/apicurio/apicurio-studio-spectral-api:${APICURIO_API_VERSION}'
     ports:
-      - 8094:8080
+      - "8094:8080"
     environment:
       ALLOWED_ORIGINS: ${APICURIO_SPECTRAL_API_ALLOWED_ORIGINS}
       HTTP_HOST: ${APICURIO_SPECTRAL_API_HTTP_HOST}

@@ -12,7 +12,6 @@
     <packaging>pom</packaging>
     <name>apicurio-studio-platforms</name>
     <modules>
-        <module>thorntail</module>
         <module>wildfly</module>
         <module>quarkus</module>
     </modules>

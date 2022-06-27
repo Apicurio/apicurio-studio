@@ -20,7 +20,6 @@ import java.io.IOException;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
@@ -31,8 +30,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.mashape.unirest.http.ObjectMapper;
 import com.mashape.unirest.http.Unirest;
-
-import io.apicurio.hub.core.Version;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -46,6 +43,7 @@ public class HubApplication extends Application {
     static {
         jacksonObjectMapper.setSerializationInclusion(Include.NON_NULL);
         Unirest.setObjectMapper(new ObjectMapper() {
+            @Override
             public <T> T readValue(String value, Class<T> valueType) {
                 try {
                     return jacksonObjectMapper.readValue(value, valueType);
@@ -54,6 +52,7 @@ public class HubApplication extends Application {
                 }
             }
 
+            @Override
             public String writeValue(Object value) {
                 try {
                     return jacksonObjectMapper.writeValueAsString(value);

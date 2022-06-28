@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
-import {ModalModule} from 'ngx-bootstrap/modal';
-import {CommonModule} from "@angular/common";
+import { NgModule } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { BsDropdownModule } from "ngx-bootstrap/dropdown";
+import { ModalModule } from "ngx-bootstrap/modal";
+import { CommonModule } from "@angular/common";
 
-import {DropDownComponent} from './components/common/drop-down.component';
-import {FormErrorMessageComponent} from "./components/common/form-error-message.component";
-import {CodeEditorComponent} from "./components/common/code-editor.component";
-import {AceEditorComponent} from "./components/common/ace-editor.component";
-import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from "./directives/autosize.directive";
-import {MarkdownComponent} from "./components/common/markdown.component";
-import {MarkdownSummaryComponent} from "./components/common/markdown-summary.component";
-import {MarkdownEditorComponent} from './components/common/markdown-editor.component';
+import { DropDownComponent } from "./components/common/drop-down.component";
+import { FormErrorMessageComponent } from "./components/common/form-error-message.component";
+import { CodeEditorComponent } from "./components/common/code-editor.component";
+import { AceEditorComponent } from "./components/common/ace-editor.component";
+import { DivAutoHeight, TextAreaAutosize, TextBoxAutosize } from "./directives/autosize.directive";
+import { MarkdownComponent } from "./components/common/markdown.component";
+import { MarkdownSummaryComponent } from "./components/common/markdown-summary.component";
+import { MarkdownEditorComponent } from "./components/common/markdown-editor.component";
 
 @NgModule({
     imports: [

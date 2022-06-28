@@ -69,6 +69,15 @@
                             <arguments>install</arguments>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>yarn lint</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>lint</arguments>
+                        </configuration>
+                    </execution>
                     <!-- Build the app -->
                     <execution>
                         <id>ng build</id>

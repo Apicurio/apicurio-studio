@@ -15,29 +15,29 @@
  * limitations under the License.
  */
 
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {DashboardPageComponent} from './pages/dashboard/dashboard.page';
-import {AuthenticationCanActivateGuard} from './guards/auth.guard';
-import {SettingsPageComponent} from './pages/settings/settings';
-import {ProfilePageComponent} from './pages/settings/profile/profile.page';
-import {LinkedAccountsPageComponent} from './pages/settings/accounts/accounts.page';
-import {CreatedLinkedAccountPageComponent} from './pages/settings/accounts/{accountType}/created/created.page';
-import {ApisPageComponent} from './pages/apis/apis.page';
-import {CreateApiPageComponent} from './pages/apis/create/create.page';
-import {ImportApiPageComponent} from './pages/apis/import/import.page';
-import {ApiDetailPageComponent} from './pages/apis/{apiId}/api-detail.page';
-import {ApiCollaborationPageComponent} from './pages/apis/{apiId}/collaboration/api-collaboration.page';
-import {ApiAcceptPageComponent} from './pages/apis/{apiId}/collaboration/accept/api-accept.page';
-import {ApiEditorPageComponent, ApiEditorPageGuard} from './pages/apis/{apiId}/editor/api-editor.page';
-import {PublishPageComponent} from "./pages/apis/{apiId}/publish/publish.page";
-import {CopyPageComponent} from './pages/apis/{apiId}/copy/copy.page';
-import {MockPageComponent} from './pages/apis/{apiId}/mock/mock.page';
-import {DefaultPageComponent} from "./pages/default.page";
-import {ValidationPageComponent} from "./pages/settings/validation/validation.page";
-import {ApiTextEditorPageComponent, ApiTextEditorPageGuard} from "./pages/apis/{apiId}/editor/api-teditor.page";
-import {TemplatePublicationPageComponent} from "./pages/apis/{apiId}/template/template-publication.page";
-import {TemplatesPageComponent} from "./pages/templates/templates.page";
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { DashboardPageComponent } from "./pages/dashboard/dashboard.page";
+import { AuthenticationCanActivateGuard } from "./guards/auth.guard";
+import { SettingsPageComponent } from "./pages/settings/settings";
+import { ProfilePageComponent } from "./pages/settings/profile/profile.page";
+import { LinkedAccountsPageComponent } from "./pages/settings/accounts/accounts.page";
+import { CreatedLinkedAccountPageComponent } from "./pages/settings/accounts/{accountType}/created/created.page";
+import { ApisPageComponent } from "./pages/apis/apis.page";
+import { CreateApiPageComponent } from "./pages/apis/create/create.page";
+import { ImportApiPageComponent } from "./pages/apis/import/import.page";
+import { ApiDetailPageComponent } from "./pages/apis/{apiId}/api-detail.page";
+import { ApiCollaborationPageComponent } from "./pages/apis/{apiId}/collaboration/api-collaboration.page";
+import { ApiAcceptPageComponent } from "./pages/apis/{apiId}/collaboration/accept/api-accept.page";
+import { ApiEditorPageComponent, ApiEditorPageGuard } from "./pages/apis/{apiId}/editor/api-editor.page";
+import { PublishPageComponent } from "./pages/apis/{apiId}/publish/publish.page";
+import { CopyPageComponent } from "./pages/apis/{apiId}/copy/copy.page";
+import { MockPageComponent } from "./pages/apis/{apiId}/mock/mock.page";
+import { DefaultPageComponent } from "./pages/default.page";
+import { ValidationPageComponent } from "./pages/settings/validation/validation.page";
+import { ApiTextEditorPageComponent } from "./pages/apis/{apiId}/editor/api-teditor.page";
+import { TemplatePublicationPageComponent } from "./pages/apis/{apiId}/template/template-publication.page";
+import { TemplatesPageComponent } from "./pages/templates/templates.page";
 
 const routes: Routes = [
     {
@@ -46,12 +46,12 @@ const routes: Routes = [
         canActivate: [AuthenticationCanActivateGuard]
     },
     {
-        path: 'dashboard',
+        path: "dashboard",
         component: DashboardPageComponent,
         canActivate: [AuthenticationCanActivateGuard]
     },
     {
-        path: 'templates',
+        path: "templates",
         component: TemplatesPageComponent,
         canActivate: [AuthenticationCanActivateGuard]
     },
@@ -147,7 +147,7 @@ const routes: Routes = [
 
 @NgModule({
     imports: [
-        RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })
+        RouterModule.forRoot(routes, { relativeLinkResolution: "legacy" })
     ],
     exports: [
         RouterModule

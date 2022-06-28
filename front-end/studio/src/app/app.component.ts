@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import {Component} from '@angular/core';
-import {IAuthenticationService} from './services/auth.service';
-import {User} from "./models/user.model";
+import { Component } from "@angular/core";
+import { IAuthenticationService } from "./services/auth.service";
+import { User } from "./models/user.model";
 
 @Component({
     selector: "apicurio-studio",
@@ -29,11 +29,11 @@ export class AppComponent {
     public routerOutletWrapperId: string;
     public routerOutletWrapperClass: string;
 
-    version: string = "N/A";
+    version = "N/A";
     builtOn: Date = new Date();
-    projectUrl: string = "http://www.apicur.io/";
+    projectUrl = "http://www.apicur.io/";
 
-    helpExpanded: boolean = false;
+    helpExpanded = false;
 
     /**
      * @param authService
@@ -42,7 +42,7 @@ export class AppComponent {
         this.routerOutletWrapperId = "api-page-body";
         this.routerOutletWrapperClass = "app-body";
 
-        let w: any = window;
+        const w = window;
         if (w["ApicurioStudioInfo"]) {
             console.info("[NavHeaderComponent] Found app info: %o", w["ApicurioStudioInfo"]);
             this.version = w["ApicurioStudioInfo"].version;

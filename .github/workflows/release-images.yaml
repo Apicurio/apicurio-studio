@@ -58,7 +58,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Build Project
-        run: cd studio && mvn clean install
+        run: cd studio && mvn clean install -Pprod
       
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin

@@ -58,7 +58,7 @@ jobs:
         run: cd studio && mvn versions:set -DnewVersion=${{ github.event.inputs.release-version}} -DgenerateBackupPoms=false -DprocessAllModules=true
      
       - name: Validating Apicurio Studio maven build
-        run: cd studio && mvn clean install
+        run: cd studio && mvn clean install -Pprod
 
       - name: Update Release Version ${{ github.event.inputs.release-version }} in Package.json
         run: |

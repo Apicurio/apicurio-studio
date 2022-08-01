@@ -1478,6 +1478,7 @@ public class DesignsResource implements IDesignsResource {
     private JaxRsProjectSettings toJaxRsSettings(CodegenProject project) {
         boolean codeOnly = "true".equals(project.getAttributes().get("codeOnly"));
         boolean reactive = "true".equals(project.getAttributes().get("reactive"));
+        boolean generateCliCi = "true".equals(project.getAttributes().get("generateCliCi"));
         String groupId = project.getAttributes().get("groupId");
         String artifactId = project.getAttributes().get("artifactId");
         String javaPackage = project.getAttributes().get("javaPackage");
@@ -1485,6 +1486,7 @@ public class DesignsResource implements IDesignsResource {
         JaxRsProjectSettings settings = new JaxRsProjectSettings();
         settings.codeOnly = codeOnly;
         settings.reactive = reactive;
+        settings.cliGenCI = generateCliCi;
         settings.groupId = groupId != null ? groupId : "org.example.api";
         settings.artifactId = artifactId != null ? artifactId : "generated-api";
         settings.javaPackage = javaPackage != null ? javaPackage : "org.example.api";

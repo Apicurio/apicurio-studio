@@ -81,7 +81,7 @@
         <version.dependency.plugin>3.3.0</version.dependency.plugin>
         <version.deploy.plugin>2.8.2</version.deploy.plugin>
         <version.gatling.plugin>4.2.5</version.gatling.plugin>
-        <version.install.plugin>2.5.2</version.install.plugin>
+        <version.install.plugin>3.0.1</version.install.plugin>
         <version.jar.plugin>3.2.2</version.jar.plugin>
         <version.javadoc.plugin>3.4.0</version.javadoc.plugin>
         <version.maven-gpg-plugin.plugin>1.6</version.maven-gpg-plugin.plugin>

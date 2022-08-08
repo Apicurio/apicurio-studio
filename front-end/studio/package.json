@@ -26,7 +26,7 @@
     "js-base64": "2.5.1",
     "js-yaml": "3.13.1",
     "marked": "4.0.10",
-    "moment": "2.29.2",
+    "moment": "2.29.4",
     "ngx-clipboard": "14.0.1",
     "patternfly": "3.59.1",
     "pluralize": "7.0.0"
@@ -59,7 +59,7 @@
     "js-base64": "2.5.1",
     "js-yaml": "3.13.1",
     "marked": "4.0.10",
-    "moment": "2.29.2",
+    "moment": "2.29.4",
     "ng-packagr": "^11.2.4",
     "ngx-bootstrap": "^7.0.0-rc.1",
     "ngx-clipboard": "^15.0.0-beta01",

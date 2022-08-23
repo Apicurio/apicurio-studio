@@ -53,6 +53,10 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-mysql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-agroal</artifactId>
     </dependency>
     <dependency>
@@ -191,6 +195,15 @@
       </activation>
       <properties>
         <quarkus.profile>prod</quarkus.profile>
+      </properties>
+    </profile>
+    <profile>
+      <id>mysql</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <quarkus.profile>mysql</quarkus.profile>
       </properties>
     </profile>
     <profile>

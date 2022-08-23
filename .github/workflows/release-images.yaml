@@ -57,6 +57,7 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
+      # With the update to quarkus this will build the default images with postgres as the fixed database
       - name: Build Project
         run: cd studio && mvn clean install -Pprod
       
@@ -110,6 +111,40 @@ jobs:
            quay.io/apicurio/apicurio-studio-ui:latest
            quay.io/apicurio/apicurio-studio-ui:latest-release
            quay.io/apicurio/apicurio-studio-ui:${{env.RELEASE_VERSION}}
+
+      # Once the regular images are published, build and publish the MySQL ones.
+      - name: Build Project with MySQL
+        run: cd studio/platforms/quarkus && mvn clean install -Pmysql
+
+      - name: Build and Publish Studio API
+        uses: docker/build-push-action@v2
+        with:
+          context: ./api
+          file: ./api/Dockerfile
+          platforms: ${{env.PLATFORMS}}
+          push: true
+          tags: |
+            docker.io/apicurio/apicurio-studio-api-mysql:latest
+            docker.io/apicurio/apicurio-studio-api-mysql:latest-release
+            docker.io/apicurio/apicurio-studio-api-mysql:${{env.RELEASE_VERSION}}
+            quay.io/apicurio/apicurio-studio-api-mysql:latest
+            quay.io/apicurio/apicurio-studio-api-mysql:latest-release
+            quay.io/apicurio/apicurio-studio-api-mysql:${{env.RELEASE_VERSION}}
+
+      - name: Build and Publish Studio WS
+        uses: docker/build-push-action@v2
+        with:
+          context: ./ws
+          file: ./ws/Dockerfile
+          platforms: ${{env.PLATFORMS}}
+          push: true
+          tags: |
+            docker.io/apicurio/apicurio-studio-ws-mysql:latest
+            docker.io/apicurio/apicurio-studio-ws-mysql:latest-release
+            docker.io/apicurio/apicurio-studio-ws-mysql:${{env.RELEASE_VERSION}}
+            quay.io/apicurio/apicurio-studio-ws-mysql:latest
+            quay.io/apicurio/apicurio-studio-ws-mysql:latest-release
+            quay.io/apicurio/apicurio-studio-ws-mysql:${{env.RELEASE_VERSION}}
 
       - name: Google Chat Notification
         if: ${{ failure() }}

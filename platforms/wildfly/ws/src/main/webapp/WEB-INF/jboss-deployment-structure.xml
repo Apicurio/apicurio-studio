@@ -1,8 +1,5 @@
 <jboss-deployment-structure>
     <deployment>
-        <dependencies>
-            <module name="org.keycloak.keycloak-core"/>
-        </dependencies>
         <exclusions>
             <module name="com.fasterxml.jackson.core.jackson-core"/>
             <module name="com.fasterxml.jackson.core.jackson-databind"/>

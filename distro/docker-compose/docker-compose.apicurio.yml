@@ -2,7 +2,7 @@ version: '3'
 
 services:
   apicurio-studio-ws:
-    image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
+    image: 'apicurio/apicurio-studio-ws${APICURIO_WS_VARIANT}:${APICURIO_WS_VERSION}'
     depends_on: [apicurio-studio-db]
     ports:
       - '8092:8080'
@@ -19,7 +19,7 @@ services:
 
 
   apicurio-studio-api:
-    image: 'apicurio/apicurio-studio-api:${APICURIO_API_VERSION}'
+    image: 'apicurio/apicurio-studio-api${APICURIO_API_VARIANT}:${APICURIO_API_VERSION}'
     depends_on: [apicurio-studio-db, apicurio-studio-ws]
     ports:
       - '8091:8080'

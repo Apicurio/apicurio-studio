@@ -46,12 +46,16 @@ then
   sed 's/$KC_DB_ADDR/'"jboss-keycloak-mysql"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
   sed 's/$DB_DRIVER/'"mysql"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
   sed 's/$DB_CONN_URL/'"jdbc:mysql:\\/\\/apicurio-studio-db\\/apicuriodb"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
+  sed 's/$API_VARIANT/'"-mysql"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
+  sed 's/$WS_VARIANT/'"-mysql"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
 else
   sed 's/$DB_TYPE/'"postgresql9"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
   sed 's/$KC_DB_VENDOR/'"postgres"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
   sed 's/$KC_DB_ADDR/'"jboss-keycloak-postgresql"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
   sed 's/$DB_DRIVER/'"postgresql"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
   sed 's/$DB_CONN_URL/'"jdbc:postgresql:\\/\\/apicurio-studio-db\\/apicuriodb"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
+  sed 's/$API_VARIANT/'""'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
+  sed 's/$WS_VARIANT/'""'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
 fi
 
 

@@ -1,9 +1,10 @@
 FROM registry.access.redhat.com/ubi8/openjdk-11:latest
 
-ENV JAVA_APP_DIR=/deployments \
-    APP_URL="target/apicurio-studio-platforms-quarkus-api-all.tar.gz" \
-    JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager" \
-    AB_ENABLED=jmx_exporter
+ENV APICURIO_DB_TYPE=postgresql9
+ENV JAVA_APP_DIR=/deployments
+ENV APP_URL="target/apicurio-studio-platforms-quarkus-api-all.tar.gz"
+ENV JAVA_OPTIONS="-Dapicurio.hub.storage.jdbc.type=${APICURIO_DB_TYPE} -Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+ENV AB_ENABLED=jmx_exporter
 
 EXPOSE 8080 8778 9779
 

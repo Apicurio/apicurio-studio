@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.apicurio.studio.fe.servlet.filters;
+package io.apicurio.ui;
 
 import io.apicurio.studio.fe.servlet.config.RequestAttributeKeys;
 import io.apicurio.studio.shared.beans.StudioConfigAuth;
@@ -22,7 +22,9 @@ import io.apicurio.studio.shared.beans.StudioConfigAuthType;
 import io.apicurio.studio.shared.beans.StudioRole;
 import io.apicurio.studio.shared.beans.User;
 import io.smallrye.jwt.auth.principal.JWTCallerPrincipal;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.servlet.*;
@@ -40,6 +42,9 @@ import java.util.stream.Collectors;
  * @author carnalca@redhat.com
  */
 public class QuarkusAuthenticationFilter implements Filter {
+
+    @Inject
+    JsonWebToken accessToken;
 
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
@@ -64,21 +69,21 @@ public class QuarkusAuthenticationFilter implements Filter {
             StudioConfigAuth auth = new StudioConfigAuth();
             auth.setType(StudioConfigAuthType.token);
             auth.setLogoutUrl(((HttpServletRequest) request).getContextPath() + "/logout");
-            auth.setToken(principal.getRawToken());
+            auth.setToken(accessToken.getRawToken());
             //TODO carnalca unsafe cast from long to int
-            auth.setTokenRefreshPeriod((int) expirationToRefreshPeriod(principal.getExpirationTime()));
+            auth.setTokenRefreshPeriod((int) expirationToRefreshPeriod(accessToken.getExpirationTime()));
             httpSession.setAttribute(RequestAttributeKeys.AUTH_KEY, auth);
 
             // Fabricate a User object from information in the access token and store it in the request.
             User user = new User();
-            user.setEmail(principal.getClaim("email"));
-            user.setLogin(principal.getClaim("preferred_username"));
-            user.setName(principal.getClaim("name"));
-            if (!principal.containsClaim("realm_access") || principal.<JsonObject>getClaim("realm_access").isNull("roles")) {
+            user.setEmail(accessToken.getClaim("email"));
+            user.setLogin(accessToken.getClaim("preferred_username"));
+            user.setName(accessToken.getClaim("name"));
+            if (!accessToken.containsClaim("realm_access") || accessToken.<JsonObject>getClaim("realm_access").isNull("roles")) {
                 user.setRoles(Collections.emptyList());
             } else {
                 user.setRoles(
-                        principal.<JsonObject>getClaim("realm_access")
+                        accessToken.<JsonObject>getClaim("realm_access")
                                 .getJsonArray("roles").stream()
                                 .map(JsonString.class::cast)
                                 .map(JsonString::getString)

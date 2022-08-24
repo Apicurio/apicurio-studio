@@ -3,7 +3,7 @@
 
     <groupId>io.apicurio</groupId>
     <artifactId>apicurio-studio</artifactId>
-    <version>0.2.58.Final</version>
+    <version>0.2.59-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>apicurio-studio</name>
 

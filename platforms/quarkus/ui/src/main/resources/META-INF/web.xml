@@ -14,7 +14,7 @@
 
   <filter>
     <filter-name>QuarkusAuthenticationFilter</filter-name>
-    <filter-class>io.apicurio.studio.fe.servlet.filters.QuarkusAuthenticationFilter</filter-class>
+    <filter-class>io.apicurio.ui.QuarkusAuthenticationFilter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>QuarkusAuthenticationFilter</filter-name>

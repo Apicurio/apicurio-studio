@@ -14,7 +14,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.net.ssl.SSLContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -25,6 +24,7 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.logmanager.Level;
 import org.keycloak.RSATokenVerifier;
 import org.keycloak.common.VerificationException;
@@ -51,7 +51,6 @@ import org.keycloak.representations.AccessToken;
 import io.apicurio.hub.api.beans.InitiatedLinkedAccount;
 import io.apicurio.hub.core.beans.LinkedAccountType;
 import io.apicurio.hub.core.config.HubConfiguration;
-import io.smallrye.jwt.auth.principal.JWTCallerPrincipal;
 
 /**
  * An implementation of {@link ILinkedAccountsProvider} that used Keycloak to manage
@@ -75,10 +74,11 @@ public class QuarkusLinkedAccountsProvider
     @Inject
     HubConfiguration config;
 
-    @Inject
-    HttpServletRequest request;
 
     private CloseableHttpClient httpClient;
+
+    @Inject
+    JsonWebToken accessToken;
 
     @PostConstruct
     protected void postConstruct() {
@@ -107,10 +107,8 @@ public class QuarkusLinkedAccountsProvider
         String realm = config.getKeycloakRealm();
         String provider = accountType.alias();
 
-        JWTCallerPrincipal principal = (JWTCallerPrincipal) request.getUserPrincipal();
-
         try {
-            AccessToken token = RSATokenVerifier.create(principal.getRawToken()).getToken();
+            AccessToken token = RSATokenVerifier.create(accessToken.getRawToken()).getToken();
             String clientId = token.getIssuedFor();
             MessageDigest md = null;
             try {
@@ -145,12 +143,9 @@ public class QuarkusLinkedAccountsProvider
         try {
             String authServerRootUrl = config.getKeycloakAuthUrl();
             String realm = config.getKeycloakRealm();
-
             String provider = type.alias();
 
-            JWTCallerPrincipal principal = (JWTCallerPrincipal) request.getUserPrincipal();
-
-            AccessToken token = RSATokenVerifier.create(principal.getRawToken()).getToken();
+            AccessToken token = RSATokenVerifier.create(accessToken.getRawToken()).getToken();
 
             String url = KeycloakUriBuilder.fromUri(authServerRootUrl)
                     .path("/realms/{realm}/account/federated-identity-update").queryParam("action", "REMOVE")
@@ -183,7 +178,7 @@ public class QuarkusLinkedAccountsProvider
         try {
             String externalTokenUrl = KeycloakUriBuilder.fromUri(authServerRootUrl)
                     .path("/realms/{realm}/broker/{provider}/token").build(realm, provider).toString();
-            String token = this.security.getToken();
+            String token = accessToken.getRawToken();
 
             HttpGet get = new HttpGet(externalTokenUrl);
             get.addHeader("Accept", "application/json");

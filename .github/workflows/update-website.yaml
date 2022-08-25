@@ -7,7 +7,7 @@ on:
 jobs:
   update-website:
     if: github.repository_owner == 'Apicurio'
-    runs-on: ubuntu-18.04 
+    runs-on: ubuntu-latest
     steps:
       - name: Configure Git
         run: |
@@ -20,7 +20,7 @@ jobs:
            repository: Apicurio/apicurio.github.io
            path: website
            token: ${{ secrets.ACCESS_TOKEN }}
-      
+
       - name: Fetch required Details
         run: echo "RELEASE_VERSION=$(curl https://api.github.com/repos/${GITHUB_REPOSITORY}/releases | jq -r '.tag_name')" >> $GITHUB_ENV
 
@@ -31,7 +31,7 @@ jobs:
           cd _data/studio
           rm latestRelease.json
           touch latestRelease.json && curl https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest > latestRelease.json
-          
+
           echo "********** Saving a copy in the archive **********"
           cp latestRelease.json releases/${RELEASE_VERSION}.json
 
@@ -40,7 +40,7 @@ jobs:
           cd website
           git add .
           git commit -m "Automated Update For Apicurio Studio Release Version: ${{ env.RELEASE_VERSION }}"
-          git push origin master
+          git push origin main
 
       - name: Google Chat Notification
         if: ${{ failure() }}

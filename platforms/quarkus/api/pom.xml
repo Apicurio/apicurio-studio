@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.apicurio</groupId>
     <artifactId>apicurio-studio-platforms-quarkus</artifactId>
-    <version>0.2.56-SNAPSHOT</version>
+    <version>0.2.59-SNAPSHOT</version>
   </parent>
   <artifactId>apicurio-studio-platforms-quarkus-api</artifactId>
   <name>apicurio-studio-platforms-quarkus-api</name>
@@ -50,6 +50,10 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-jdbc-postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-mysql</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -191,6 +195,15 @@
       </activation>
       <properties>
         <quarkus.profile>prod</quarkus.profile>
+      </properties>
+    </profile>
+    <profile>
+      <id>mysql</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <quarkus.profile>mysql</quarkus.profile>
       </properties>
     </profile>
     <profile>

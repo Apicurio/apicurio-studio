@@ -1,8 +1,7 @@
 <jboss-deployment-structure>
     <deployment>
-        <exclusions>
-            <module name="com.fasterxml.jackson.core.jackson-core"/>
-            <module name="com.fasterxml.jackson.core.jackson-databind"/>
-        </exclusions>
+        <dependencies>
+            <module name="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
+        </dependencies>
     </deployment>
 </jboss-deployment-structure>

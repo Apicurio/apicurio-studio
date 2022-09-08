@@ -80,7 +80,7 @@
         <version.compiler.plugin>3.10.1</version.compiler.plugin>
         <version.dependency.plugin>3.3.0</version.dependency.plugin>
         <version.deploy.plugin>3.0.0</version.deploy.plugin>
-        <version.gatling.plugin>4.2.5</version.gatling.plugin>
+        <version.gatling.plugin>4.2.6</version.gatling.plugin>
         <version.install.plugin>3.0.1</version.install.plugin>
         <version.jar.plugin>3.2.2</version.jar.plugin>
         <version.javadoc.plugin>3.4.1</version.javadoc.plugin>

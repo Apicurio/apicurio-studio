@@ -134,7 +134,7 @@
         <version.mysql>8.0.22</version.mysql>
         <version.org.postgresql>42.2.20</version.org.postgresql>
         <version.org.slf4j>2.0.0</version.org.slf4j>
-        <version.scala>2.13.8</version.scala>
+        <version.scala>2.13.9</version.scala>
         <version.infinispan>13.0.10.Final</version.infinispan>
     </properties>
 

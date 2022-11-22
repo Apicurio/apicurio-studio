@@ -41,6 +41,6 @@ export class MarkdownComponent implements OnChanges {
     }
 
     public isEmpty(): boolean {
-        return this.data === null || this.data === undefined || this.data.trim().length === 0;
+        return this.data === null || this.data === undefined || (this.data.trim ? this.data.trim().length === 0 : true);
     }
 }

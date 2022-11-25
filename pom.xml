@@ -133,7 +133,7 @@
         <version.org.keycloak>20.0.1</version.org.keycloak>
         <version.mysql>8.0.22</version.mysql>
         <version.org.postgresql>42.2.20</version.org.postgresql>
-        <version.org.slf4j>2.0.3</version.org.slf4j>
+        <version.org.slf4j>2.0.5</version.org.slf4j>
         <version.scala>2.13.10</version.scala>
         <version.infinispan>14.0.2.Final</version.infinispan>
     </properties>

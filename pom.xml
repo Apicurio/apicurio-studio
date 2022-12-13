@@ -118,7 +118,7 @@
         <version.javax.jms.jms-api>2.0.1</version.javax.jms.jms-api>
         <version.javax.json>1.1.4</version.javax.json>
         <version.junit>4.13.2</version.junit>
-        <version.org.apache.httpcomponents>4.5.13</version.org.apache.httpcomponents>
+        <version.org.apache.httpcomponents>4.5.14</version.org.apache.httpcomponents>
         <version.org.apache.httpcore>4.4.16</version.org.apache.httpcore>
         <version.org.apache.commons.commons-pool2>2.11.1</version.org.apache.commons.commons-pool2>
         <version.org.eclipse.mylyn.github>2.1.5</version.org.eclipse.mylyn.github>

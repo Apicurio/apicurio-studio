@@ -69,11 +69,9 @@ public class QuarkusLinkedAccountsProvider
 
     private static final Logger logger = Logger.getLogger(QuarkusLinkedAccountsProvider.class.getName());
 
-    @Inject
-    ISecurityContext security;
+
     @Inject
     HubConfiguration config;
-
 
     private CloseableHttpClient httpClient;
 

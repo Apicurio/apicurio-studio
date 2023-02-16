@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.apicurio</groupId>
         <artifactId>apicurio-studio-tools</artifactId>
-        <version>0.2.59-SNAPSHOT</version>
+        <version>0.2.60-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>apicurio-studio-tools-perf-test</artifactId>

@@ -1,11 +1,8 @@
 version: '3'
 
-volumes:
-  postgre_apicurio:
-
 services:
   apicurio-studio-db:
-    image: 'postgres:12.9'    
+    image: 'postgres:15.2'
     environment:
       POSTGRES_DB: ${AS_DATABASE}
       POSTGRES_USER: ${AS_DB_USER}

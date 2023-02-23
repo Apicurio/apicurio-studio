@@ -11,9 +11,6 @@
     <artifactId>apicurio-studio-distro</artifactId>
     <packaging>pom</packaging>
     <name>apicurio-studio-distro</name>
-    <modules>
-        <module>quickstart</module>
-    </modules>
     <build>
         <plugins>
             <plugin>

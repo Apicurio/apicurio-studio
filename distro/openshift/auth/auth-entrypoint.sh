@@ -16,12 +16,12 @@ else
       databaseToInstall="postgres"
     elif (printenv | grep '^MYSQL_' &>/dev/null); then
       databaseToInstall="mysql"
-    fi
+    fi                                                                                                                                                                                                                           
 fi
 
 if [ "$databaseToInstall" != "" ]; then
     echo "[KEYCLOAK DOCKER IMAGE] Using the external $databaseToInstall database"
-    /bin/sh /opt/jboss/tools/databases/change-database.sh $databaseToInstall
+    /bin/sh /opt/jboss/keycloak/bin/change-database.sh $databaseToInstall
 else
     echo "[KEYCLOAK DOCKER IMAGE] Using the embedded H2 database"
 fi

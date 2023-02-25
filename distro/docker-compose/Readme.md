@@ -26,7 +26,7 @@ Supported databases:
 
 ### Docker based setup
 
-The easiest way is to open a terminal or PowerShell, and navigate into distro/docker-compose folder. In this folder enter the command below. On Windows please make sure, that your drives shares are enabled!
+The easiest way is to open a terminal or PowerShell, then clone this project into your host and navigate into distro/docker-compose folder. In this folder enter the command below. On Windows please make sure, that your drives shares are enabled!
 
 ```
 On Linux/Mac:
@@ -81,7 +81,7 @@ Note: make sure you use the external IP address of your host here.  `localhost` 
 
 ## Environment customisation
 
-After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want.
+After the successful run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want.
 
 The passwords for DBs, KeyCloak, and the uuid of the microcks-service-account is generated dynamically with every run of the setup script.
 

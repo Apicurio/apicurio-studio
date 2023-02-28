@@ -38,17 +38,10 @@ The following command compiles all the code, installs the JARs into your local M
 ```
 ## Quickstart (i.e. How To Run It)
 
-The fastest way to get started using Apicurio Studio is to use the quickstart.  The Apicurio quickstart is produced as part 
-of the full maven build - you can find it in `distro/quickstart/target` as a ZIP file.  To start up the quickstart, use the 
-following commands from the top-level of the repository:
+The fastest way to get started using Apicurio Studio is to use the Quickstart. The Apicurio Studio bits required for this mode are produced as part 
+of the full maven build - you can find it in.  To start up the Dev Mode, once the project has been built, follow the instructions under the [quickstart](./distro/quickstart/QUICKSTART.md) directory.
 
-```bash
-  $ rm -rf ./distro/quickstart/target/apicurio-studio-*-SNAPSHOT
-  $ unzip distro/quickstart/target/apicurio-studio-*-quickstart.zip -d distro/quickstart/target
-  $ ./distro/quickstart/target/apicurio-studio-*-SNAPSHOT/bin/standalone.sh -c standalone-apicurio.xml
-```
-
-This will start Wildfly on your local machine and you can access the UI at [http://localhost:8080](http://localhost:8080).
+This will start the required Quarkus components on your local machine and you can access the UI at [http://localhost:8080](http://localhost:8080).
 
 ## Contribute fixes and features
 
@@ -57,6 +50,7 @@ Apicurio Studio is open source, and we welcome anybody who wants to participate 
 Please follow [Setting your development environment](https://apicurio-studio.readme.io/docs/setting-up-a-development-environment) guide to setup your local machine for development.  The guide assumes the use of the Eclipse IDE for Java
 development (backend) but is not required - developers should be able to adapt the instructions to their particular
 environment.
+
 An additional way that is less dependent on Eclipse is described in [this manual](DEV_MODE.md).
 
 If you want to fix a bug or make any changes, please [log an issue in GitHub](https://github.com/apicurio/apicurio-studio/issues) describing the bug

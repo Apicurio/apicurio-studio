@@ -1,8 +1,6 @@
-FROM jboss/keycloak:16.1.0
+FROM jboss/keycloak:14.0.0
 
 LABEL authors="Eric Wittmann <eric.wittmann@redhat.com>"
-
-ENV JDBC_POSTGRES_VERSION 42.2.6
 
 USER root
 

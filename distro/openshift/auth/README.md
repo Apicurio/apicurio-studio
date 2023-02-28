@@ -5,15 +5,15 @@ Instructions
 
 To start up the image
 
-    docker run -it -p 8080:8080 apicurio/apicurio-studio-auth
+    docker run -it -p 8080:8080 apicurio/apicurio-studio-auth-quarkus
 
 ## Building the image
 
-    docker build -t="apicurio/apicurio-studio-auth" --rm .
+    docker build -t="apicurio/apicurio-studio-auth-quarkus" --rm .
 
 ## Pushing the image to Docker Hub
 
-    docker push apicurio/apicurio-studio-auth
+    docker push apicurio/apicurio-studio-auth-quarkus
 
 ## How to customize the image
 

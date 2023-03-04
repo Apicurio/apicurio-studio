@@ -1,8 +1,8 @@
-# Docker-compose based installation
+# Docker-compose and Quarkus based installation
 
 ## Overview
 
-This setup contains a fully configured Apicurio-Studio package, already integrated with MySQL/Postgres, Keycloak and Microcks. It contains a shell script which will configure the environment. Currently every application is routed to the host network without SSL support. This is a development version, do not use it in a production environment!
+This setup contains a fully configured Apicurio-Studio package, already integrated with Postgres, Keycloak and Microcks. It contains a shell script which will configure the environment. Currently every application is routed to the host network without SSL support. This is a development version, do not use it in a production environment!
 
 Here is the port mapping:
 - 8090 for Keycloak
@@ -21,29 +21,28 @@ The scripts will create 3 files:
 - config/keycloak/microcks-realm.json
 
 Supported databases:
-- mysql
 - postgresql
 
 ### Docker based setup
 
-The easiest way is to open a terminal or PowerShell, and navigate into distro/docker-compose folder. In this folder enter the command below. On Windows please make sure, that your drives shares are enabled!
+The easiest way is to open a terminal or PowerShell, and navigate into distro/quarkus-docker-compose folder. In this folder enter the command below. On Windows please make sure, that your drives shares are enabled!
 
 ```
 On Linux/Mac:
 
-docker run -v $(pwd):/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
+docker run -v $(pwd):/apicurio carnalca/apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST}
 
 For example:
-docker run -v $(pwd):/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231 mysql
+docker run -v $(pwd):/apicurio carnalca/apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231
 ```
 
 ```
 On Windows:
 
-docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
+docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST}
 
 For example:
-docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231 mysql
+docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231
 ```
 
 This command will pull a minimal alpine linux based image, mount the current folder to it, and it will run the setup script. At the end of the run, it will print the admin password for Keycloak, and the URLs for the services. Like this:
@@ -60,28 +59,19 @@ Microcks URL: 192.168.1.231:8900
 
 Please copy these values somewhere where you can find them easily!
 
-
-**Note**: if you have git configured to automatically convert between Windows and Unix line endings, then the above docker run is likely to fail.  Instead, you can try this alternative (example) docker command:
-
-```
-docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest /bin/bash -c "cp /apicurio/setup.sh /tmp/apicurio-setup.sh ; dos2unix /tmp/apicurio-setup.sh ; bash /tmp/apicurio-setup.sh 192.168.1.231 mysql"
-```
-
-This alternative command will use the `dos2unix` utility to convert the script's line endings before evaluating/executing it.
-
 ### Script based setup
 
 If you're using NIX based OS, you can run the setup script without the docker wrapper. The only dependency is "util-linux" package which contains a tool called uuidgen.
 
 ```
-./setup.sh {IP_OF_YOUR_HOST} {DATABASE_TYPE}
+./setup.sh {IP_OF_YOUR_HOST}
 ```
 
 Note: make sure you use the external IP address of your host here.  `localhost` and `127.0.0.1` will not work.
 
 ## Environment customisation
 
-After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest-release` tagged container from dockerhub, but you can change this as you want.
+After the successfull run of the setup script, a file called `.env` will appear. This file contains the customisable properties of the environment. Every property is already filled in, so this is only for customization. You can set your passwords, URL's, and the versions of the components of Apicurio-Studio. The default version is the `latest`.
 
 The passwords for DBs, KeyCloak, and the uuid of the microcks-service-account is generated dynamically with every run of the setup script.
 
@@ -102,27 +92,21 @@ A simple "reset" script is also included, it will remove the generated config fi
 When your configs are generated, you can start the whole stack with these commands:
 
 ```
-For Mysql config:
-./start-mysql-environment.sh
 
 For PostgreSQL config:
 ./start-postgresql-environment.sh
 ```
 
-If you want to do it manually, here are the commands:
+### Recommended Approach due to a bug in Quarkus
+
+If you want to do it manually, here are the commands. You will need to start Keycloak, then wait and then start the Quarkus apps:
 
 ```
-docker-compose -f docker-compose.keycloak.yml build
+docker-compose -f docker-compose.keycloak.yml build && docker-compose -f docker-compose.keycloak.yml up
 
-If you generated a config for MySQL:
-docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-mysql.yml up
-
-If you generated a config for PostgreSQL:
-docker-compose -f docker-compose.keycloak.yml -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-postgre.yml up
+docker-compose -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-postgre.yml up
 
 ```
-
-Please do not mix up those commands! If you want to switch between databases, you have to clear the already existing volumes and configs.
 
 To clear the environment, please run these commands:
 

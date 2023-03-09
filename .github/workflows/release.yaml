@@ -104,8 +104,8 @@ jobs:
       - name: Restoring 'latest-release' as the ImageStream version in the OpenShift template(s)"
         run: |
           cd studio/distro/openshift
-          sed -i "s/${{ github.event.inputs.release-version }}/latest-release/g" apicurio-template.yml
-          sed -i "s/${{ github.event.inputs.release-version }}/latest-release/g" apicurio-standalone-template.yml
+          sed -i "s/${{ github.event.inputs.release-version }}/latest-release/g" apicurio-deployment-configs-template.yml
+          sed -i "s/${{ github.event.inputs.release-version }}/latest-release/g" apicurio-image-streams-template.yml
      
       - name: Commit Changes for Release Version ${{ github.event.inputs.release-version }}
         run: |

@@ -17,3 +17,4 @@ buildNumber.properties
 .mvn/timing.properties
 *.iml
 website
+front-end/studio/package-lock.json

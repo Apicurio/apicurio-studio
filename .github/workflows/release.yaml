@@ -11,12 +11,12 @@ on:
       branch:
         description: 'Branch to release from'
         required: true
-        default: 'master'
+        default: 'main'
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'Apicurio'
+    if: github.repository_owner == 'DJetCloud'
     steps:
       - name: Set up Node.js v14
         uses: actions/setup-node@v1
@@ -46,9 +46,9 @@ jobs:
           mkdir studio
           cd studio
           git init
-          git config --global user.name "apicurio-ci[bot]"
-          git config --global user.email "apicurio-ci@users.noreply.github.com"
-          git remote add origin "https://apicurio-ci:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
+          git config --global user.name "djet-ci[bot]"
+          git config --global user.email "djet-ci@users.noreply.github.com"
+          git remote add origin "https://djet-ci:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
           git fetch
           git checkout ${{ github.event.inputs.branch }}
           git branch --set-upstream-to=origin/${{ github.event.inputs.branch }}

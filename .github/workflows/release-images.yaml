@@ -9,7 +9,7 @@ env:
 
 jobs:
   release-images:
-    if: github.repository_owner == 'Apicurio'
+    if: github.repository_owner == 'DJetCloud'
     runs-on: ubuntu-18.04
     steps:
         # Open-Source Machine emulator that allows you to emulate multiple CPU architectures on your machine
@@ -75,12 +75,12 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/apicurio/apicurio-studio-api:latest
-           docker.io/apicurio/apicurio-studio-api:latest-release
-           docker.io/apicurio/apicurio-studio-api:${{env.RELEASE_VERSION}}
-           quay.io/apicurio/apicurio-studio-api:latest
-           quay.io/apicurio/apicurio-studio-api:latest-release
-           quay.io/apicurio/apicurio-studio-api:${{env.RELEASE_VERSION}}
+           docker.io/djetcloud/apicurio-studio-api:latest
+           docker.io/djetcloud/apicurio-studio-api:latest-release
+           docker.io/djetcloud/apicurio-studio-api:${{env.RELEASE_VERSION}}
+           quay.io/djetcloud/apicurio-studio-api:latest
+           quay.io/djetcloud/apicurio-studio-api:latest-release
+           quay.io/djetcloud/apicurio-studio-api:${{env.RELEASE_VERSION}}
 
       - name: Build and Publish Studio WS
         uses: docker/build-push-action@v2
@@ -90,12 +90,12 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/apicurio/apicurio-studio-ws:latest
-           docker.io/apicurio/apicurio-studio-ws:latest-release
-           docker.io/apicurio/apicurio-studio-ws:${{env.RELEASE_VERSION}}
-           quay.io/apicurio/apicurio-studio-ws:latest
-           quay.io/apicurio/apicurio-studio-ws:latest-release
-           quay.io/apicurio/apicurio-studio-ws:${{env.RELEASE_VERSION}}
+           docker.io/djetcloud/apicurio-studio-ws:latest
+           docker.io/djetcloud/apicurio-studio-ws:latest-release
+           docker.io/djetcloud/apicurio-studio-ws:${{env.RELEASE_VERSION}}
+           quay.io/djetcloud/apicurio-studio-ws:latest
+           quay.io/djetcloud/apicurio-studio-ws:latest-release
+           quay.io/djetcloud/apicurio-studio-ws:${{env.RELEASE_VERSION}}
 
       - name: Build and Publish Studio UI
         uses: docker/build-push-action@v2
@@ -105,12 +105,12 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/apicurio/apicurio-studio-ui:latest
-           docker.io/apicurio/apicurio-studio-ui:latest-release
-           docker.io/apicurio/apicurio-studio-ui:${{env.RELEASE_VERSION}}
-           quay.io/apicurio/apicurio-studio-ui:latest
-           quay.io/apicurio/apicurio-studio-ui:latest-release
-           quay.io/apicurio/apicurio-studio-ui:${{env.RELEASE_VERSION}}
+           docker.io/djetcloud/apicurio-studio-ui:latest
+           docker.io/djetcloud/apicurio-studio-ui:latest-release
+           docker.io/djetcloud/apicurio-studio-ui:${{env.RELEASE_VERSION}}
+           quay.io/djetcloud/apicurio-studio-ui:latest
+           quay.io/djetcloud/apicurio-studio-ui:latest-release
+           quay.io/djetcloud/apicurio-studio-ui:${{env.RELEASE_VERSION}}
 
       # Once the regular images are published, build and publish the MySQL ones.
       - name: Build Project with MySQL
@@ -124,12 +124,12 @@ jobs:
           platforms: ${{env.PLATFORMS}}
           push: true
           tags: |
-            docker.io/apicurio/apicurio-studio-api-mysql:latest
-            docker.io/apicurio/apicurio-studio-api-mysql:latest-release
-            docker.io/apicurio/apicurio-studio-api-mysql:${{env.RELEASE_VERSION}}
-            quay.io/apicurio/apicurio-studio-api-mysql:latest
-            quay.io/apicurio/apicurio-studio-api-mysql:latest-release
-            quay.io/apicurio/apicurio-studio-api-mysql:${{env.RELEASE_VERSION}}
+            docker.io/djetcloud/apicurio-studio-api-mysql:latest
+            docker.io/djetcloud/apicurio-studio-api-mysql:latest-release
+            docker.io/djetcloud/apicurio-studio-api-mysql:${{env.RELEASE_VERSION}}
+            quay.io/djetcloud/apicurio-studio-api-mysql:latest
+            quay.io/djetcloud/apicurio-studio-api-mysql:latest-release
+            quay.io/djetcloud/apicurio-studio-api-mysql:${{env.RELEASE_VERSION}}
 
       - name: Build and Publish Studio WS
         uses: docker/build-push-action@v2
@@ -139,17 +139,17 @@ jobs:
           platforms: ${{env.PLATFORMS}}
           push: true
           tags: |
-            docker.io/apicurio/apicurio-studio-ws-mysql:latest
-            docker.io/apicurio/apicurio-studio-ws-mysql:latest-release
-            docker.io/apicurio/apicurio-studio-ws-mysql:${{env.RELEASE_VERSION}}
-            quay.io/apicurio/apicurio-studio-ws-mysql:latest
-            quay.io/apicurio/apicurio-studio-ws-mysql:latest-release
-            quay.io/apicurio/apicurio-studio-ws-mysql:${{env.RELEASE_VERSION}}
+            docker.io/djetcloud/apicurio-studio-ws-mysql:latest
+            docker.io/djetcloud/apicurio-studio-ws-mysql:latest-release
+            docker.io/djetcloud/apicurio-studio-ws-mysql:${{env.RELEASE_VERSION}}
+            quay.io/djetcloud/apicurio-studio-ws-mysql:latest
+            quay.io/djetcloud/apicurio-studio-ws-mysql:latest-release
+            quay.io/djetcloud/apicurio-studio-ws-mysql:${{env.RELEASE_VERSION}}
 
-      - name: Google Chat Notification
-        if: ${{ failure() }}
-        uses: Co-qn/google-chat-notification@releases/v1
-        with:
-          name: ${{ github.job }}
-          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-          status: ${{ job.status }}
+#       - name: Google Chat Notification
+#         if: ${{ failure() }}
+#         uses: Co-qn/google-chat-notification@releases/v1
+#         with:
+#           name: ${{ github.job }}
+#           url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+#           status: ${{ job.status }}

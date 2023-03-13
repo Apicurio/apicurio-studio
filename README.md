@@ -1,4 +1,4 @@
-![Verify Build Workflow](https://github.com/Apicurio/apicurio-studio/workflows/Verify%20Build%20Workflow/badge.svg)
+![Verify Build Workflow](https://github.com/DJetCloud/apicurio-studio/workflows/Verify%20Build%20Workflow/badge.svg)
 
 # The apicurio-studio project (Open Source API Design Studio)
 

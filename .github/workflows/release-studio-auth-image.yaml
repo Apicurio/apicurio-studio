@@ -12,7 +12,7 @@ jobs:
   release-studio-auth-image:
     name: Release Studio Auth Multiarch Image
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'Apicurio'
+    if: github.repository_owner == 'DJetCloud'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -48,9 +48,9 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/apicurio/apicurio-studio-auth:latest
-           quay.io/apicurio/apicurio-studio-auth:latest
-           docker.io/apicurio/apicurio-studio-auth:latest-release
-           quay.io/apicurio/apicurio-studio-auth:latest-release
-           docker.io/apicurio/apicurio-studio-auth:${{ github.event.inputs.version }}
-           quay.io/apicurio/apicurio-studio-auth:${{ github.event.inputs.version }}
+           docker.io/djetcloud/apicurio-studio-auth:latest
+           quay.io/djetcloud/apicurio-studio-auth:latest
+           docker.io/djetcloud/apicurio-studio-auth:latest-release
+           quay.io/djetcloud/apicurio-studio-auth:latest-release
+           docker.io/djetcloud/apicurio-studio-auth:${{ github.event.inputs.version }}
+           quay.io/djetcloud/apicurio-studio-auth:${{ github.event.inputs.version }}

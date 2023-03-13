@@ -1,12 +1,12 @@
 {
-  "name": "@apicurio/studio",
+  "name": "@djetcloud/studio",
   "version": "0.2.60",
   "description": "A web application to help design restful APIs.",
   "author": "Eric Wittmann",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/apicurio/apicurio-studio"
+    "url": "https://github.com/DJetCloud/apicurio-studio"
   },
   "scripts": {
     "ng": "ng",

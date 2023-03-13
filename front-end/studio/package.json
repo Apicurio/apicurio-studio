@@ -1,6 +1,6 @@
 {
   "name": "@djetcloud/studio",
-  "version": "0.2.60",
+  "version": "1.0.0",
   "description": "A web application to help design restful APIs.",
   "author": "Eric Wittmann",
   "license": "Apache-2.0",

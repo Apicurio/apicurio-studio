@@ -7,7 +7,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master]
+    branches: [main]
   pull_request:
     paths-ignore:
       - '.github/**'
@@ -15,7 +15,7 @@ on:
       - 'LICENSE'
       - 'README*'
       - 'CODE_OF_CONDUCT*'
-    branches: [master]
+    branches: [main]
 
 env:
   PLATFORMS: linux/amd64,linux/arm64
@@ -24,7 +24,7 @@ jobs:
   build-verify:
     name: Verify Build
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'Apicurio'
+    if: github.repository_owner == 'DJetCloud'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -78,8 +78,8 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/apicurio/apicurio-studio-api:latest-snapshot
-           quay.io/apicurio/apicurio-studio-api:latest-snapshot
+           docker.io/djetcloud/apicurio-studio-api:latest-snapshot
+           quay.io/djetcloud/apicurio-studio-api:latest-snapshot
 
       - name: Build and Publish Studio WS
         if: github.event_name == 'push'
@@ -90,8 +90,8 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/apicurio/apicurio-studio-ws:latest-snapshot
-           quay.io/apicurio/apicurio-studio-ws:latest-snapshot
+           docker.io/djetcloud/apicurio-studio-ws:latest-snapshot
+           quay.io/djetcloud/apicurio-studio-ws:latest-snapshot
 
       - name: Build and Publish Studio UI
         if: github.event_name == 'push'
@@ -102,7 +102,7 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/apicurio/apicurio-studio-ui:latest-snapshot
-           quay.io/apicurio/apicurio-studio-ui:latest-snapshot
+           docker.io/djetcloud/apicurio-studio-ui:latest-snapshot
+           quay.io/djetcloud/apicurio-studio-ui:latest-snapshot
 
       

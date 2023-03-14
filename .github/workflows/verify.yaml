@@ -40,6 +40,9 @@ jobs:
 
       #- name: Run Integration Tests
       #  run: mvn install -pl :apicurio-studio-test-integration-arquillian -Pintegration
+      
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
 
       # Open-Source Machine emulator that allows you to emulate multiple CPU architectures on your machine
       - name: Set up QEMU

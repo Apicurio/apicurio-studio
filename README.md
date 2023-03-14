@@ -16,7 +16,7 @@ of this repository, and then clone your fork:
 ```bash
   $ git clone git@github.com:<you>/apicurio-studio.git
   $ cd apicurio-studio
-  $ git remote add upstream git://github.com/apicurio/apicurio-studio.git
+  $ git remote add upstream git://github.com/djetcloud/apicurio-studio.git
 ```
 At any time, you can pull changes from the upstream and merge them onto your master:
 ```bash

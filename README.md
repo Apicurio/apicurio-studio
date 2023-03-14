@@ -9,7 +9,7 @@ This is the official Git repository for the apicurio studio project:  http://www
 The apicurio studio project is a standalone API design studio that can be used to create
 new or edit existing API designs (using the OpenAPI specification).
 
-## Get the code
+## Get the project code
 
 The easiest way to get started with the code is to [create your own fork](http://help.github.com/forking/)
 of this repository, and then clone your fork:

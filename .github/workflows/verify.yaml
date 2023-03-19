@@ -34,6 +34,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+          cache: maven
 
       - name: Build Project
         run: mvn clean install -Pprod
@@ -45,7 +46,6 @@ jobs:
         uses: codecov/codecov-action@v3.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          directory: platforms/quarkus/api
 
       # Open-Source Machine emulator that allows you to emulate multiple CPU architectures on your machine
       - name: Set up QEMU

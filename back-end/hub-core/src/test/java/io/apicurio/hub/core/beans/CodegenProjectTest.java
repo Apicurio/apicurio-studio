@@ -38,7 +38,7 @@ public class CodegenProjectTest {
         project.setCreatedOn(new Date(0));
         project.setModifiedBy("user2");
         project.setModifiedOn(new Date(1000000));
-        project.setType(CodegenProjectType.springBoot);
+        project.setType(CodegenProjectType.springboot);
         project.setAttributes(new HashMap<>());
         project.getAttributes().put("property-1", "value1");
         project.getAttributes().put("property-2", "value2");

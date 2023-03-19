@@ -37,11 +37,11 @@ export interface GenerateProjectWizardModel {
 }
 
 var PROJECT_TYPES: DropDownOption[] = [
+    new Value("Spring Boot", "springboot"),
     new Value("Simple JAX-RS", "jaxrs"),
     new Value("Quarkus JAX-RS", "quarkus"),
     new Value("Thorntail JAX-RS", "thorntail"),
     new Value("Vert.x", "vertx", true),
-    new Value("Spring Boot", "springboot", true),
     new Value("Node.js", "nodejs", true)
 ];
 

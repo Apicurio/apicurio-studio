@@ -1295,7 +1295,7 @@ public class JdbcStorageTest {
         project = new CodegenProject();
         project.setCreatedBy("user2");
         project.setCreatedOn(now);
-        project.setType(CodegenProjectType.springBoot);
+        project.setType(CodegenProjectType.springboot);
         project.setDesignId(designId1);
         project.setAttributes(new HashMap<>());
         storage.createCodegenProject("user2", project);

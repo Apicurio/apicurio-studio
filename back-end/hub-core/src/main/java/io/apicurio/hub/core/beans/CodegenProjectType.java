@@ -21,6 +21,6 @@ package io.apicurio.hub.core.beans;
  */
 public enum CodegenProjectType {
     
-    jaxrs, thorntail, quarkus, vertx, springBoot, nodejs;
+    jaxrs, thorntail, quarkus, vertx, springboot, nodejs;
 
 }

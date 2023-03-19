@@ -44,6 +44,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 
+import io.apicurio.hub.api.codegen.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -75,10 +76,6 @@ import io.apicurio.hub.api.beans.UpdateCodgenProject;
 import io.apicurio.hub.api.beans.UpdateCollaborator;
 import io.apicurio.hub.api.beans.ValidationError;
 import io.apicurio.hub.api.bitbucket.BitbucketResourceResolver;
-import io.apicurio.hub.api.codegen.JaxRsProjectSettings;
-import io.apicurio.hub.api.codegen.OpenApi2JaxRs;
-import io.apicurio.hub.api.codegen.OpenApi2Quarkus;
-import io.apicurio.hub.api.codegen.OpenApi2Thorntail;
 import io.apicurio.hub.api.connectors.ISourceConnector;
 import io.apicurio.hub.api.connectors.SourceConnectorException;
 import io.apicurio.hub.api.connectors.SourceConnectorFactory;
@@ -181,6 +178,8 @@ public class DesignsResource implements IDesignsResource {
     private EventsService eventsService;
     @Inject
     private AuthorizationService authorizationService;
+
+    private final CodegenAdapter codegen = new CodegenAdapter();
 
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#listDesigns()
@@ -1272,11 +1271,15 @@ public class DesignsResource implements IDesignsResource {
                 generator.setUpdateOnly(updateOnly);
 
                 return asResponse(settings, generator);
+            } else if (project.getType() == CodegenProjectType.springboot) {
+                return codegen.createResponse(project, content);
             } else {
                 throw new ServerError("Unsupported project type: " + project.getType());
             }
         } catch (StorageException e) {
             throw new ServerError(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -46,7 +46,7 @@ public class CodegenProjectTest {
         
         ObjectMapper mapper = new ObjectMapper();
         String sval = mapper.writer().writeValueAsString(project);
-        String expected = "{\"id\":\"1\",\"createdBy\":\"user\",\"createdOn\":0,\"modifiedBy\":\"user2\",\"modifiedOn\":1000000,\"designId\":\"100\",\"type\":\"springBoot\",\"attributes\":{\"property-1\":\"value1\",\"property-3\":\"value3\",\"property-2\":\"value2\"}}";
+        String expected = "{\"id\":\"1\",\"createdBy\":\"user\",\"createdOn\":0,\"modifiedBy\":\"user2\",\"modifiedOn\":1000000,\"designId\":\"100\",\"type\":\"springboot\",\"attributes\":{\"property-1\":\"value1\",\"property-3\":\"value3\",\"property-2\":\"value2\"}}";
         Assert.assertEquals(expected, sval);
     }
 

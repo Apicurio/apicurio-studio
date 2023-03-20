@@ -182,6 +182,79 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- SpringBoot Config -->
+                                    <div class="form-items-springboot" *ngIf="model.projectType === 'springboot'">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label required" for="springboot_system">System</label>
+                                            <div class="col-sm-10">
+                                                <input #systemInput="ngModel" name="system" type="text" id="springboot_system" class="form-control" placeholder="system name"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\.\-_]*" [(ngModel)]="model.projectData.system" #name="ngModel">
+                                                <form-error-message [inputModel]="systemInput" [type]="'required'">System name is required.</form-error-message>
+                                                <form-error-message [inputModel]="systemInput" [type]="'pattern'">Please enter a valid System name.</form-error-message>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label required" for="springboot_application">Application</label>
+                                            <div class="col-sm-10">
+                                                <input #applicationInput="ngModel" name="application" type="text" id="springboot_application" class="form-control" placeholder="application name"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\.\-_]*" [(ngModel)]="model.projectData.application" #name="ngModel">
+                                                <form-error-message [inputModel]="applicationInput" [type]="'required'">Application name is required.</form-error-message>
+                                                <form-error-message [inputModel]="applicationInput" [type]="'pattern'">Please enter a valid Application name.</form-error-message>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label required" for="springboot_groupId">Group ID</label>
+                                            <div class="col-sm-10">
+                                                <input #groupIdInput="ngModel" name="groupId" type="text" id="springboot_groupId" class="form-control" placeholder="org.example.api"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\.\-_]*" [(ngModel)]="model.projectData.groupId" #name="ngModel">
+                                                <form-error-message [inputModel]="groupIdInput" [type]="'required'">Group ID is required.</form-error-message>
+                                                <form-error-message [inputModel]="groupIdInput" [type]="'pattern'">Please enter a valid groupId.</form-error-message>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label required" for="springboot_artifactId">Artifact ID</label>
+                                            <div class="col-sm-10">
+                                                <input #artifactIdInput="ngModel" name="artifactId" type="text" id="springboot_artifactId" class="form-control" placeholder="my-api"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\.\-_]*" [(ngModel)]="model.projectData.artifactId" #name="ngModel">
+                                                <form-error-message [inputModel]="artifactIdInput" [type]="'required'">Artifact ID is required.</form-error-message>
+                                                <form-error-message [inputModel]="artifactIdInput" [type]="'pattern'">Please enter a valid artifactId.</form-error-message>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label required" for="springboot_artifactVersion">Artifact Version</label>
+                                            <div class="col-sm-10">
+                                                <input #artifactVersionInput="ngModel" name="artifactVersion" type="text" id="springboot_artifactVersion" class="form-control" placeholder="0.0.1-SNAPSHOT"
+                                                       required pattern="[a-zA-Z0-9\.-]*" [(ngModel)]="model.projectData.artifactVersion" #name="ngModel">
+                                                <form-error-message [inputModel]="artifactVersionInput" [type]="'required'">Artifact version is required.</form-error-message>
+                                                <form-error-message [inputModel]="artifactVersionInput" [type]="'pattern'">Please enter a valid Artifact version.</form-error-message>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label required" for="springboot_javaPackage">Java Package</label>
+                                            <div class="col-sm-10">
+                                                <input #javaPackageInput="ngModel" name="javaPackage" type="text" id="springboot_javaPackage" class="form-control" placeholder="org.example.api"
+                                                       required pattern="[a-zA-Z][a-zA-Z0-9\._]*" [(ngModel)]="model.projectData.javaPackage" #name="ngModel">
+                                                <form-error-message [inputModel]="javaPackageInput" [type]="'required'">Java package is required.</form-error-message>
+                                                <form-error-message [inputModel]="javaPackageInput" [type]="'pattern'">Please enter a valid Java package name.</form-error-message>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-2">&nbsp;</div>
+                                            <div class="col-sm-10">
+                                                <input name="addBindingEntity" type="checkbox" id="springboot_add_binding_entity" [(ngModel)]="model.projectData.addBindingEntity">
+                                                <span>&nbsp;</span>
+                                                <label for="springboot_add_binding_entity">Add an additional Binding Entity code to the project.</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-2">&nbsp;</div>
+                                            <div class="col-sm-10">
+                                                <input name="cicd" type="checkbox" id="springboot_cicd" [(ngModel)]="model.projectData.cicd">
+                                                <span>&nbsp;</span>
+                                                <label for="springboot_cicd">Add CICD configuration files.</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                             <!-- Location: Download/Publish -->

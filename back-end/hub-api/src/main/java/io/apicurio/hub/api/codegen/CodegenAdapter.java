@@ -16,22 +16,25 @@ public class CodegenAdapter {
 
         JaxRsProjectSettings localSettings = toSettings(project);
 
+        Map<String, String> attr = project.getAttributes();
+
         ServerMain main = new ServerMain();
         String specFilePath = writeToFile(localSettings.artifactId, content, ".json");
 
         Map<String, String> properties = new HashMap<>();
-        String confContent = "groupId: app.4hel\n" +
-                        "system: 4hel\n" +
+        String confContent = "groupId: " + attr.get("groupId") +"\n" +
+                        "system: " + attr.get("system") + "\n" +
                         "application:\n" +
-                        "  - users\n" +
-                        "artifactId: 4hel\n" +
-                        "artifactVersion: 0.0.1-SNAPSHOT\n" +
-                        "artifactDescription: 4hel test\n" +
-                        "title: 4hel test\n" +
-                        "basePackage: app.4hel\n" +
+                        "  - " + attr.get("application") + "\n" +
+                        "artifactId: " + attr.get("artifactId") + "\n" +
+                        "artifactVersion: " + attr.get("artifactVersion") + "\n" +
+                        "artifactDescription: Application description\n" +
+                        "title: Application title\n" +
+                        "basePackage: " + attr.get("javaPackage") + "\n" +
                         "addKotlin: true\n" +
                         "dateLibrary: default\n" +
-                        "addBindingEntity: true\n";
+                        "cicd: " + "true".equals(attr.get("cicd")) + "\n"+
+                        "addBindingEntity: " + "true".equals(attr.get("addBindingEntity")) + "\n";
         String confFilePath = writeToFile(localSettings.artifactId, confContent, ".yaml");
         ExecSettings settings = new ExecSettings("/application", specFilePath, confFilePath, properties);
 

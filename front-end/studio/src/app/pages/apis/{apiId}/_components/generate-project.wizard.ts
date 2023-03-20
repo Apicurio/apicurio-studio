@@ -26,6 +26,7 @@ import {ApisService} from "../../../../services/apis.service";
 import {NewCodegenProject} from "../../../../models/new-codegen-project.model";
 import {CodegenProject} from "../../../../models/codegen-project.model";
 import {UpdateCodegenProject} from "../../../../models/update-codegen-project.model";
+import {Api} from "../../../../models/api.model";
 
 
 export interface GenerateProjectWizardModel {
@@ -92,13 +93,13 @@ export class GenerateProjectWizardComponent {
     /**
      * Called to open the wizard.
      */
-    public open(): void {
+    public open(api: Api): void {
         this.error = null;
         this.errorMessage = null;
 
         this.model = {
             generationType: "bootstrap",
-            projectType: "quarkus",
+            projectType: "springboot",
             projectData: {},
             location: "download",
             sourceControlData: {}
@@ -429,6 +430,11 @@ export class GenerateProjectWizardComponent {
         this.model.projectData.groupId = project.attributes.groupId;
         this.model.projectData.javaPackage = project.attributes.javaPackage;
         this.model.projectData.reactive = project.attributes.reactive;
+        this.model.projectData.system = project.attributes.system;
+        this.model.projectData.application = project.attributes.application;
+        this.model.projectData.artifactVersion = project.attributes.artifactVersion;
+        this.model.projectData.cicd = project.attributes.cicd;
+        this.model.projectData.addBindingEntity = project.attributes.addBindingEntity;
         this.model.sourceControlData.type = project.attributes['publish-type'];
         this.model.sourceControlData.model = {};
         this.model.sourceControlData.model.branch = project.attributes['publish-branch'];
@@ -444,7 +450,7 @@ export class GenerateProjectWizardComponent {
     public resetModel(): void {
         this.model = {
             generationType: "bootstrap",
-            projectType: "quarkus",
+            projectType: "springboot",
             projectData: {},
             location: "download",
             sourceControlData: {}

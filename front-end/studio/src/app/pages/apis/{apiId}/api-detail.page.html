@@ -99,7 +99,7 @@
                                                     </a>
                                                 </li>
                                                 <li *ngIf="actionEnabled('generate-project')">
-                                                    <a (click)="generateProjectModal.open()">
+                                                    <a (click)="generateProjectModal.open(api)">
                                                         <span class="fa fa-fw fa-file-code-o"></span>
                                                         <span>Generate Project</span>
                                                     </a>

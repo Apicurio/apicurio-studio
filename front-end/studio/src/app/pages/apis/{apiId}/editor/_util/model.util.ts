@@ -136,7 +136,7 @@ export class ExampleGenerator {
             object = this.generateEnumValue(schema);
         } else if (this.isSimpleType(schema.type)) {
             console.info("[ExampleGenerator] Schema is a simple type.");
-            object = this.generateSimpleType(schema.type, schema.format);
+            object = this.generateSimpleType(schema);
         } else if (schema.type === "object" || !schema.type) {
             console.info("[ExampleGenerator] Schema is type 'object'");
             object = this.generateObject(schema);
@@ -204,20 +204,20 @@ export class ExampleGenerator {
         return "??";
     }
 
-    private generateSimpleType(type: string, format: string): any {
-        let key: string = type;
-        if (format) {
-            key = type + "_" + format;
+    private generateSimpleType(schema: OasSchema | AaiSchema): any {
+        let key: string = schema.type;
+        if (schema.format) {
+            key = schema.type + "_" + schema.format;
         }
         switch (key) {
             case "string":
-                return "some text";
+                return this.generateExampleString(schema);
             case "string_date":
                 return "2018-01-17";
             case "string_date-time":
                 return "2018-02-10T09:30Z";
             case "string_password":
-                return "**********";
+                return this.generateExamplePassword(schema);
             case "string_byte":
                 return "R28gUGF0cyE=";
             case "string_binary":
@@ -225,15 +225,75 @@ export class ExampleGenerator {
             case "integer":
             case "integer_int32":
             case "integer_int64":
-                return Math.floor(Math.random() * Math.floor(100));
+                return this.generateExampleInteger(schema);
             case "number":
             case "number_float":
             case "number_double":
                 return Math.floor((Math.random() * 100) * 100) / 100;
             case "boolean":
-                return true;
+                return this.generateExampleBoolean();
             default:
                 return "";
+        }
+    }
+
+    private generateExampleInteger(schema: OasSchema | AaiSchema): number {
+        let number: number;
+        if (schema.maximum) {
+            number = Math.floor(Math.random() * (schema.maximum - schema.minimum + 1) + schema.minimum);
+        }
+        else if (schema.minimum && schema.maximum == 0) {
+            number = Math.floor(Math.random() * Math.floor(100) + schema.minimum);
+        } else {
+            number = Math.floor(Math.random() * Math.floor(100));
+        }
+        if (schema.multipleOf) {
+            number = this.closestMultiple(number, schema.multipleOf, schema.minimum, schema.maximum);
+        }
+        return number;
+    }
+
+    private closestMultiple(number: number, multipleOf: number, min: number, max: number): number {
+        if (multipleOf > number && number != 0) {
+            number = multipleOf;
+        } else {
+            number = number + multipleOf / 2;
+            number = number - (number % multipleOf);
+        }
+        if (number > max) {
+            number = number - multipleOf;
+        }
+        if (number < min) {
+            number = number + multipleOf;
+        }
+        return number;
+    }
+
+    private generateExampleString(schema: OasSchema | AaiSchema) : string {
+        let text = "";
+        while (text.length < schema.maxLength) {
+            text = text + Math.random().toString(36).slice(2);
+        }
+        let randomLength = Math.floor(Math.random() * (schema.maxLength - schema.minLength + 1) + schema.minLength) + 2;
+        text = text.slice(2, randomLength);
+         return text;
+    }
+
+    private generateExamplePassword(schema: OasSchema | AaiSchema) : string {
+        let randomLength = Math.floor(Math.random() * (schema.maxLength - schema.minLength + 1) + schema.minLength) + 2;
+        let password = "";
+        while (password.length < randomLength) {
+            password = password + "*";
+        }
+        return password;
+    }
+
+    private generateExampleBoolean() : boolean {
+        let random = Math.random();
+        if (random > 0.5) {
+            return true;
+        } else {
+            return false;
         }
     }
 

@@ -43,7 +43,7 @@
         <dependency>
             <groupId>cloud.djet.codegen</groupId>
             <artifactId>djet-codegen-cli</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.4</version>
         </dependency>
 
         <!-- Third Party Libraries -->

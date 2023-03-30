@@ -101,7 +101,7 @@
         <version.com.google.inject>4.1.0</version.com.google.inject>
         <version.com.graphql-java>19.3</version.com.graphql-java>
         <version.com.h2database>1.4.200</version.com.h2database>
-        <version.com.mashape.unirest>1.4.9</version.com.mashape.unirest>
+        <version.com.konghq>3.14.1</version.com.konghq>
         <version.com.squareup.javapoet>1.13.0</version.com.squareup.javapoet>
         <version.com.sun.codemodel>2.6</version.com.sun.codemodel>
         <version.commons-beanutils>1.9.4</version.commons-beanutils>
@@ -278,9 +278,9 @@
                 <version>${version.mysql}</version>
             </dependency>
             <dependency>
-                <groupId>com.mashape.unirest</groupId>
+                <groupId>com.konghq</groupId>
                 <artifactId>unirest-java</artifactId>
-                <version>${version.com.mashape.unirest}</version>
+                <version>${version.com.konghq}</version>
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>

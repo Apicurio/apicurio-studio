@@ -25,15 +25,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import kong.unirest.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequestWithBody;
-import com.mashape.unirest.request.body.MultipartBody;
 
 import io.apicurio.hub.core.config.HubConfiguration;
 

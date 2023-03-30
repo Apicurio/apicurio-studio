@@ -27,6 +27,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import kong.unirest.HttpResponse;
+import kong.unirest.JsonNode;
+import kong.unirest.Unirest;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -36,9 +39,6 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -295,7 +295,7 @@ public class ReleaseTool {
             if (response.getStatus() != 200) {
                 throw new Exception("Failed to list Issues: " + response.getStatusText());
             }
-            JSONArray issueNodes = response.getBody().getArray();
+            kong.unirest.json.JSONArray issueNodes = response.getBody().getArray();
             issueNodes.forEach(issueNode -> {
                 JSONObject issue = (JSONObject) issueNode;
                 String closedOn = issue.getString("closed_at");

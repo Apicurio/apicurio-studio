@@ -16,6 +16,7 @@
 
 package io.apicurio.hub.api.github;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -31,6 +32,7 @@ import java.util.zip.ZipInputStream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import kong.unirest.*;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryBranch;
@@ -43,12 +45,6 @@ import org.keycloak.common.util.Encode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequest;
-import com.mashape.unirest.request.HttpRequestWithBody;
 
 import io.apicurio.hub.api.beans.GitHubCreateCommitCommentRequest;
 import io.apicurio.hub.api.beans.GitHubCreateFileRequest;
@@ -190,7 +186,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
             }
             HttpResponse<GitHubGetContentsResponse> response = request.asObject(GitHubGetContentsResponse.class);
             if (response.getStatus() == 404) {
-            	throw new NotFoundException();
+                throw new NotFoundException();
             }
             if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
@@ -305,7 +301,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
 
             HttpRequestWithBody request = Unirest.put(createContentUrl).header("Content-Type", "application/json; charset=utf-8");
             addSecurityTo(request);
-            HttpResponse<InputStream> response = request.body(requestBody).asBinary();
+            HttpResponse<InputStream> response = request.body(requestBody).asBytes().map(ByteArrayInputStream::new);
             if (response.getStatus() != 201) {
                 throw new UnirestException("Unexpected response from GitHub: " + response.getStatus() + "::" + response.getStatusText());
             }
@@ -443,7 +439,7 @@ public class GitHubSourceConnector extends AbstractSourceConnector implements IG
     }
 
     /**
-     * @see io.apicurio.hub.api.connectors.AbstractSourceConnector#addSecurityTo(com.mashape.unirest.request.HttpRequest)
+     * @see io.apicurio.hub.api.connectors.AbstractSourceConnector#addSecurityTo(kong.unirest.HttpRequest)
      */
     @Override
     protected void addSecurityTo(HttpRequest request) throws SourceConnectorException {

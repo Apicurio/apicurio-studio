@@ -31,14 +31,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import kong.unirest.HttpResponse;
+import kong.unirest.ObjectMapper;
+import kong.unirest.UnirestException;
 import org.apache.commons.io.IOUtils;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.ObjectMapper;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import kong.unirest.Unirest;
 
 import io.apicurio.studio.fe.servlet.beans.AccessTokenRequest;
 import io.apicurio.studio.fe.servlet.beans.AccessTokenResponse;
@@ -54,7 +54,7 @@ public class GitHubAuthenticationFilter implements Filter {
     private static com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
     static {
         jacksonObjectMapper.setSerializationInclusion(Include.NON_NULL);
-        Unirest.setObjectMapper(new ObjectMapper() {
+        Unirest.config().setObjectMapper(new ObjectMapper() {
             public <T> T readValue(String value, Class<T> valueType) {
                 try {
                     return jacksonObjectMapper.readValue(value, valueType);
@@ -182,7 +182,6 @@ public class GitHubAuthenticationFilter implements Filter {
     /**
      * Uses the included 'auth.html' template to create a login page and show it to the user.  This
      * login page is only shown if the user hasn't yet authenticated.
-     * @param authUrl
      */
     private String createLogoutPage() throws ServletException {
         try (InputStream in = getClass().getClassLoader().getResourceAsStream("logout.html")) {

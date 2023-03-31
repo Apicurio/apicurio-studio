@@ -29,9 +29,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:apicurio/apicurio-studio.git</connection>
-        <developerConnection>scm:git:git@github.com:apicurio/apicurio-studio.git</developerConnection>
-        <url>scm:git:git@github.com:apicurio/apicurio-studio.git</url>
+        <connection>scm:git:git@github.com:djetcloud/apicurio-studio.git</connection>
+        <developerConnection>scm:git:git@github.com:djetcloud/apicurio-studio.git</developerConnection>
+        <url>scm:git:git@github.com:djetcloud/apicurio-studio.git</url>
     </scm>
 
     <developers>

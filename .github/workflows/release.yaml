@@ -46,9 +46,9 @@ jobs:
           mkdir studio
           cd studio
           git init
-          git config --global user.name "djet-ci[bot]"
-          git config --global user.email "djet-ci@users.noreply.github.com"
-          git remote add origin "https://djet-ci:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
+          git config --global user.name "djai-ci[bot]"
+          git config --global user.email "djai-ci@users.noreply.github.com"
+          git remote add origin "https://djai-ci:${{ secrets.ACCESS_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
           git fetch
           git checkout ${{ github.event.inputs.branch }}
           git branch --set-upstream-to=origin/${{ github.event.inputs.branch }}

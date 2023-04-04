@@ -12,7 +12,7 @@ jobs:
   release-studio-auth-image:
     name: Release Studio Auth Multiarch Image
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'DJetCloud'
+    if: github.repository_owner == 'djai-app'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2

@@ -10,7 +10,7 @@ env:
 jobs:
   release-images:
     if: github.repository_owner == 'djai-app'
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
         # Open-Source Machine emulator that allows you to emulate multiple CPU architectures on your machine
       - name: Set up QEMU

@@ -84,8 +84,8 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/djetcloud/apicurio-studio-api:latest-snapshot
-           quay.io/djetcloud/apicurio-studio-api:latest-snapshot
+           docker.io/djaiapp/apicurio-studio-api:latest-snapshot
+           quay.io/djai/apicurio-studio-api:latest-snapshot
 
       - name: Build and Publish Studio WS
         if: github.event_name == 'push'
@@ -96,8 +96,8 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/djetcloud/apicurio-studio-ws:latest-snapshot
-           quay.io/djetcloud/apicurio-studio-ws:latest-snapshot
+           docker.io/djaiapp/apicurio-studio-ws:latest-snapshot
+           quay.io/djai/apicurio-studio-ws:latest-snapshot
 
       - name: Build and Publish Studio UI
         if: github.event_name == 'push'
@@ -108,7 +108,7 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/djetcloud/apicurio-studio-ui:latest-snapshot
-           quay.io/djetcloud/apicurio-studio-ui:latest-snapshot
+           docker.io/djaiapp/apicurio-studio-ui:latest-snapshot
+           quay.io/djai/apicurio-studio-ui:latest-snapshot
 
       

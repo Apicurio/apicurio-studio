@@ -48,9 +48,9 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/djetcloud/apicurio-studio-auth:latest
-           quay.io/djetcloud/apicurio-studio-auth:latest
-           docker.io/djetcloud/apicurio-studio-auth:latest-release
-           quay.io/djetcloud/apicurio-studio-auth:latest-release
-           docker.io/djetcloud/apicurio-studio-auth:${{ github.event.inputs.version }}
-           quay.io/djetcloud/apicurio-studio-auth:${{ github.event.inputs.version }}
+           docker.io/djaiapp/apicurio-studio-auth:latest
+           quay.io/djaiapp/apicurio-studio-auth:latest
+           docker.io/djaiapp/apicurio-studio-auth:latest-release
+           quay.io/djai/apicurio-studio-auth:latest-release
+           docker.io/djai/apicurio-studio-auth:${{ github.event.inputs.version }}
+           quay.io/djai/apicurio-studio-auth:${{ github.event.inputs.version }}

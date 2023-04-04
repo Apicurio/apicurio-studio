@@ -6,7 +6,7 @@ on:
 
 jobs:
   update-website:
-    if: github.repository_owner == 'Apicurio'
+    if: github.repository_owner == 'djai-app'
     runs-on: ubuntu-latest
     steps:
       - name: Configure Git
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout Apicurio Website
         uses: actions/checkout@v2
         with:
-           repository: Apicurio/apicurio.github.io
+           repository: djai-app/djai.github.io
            path: website
            token: ${{ secrets.ACCESS_TOKEN }}
 

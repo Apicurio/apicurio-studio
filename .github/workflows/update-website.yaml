@@ -11,10 +11,10 @@ jobs:
     steps:
       - name: Configure Git
         run: |
-          git config --global user.name "apicurio-ci[bot]"
-          git config --global user.email "apicurio-ci@users.noreply.github.com"
+          git config --global user.name "djai-ci[bot]"
+          git config --global user.email "djai-ci@users.noreply.github.com"
 
-      - name: Checkout Apicurio Website
+      - name: Checkout DJAI Website
         uses: actions/checkout@v2
         with:
            repository: djai-app/djai.github.io

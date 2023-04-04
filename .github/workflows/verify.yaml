@@ -24,7 +24,7 @@ jobs:
   build-verify:
     name: Verify Build
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'DJetCloud'
+    if: github.repository_owner == 'djai-app'
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2

@@ -47,7 +47,7 @@ form input.ng-invalid.ng-touched {
 }
 
 #api-breadcrumb-bar {
-  background: white;
+  background:#DA5DE5;
   border-bottom: 1px solid #ccc;
   height: 37px;
 }

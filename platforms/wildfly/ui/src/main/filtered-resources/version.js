@@ -1,5 +1,5 @@
 var ApicurioStudioInfo = {
     version: "${project.version}",
     builtOn: new Date("${timestamp}"),
-    url: "http://www.apicur.io/"
+    url: "https://github.com/djai-app"
 };

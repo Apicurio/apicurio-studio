@@ -17,3 +17,11 @@
   background-color: #f5f5f5;
   position: relative;
 }
+
+.pf-c-page__header-brand {
+  background: none;
+}
+
+.pf-c-brand {
+  width: 100%;
+}

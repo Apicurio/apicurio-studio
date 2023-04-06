@@ -7,6 +7,11 @@ body a {
   font-weight: bolder;
 }
 
+body a:hover, a:focus {
+  color: #0349b4;
+  font-weight: bolder;
+}
+
 .pf-c-page__header {
   height: 75px;
 }

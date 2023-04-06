@@ -89,7 +89,7 @@
   border-bottom: 1px solid #393f44;
 }
 #api-vertical-nav-details .api-nav-detail-item .action a {
-  color: white !important;
+  color: white;
 }
 #api-vertical-nav-details .api-nav-detail-item .action a span:first-child {
   width: 24px;

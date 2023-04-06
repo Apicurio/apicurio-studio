@@ -54,11 +54,18 @@
 }
 
 .api-action-buttons {
-  margin-top: 20px
+  margin-top: 20px;
 }
 
 .api-action-buttons > a {
   margin-right: 5px;
+  background-color: #e5e5e5;
+  border-color: #a9a9a9;
+  color: #4d5258 !important;
+}
+
+a.btn.btn-primary {
+  color: #fff !important;
 }
 
 .api-action-buttons a.pull-right {

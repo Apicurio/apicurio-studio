@@ -3,7 +3,7 @@ body {
 }
 
 body a {
-  color: #0349b4;
+  color: #0349b4 !important;
   font-weight: bolder;
 }
 

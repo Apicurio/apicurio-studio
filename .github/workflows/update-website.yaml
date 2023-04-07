@@ -6,7 +6,7 @@ on:
 
 jobs:
   update-website:
-    if: github.repository_owner == 'djai-app'
+    if: github.repository_owner == 'djai-app1'
     runs-on: ubuntu-latest
     steps:
       - name: Configure Git

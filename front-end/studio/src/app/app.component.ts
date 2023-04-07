@@ -31,7 +31,7 @@ export class AppComponent {
 
     version: string = "N/A";
     builtOn: Date = new Date();
-    projectUrl: string = "http://www.apicur.io/";
+    projectUrl: string = "https://github.com/djai-app";
 
     helpExpanded: boolean = false;
 

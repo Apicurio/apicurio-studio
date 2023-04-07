@@ -22,7 +22,7 @@ body a:hover, a:focus {
 }
 
 #api-page-body .modal-header button.close {
-  color: white;
+  color: black;
 }
 
 #api-page-body .modal-footer {

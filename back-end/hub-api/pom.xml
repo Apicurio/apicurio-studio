@@ -39,11 +39,11 @@
             <artifactId>apicurio-codegen</artifactId>
         </dependency>
 
-        <!-- DJet Projects-->
+        <!-- DJAI Projects-->
         <dependency>
-            <groupId>cloud.djet.codegen</groupId>
-            <artifactId>djet-codegen-cli</artifactId>
-            <version>1.0.5</version>
+            <groupId>app.djai.codegen</groupId>
+            <artifactId>djai-codegen-cli</artifactId>
+            <version>1.1.0</version>
         </dependency>
 
         <!-- Third Party Libraries -->

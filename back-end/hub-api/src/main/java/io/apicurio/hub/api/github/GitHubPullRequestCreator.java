@@ -202,7 +202,7 @@ public class GitHubPullRequestCreator {
                 .bind("repo", this.repository)
                 .toString();
         
-        String branchName = "_apicurio-" + (System.currentTimeMillis() % 10000);
+        String branchName = "_djai-" + (System.currentTimeMillis() % 10000);
         String newRefName = "refs/heads/" + branchName;
         GitHubCreateReference requestBody = new GitHubCreateReference();
         requestBody.setRef(newRefName);
@@ -452,8 +452,8 @@ public class GitHubPullRequestCreator {
                 .toString();
         
         GitHubCreatePullRequest requestBody = new GitHubCreatePullRequest();
-        requestBody.setTitle("[Apicurio] Please merge generated API project");
-        requestBody.setBody("The Apicurio tool was used to generate an API project from an OpenAPI definition.  Please review this pull request, modify as necessary, and merge!");
+        requestBody.setTitle("[DJAI] Please merge generated API project");
+        requestBody.setBody("The DJAI codegen was used to generate an API project from an OpenAPI definition.  Please review this pull request, modify as necessary, and merge!");
         requestBody.setHead(branchRef.getName());
         requestBody.setBase(this.branch);
         

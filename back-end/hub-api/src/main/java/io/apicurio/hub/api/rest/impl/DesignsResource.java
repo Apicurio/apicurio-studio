@@ -179,7 +179,8 @@ public class DesignsResource implements IDesignsResource {
     @Inject
     private AuthorizationService authorizationService;
 
-    private final CodegenAdapter codegen = new CodegenAdapter();
+    @Inject
+    private DjaiCodegen codegen;
 
     /**
      * @see io.apicurio.hub.api.rest.IDesignsResource#listDesigns()
@@ -1445,6 +1446,8 @@ public class DesignsResource implements IDesignsResource {
                 generator.setUpdateOnly(updateOnly);
 
                 return generateAndPublish(project, generator);
+            } else if(project.getType() == CodegenProjectType.springboot) {
+                return codegen.generateAndPublish(project, content);
             } else {
                 throw new ServerError("Unsupported project type: " + project.getType());
             }

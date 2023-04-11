@@ -68,7 +68,7 @@ public class DjaiCodegen {
                 "cicd: " + "true".equals(attr.get("cicd")) + "\n"+
                 "addBindingEntity: " + "true".equals(attr.get("addBindingEntity")) + "\n";
         String confFilePath = writeToFile(artifactId, confContent, ".yaml");
-        ExecSettings settings = new ExecSettings("", specFilePath, confFilePath, properties);
+        ExecSettings settings = new ExecSettings("/", specFilePath, confFilePath, properties);
         return output -> main.generate(output, settings);
     }
 

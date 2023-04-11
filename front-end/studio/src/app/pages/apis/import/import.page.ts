@@ -49,7 +49,7 @@ export class ImportApiPageComponent extends AbstractPageComponent {
      * 
      */
     protected pageTitle(): string {
-        return "Apicurio Studio - Import API";
+        return "DJAI - Import API";
     }
 
     /**

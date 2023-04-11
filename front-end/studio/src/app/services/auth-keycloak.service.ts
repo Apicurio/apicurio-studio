@@ -52,7 +52,7 @@ export class KeycloakAuthenticationService extends IAuthenticationService {
         user.login = this.keycloak.tokenParsed.preferred_username;
         user.email = this.keycloak.tokenParsed.email;
         user.roles = this.keycloak.tokenParsed.realm_access.roles
-           // .filter(o => Object.values(ApicurioRole).includes(o));
+            .filter(o => Object.values(ApicurioRole).includes(o));
 
         this._authenticated.send(true);
         this._user = user;

@@ -34,8 +34,8 @@
                             <span>{{ user().email }}</span>
                         </div>
                         <div>
-                            <span class="user-info-label">Role:</span>
-                            <span>{{ user().roles }}</span>
+                            <span class="user-info-label">Roles:</span>
+                            <span>{{ user().roles.join(", ") }}</span>
                         </div>
                     </div>
                 </div>

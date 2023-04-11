@@ -60,9 +60,9 @@ export class MockPageComponent extends AbstractPageComponent {
      */
     protected pageTitle(): string {
         if (this.api.name) {
-            return "Apicurio Studio - Mock API :: " + this.api.name;
+            return "DJAI - Mock API :: " + this.api.name;
         } else {
-            return "Apicurio Studio - Mock API";
+            return "DJAI - Mock API";
         }
     }
 

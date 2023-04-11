@@ -61,7 +61,7 @@ export class TemplatesPageComponent extends AbstractPageComponent {
      * The page title.
      */
     protected pageTitle(): string {
-        return "Apicurio Studio - Templates";
+        return "DJAI - Templates";
     }
 
     /**

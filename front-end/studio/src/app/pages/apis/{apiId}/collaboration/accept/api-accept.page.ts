@@ -50,7 +50,7 @@ export class ApiAcceptPageComponent extends AbstractPageComponent {
      * 
      */
     protected pageTitle(): string {
-        return "Apicurio Studio - Accept Collaboration Invite";
+        return "DJAI - Accept Collaboration Invite";
     }
 
     /**

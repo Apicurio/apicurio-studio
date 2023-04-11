@@ -56,7 +56,7 @@ export class ValidationPageComponent extends AbstractPageComponent {
      * The page title.
      */
     protected pageTitle(): string {
-        return "Apicurio Studio - Settings - Validation";
+        return "DJAI - Settings - Validation";
     }
 
     /**

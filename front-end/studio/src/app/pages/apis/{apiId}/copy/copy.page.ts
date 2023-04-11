@@ -60,9 +60,9 @@ export class CopyPageComponent extends AbstractPageComponent {
      */
     protected pageTitle(): string {
         if (this.api.name) {
-            return "Apicurio Studio - Copy API :: " + this.api.name;
+            return "DJAI - Copy API :: " + this.api.name;
         } else {
-            return "Apicurio Studio - Copy API";
+            return "DJAI - Copy API";
         }
     }
 

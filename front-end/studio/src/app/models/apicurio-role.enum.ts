@@ -18,5 +18,5 @@
 export class ApicurioRole {
 
     public static APICURIO_ADMIN: string = "APICURIO_ADMIN";
-
+    public static DEFAULT_ROLE: string = "default-roles-apicurio";
 }

@@ -66,6 +66,6 @@ public class AuthorizationService implements IAuthorizationService {
      */
     @Override
     public boolean hasTemplateCreationPermission(User user) {
-        return user.hasRole(StudioRole.APICURIO_ADMIN);
+        return user.hasRole(StudioRole.ADMIN_ROLE);
     }
 }

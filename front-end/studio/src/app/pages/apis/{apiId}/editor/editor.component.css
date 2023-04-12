@@ -542,8 +542,6 @@
 }
 .api-editor .editor-detail .editor-detail-form .detail-tabs ul li a {
   cursor: pointer;
-  color: #0349b4;
-  font-weight: bolder;
 }
 .api-editor .editor-detail .editor-detail-form .detail-tabs ul li.disabled a {
   cursor: not-allowed;

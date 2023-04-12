@@ -12,9 +12,8 @@
   overflow-x: hidden;
   display: inline-block;
   white-space: nowrap;
-  color: #0349b4;
-  font-weight: bolder
 }
+
 .container-dashboard .blank-slate-card-pf {
   padding: 0;
   border-top: 0;

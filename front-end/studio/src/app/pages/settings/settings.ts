@@ -44,7 +44,7 @@ export class SettingsPageComponent extends AbstractPageComponent {
      * 
      */
     protected pageTitle(): string {
-        return "Apicurio Studio - Settings";
+        return "DJAI - Settings";
     }
 
     /**

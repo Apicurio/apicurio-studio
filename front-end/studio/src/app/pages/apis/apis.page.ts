@@ -104,7 +104,7 @@ export class ApisPageComponent extends AbstractPageComponent implements OnDestro
      * 
      */
     protected pageTitle(): string {
-        return "Apicurio Studio - API Listing";
+        return "DJAI - API Listing";
     }
 
     /**

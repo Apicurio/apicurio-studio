@@ -1,7 +1,19 @@
 .login-pf body {
-    background: url("../img/jumbo-bg.png") no-repeat center center fixed;
-    background-size: cover;
+    background: rgb(10, 10, 10);
+    box-shadow: none;
     height: 100%;
+}
+
+.login-pf body::after {
+    content: "";
+    width: 200%;
+    height: 200%;
+    bottom: 0px;
+    left: 0px;
+    position: absolute;
+    opacity: 0.25;
+    background: radial-gradient(circle, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
 }
 
 /*IE compatibility*/
@@ -228,7 +240,7 @@ div.kc-logo-text span {
     line-height: 1.2em;
     padding: 62px 10px 20px;
     white-space: normal;
-    background: url("../img/apicurio_logo_darkbkg_450px.png") no-repeat;
+    background: url("../img/djai_logo.svg") no-repeat;
     background-position: center 30px;
     background-size: 375px 88px;
     text-indent: -5000px;

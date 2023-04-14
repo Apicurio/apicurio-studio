@@ -43,7 +43,7 @@ export class DefaultPageComponent extends AbstractPageComponent {
      * Returns the appropriate page title for this page.
      */
     protected pageTitle(): string {
-        return "Apicurio Studio";
+        return "DJAI";
     }
 
     /**

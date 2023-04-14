@@ -33,6 +33,10 @@
                             <span class="user-info-label">Email:</span>
                             <span>{{ user().email }}</span>
                         </div>
+                        <div>
+                            <span class="user-info-label">Roles:</span>
+                            <span>{{ user().roles.join(", ") }}</span>
+                        </div>
                     </div>
                 </div>
             </div>

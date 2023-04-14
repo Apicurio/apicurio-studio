@@ -69,7 +69,7 @@ export class DashboardPageComponent extends AbstractPageComponent {
      * 
      */
     protected pageTitle(): string {
-        return "Apicurio Studio - Dashboard";
+        return "DJAI - Dashboard";
     }
 
     /**

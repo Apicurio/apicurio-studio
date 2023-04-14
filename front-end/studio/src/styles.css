@@ -1,15 +1,6 @@
+
 body {
   font-size: 13px;
-}
-
-body a {
-  color: #0349b4;
-  font-weight: bolder;
-}
-
-body a:hover, a:focus {
-  color: #0349b4;
-  font-weight: bolder;
 }
 
 .pf-c-page__header {
@@ -17,8 +8,8 @@ body a:hover, a:focus {
 }
 
 #api-page-body .modal-header {
-  border-top: 1px solid rgb(221, 221, 221);
-  background-color: rgb(239, 239, 239);
+  background-color: rgb(57, 165, 220);
+  color: white;
 }
 
 #api-page-body .modal-header button.close {

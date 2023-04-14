@@ -6,7 +6,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum StudioRole {
-    APICURIO_ADMIN("apicurio_admin");
+    ADMIN_ROLE("APICURIO_ADMIN"),
+    USER_ROLE("default-roles-apicurio");
 
     private static final Map<String, StudioRole> inverted;
     static {

@@ -71,9 +71,9 @@ export class ApiCollaborationPageComponent extends AbstractPageComponent {
      */
     protected pageTitle(): string {
         if (this.api.name) {
-            return "Apicurio Studio - API Collaborators :: " + this.api.name;
+            return "DJAI - API Collaborators :: " + this.api.name;
         } else {
-            return "Apicurio Studio - API Collaborators";
+            return "DJAI - API Collaborators";
         }
     }
 

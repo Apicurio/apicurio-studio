@@ -65,7 +65,7 @@ export class CreateApiPageComponent extends AbstractPageComponent {
      * The page title.
      */
     protected pageTitle(): string {
-        return "Apicurio Studio - Create API";
+        return "DJAI - Create API";
     }
 
     /**

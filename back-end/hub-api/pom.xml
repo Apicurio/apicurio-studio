@@ -5,7 +5,7 @@
     <parent>
         <groupId>io.apicurio</groupId>
         <artifactId>apicurio-studio-be</artifactId>
-        <version>1.0.14-SNAPSHOT</version>
+        <version>1.0.16-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>apicurio-studio-be-hub-api</artifactId>
@@ -43,7 +43,7 @@
         <dependency>
             <groupId>app.djai.codegen</groupId>
             <artifactId>djai-codegen-cli</artifactId>
-            <version>1.1.0</version>
+            <version>1.1.1</version>
         </dependency>
 
         <!-- Third Party Libraries -->

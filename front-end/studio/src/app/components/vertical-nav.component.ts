@@ -41,6 +41,7 @@ export class VerticalNavComponent implements OnInit {
     public subMenuTypes: any = VerticalNavSubMenuType;
     public currentSubMenu: VerticalNavSubMenuType = VerticalNavSubMenuType.None;
     public subMenuOut: boolean = false;
+    public isAccountMenuOpen = false
 
     /**
      * C'tor.
@@ -147,4 +148,7 @@ export class VerticalNavComponent implements OnInit {
         }
     }
 
+    toggleAccountMenuVisibility(): void {
+        this.isAccountMenuOpen = !this.isAccountMenuOpen;
+      }
 }

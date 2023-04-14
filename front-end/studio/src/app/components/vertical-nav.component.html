@@ -3,25 +3,50 @@
     <div id="api-nav-menu-shade" *ngIf="currentSubMenu != subMenuTypes.None" (click)="onShadeClick()">
     </div>
 
-    <div id="api-vertical-nav">
-        <div id="api-nav-item-dashboard" class="api-nav-item" [class.active]="isDashboardRoute()"
-             [class.selected]="currentSubMenu === subMenuTypes.Dashboard" (click)="goToDashboard()">
+    <div id="api-vertical-nav" class="navbar-collapse navbar-collapse-pf-site collapse">
+
+        <div id="api-nav-item-dashboard" 
+             class="api-nav-item"
+             [class.active]="isDashboardRoute()"
+             [class.selected]="currentSubMenu === subMenuTypes.Dashboard" 
+             (click)="goToDashboard()">
+
             <span class="fa fa-fw fa-dashboard"></span>
+
             <div>Dashboard</div>
         </div>
-        <div id="api-nav-item-templates" class="api-nav-item" [class.active]="isTemplatesRoute()" *ngIf="isTemplatesEnabled()"
-             [class.selected]="currentSubMenu === subMenuTypes.Templates" (click)="goToTemplates()">
+
+        <div id="api-nav-item-templates"
+             class="api-nav-item"
+             [class.active]="isTemplatesRoute()"
+             *ngIf="isTemplatesEnabled()"
+             [class.selected]="currentSubMenu === subMenuTypes.Templates"
+             (click)="goToTemplates()">
+
             <span class="fa fa-fw fa-puzzle-piece"></span>
+
             <div>Templates</div>
         </div>
-        <div id="api-nav-item-apis" class="api-nav-item" [class.active]="isAPIsRoute()"
-             [class.selected]="currentSubMenu === subMenuTypes.APIs" (click)="toggleSubMenu(subMenuTypes.APIs)">
+
+        <div id="api-nav-item-apis" 
+             class="api-nav-item" 
+             [class.active]="isAPIsRoute()"
+             [class.selected]="currentSubMenu === subMenuTypes.APIs"
+             (click)="toggleSubMenu(subMenuTypes.APIs)">
+
             <span class="fa fa-fw fa-bolt"></span>
+
             <div>APIs</div>
         </div>
-        <div id="api-nav-item-settings" class="api-nav-item" [class.active]="isSettingsRoute()"
-             [class.selected]="currentSubMenu === subMenuTypes.Settings" (click)="toggleSubMenu(subMenuTypes.Settings)">
+
+        <div id="api-nav-item-settings" 
+             class="api-nav-item"
+             [class.active]="isSettingsRoute()"
+             [class.selected]="currentSubMenu === subMenuTypes.Settings" 
+             (click)="toggleSubMenu(subMenuTypes.Settings)">
+
             <span class="fa fa-fw fa-cogs"></span>
+
             <div>Settings</div>
         </div>
         <div class="api-nav-item-filler">
@@ -56,5 +81,4 @@
             </div>
         </div>
     </div>
-
 </div>

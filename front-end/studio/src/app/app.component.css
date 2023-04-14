@@ -21,4 +21,12 @@
 .pf-c-page__header-brand {
   background: none;
 }
+span.icon-bar {
+  margin-left: 20px;
+  background-color: aliceblue;
+}
 
+
+.navbar-collapse.navbar-collapse-pf-site.collapse {
+  padding: 0;
+}

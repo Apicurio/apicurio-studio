@@ -8,8 +8,8 @@ body {
 }
 
 #api-page-body .modal-header {
-  background-color: rgb(57, 165, 220);
-  color: white;
+  background-color: #f6f8fa;
+  color: #1f2328;
 }
 
 #api-page-body .modal-header button.close {

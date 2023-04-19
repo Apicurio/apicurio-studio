@@ -143,6 +143,8 @@
                                     <a *ngIf="actionEnabled('edit-data-model')" [routerLink]="[ 'editor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
                                     <a *ngIf="actionEnabled('edit-text')" [routerLink]="[ 'teditor' ]" class="btn btn-primary"><span class="fa fa-fw fa-edit"></span> Edit API</a>
                                     <a *ngIf="actionEnabled('preview-docs')" href="{{ uiUrl }}preview?aid={{ api.id }}" target="_blank" class="btn btn-default pull-right"><span class="fa fa-eye"></span> Preview Documentation</a>
+                                    <a *ngIf="actionEnabled('generate-project')" (click)="generateProjectModal.open(api)" class="btn btn-default pull-right"><span class="fa fa-fw fa-file-code-o"></span> Generate</a>
+                                    <a *ngIf="actionEnabled('download')" (click)="downloadModal.open(api)" class="btn btn-default pull-right"><span class="fa fa-fw fa-download"></span> Download</a>
                                 </div>
                             </div>
                         </div>

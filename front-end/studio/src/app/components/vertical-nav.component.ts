@@ -146,5 +146,4 @@ export class VerticalNavComponent implements OnInit {
             this.subMenuOut = true;
         }
     }
-
 }

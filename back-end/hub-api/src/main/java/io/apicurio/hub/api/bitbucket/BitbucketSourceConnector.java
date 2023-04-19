@@ -30,6 +30,7 @@ import java.util.zip.ZipInputStream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import kong.unirest.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
@@ -37,11 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequest;
-import com.mashape.unirest.request.HttpRequestWithBody;
 
 import io.apicurio.hub.api.beans.BitbucketRepository;
 import io.apicurio.hub.api.beans.BitbucketTeam;
@@ -208,9 +204,9 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
                     .toString();
             HttpRequest request = Unirest.get(teamsUrl);
             addSecurityTo(request);
-            HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+            HttpResponse<kong.unirest.JsonNode> response = request.asJson();
             
-            JSONObject responseObj = response.getBody().getObject();
+            kong.unirest.json.JSONObject responseObj = response.mapBody((x -> x.getObject()));
 
             if (response.getStatus() != 200) {
                 throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
@@ -238,9 +234,9 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
             while (!done) {
                 HttpRequest request = Unirest.get(teamsUrl);
                 addSecurityTo(request);
-                HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+                HttpResponse<kong.unirest.JsonNode> response = request.asJson();
     
-                JSONObject responseObj = response.getBody().getObject();
+                kong.unirest.json.JSONObject responseObj = response.getBody().getObject();
     
                 if (response.getStatus() != 200) {
                     throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
@@ -274,14 +270,14 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
     @Override
     public Collection<BitbucketRepository> getRepositories(String teamName) throws BitbucketException, SourceConnectorException {
         try {
-        	//@formatter:off
-        	Endpoint endpoint = endpoint("/repositories/:uname")
-        			.bind("uname", teamName)
-        			.queryParam("pagelen", "25");
-        	if (!StringUtils.isEmpty(config.getRepositoryFilter())) {
-        	    String filter = "name~\"" + config.getRepositoryFilter() + "\"";
-        		endpoint = endpoint.queryParam("q", filter);
-        	}
+            //@formatter:off
+            Endpoint endpoint = endpoint("/repositories/:uname")
+                    .bind("uname", teamName)
+                    .queryParam("pagelen", "25");
+            if (!StringUtils.isEmpty(config.getRepositoryFilter())) {
+                String filter = "name~\"" + config.getRepositoryFilter() + "\"";
+                endpoint = endpoint.queryParam("q", filter);
+            }
             //@formatter:on;
 
             String reposUrl = endpoint.toString();
@@ -292,9 +288,9 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
             while (!done) {
                 HttpRequest request = Unirest.get(reposUrl);
                 addSecurityTo(request);
-                HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+                HttpResponse<kong.unirest.JsonNode> response = request.asJson();
     
-                JSONObject responseObj = response.getBody().getObject();
+                kong.unirest.json.JSONObject responseObj = response.getBody().getObject();
     
                 if (response.getStatus() != 200) {
                     throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
@@ -347,9 +343,9 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
             while (!done) {
                 HttpRequest request = Unirest.get(branchesUrl);
                 addSecurityTo(request);
-                HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+                HttpResponse<kong.unirest.JsonNode> response = request.asJson();
     
-                JSONObject responseObj = response.getBody().getObject();
+                kong.unirest.json.JSONObject responseObj = response.getBody().getObject();
     
                 if (response.getStatus() != 200) {
                     throw new UnirestException("Unexpected response from Bitbucket: " + response.getStatus() + "::" + response.getStatusText());
@@ -426,7 +422,7 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
             addSecurityTo(request);
 
             //@formatter:off
-            HttpResponse<com.mashape.unirest.http.JsonNode> response = request
+            HttpResponse<kong.unirest.JsonNode> response = request
                     .field(resource.getResourcePath(), filesStream, resource.getResourcePath())
                     .field("message", commitMessage)
                     .field("branch", resource.getBranch())
@@ -455,14 +451,14 @@ public class BitbucketSourceConnector extends AbstractSourceConnector implements
                     .toString();
             //@formatter:on
 
-            HttpRequest request = Unirest.get(contentUrl);
+            HttpRequest<GetRequest> request = Unirest.get(contentUrl);
             try {
                 addSecurityTo(request);
             } catch (Exception e) {
                 // If adding security fails, just go ahead and try without security.  If it's a public
                 // repository then this will work.  If not, then it will fail with a 404.
             }
-            HttpResponse<InputStream> response = request.asBinary();
+            HttpResponse<InputStream> response = request.asBytes().map(ByteArrayInputStream::new);
 
             ResourceContent rVal = new ResourceContent();
             

@@ -32,6 +32,7 @@ import java.util.zip.ZipInputStream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import kong.unirest.HttpRequest;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
@@ -49,8 +50,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequest;
 
 import io.apicurio.hub.api.beans.GitLabAction;
 import io.apicurio.hub.api.beans.GitLabAction.GitLabActionType;
@@ -218,7 +217,7 @@ public class GitLabSourceConnector extends AbstractSourceConnector implements IG
      * @param repositoryUrl
      * @param commitSha
      * @param commitComment
-     * @throws UnirestException
+     * @throws kong.unirest.UnirestException
      * @throws SourceConnectorException
      */
     private void addCommitComment(String repositoryUrl, String commitSha, String commitComment)

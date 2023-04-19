@@ -23,13 +23,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import kong.unirest.ObjectMapper;
+import kong.unirest.Unirest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.mashape.unirest.http.ObjectMapper;
-import com.mashape.unirest.http.Unirest;
 
 /**
  * @author eric.wittmann@gmail.com
@@ -42,7 +42,7 @@ public class HubApplication extends Application {
     private static com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
     static {
         jacksonObjectMapper.setSerializationInclusion(Include.NON_NULL);
-        Unirest.setObjectMapper(new ObjectMapper() {
+        Unirest.config().setObjectMapper(new ObjectMapper() {
             @Override
             public <T> T readValue(String value, Class<T> valueType) {
                 try {

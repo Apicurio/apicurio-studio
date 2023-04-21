@@ -1,6 +1,5 @@
 package io.apicurio.hub.api.security;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import io.apicurio.hub.api.beans.DeviceSession;
 import io.apicurio.hub.core.util.JsonUtil;
 import org.apache.commons.io.IOUtils;
@@ -19,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 
+@ApplicationScoped
 public class MockDeviceSessionsProvider implements IDeviceSessionsProvider {
     private static final Logger logger = LoggerFactory.getLogger(MockDeviceSessionsProvider.class);
 

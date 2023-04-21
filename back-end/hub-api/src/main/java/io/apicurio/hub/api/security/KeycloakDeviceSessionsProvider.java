@@ -23,12 +23,8 @@ import javax.inject.Inject;
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @ApplicationScoped
 public class KeycloakDeviceSessionsProvider implements IDeviceSessionsProvider {
@@ -81,31 +77,42 @@ public class KeycloakDeviceSessionsProvider implements IDeviceSessionsProvider {
 
                 try (InputStream contentStream = response.getEntity().getContent()) {
                     String json = IOUtils.toString(contentStream, StandardCharsets.UTF_8);
-                    JsonNode jsonTree = JsonUtil.toJsonTree(json);
-                    List<DeviceSession> deviceSessionList = new ArrayList<>();
-                    for (JsonNode jsonNode : jsonTree) {
-                        JsonNode sessions = jsonNode.get("sessions");
-                        if (!sessions.isArray() || sessions.isEmpty()) {
-                            continue;
-                        }
-                        String os = jsonNode.get("os").asText();
-                        String osVersion = jsonNode.get("osVersion").asText();
-                        for (JsonNode sessionNode : sessions) {
-                            DeviceSession item = new DeviceSession();
-                            item.setId(sessionNode.get("id").asText());
-                            item.setIpAddress(sessionNode.get("ipAddress").asText());
-                            item.setLastAccess(sessionNode.get("lastAccessed").asLong());
-                            String browser = sessionNode.get("browser").asText();
-                            item.setName(String.format("%s / %s %s", browser, os, osVersion));
-                            deviceSessionList.add(item);
-                        }
-
-                    }
-                    return deviceSessionList;
+                    return convertJsonToResponse(json);
                 }
             }
         } catch (IllegalArgumentException e) {
             throw new IOException("Error getting linked account token.", e);
         }
+    }
+
+    public List<DeviceSession> convertJsonToResponse(String json) {
+        JsonNode jsonTree = JsonUtil.toJsonTree(json);
+        List<DeviceSession> deviceSessionList = new ArrayList<>();
+        for (JsonNode jsonNode : jsonTree) {
+            JsonNode sessionNodes = jsonNode.get("sessions");
+            if (!sessionNodes.isArray() || sessionNodes.isEmpty()) {
+                continue;
+            }
+            String os = jsonNode.get("os").asText();
+            String osVersion = jsonNode.get("osVersion").asText();
+
+            for (JsonNode sessionNode : sessionNodes) {
+                DeviceSession item = new DeviceSession();
+
+                item.setId(sessionNode.get("id").asText());
+                item.setIpAddress(sessionNode.get("ipAddress").asText());
+                item.setLastAccess(sessionNode.get("lastAccess").asLong());
+
+                String browser = sessionNode.get("browser").asText();
+                item.setName(String.format("%s / %s %s", browser, os, osVersion));
+
+                boolean current = sessionNode.has("current") && sessionNode.get("current").asBoolean();
+                item.setCurrent(current);
+
+                deviceSessionList.add(item);
+            }
+        }
+        deviceSessionList.sort(Comparator.comparingLong(DeviceSession::getLastAccess).reversed());
+        return deviceSessionList;
     }
 }

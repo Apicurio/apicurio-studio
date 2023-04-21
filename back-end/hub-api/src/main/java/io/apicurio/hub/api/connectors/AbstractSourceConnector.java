@@ -23,6 +23,8 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
+import kong.unirest.HttpRequest;
+import kong.unirest.Unirest;
 import org.apache.http.impl.client.HttpClients;
 import org.keycloak.common.util.Encode;
 
@@ -30,8 +32,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.request.HttpRequest;
 
 import io.apicurio.hub.api.security.ILinkedAccountsProvider;
 import io.apicurio.hub.api.security.ISecurityContext;
@@ -47,7 +47,7 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
     static {
         mapper.setSerializationInclusion(Include.NON_NULL);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Unirest.setObjectMapper(new com.mashape.unirest.http.ObjectMapper() {
+        Unirest.config().setObjectMapper(new kong.unirest.ObjectMapper() {
             public <T> T readValue(String value, Class<T> valueType) {
                 try {
                     return mapper.readValue(value, valueType);
@@ -64,7 +64,7 @@ public abstract class AbstractSourceConnector implements ISourceConnector {
             }
         });
         // To allow Unirest to use system proxy
-        Unirest.setHttpClient(HttpClients.createSystem());
+        Unirest.config().httpClient(HttpClients.createSystem());
     }
 
     @Inject

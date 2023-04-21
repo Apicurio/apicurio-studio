@@ -23,22 +23,21 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
+import kong.unirest.GetRequest;
+import kong.unirest.HttpRequest;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONObject;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.request.HttpRequest;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -121,10 +120,10 @@ public class HttpClientTest {
     public void testSimple_Unirest() throws Exception {
         String url = new Endpoint("http://127.0.0.1:" + HTTP_PORT + "/echo").toString();
         HttpRequest request = Unirest.get(url);
-        HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+        HttpResponse<kong.unirest.JsonNode> response = request.asJson();
         Assert.assertEquals(200, response.getStatus());
         
-        JSONObject responseObj = response.getBody().getObject();
+        kong.unirest.json.JSONObject responseObj = response.getBody().getObject();
         String method = responseObj.getString("method");
         String uri = responseObj.getString("uri");
         
@@ -135,19 +134,20 @@ public class HttpClientTest {
     @Test
     public void testEncodedPath_Unirest() throws Exception {
         String url = new Endpoint("http://127.0.0.1:" + HTTP_PORT + "/echo/encoded%2Fpath").toString();
-        HttpRequest request = Unirest.get(url);
-        HttpResponse<com.mashape.unirest.http.JsonNode> response = request.asJson();
+        HttpRequest<GetRequest> request = Unirest.get(url);
+        HttpResponse<kong.unirest.JsonNode> response = request.asJson();
         Assert.assertEquals(200, response.getStatus());
         
-        JSONObject responseObj = response.getBody().getObject();
+        kong.unirest.json.JSONObject responseObj = response.getBody().getObject();
         String method = responseObj.getString("method");
         String uri = responseObj.getString("uri");
         
         Assert.assertEquals("GET", method);
-        // Note: Unirest messes with the encoded path, incorrectly changing it from "/echo/encoded%2Fpath" 
+        // Note: Unirest used to mess with the encoded path, incorrectly changing it from "/echo/encoded%2Fpath"
         // to "/echo/encoded/path" prior to making the HTTP request.  This is why Unirest is not used in
         // the GitLab source connector.
-        Assert.assertEquals("/echo/encoded/path", uri);
+        // This should not happen anymore
+        Assert.assertEquals("/echo/encoded%2Fpath", uri);
     }
 
     static class EchoHandler implements HttpHandler {

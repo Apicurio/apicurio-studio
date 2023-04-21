@@ -79,14 +79,14 @@
         <version.clean.plugin>3.2.0</version.clean.plugin>
         <version.compiler.plugin>3.11.0</version.compiler.plugin>
         <version.dependency.plugin>3.5.0</version.dependency.plugin>
-        <version.deploy.plugin>3.1.0</version.deploy.plugin>
-        <version.gatling.plugin>4.3.0</version.gatling.plugin>
-        <version.install.plugin>3.1.0</version.install.plugin>
+        <version.deploy.plugin>3.1.1</version.deploy.plugin>
+        <version.gatling.plugin>4.3.1</version.gatling.plugin>
+        <version.install.plugin>3.1.1</version.install.plugin>
         <version.jar.plugin>3.3.0</version.jar.plugin>
         <version.javadoc.plugin>3.5.0</version.javadoc.plugin>
         <version.maven-gpg-plugin.plugin>1.6</version.maven-gpg-plugin.plugin>
         <version.nexus-staging-maven-plugin.plugin>1.6.13</version.nexus-staging-maven-plugin.plugin>
-        <version.resources.plugin>3.3.0</version.resources.plugin>
+        <version.resources.plugin>3.3.1</version.resources.plugin>
         <version.source.plugin>3.2.1</version.source.plugin>
         <version.surefire.plugin>3.0.0</version.surefire.plugin>
         <version.surefire-report.plugin>3.0.0</version.surefire-report.plugin>
@@ -101,7 +101,7 @@
         <version.com.google.inject>4.1.0</version.com.google.inject>
         <version.com.graphql-java>19.3</version.com.graphql-java>
         <version.com.h2database>1.4.200</version.com.h2database>
-        <version.com.mashape.unirest>1.4.9</version.com.mashape.unirest>
+        <version.com.konghq>3.14.1</version.com.konghq>
         <version.com.squareup.javapoet>1.13.0</version.com.squareup.javapoet>
         <version.com.sun.codemodel>2.6</version.com.sun.codemodel>
         <version.commons-beanutils>1.9.4</version.commons-beanutils>
@@ -111,7 +111,7 @@
         <version.commons-io>2.11.0</version.commons-io>
         <version.commons-lang>2.6</version.commons-lang>
         <version.commons-lang3>3.12.0</version.commons-lang3>
-        <version.io.gatling>3.9.2</version.io.gatling>
+        <version.io.gatling>3.9.3</version.io.gatling>
         <version.io.prometheus>0.16.0</version.io.prometheus>
         <version.javax.annotation>1.3.2</version.javax.annotation>
         <version.javax.enterprise>2.0</version.javax.enterprise>
@@ -130,12 +130,12 @@
         <version.org.jdbi>3.37.1</version.org.jdbi>
         <version.org.json>20230227</version.org.json>
         <version.org.jsonschema2pojo>1.2.1</version.org.jsonschema2pojo>
-        <version.org.keycloak>21.0.1</version.org.keycloak>
+        <version.org.keycloak>21.0.2</version.org.keycloak>
         <version.mysql>8.0.22</version.mysql>
         <version.org.postgresql>42.2.20</version.org.postgresql>
         <version.org.slf4j>2.0.7</version.org.slf4j>
         <version.scala>2.13.10</version.scala>
-        <version.infinispan>14.0.7.Final</version.infinispan>
+        <version.infinispan>14.0.8.Final</version.infinispan>
     </properties>
 
     <dependencyManagement>
@@ -278,9 +278,9 @@
                 <version>${version.mysql}</version>
             </dependency>
             <dependency>
-                <groupId>com.mashape.unirest</groupId>
+                <groupId>com.konghq</groupId>
                 <artifactId>unirest-java</artifactId>
-                <version>${version.com.mashape.unirest}</version>
+                <version>${version.com.konghq}</version>
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>

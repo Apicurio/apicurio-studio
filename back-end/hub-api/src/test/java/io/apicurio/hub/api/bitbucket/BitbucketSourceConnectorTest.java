@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Properties;
 
+import kong.unirest.UnirestException;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.After;
 import org.junit.Assert;
@@ -37,7 +38,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import com.mashape.unirest.http.exceptions.UnirestException;
 
 import io.apicurio.hub.api.beans.BitbucketRepository;
 import io.apicurio.hub.api.beans.BitbucketTeam;

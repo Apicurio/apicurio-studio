@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.Collection;
 
-@ApplicationScoped
 public class DeviceSessionsResource implements IDeviceSessionsResource {
     private static Logger logger = LoggerFactory.getLogger(DeviceSessionsResource.class);
 
@@ -30,6 +30,10 @@ public class DeviceSessionsResource implements IDeviceSessionsResource {
         logger.debug("Design sessions resource");
         User user = this.security.getCurrentUser();
         logger.debug(user.getLogin());
-        return deviceSessionsProvider.listDeviceSessions();
+        try {
+            return deviceSessionsProvider.listDeviceSessions();
+        } catch (IOException e) {
+            throw new ServerError(e);
+        }
     }
 }

@@ -19,7 +19,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 
-@ApplicationScoped
 public class MockDeviceSessionsProvider implements IDeviceSessionsProvider {
     private static final Logger logger = LoggerFactory.getLogger(MockDeviceSessionsProvider.class);
 
@@ -31,7 +30,7 @@ public class MockDeviceSessionsProvider implements IDeviceSessionsProvider {
         httpClient = HttpClients.createSystem();
     }
     @Override
-    public Collection<DeviceSession> listDeviceSessions() {
+    public Collection<DeviceSession> listDeviceSessions() throws IOException {
         HttpGet get = new HttpGet(MOCK_URI);
         get.addHeader("Accept", "application/json");
         try (CloseableHttpResponse response = httpClient.execute(get)) {
@@ -43,8 +42,6 @@ public class MockDeviceSessionsProvider implements IDeviceSessionsProvider {
                 String content = IOUtils.toString(contentStream, StandardCharsets.UTF_8);
                 return Arrays.asList(JsonUtil.fromJson(content, DeviceSession[].class));
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 }

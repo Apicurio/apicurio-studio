@@ -6,19 +6,24 @@ volumes:
 services:
 
   apicurio-studio-db:
-
+    image: 'postgres:15.2'
+    environment:
+      POSTGRES_DB: ${AS_DATABASE}
+      POSTGRES_USER: ${AS_DB_USER}
+      POSTGRES_PASSWORD: ${AS_DB_PASSWORD}
+    volumes:
+      - 'postgre_apicurio:/var/lib/postgresql/data'
+    network_mode: host
 
   apicurio-studio-ws:
     image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
     depends_on:
       - apicurio-studio-db
-    ports:
-      - '8092:8080'
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
 
       QUARKUS_PROFILE: ${QUARKUS_PROFILE}
-
+      QUARKUS_HTTP_PORT: 8092
       APICURIO_HUB_STORAGE_JDBC_TYPE: ${APICURIO_DB_TYPE}
       APICURIO_DB_DRIVER_NAME: ${APICURIO_DB_DRIVER_NAME}
       APICURIO_DB_CONNECTION_URL: ${APICURIO_DB_CONNECTION_URL}
@@ -26,6 +31,7 @@ services:
       APICURIO_DB_PASSWORD: ${APICURIO_DB_PASSWORD}
       APICURIO_DB_INITIALIZE: ${WS_APICURIO_DB_INITIALIZE}
       APICURIO_SHARE_FOR_EVERYONE: ${APICURIO_SHARE_FOR_EVERYONE}
+    network_mode: host
 
 
   apicurio-studio-api:
@@ -34,13 +40,12 @@ services:
     depends_on:
       - apicurio-studio-db
       - apicurio-studio-ws
-    ports:
-      - '8091:8080'
+      - keycloak-server
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
 
       QUARKUS_PROFILE: ${QUARKUS_PROFILE}
-
+      QUARKUS_HTTP_PORT: 8091
       APICURIO_KC_AUTH_URL: ${APICURIO_KC_AUTH_URL}
       APICURIO_KC_REALM: ${APICURIO_KC_REALM}
       APICURIO_KC_CLIENT_ID: ${API_APICURIO_KC_CLIENT_ID}
@@ -56,6 +61,7 @@ services:
       APICURIO_GITLAB_API_URL: ${APICURIO_GITLAB_API_URL}
       APICURIO_BITBUCKET_API_URL: ${APICURIO_BITBUCKET_API_URL}
       APICURIO_SHARE_FOR_EVERYONE: ${APICURIO_SHARE_FOR_EVERYONE}
+    network_mode: host
 
 
   apicurio-studio-ui:
@@ -64,11 +70,10 @@ services:
     depends_on:
       - apicurio-studio-api
       - apicurio-studio-ws
-    ports:
-      - '8093:8080'
+      - keycloak-server
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
-
+      QUARKUS_HTTP_PORT: 8093
       QUARKUS_PROFILE: ${QUARKUS_PROFILE}
 
       APICURIO_KC_CLIENT_ID: ${APICURIO_UI_KC_CLIENT_ID}
@@ -80,3 +85,20 @@ services:
       APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE: ${APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE}
       APICURIO_UI_LOGOUT_REDIRECT_URI: /
       APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP: ${APICURIO_UI_VALIDATION_CHANNELNAME_REGEXP}
+      APICURIO_OIDC_REDIRECT_HTTPS: "false"
+    network_mode: host
+
+  keycloak-server:
+    image: quay.io/keycloak/keycloak:19.0.2
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
+      KEYCLOAK_IMPORT: /microcks-keycloak-config/apicurio-realm.json,/microcks-keycloak-config/microcks-realm.json
+    command:
+      - start-dev
+      - --import-realm
+    volumes:
+      - ./config/keycloak/apicurio-realm.json:/opt/keycloak/data/import/apicurio-realm.json
+      - ./config/keycloak/microcks-realm.json:/opt/keycloak/data/import/microcks-realm.json
+    network_mode: host
+

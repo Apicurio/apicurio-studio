@@ -23,42 +23,6 @@ The scripts will create 3 files:
 Supported databases:
 - postgresql
 
-### Docker based setup
-
-The easiest way is to open a terminal or PowerShell, and navigate into distro/quarkus-docker-compose folder. In this folder enter the command below. On Windows please make sure, that your drives shares are enabled!
-
-```
-On Linux/Mac:
-
-docker run -v $(pwd):/apicurio carnalca/apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST}
-
-For example:
-docker run -v $(pwd):/apicurio carnalca/apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231
-```
-
-```
-On Windows:
-
-docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh {IP_OF_YOUR_HOST}
-
-For example:
-docker run -v ${PWD}:/apicurio chriske/apicurio-setup-image:latest bash /apicurio/setup.sh 192.168.1.231
-```
-
-This command will pull a minimal alpine linux based image, mount the current folder to it, and it will run the setup script. At the end of the run, it will print the admin password for Keycloak, and the URLs for the services. Like this:
-
-```
-Keycloak username: admin
-Keycloak password: op4oUQ
-
-Keycloak URL: 192.168.1.231:8090
-Apicurio URL: 192.168.1.231:8093
-Microcks URL: 192.168.1.231:8900
-
-```
-
-Please copy these values somewhere where you can find them easily!
-
 ### Script based setup
 
 If you're using NIX based OS, you can run the setup script without the docker wrapper. The only dependency is "util-linux" package which contains a tool called uuidgen.
@@ -99,12 +63,11 @@ For PostgreSQL config:
 
 ### Recommended Approach due to a bug in Quarkus
 
-If you want to do it manually, here are the commands. You will need to start Keycloak, then wait and then start the Quarkus apps:
+If you want to do it manually, here is the command:
 
 ```
-docker-compose -f docker-compose.keycloak.yml build && docker-compose -f docker-compose.keycloak.yml up
 
-docker-compose -f docker-compose.microcks.yml -f docker-compose.apicurio.yml -f docker-compose-as-postgre.yml up
+docker-compose -f docker-compose.microcks.yml -f docker-compose.apicurio.yml up
 
 ```
 
@@ -120,7 +83,7 @@ docker system prune --volumes
 The Keycloak instance is already configured, you don't have to create the realms manually.
 
 At the first start there are no default users added to Keycloak. Please navigate to:
-`http://YOUR_IP:8090`
+`http://localhost:8090`
 
 The default credentials for Keycloak are: `admin` and the password can be found in the previously generated `.env` file, under `KEYCLOAK_PASSWORD`.
 
@@ -129,5 +92,5 @@ Select Apicurio realm and add a user to it. After this, you have to do this with
 
 ## Login to Apicurio and Microcks
 
-Apicurio URL: `http://YOUR_IP:8093`
-Microcks URL: `http://YOUR_IP:8900`
+Apicurio URL: `http://localhost:8093`
+Microcks URL: `http://localhost:8900`

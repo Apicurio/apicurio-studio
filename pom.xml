@@ -130,7 +130,7 @@
         <version.org.jdbi>3.39.1</version.org.jdbi>
         <version.org.json>20230618</version.org.json>
         <version.org.jsonschema2pojo>1.2.1</version.org.jsonschema2pojo>
-        <version.org.keycloak>21.1.1</version.org.keycloak>
+        <version.org.keycloak>21.1.2</version.org.keycloak>
         <version.mysql>8.0.22</version.mysql>
         <version.org.postgresql>42.2.20</version.org.postgresql>
         <version.org.slf4j>2.0.7</version.org.slf4j>

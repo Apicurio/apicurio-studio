@@ -26,7 +26,7 @@
             <dependency>
                 <groupId>org.jboss.shrinkwrap.resolver</groupId>
                 <artifactId>shrinkwrap-resolver-bom</artifactId>
-                <version>3.1.6</version>
+                <version>3.2.1</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>

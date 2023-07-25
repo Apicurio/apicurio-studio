@@ -1,0 +1,137 @@
+---
+swagger: "2.0"
+info:
+  title: Demo Test API Specification
+  version: 1.0.0
+  description: Demo Test API Specification
+  contact:
+    name: Didzis Kalnins
+    email: didzis.kalnins@luminorbank.com
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /people:
+    get:
+      responses:
+        "200":
+          description: Successful response - returns an array of `person` entities.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/person'
+          examples:
+            application/json:
+            - id: P-000-123
+              fullName: Didzis Kalnins
+            - id: P-001-225
+              fullName: Matthew Patterson
+            - id: P-001-957
+              fullName: Katty Venice
+      operationId: getpeople
+      summary: List All people
+      description: Gets a list of all `person` entities.
+    post:
+      parameters:
+      - name: body
+        description: A new `person` to be created.
+        schema:
+          $ref: '#/definitions/person'
+        in: body
+        required: true
+      responses:
+        "201":
+          description: Successful response.
+          examples:
+            application/json:
+              id: P-365-778
+      operationId: createperson
+      summary: Create a person
+      description: Creates a new instance of a `person`.
+  /people/{personId}:
+    get:
+      responses:
+        "200":
+          description: Successful response - returns a single `person`.
+          schema:
+            $ref: '#/definitions/person'
+          examples:
+            application/json:
+              id: P-001-225
+              fullName: Matthew Patterson
+      operationId: getperson
+      summary: Get a person
+      description: Gets the details of a single instance of a `person`.
+    put:
+      parameters:
+      - name: body
+        description: Updated `person` information.
+        schema:
+          $ref: '#/definitions/person'
+        in: body
+        required: true
+      responses:
+        "202":
+          description: Successful response.
+      operationId: updateperson
+      summary: Update a person
+      description: Updates an existing `person`.
+    delete:
+      responses:
+        "204":
+          description: Successful response.
+      operationId: deleteperson
+      summary: Delete a person
+      description: Deletes an existing `person`.
+    parameters:
+    - name: personId
+      description: A unique identifier for a `person`.
+      in: path
+      required: true
+      type: string
+definitions:
+  person:
+    title: Root Type for person
+    description: |
+      Very simple person information:
+      * Id;
+      * Full Name
+    type: object
+    properties:
+      id:
+        description: Persons Unique Identifier
+        type: string
+      fullName:
+        description: Persons Full Name
+        type: string
+    example:
+      id: P0000-000123
+      fullName: Didzis Kalnins
+responses:
+  personResponse:
+    description: |-
+      Person Response.
+      Returns:
+      * Id
+      * Full Name
+    schema:
+      $ref: '#/definitions/person'
+    examples:
+      application/json:
+        id: P-000-123
+        fullName: Didzis Kalnins
+  personsResponses:
+    description: "[{\"id\":\"P-000-123\",\"fullName\":\"Didzis Kalnins\"}]"
+    schema:
+      type: array
+      items:
+        $ref: '#/definitions/person'
+    examples:
+      application/json:
+      - id: P-000-123
+        fullName: Didzis Kalnins
+      - id: P-001-225
+        fullName: Matthew Patterson
+      - id: P-001-957
+        fullName: Katty Venice

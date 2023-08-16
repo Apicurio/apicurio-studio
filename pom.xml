@@ -94,7 +94,7 @@
         <version.frontend-maven.plugin>1.13.4</version.frontend-maven.plugin>
         <version.scala-maven.plugin>4.8.1</version.scala-maven.plugin>
         <version.jandex-maven.plugin>1.2.3</version.jandex-maven.plugin>
-        <version.properties-maven-plugin>1.1.0</version.properties-maven-plugin>
+        <version.properties-maven-plugin>1.2.0</version.properties-maven-plugin>
 
         <!-- Dependency Versions -->
         <version.com.fasterxml.jackson>2.15.2</version.com.fasterxml.jackson>

@@ -116,7 +116,16 @@ export class ModelUtils {
      */
     public static generateExampleFromSchema(schema: OasSchema | AaiSchema): any {
         let generator: ExampleGenerator = new ExampleGenerator();
-        return generator.generate(schema);
+        let example : any[] = [];
+        example.push(generator.generate(schema));
+        if (schema.allOf) {
+            schema.allOf.forEach( inherited => {
+                if (inherited.$ref) {
+                    example.push(generator.generate(inherited));
+                }
+            });
+        }
+        return example;
     }
 
 }
@@ -163,14 +172,22 @@ export class ExampleGenerator {
         }
     }
 
+    /**
+     * Generates an exemple if no example exist
+    **/
     private generateObject(schema: OasSchema | AaiSchema): any {
         let object: any = {};
         if (schema.properties) {
             console.info("[ExampleGenerator] Schema has properties.");
             Object.keys(schema.properties).forEach( propertyName => {
                 console.info("[ExampleGenerator] Processing schema property named: ", propertyName);
-                let propertyExample: any = this.generate(schema.properties[propertyName] as OasSchema);
-                object[propertyName] = propertyExample;
+                let example = schema.properties[propertyName].example;
+               if (example) {
+                   object[propertyName] = example;
+               } else {
+                   let propertyExample: any = this.generate(schema.properties[propertyName] as OasSchema);
+                   object[propertyName] = propertyExample;
+               }
             });
         }
         return object;
@@ -271,10 +288,16 @@ export class ExampleGenerator {
 
     private generateExampleString(schema: OasSchema | AaiSchema) : string {
         let text = "";
-        while (text.length < schema.maxLength) {
+        let maxLength = schema.maxLength;
+
+        if (maxLength == null) {
+            maxLength = Math.floor(Math.random() * 10);
+        }
+
+        while (text.length < maxLength) {
             text = text + Math.random().toString(36).slice(2);
         }
-        let randomLength = Math.floor(Math.random() * (schema.maxLength - schema.minLength + 1) + schema.minLength) + 2;
+        let randomLength = Math.floor(Math.random() * (maxLength - schema.minLength + 1) + schema.minLength) + 2;
         text = text.slice(2, randomLength);
          return text;
     }

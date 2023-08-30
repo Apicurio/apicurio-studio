@@ -59,6 +59,8 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
 
     _pconfigOpen: boolean = false;
 
+    _sorted: boolean = true;
+
     /**
      * C'tor.
      * @param changeDetectorRef
@@ -88,6 +90,10 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         this._pconfigOpen = !this._pconfigOpen;
     }
 
+    public toggleSorted(): void {
+        this._sorted = !this._sorted;
+    }
+
     public hasProperties(): boolean {
         return this.properties().length > 0;
     }
@@ -96,9 +102,15 @@ export class PropertiesSectionComponent extends AbstractBaseComponent {
         let rval: Schema[] = [];
 
         let sourceSchema: OasSchema = this.getPropertySourceSchema();
-        sourceSchema.getPropertyNames().sort((left, right) => {
-            return left.localeCompare(right);
-        }).forEach(name => rval.push(sourceSchema.getProperty(name)));
+        // let propertyNames: String[] = sourceSchema.getPropertyNames();
+
+        if (this._sorted) {
+            sourceSchema.getPropertyNames().sort((left, right) => {
+                return left.localeCompare(right)
+            }).forEach(name => rval.push(sourceSchema.getProperty(name)));
+        } else {
+            sourceSchema.getPropertyNames().forEach(name => rval.push(sourceSchema.getProperty(name)));
+        }
 
         return rval;
     }

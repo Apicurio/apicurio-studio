@@ -66,6 +66,9 @@ export class IconButtonComponent extends AbstractBaseComponent {
         if (this.type === 'import') {
             return "pficon pficon-import";
         }
+        if (this.type === 'sort') {
+            return "fa fa-sort-amount-down";
+        }
         return "fa fa-info";
     }
 

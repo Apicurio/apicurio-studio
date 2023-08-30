@@ -110,6 +110,9 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     _paths: OasPathItem[];
     _defs: (Oas20SchemaDefinition | Oas30SchemaDefinition)[];
     _responses: (Oas20ResponseDefinition | Oas30ResponseDefinition)[];
+    _sortedDefinition: Boolean = true;
+    _sortedPath: Boolean = true;
+    _sortedResponse: Boolean = true;
 
     /**
      * C'tor.
@@ -194,38 +197,47 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
-     * Returns an array of paths that match the filter criteria and are sorted alphabetically.
+     * Returns an array of paths that match the filter criteria and are sorted alphabetically or not.
      */
     public paths(): OasPathItem[] {
-        if (!this._paths) {
-            let viz: FindPathItemsVisitor = new FindPathItemsVisitor(this.filterCriteria);
-            if (this.document && this.document.paths) {
-                this.document.paths.getPathItems().forEach(pathItem => {
-                    VisitorUtil.visitNode(pathItem, viz);
-                });
-            }
-            this._paths = viz.getSortedPathItems();
+        let viz: FindPathItemsVisitor = new FindPathItemsVisitor(this.filterCriteria);
+        if (this.document && this.document.paths) {
+            this.document.paths.getPathItems().forEach(pathItem => {
+                VisitorUtil.visitNode(pathItem, viz);
+            });
         }
+
+        if (this._sortedPath) {
+            this._paths = viz.getSortedPathItems();
+        } else {
+            this._paths = viz.pathItems;
+        }
+
         return this._paths;
     }
 
     /**
-     * Returns the array of definitions, filtered by search criteria and sorted.
+     * Returns the array of definitions, filtered by search criteria and sorted or not.
      */
     public definitions(): (Oas20SchemaDefinition | Oas30SchemaDefinition)[] {
         let viz: FindSchemaDefinitionsVisitor = new FindSchemaDefinitionsVisitor(this.filterCriteria);
-        if (!this._defs) {
-            if (this.document.is2xDocument() && (this.document as Oas20Document).definitions) {
-                (this.document as Oas20Document).definitions.getDefinitions().forEach( definition => {
-                    VisitorUtil.visitNode(definition, viz);
-                })
-            } else if (this.document.is3xDocument() && (this.document as Oas30Document).components) {
-                (this.document as Oas30Document).components.getSchemaDefinitions().forEach( definition => {
-                    VisitorUtil.visitNode(definition, viz);
-                })
-            }
-            this._defs = viz.getSortedSchemaDefinitions();
+
+        if (this.document.is2xDocument() && (this.document as Oas20Document).definitions) {
+            (this.document as Oas20Document).definitions.getDefinitions().forEach(definition => {
+                VisitorUtil.visitNode(definition, viz);
+            })
+        } else if (this.document.is3xDocument() && (this.document as Oas30Document).components) {
+            (this.document as Oas30Document).components.getSchemaDefinitions().forEach(definition => {
+                VisitorUtil.visitNode(definition, viz);
+            })
         }
+
+        if (this._sortedDefinition) {
+            this._defs = viz.getSortedSchemaDefinitions();
+        } else {
+            this._defs = viz.schemaDefinitions;
+        }
+
         return this._defs;
     }
 
@@ -238,22 +250,27 @@ export class EditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
-     * Returns an array of responses filtered by the search criteria and sorted.
+     * Returns an array of responses filtered by the search criteria and sorted or not.
      */
     public responses(): (Oas20ResponseDefinition | Oas30ResponseDefinition)[] {
         let viz: FindResponseDefinitionsVisitor = new FindResponseDefinitionsVisitor(this.filterCriteria);
-        if (!this._responses) {
-            if (this.document.is2xDocument() && (this.document as Oas20Document).responses) {
-                (this.document as Oas20Document).responses.getResponses().forEach( response => {
-                    VisitorUtil.visitNode(response, viz);
-                })
-            } else if (this.document.is3xDocument() && (this.document as Oas30Document).components) {
-                (this.document as Oas30Document).components.getResponseDefinitions().forEach( response => {
-                    VisitorUtil.visitNode(response, viz);
-                })
-            }
-            this._responses = viz.getSortedResponseDefinitions();
+
+        if (this.document.is2xDocument() && (this.document as Oas20Document).responses) {
+            (this.document as Oas20Document).responses.getResponses().forEach(response => {
+                VisitorUtil.visitNode(response, viz);
+            })
+        } else if (this.document.is3xDocument() && (this.document as Oas30Document).components) {
+            (this.document as Oas30Document).components.getResponseDefinitions().forEach(response => {
+                VisitorUtil.visitNode(response, viz);
+            })
         }
+
+        if (this._sortedResponse) {
+            this._responses = viz.getSortedResponseDefinitions();
+        } else {
+            this._responses = viz.responseDefinitions;
+        }
+
         return this._responses;
     }
 
@@ -860,6 +877,18 @@ export class EditorMasterComponent extends AbstractBaseComponent {
 
     importResponses(): void {
         this.onImportComponent.emit(ComponentType.response);
+    }
+
+    public toggleSortDefinition() {
+        this._sortedDefinition = !this._sortedDefinition;
+    }
+
+    public toggleSortPath() {
+        this._sortedPath = !this._sortedPath;
+    }
+
+    public toggleSortResponse() {
+        this._sortedResponse = !this._sortedResponse;
     }
 
 }

@@ -10,6 +10,8 @@
                                      [title]="'Add a property to the schema.'"></icon-button>
                         <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" type="delete"
                                      [title]="'Delete all properties from the schema.'"></icon-button>
+                        <icon-button (onClick)="toggleSorted()" [pullRight]="true" type="sort"
+                                     [title]="'Sort properties'"></icon-button>
                     </span>
     <div body>
         <!-- Warning when no properties exist -->

@@ -653,7 +653,7 @@ public abstract class CommonSqlStatements implements ISqlStatements {
     @Override
     public String selectApiTemplatesByType() {
         return "SELECT * FROM templates " +
-                "WHERE api_type = ?" +
+                "WHERE api_type = ? " +
                 "ORDER BY name ASC";
     }
 

@@ -94,6 +94,7 @@
                  contextHelp="The core of any REST API is the set of resources/paths it exposes.  Each path is of the form '/path/to/resource' and can support a number of operations.">
             <span actions>
                 <icon-button (onClick)="addPathDialog.open(document, getCurrentPathSelection())" [pullRight]="true" type="add"></icon-button>
+                <icon-button (onClick)="toggleSortPath()" [pullRight]="true" type="sort" title="Sort path"></icon-button>
             </span>
             <div body tabindex="0" class="path-list master-entity-list" (keydown)="onPathsKeypress($event)" #pathList>
                 <signpost *ngIf="paths().length === 0">
@@ -117,6 +118,7 @@
             <span actions>
                 <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" type="add" title="Create Data Type"></icon-button>
                 <icon-button *ngIf="importsEnabled()" (onClick)="importDataTypes()" [pullRight]="true" type="import" title="Import Data Type"></icon-button>
+                <icon-button (onClick)="toggleSortDefinition()" [pullRight]="true" type="sort" title="Sort Data Type"></icon-button>
             </span>
             <div body tabindex="0" class="definition-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #defList>
                 <signpost *ngIf="definitions().length === 0">
@@ -136,6 +138,7 @@
             <span actions>
                 <icon-button (onClick)="openAddResponseEditor()" [pullRight]="true" type="add" title="Create Response"></icon-button>
                 <icon-button *ngIf="importsEnabled()" (onClick)="importResponses()" [pullRight]="true" type="import" title="Import Response"></icon-button>
+                <icon-button (onClick)="toggleSortResponse()" [pullRight]="true" type="sort" title="Sort Response"></icon-button>
             </span>
             <div body tabindex="0" class="response-list master-entity-list" (keydown)="onResponsesKeypress($event)" #respList>
                 <signpost *ngIf="responses().length === 0">

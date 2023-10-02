@@ -1,6 +1,6 @@
 {
   "name": "@apicurio/studio",
-  "version": "0.2.61",
+  "version": "0.2.62",
   "description": "A web application to help design restful APIs.",
   "author": "Eric Wittmann",
   "license": "Apache-2.0",

@@ -100,5 +100,6 @@ services:
     volumes:
       - ./config/keycloak/apicurio-realm.json:/opt/keycloak/data/import/apicurio-realm.json
       - ./config/keycloak/microcks-realm.json:/opt/keycloak/data/import/microcks-realm.json
-    network_mode: host
+    ports:
+    - "8090:8080"
 

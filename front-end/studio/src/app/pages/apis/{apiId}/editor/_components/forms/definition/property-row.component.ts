@@ -90,6 +90,13 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         }
     }
 
+    public default_(): string{
+        return this.item.default_;
+    }
+
+    public getDefaultBoolean(): boolean{
+        return this.item.default_ === "true";
+    }
     public description(): string {
         return this.item.description
     }
@@ -212,6 +219,14 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
         return this.item.type === "string"
     }
 
+    public isDefault_Eligible(): boolean  {
+        return (this.item.type === "string" || this.item.type === "integer" || this.item.type === "float" || this.item.type=== "number" || this.item.type=== "double");
+    }
+
+    public isBooleanEligible(): boolean{
+        return this.item.type === "boolean";
+    }
+
     public isArrayEligible(): boolean  {
         return this.item.type === "array"
     }
@@ -263,6 +278,19 @@ export class PropertyRowComponent extends AbstractRowComponent<Oas20PropertySche
     public setPattern(pattern: string): void {
             let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.item, "pattern", pattern);
             this.commandService.emit(command);
+    }
+
+    public setDefault(val: string): void {
+        let command: ICommand = null
+        if (this.item.type === "string" ){
+            command = CommandFactory.createChangePropertyCommand<string>(this.item, "default_", String(val));
+
+        }
+        if( this.item.type === "integer" || this.item.type === "float" ||  this.item.type=== "number" || this.item.type=== "double"){
+            command = CommandFactory.createChangePropertyCommand<number>(this.item, "default_", Number(val));
+
+        }
+        this.commandService.emit(command);
     }
 
     public changeRequired(newValue: string): void {

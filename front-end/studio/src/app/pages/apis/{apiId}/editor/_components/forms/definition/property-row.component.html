@@ -91,6 +91,26 @@
                                                                (onChange)="setPattern($event)"></pf-inline-text-editor>
                                     </div>
                                 </div>
+
+                                <div class="property-default" *ngIf="isBooleanEligible()">
+                                    <checkbox-input [defaultValue]="getDefaultBoolean()" [name]="'readOnly'" label="Default true"
+                                                    id="default_" [baseNode]="item" nodePath="default_"
+                                                    (onChange)="setBoolean($event,'default_')"></checkbox-input>
+                                </div>
+                                <div class="property-default" *ngIf="isDefault_Eligible()">
+                                    <div class="property-label">
+                                        <label for="default">Default</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="item.default_"
+                                                               noValueMessage="No default."
+                                                               id="default_"
+                                                               [baseNode]="item"
+                                                               nodePath="default_"
+                                                               (onChange)="setDefault($event)"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+
                             </div>
 
                             <!-- Min/max tab content -->

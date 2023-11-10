@@ -1,0 +1,101 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: apicurio-studio-database
+objects:
+  # Postgresql Deployment Configuration
+  # ###################################
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: studio-postgresql
+        template: apicurio-studio
+      name: studio-postgresql
+    spec:
+      strategy:
+        type: Recreate
+        recreateParams:
+          timeoutSeconds: 600
+        resources: { }
+        activeDeadlineSeconds: 21600
+      replicas: 1
+      test: false
+      selector:
+        app: studio-postgresql
+        deploymentconfig: studio-postgresql
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app: studio-postgresql
+            deploymentconfig: studio-postgresql
+            template: apicurio-studio
+        spec:
+          replicas: 1
+          volumes:
+            - emptyDir:
+                sizeLimit: 500Mi
+              name: studio-pgdata
+          containers:
+            - name: studio-postgresql
+              image: quay.io/centos7/postgresql-13-centos7
+              ports:
+                - containerPort: 5432
+                  protocol: TCP
+              env:
+                - name: POSTGRESQL_USER
+                  value: apicurio
+                - name: POSTGRESQL_PASSWORD
+                  value: studio
+                - name: POSTGRESQL_DB
+                  value: studio
+                - name: POSTGRESQL_DATABASE
+                  value: studio
+              resources:
+                limits:
+                  memory: 512Mi
+              volumeMounts:
+                - mountPath: "/var/lib/postgresql/data"
+                  name: "studio-pgdata"
+              livenessProbe:
+                tcpSocket:
+                  port: 5432
+                initialDelaySeconds: 30
+                timeoutSeconds: 1
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 3
+              readinessProbe:
+                exec:
+                  command:
+                    - /bin/sh
+                    - '-i'
+                    - '-c'
+                    - >-
+                      psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d
+                      $POSTGRESQL_DATABASE -c 'SELECT 1'
+                initialDelaySeconds: 5
+                timeoutSeconds: 1
+                periodSeconds: 10
+                successThreshold: 1
+                failureThreshold: 3
+              terminationMessagePath: /dev/termination-log
+              imagePullPolicy: Always
+              securityContext:
+                capabilities: { }
+                privileged: false
+          restartPolicy: Always
+          terminationGracePeriodSeconds: 30
+          dnsPolicy: ClusterFirst
+          securityContext: { }
+    status: { }
+
+# Template Parameters
+parameters:
+  - name: DB_NAME
+    displayName: Database Name
+    description: The name of the Postgresql database.
+    value: apicuriodb
+    required: true

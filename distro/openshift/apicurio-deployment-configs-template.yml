@@ -3,209 +3,6 @@ kind: Template
 metadata:
   name: apicurio-studio-standalone
 objects:
-  # Postgresql Deployment Configuration
-  # ###################################
-  - apiVersion: v1
-    kind: DeploymentConfig
-    metadata:
-      creationTimestamp: null
-      labels:
-        app: studio-postgresql
-        template: apicurio-studio
-      name: studio-postgresql
-    spec:
-      strategy:
-        type: Recreate
-        recreateParams:
-          timeoutSeconds: 600
-        resources: {}
-        activeDeadlineSeconds: 21600
-      replicas: 1
-      test: false
-      selector:
-        app: studio-postgresql
-        deploymentconfig: studio-postgresql
-      template:
-        metadata:
-          creationTimestamp: null
-          labels:
-            app: studio-postgresql
-            deploymentconfig: studio-postgresql
-            template: apicurio-studio
-        spec:
-          replicas: 1
-          volumes:
-            - name: postgresql-data
-              persistentVolumeClaim:
-                claimName: postgresql-data
-          containers:
-            - name: studio-postgresql
-              image: centos/postgresql-95-centos7
-              ports:
-                - containerPort: 5432
-                  protocol: TCP
-              env:
-                - name: POSTGRESQL_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: postgresql
-                      key: database-user
-                - name: POSTGRESQL_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: postgresql
-                      key: database-password
-                - name: POSTGRESQL_DATABASE
-                  value: ${DB_NAME}
-              resources:
-                limits:
-                  memory: 512Mi
-              volumeMounts:
-                - name: postgresql-data
-                  mountPath: /var/lib/pgsql/data
-              livenessProbe:
-                tcpSocket:
-                  port: 5432
-                initialDelaySeconds: 30
-                timeoutSeconds: 1
-                periodSeconds: 10
-                successThreshold: 1
-                failureThreshold: 3
-              readinessProbe:
-                exec:
-                  command:
-                    - /bin/sh
-                    - '-i'
-                    - '-c'
-                    - >-
-                      psql -h 127.0.0.1 -U $POSTGRESQL_USER -q -d
-                      $POSTGRESQL_DATABASE -c 'SELECT 1'
-                initialDelaySeconds: 5
-                timeoutSeconds: 1
-                periodSeconds: 10
-                successThreshold: 1
-                failureThreshold: 3
-              terminationMessagePath: /dev/termination-log
-              imagePullPolicy: Always
-              securityContext:
-                capabilities: {}
-                privileged: false
-          restartPolicy: Always
-          terminationGracePeriodSeconds: 30
-          dnsPolicy: ClusterFirst
-          securityContext: {}
-    triggers:
-      - type: ImageChange
-      - type: ConfigChange
-        imageChangeParams:
-          automatic: true
-          containerNames:
-             - studio-postgresql
-          from:
-            kind: ImageStreamTag
-            namespace: openshift
-            name: 'postgresql:9.5'
-    status: {}
-  # Keycloak Deployment Configuration
-  # #################################
-  - apiVersion: v1
-    kind: DeploymentConfig
-    metadata:
-      creationTimestamp: null
-      labels:
-        app: apicurio-studio-auth
-        template: apicurio-studio
-      name: apicurio-studio-auth
-    spec:
-      replicas: 1
-      selector:
-        app: apicurio-studio-auth
-        deploymentconfig: apicurio-studio-auth
-      strategy:
-        type: Recreate
-        recreateParams:
-          timeoutSeconds: 600
-        resources: {}
-        activeDeadlineSeconds: 21600
-      template:
-        metadata:
-          creationTimestamp: null
-          labels:
-            app: apicurio-studio-auth
-            deploymentconfig: apicurio-studio-auth
-            template: apicurio-studio
-        spec:
-          replicas: 1
-          volumes:
-            - name: keycloak-data
-              persistentVolumeClaim:
-                claimName: keycloak-data
-          containers:
-            - image: auth:latest-release
-              imagePullPolicy: Always
-              name: apicurio-studio-auth
-              volumeMounts:
-                - mountPath: /opt/jboss/keycloak/standalone/data
-                  name: keycloak-data
-                  readOnly: false
-              ports:
-                - containerPort: 8080
-                  protocol: TCP
-              env:
-                - name: APICURIO_KEYCLOAK_USER
-                  valueFrom:
-                    secretKeyRef:
-                      name: apicurio-studio-auth
-                      key: keycloak-user
-                - name: APICURIO_KEYCLOAK_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: apicurio-studio-auth
-                      key: keycloak-password
-                - name: APICURIO_UI_URL
-                  value: http://${UI_ROUTE}
-              resources:
-                limits:
-                  cpu: ${AUTH_CPU_LIMIT}
-                  memory: ${AUTH_MEM_LIMIT}
-                requests:
-                  cpu: ${AUTH_CPU_REQUEST}
-                  memory: ${AUTH_MEM_REQUEST}
-              livenessProbe:
-                httpGet:
-                  path: /auth
-                  port: 8080
-                  scheme: HTTP
-                initialDelaySeconds: 90
-                timeoutSeconds: 5
-                periodSeconds: 10
-                successThreshold: 1
-                failureThreshold: 3
-              readinessProbe:
-                httpGet:
-                  path: /auth
-                  port: 8080
-                  scheme: HTTP
-                initialDelaySeconds: 80
-                timeoutSeconds: 5
-                periodSeconds: 10
-                successThreshold: 1
-                failureThreshold: 3
-              terminationMessagePath: /dev/termination-log
-          dnsPolicy: ClusterFirst
-          restartPolicy: Always
-          terminationGracePeriodSeconds: 30
-      triggers:
-        - type: ConfigChange
-        - type: ImageChange
-          imageChangeParams:
-            automatic: true
-            containerNames:
-              - apicurio-studio-auth
-            from:
-              kind: ImageStreamTag
-              name: 'auth:latest-release'
-    status: {}
   # Apicurio API Deployment Configuration
   # #####################################
   - apiVersion: v1
@@ -253,23 +50,19 @@ objects:
                 - name: APICURIO_DB_DRIVER_NAME
                   value: postgresql
                 - name: APICURIO_DB_CONNECTION_URL
-                  value: jdbc:postgresql://studio-postgresql:5432/${DB_NAME}
+                  value: jdbc:postgresql://studio-postgresql:5432/studio
                 - name: APICURIO_HUB_STORAGE_JDBC_TYPE
                   value: postgresql9
                 - name: APICURIO_DB_USER_NAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: postgresql
-                      key: database-user
+                  value: apicurio
                 - name: APICURIO_DB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: postgresql
-                      key: database-password
+                  value: studio
                 - name: APICURIO_MIN_HEAP
                   value: ${API_JVM_MIN}
                 - name: APICURIO_MAX_HEAP
                   value: ${API_JVM_MAX}
+                - name: QUARKUS_OIDC_TLS_VERIFICATION
+                  value: "none"
               resources:
                 limits:
                   cpu: ${API_CPU_LIMIT}
@@ -353,23 +146,19 @@ objects:
                 - name: APICURIO_DB_DRIVER_NAME
                   value: postgresql
                 - name: APICURIO_DB_CONNECTION_URL
-                  value: jdbc:postgresql://studio-postgresql:5432/${DB_NAME}
+                  value: jdbc:postgresql://studio-postgresql:5432/studio
                 - name: APICURIO_HUB_STORAGE_JDBC_TYPE
                   value: postgresql9
                 - name: APICURIO_DB_USER_NAME
-                  valueFrom:
-                    secretKeyRef:
-                      name: postgresql
-                      key: database-user
+                  value: apicurio
                 - name: APICURIO_DB_PASSWORD
-                  valueFrom:
-                    secretKeyRef:
-                      name: postgresql
-                      key: database-password
+                  value: studio
                 - name: APICURIO_MIN_HEAP
                   value: ${WS_JVM_MIN}
                 - name: APICURIO_MAX_HEAP
                   value: ${WS_JVM_MAX}
+                - name: QUARKUS_OIDC_TLS_VERIFICATION
+                  value: "none"
               resources:
                 limits:
                   cpu: ${WS_CPU_LIMIT}
@@ -450,6 +239,8 @@ objects:
                 - containerPort: 8080
                   protocol: TCP
               env:
+                - name: APICURIO_OIDC_REDIRECT_HTTPS
+                  value: "false"
                 - name: APICURIO_KC_AUTH_URL
                   value: http://${AUTH_ROUTE}:8080
                 - name: APICURIO_KC_REALM
@@ -466,6 +257,10 @@ objects:
                   value: ${UI_JVM_MIN}
                 - name: APICURIO_MAX_HEAP
                   value: ${UI_JVM_MAX}
+                - name: QUARKUS_OIDC_TLS_VERIFICATION
+                  value: "none"
+                - name: QUARKUS_CORS_ALLOWED_ORIGINS
+                  values: "*"
               resources:
                 limits:
                   cpu: ${UI_CPU_LIMIT}
@@ -530,11 +325,6 @@ parameters:
     displayName: Authentication Route Name
     description: The route name to use for Keycloak Authentication.
     value: apicurio-studio-auth
-    required: true
-  - name: DB_NAME
-    displayName: Database Name
-    description: The name of the Postgresql database.
-    value: apicuriodb
     required: true
   - name: KC_REALM
     displayName: Keycloak Realm
@@ -639,25 +429,5 @@ parameters:
   - name: WS_CPU_REQUEST
     displayName: WS CPU Request
     description: WS Pods CPU Request
-    value: 100m
-    required: true
-  - name: AUTH_MEM_LIMIT
-    displayName: AUTH Max Memory Limit
-    description: AUTH Pods Max Memory Limit
-    value: 1300Mi
-    required: true
-  - name: AUTH_MEM_REQUEST
-    displayName: AUTH Memory Request
-    description: AUTH Pods Memory Request
-    value: 600Mi
-    required: true
-  - name: AUTH_CPU_LIMIT
-    displayName: AUTH Max CPU Limit
-    description: AUTH Pods Max CPU Limit
-    value: '1'
-    required: true
-  - name: AUTH_CPU_REQUEST
-    displayName: AUTH CPU Request
-    description: AUTH Pods CPU Request
     value: 100m
     required: true

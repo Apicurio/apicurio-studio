@@ -8,7 +8,6 @@ This setup contains a fully configured Apicurio-Studio package, already integrat
 
 The folder contains a bash script to make the initialization. The script will create the deployment-configs, services, routes and all the resources needed. Once finished, the script will prompt the URL needed to access Apicurio Studio.
 
-
 Supported databases:
 - postgresql
 

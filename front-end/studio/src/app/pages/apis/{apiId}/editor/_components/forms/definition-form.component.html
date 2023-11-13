@@ -136,13 +136,24 @@
                         <em><a [href]="refLink()" target="_blank"><span class="fa fa-fw fa-external-link"></span>{{ definition.$ref }}</a></em>
                     </div>
                 </section>
+
+                
+            
+                 <!-- Object Type : Properties -->
+                 <reference-properties-section [definition]="extractPropertiesDefinition()" *ngIf="isObject()"></reference-properties-section>
+
+
                 <!-- Reference Details -->
-                <section type="dtReferenceDetails" label="REFERENCE DETAILS"
+                 <section type="dtReferenceDetails" label="REFERENCE DETAILS"
                          contextHelp="This section shows details about the externally referenced Data Type.">
                     <div body>
                         <pre>{{ referenceContent() }}</pre>
                     </div>
                 </section>
+
+
+                
+                
             </div>
         </div>
     </div>

@@ -37,6 +37,10 @@ import {
     SimplifiedType,
     TraverserDirection,
     VisitorUtil,
+    Node,
+    Oas30Schema,
+    Schema,
+    SimplifiedPropertyType,
 } from "@apicurio/data-models";
 
 import {SourceFormComponent} from "./source-form.base";
@@ -70,6 +74,8 @@ const INHERITANCE_TYPES_20: DropDownOption[] = [
 export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
     private _stype: SimplifiedType = null;
+
+    private currentPart : string = "payload";
 
     private _definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
     @Input()
@@ -251,12 +257,58 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
                 let fragment: string = this.definition.$ref.substring(hashIdx+1);
                 content = ReferenceUtil.resolveFragmentFromJS(content, fragment);
                 if (content) {
-                    return JSON.stringify(content, null, 3);
+                   return JSON.stringify(content, null, 3);
                 }
             }
         }
         return "Content not available.";
     }
+
+    extractPropertiesDefinition(): Oas30Schema {
+
+        let ret: Oas30Schema;
+        let newJsObject: any;
+        newJsObject = JSON.parse(this.referenceContent()); 
+        let node: Node = this.createEmptyNodeForSource();
+        Library.readNode(newJsObject, node);
+        let temp: any = node;
+        ret = temp;
+        return ret;
+    }
+
+
+    public properties(): Schema[] {
+        let rval: Schema[] = [];
+        let rtest: SimplifiedPropertyType[] =[];
+
+        let sourceSchema: OasSchema = this.getPropertySourceSchema();
+        // let propertyNames: String[] = sourceSchema.getPropertyNames();
+
+        sourceSchema.getPropertyNames().forEach(name => console.info(name+ " "+sourceSchema.getProperty(name) + " " +sourceSchema.getProperty(name)._attributes ));
+        
+            sourceSchema.getPropertyNames().forEach(name => rval.push(sourceSchema.getProperty(name)));
+        
+            //rval.forEach(val => rtest.push(SimplifiedPropertyType.fromPropertySchema(val)));
+        return rval;
+    }
+
+    public getPropertySourceSchema(): OasSchema {
+        let pschema: OasSchema = this.extractPropertiesDefinition();
+
+        if (this.inheritanceType() != "none") {
+            let schemas: OasSchema[] = this.extractPropertiesDefinition()[this.inheritanceType()];
+            if (schemas) {
+                schemas.forEach(schema => {
+                    if (schema.type == "object") {
+                        pschema = schema;
+                    }
+                });
+            }
+        }
+
+        return pschema;
+    }
+
 
     refLink(): string {
         if (this.definition.$ref && this.definition.$ref.startsWith("apicurio:")) {
@@ -277,4 +329,12 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         return this.definition.$ref.substring(colonIdx + 1, hashIdx);
     }
 
+
+    public isPartActive(part: string): boolean {
+        return this.currentPart === part;
+    }
+
+    public setActivePart(part: string): void {
+        this.currentPart = part;
+    }
 }

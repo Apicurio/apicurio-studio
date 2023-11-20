@@ -23,10 +23,7 @@ import {
     ViewChild,
     ViewEncapsulation
 } from "@angular/core";
-import {
-    CommandFactory,
-    ICommand, IPropertyParent,
-    Library, Oas20Schema, Oas30Schema,
+import {Oas20Schema, Oas30Schema,
     OasSchema,
     Schema
 } from "@apicurio/data-models";
@@ -35,9 +32,8 @@ import {AbstractBaseComponent} from "../../common/base-component";
 import {DocumentService} from "../../../_services/document.service";
 import {SelectionService} from "../../../_services/selection.service";
 import {ModelUtils} from "../../../_util/model.util";
-import {IPropertyEditorHandler, PropertyData, PropertyEditorComponent} from "../../editors/property-editor.component";
 import {EditorsService} from "../../../_services/editors.service";
-import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
+import {RenameEntityDialogComponent} from "../../dialogs/rename-entity.component";
 import Oas20PropertySchema = Oas20Schema.Oas20PropertySchema;
 import Oas30PropertySchema = Oas30Schema.Oas30PropertySchema;
 
@@ -73,25 +69,6 @@ export class ReferencePropertiesSectionComponent extends AbstractBaseComponent {
         super(changeDetectorRef, documentService, selectionService);
     }
 
-    public openAddSchemaPropertyEditor(): void {
-        let editor: PropertyEditorComponent = this.editors.getPropertyEditor();
-        let handler: IPropertyEditorHandler = {
-            onSave: (event) => {
-                this.addSchemaProperty(event.data);
-            },
-            onCancel: () => {}
-        };
-        editor.open(handler, this.definition);
-    }
-
-    public togglePropertiesConfig(): void {
-        this._pconfigOpen = !this._pconfigOpen;
-    }
-
-    public toggleSorted(): void {
-        this._sorted = !this._sorted;
-    }
-
     public hasProperties(): boolean {
         return this.properties().length > 0;
     }
@@ -101,13 +78,14 @@ export class ReferencePropertiesSectionComponent extends AbstractBaseComponent {
 
         let sourceSchema: OasSchema = this.getPropertySourceSchema();
         // let propertyNames: String[] = sourceSchema.getPropertyNames();
-
-        if (this._sorted) {
-            sourceSchema.getPropertyNames().sort((left, right) => {
-                return left.localeCompare(right)
-            }).forEach(name => rval.push(sourceSchema.getProperty(name)));
-        } else {
-            sourceSchema.getPropertyNames().forEach(name => rval.push(sourceSchema.getProperty(name)));
+        if(sourceSchema!= null){
+            if (this._sorted) {
+                sourceSchema.getPropertyNames().sort((left, right) => {
+                    return left.localeCompare(right)
+                }).forEach(name => rval.push(sourceSchema.getProperty(name)));
+            } else {
+                sourceSchema.getPropertyNames().forEach(name => rval.push(sourceSchema.getProperty(name)));
+            }
         }
 
         return rval;
@@ -116,7 +94,7 @@ export class ReferencePropertiesSectionComponent extends AbstractBaseComponent {
     public getPropertySourceSchema(): OasSchema {
         let pschema: OasSchema = this.definition;
 
-        if (this.inheritanceType() != "none") {
+        if (pschema != null && this.inheritanceType() != "none") {
             let schemas: OasSchema[] = this.definition[this.inheritanceType()];
             if (schemas) {
                 schemas.forEach(schema => {
@@ -134,69 +112,6 @@ export class ReferencePropertiesSectionComponent extends AbstractBaseComponent {
         return ModelUtils.nodeToPath(this.getPropertySourceSchema()) + "/properties";
     }
 
-    public deleteProperty(property: Schema): void {
-        let command: ICommand = CommandFactory.createDeletePropertyCommand(property as any);
-        this.commandService.emit(command);
-    }
-
-    public addSchemaProperty(data: PropertyData): void {
-        let pschema: OasSchema = this.getPropertySourceSchema();
-
-        let command: ICommand = CommandFactory.createNewSchemaPropertyCommand(pschema,
-            data.name, data.description, data.type);
-        this.commandService.emit(command);
-        let path = Library.createNodePath(pschema);
-        path.appendSegment("properties", false);
-        path.appendSegment(data.name, true);
-        this.__selectionService.select(path.toString());
-    }
-
-    public deleteAllSchemaProperties(): void {
-        let command: ICommand = CommandFactory.createDeleteAllPropertiesCommand(this.getPropertySourceSchema());
-        this.commandService.emit(command);
-    }
-
-    public minProperties(): string {
-        console.info("definition :"+this.definition.additionalProperties);
-        return this.definition.minProperties ? this.definition.minProperties.toString() : null;
-    }
-
-    public maxProperties(): string {
-        return this.definition.maxProperties ? this.definition.maxProperties.toString() : null;
-    }
-
-    public setMinProps(value: string): void {
-        this.setMinProperties(Number(value));
-    }
-
-    public setMaxProps(value: string): void {
-        this.setMaxProperties(Number(value));
-    }
-
-    public setMinProperties(minProp: number): void {
-        let command: ICommand = CommandFactory.createChangePropertyCommand<number>(this.getPropertySourceSchema(), "minProperties", minProp);
-        this.commandService.emit(command);
-    }
-
-    public setMaxProperties(maxProp: number): void {
-        let command: ICommand = CommandFactory.createChangePropertyCommand<number>(this.getPropertySourceSchema(), "maxProperties", maxProp);
-        this.commandService.emit(command);
-    }
-
-    public additionalProperties(): boolean {
-        if (typeof this.definition.additionalProperties === "boolean") {
-            return (this.definition.additionalProperties as boolean);
-        } else {
-            return true;
-        }
-    }
-
-    public setAdditionalProperties(value: boolean): void {
-        let newVal: any = value ? null : false;
-        let command: ICommand = CommandFactory.createChangePropertyCommand<number>(this.getPropertySourceSchema(), "additionalProperties", newVal);
-        this.commandService.emit(command);
-    }
-
     public inheritanceType(): string {
         if (this.definition.allOf) {
             return "allOf";
@@ -211,27 +126,4 @@ export class ReferencePropertiesSectionComponent extends AbstractBaseComponent {
         return "none";
     }
 
-    /**
-     * Opens the rename property dialog.
-     * @param property
-     */
-    public openRenamePropertyDialog(property: Schema): void {
-        let parent: IPropertyParent = <any>property.parent();
-        let propertyNames: string[] = parent.getProperties().map( prop => { return (<Oas20PropertySchema>prop).getPropertyName(); });
-        this.renamePropertyDialog.open(property, (<Oas20PropertySchema>property).getPropertyName(), newName => {
-            return propertyNames.indexOf(newName) !== -1;
-        });
-    }
-
-    /**
-     * Renames the property.
-     * @param event
-     */
-    public renameProperty(event: RenameEntityEvent): void {
-        let property: Oas20PropertySchema | Oas30PropertySchema = <any>event.entity;
-        let propertyName: string = property.getPropertyName();
-        let parent: OasSchema = <any>property.parent();
-        let command: ICommand = CommandFactory.createRenamePropertyCommand(parent, propertyName, event.newName);
-        this.commandService.emit(command);
-    }
 }

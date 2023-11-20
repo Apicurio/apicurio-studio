@@ -268,45 +268,25 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
         let ret: Oas30Schema;
         let newJsObject: any;
-        newJsObject = JSON.parse(this.referenceContent()); 
-        let node: Node = this.createEmptyNodeForSource();
-        Library.readNode(newJsObject, node);
-        let temp: any = node;
-        ret = temp;
-        return ret;
-    }
 
-
-    public properties(): Schema[] {
-        let rval: Schema[] = [];
-        let rtest: SimplifiedPropertyType[] =[];
-
-        let sourceSchema: OasSchema = this.getPropertySourceSchema();
-        // let propertyNames: String[] = sourceSchema.getPropertyNames();
-
-        sourceSchema.getPropertyNames().forEach(name => console.info(name+ " "+sourceSchema.getProperty(name) + " " +sourceSchema.getProperty(name)._attributes ));
-        
-            sourceSchema.getPropertyNames().forEach(name => rval.push(sourceSchema.getProperty(name)));
-        
-            //rval.forEach(val => rtest.push(SimplifiedPropertyType.fromPropertySchema(val)));
-        return rval;
-    }
-
-    public getPropertySourceSchema(): OasSchema {
-        let pschema: OasSchema = this.extractPropertiesDefinition();
-
-        if (this.inheritanceType() != "none") {
-            let schemas: OasSchema[] = this.extractPropertiesDefinition()[this.inheritanceType()];
-            if (schemas) {
-                schemas.forEach(schema => {
-                    if (schema.type == "object") {
-                        pschema = schema;
-                    }
-                });
-            }
+        if(this.referenceContent()=="Content not available."){
+            ret = null;
+            return ret;
+        }else{
+            newJsObject = JSON.parse(this.referenceContent()); 
+            let node: Node = this.createEmptyNodeForSource();
+            Library.readNode(newJsObject, node);
+            let temp: any = node;
+            ret = temp;
+            return ret;
         }
+    }
 
-        return pschema;
+    isRefProperties() : boolean{
+        let  object : boolean = this.definition.type == "object" || this.definition.type == null || this.definition.type == undefined;
+        let property : boolean = this.extractPropertiesDefinition()!=null;
+        return object && property;
+
     }
 
 

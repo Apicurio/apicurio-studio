@@ -4,7 +4,7 @@
          [collaborationNodePath]="propertiesNodePath()"
          [validationModels]="properties()">
                     
-    <div body>
+    <div body *ngIf="hasProperties()">
        
         
 
@@ -22,7 +22,11 @@
                     <span>{{ property._propertyName}}</span>
                 </td>
                 <td class="payloadValue pre-actions">
-                    <span>{{ property.type }}</span>
+                    <span *ngIf="!property.enum_ && property.type!='array'">{{ property.type }}</span>
+                    <span *ngIf="property.enum_ && property.enum_.length">enum of {{ property.type }}</span>
+                    <span *ngIf="property.$ref">{{ property.$ref }}</span>
+                    <span *ngIf="property.type=='array' &&property.items.$ref">array of {{ property.items.$ref }}</span>
+                    <span *ngIf="property.type=='array' &&property.items.type">array of {{ property.items.type }}</span>
                 </td>
                 <td class="payloadHeaders pre-actions">
                     <span>{{ property.example }}</span>

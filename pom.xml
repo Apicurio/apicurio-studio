@@ -105,7 +105,7 @@
         <version.com.squareup.javapoet>1.13.0</version.com.squareup.javapoet>
         <version.com.sun.codemodel>2.6</version.com.sun.codemodel>
         <version.commons-beanutils>1.9.4</version.commons-beanutils>
-        <version.commons-cli>1.5.0</version.commons-cli>
+        <version.commons-cli>1.6.0</version.commons-cli>
         <version.commons-codec>1.16.0</version.commons-codec>
         <version.commons-dbcp>1.4</version.commons-dbcp>
         <version.commons-io>2.15.1</version.commons-io>

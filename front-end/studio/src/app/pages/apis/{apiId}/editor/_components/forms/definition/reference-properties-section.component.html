@@ -1,0 +1,39 @@
+<section type="properties" label="VIEW"
+         contextHelp="Use this section to define the properties that make up this data type."
+         [counterItems]="properties()"
+         [collaborationNodePath]="propertiesNodePath()"
+         [validationModels]="properties()">
+                    
+    <div body *ngIf="hasProperties()">
+       
+        
+
+        <table class="table table-striped table-bordered table-examples">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th class="pre-actions">Type</th>
+                <th class="pre-actions">Example</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let property of properties()">
+                <td class="name">
+                    <span>{{ property._propertyName}}</span>
+                </td>
+                <td class="payloadValue pre-actions">
+                    <span *ngIf="!property.enum_ && property.type!='array'">{{ property.type }}</span>
+                    <span *ngIf="property.enum_ && property.enum_.length">enum of {{ property.type }}</span>
+                    <span *ngIf="property.$ref">{{ property.$ref }}</span>
+                    <span *ngIf="property.type=='array' &&property.items.$ref">array of {{ property.items.$ref }}</span>
+                    <span *ngIf="property.type=='array' &&property.items.type">array of {{ property.items.type }}</span>
+                </td>
+                <td class="payloadHeaders pre-actions">
+                    <span>{{ property.example }}</span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+

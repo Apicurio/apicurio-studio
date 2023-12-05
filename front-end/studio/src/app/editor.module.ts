@@ -167,6 +167,7 @@ import {ExtensionRowComponent} from "./pages/apis/{apiId}/editor/_components/for
 import {JsonSummaryComponent} from "./components/common/json-summary.component";
 import {InlineJsonEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-json-editor.component";
 import {AddExtensionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-extension.component";
+import {ReferencePropertiesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/reference-properties-section.component";
 
 @NgModule({
     imports: [
@@ -194,7 +195,7 @@ import {AddExtensionDialogComponent} from "./pages/apis/{apiId}/editor/_componen
         SecuritySchemesSectionComponent, AaiSecuritySchemesSectionComponent, PathParamsSectionComponent, QueryParamsSectionComponent, PathParamRowComponent,
         PfInlineTextEditorComponent, TagRowComponent, AaiServerEditorComponent, ServerEditorComponent, AaiServerRowComponent, ServerRowComponent, EntityEditorComponent,
         InlineArrayEditorComponent, SecuritySchemeRowComponent, SecuritySchemeEditorComponent, DataTypeEditorComponent,
-        DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent,
+        DefinitionInfoSectionComponent, RenamePathDialogComponent, CounterComponent, ResponsesSectionComponent, ReferencePropertiesSectionComponent,
         InlineExampleEditorComponent, DefinitionExampleSectionComponent, PropertyEditorComponent, HeaderParamRowComponent,
         HeaderParamsSectionComponent, OperationsSectionComponent, ChannelOperationsSectionComponent, MediaTypeRowComponent,
         HeaderRowComponent, CollaboratorAggregateComponent, CollaboratorOverlayComponent, CookieParamsSectionComponent, CookieParamRowComponent,

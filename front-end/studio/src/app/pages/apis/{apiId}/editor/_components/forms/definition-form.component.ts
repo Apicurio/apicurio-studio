@@ -37,6 +37,10 @@ import {
     SimplifiedType,
     TraverserDirection,
     VisitorUtil,
+    Node,
+    Oas30Schema,
+    Schema,
+    SimplifiedPropertyType,
 } from "@apicurio/data-models";
 
 import {SourceFormComponent} from "./source-form.base";
@@ -70,6 +74,8 @@ const INHERITANCE_TYPES_20: DropDownOption[] = [
 export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
     private _stype: SimplifiedType = null;
+
+    private currentPart : string = "payload";
 
     private _definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
     @Input()
@@ -251,12 +257,38 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
                 let fragment: string = this.definition.$ref.substring(hashIdx+1);
                 content = ReferenceUtil.resolveFragmentFromJS(content, fragment);
                 if (content) {
-                    return JSON.stringify(content, null, 3);
+                   return JSON.stringify(content, null, 3);
                 }
             }
         }
         return "Content not available.";
     }
+
+    extractPropertiesDefinition(): Oas30Schema {
+
+        let ret: Oas30Schema;
+        let newJsObject: any;
+
+        if(this.referenceContent()=="Content not available."){
+            ret = null;
+            return ret;
+        }else{
+            newJsObject = JSON.parse(this.referenceContent()); 
+            let node: Node = this.createEmptyNodeForSource();
+            Library.readNode(newJsObject, node);
+            let temp: any = node;
+            ret = temp;
+            return ret;
+        }
+    }
+
+    isRefProperties() : boolean{
+        let  object : boolean = this.definition.type == "object" || this.definition.type == null || this.definition.type == undefined;
+        let property : boolean = this.extractPropertiesDefinition()!=null;
+        return object && property;
+
+    }
+
 
     refLink(): string {
         if (this.definition.$ref && this.definition.$ref.startsWith("apicurio:")) {
@@ -277,4 +309,12 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         return this.definition.$ref.substring(colonIdx + 1, hashIdx);
     }
 
+
+    public isPartActive(part: string): boolean {
+        return this.currentPart === part;
+    }
+
+    public setActivePart(part: string): void {
+        this.currentPart = part;
+    }
 }

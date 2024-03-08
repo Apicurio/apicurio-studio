@@ -132,7 +132,7 @@
         <version.org.jsonschema2pojo>1.2.1</version.org.jsonschema2pojo>
         <version.org.keycloak>23.0.7</version.org.keycloak>
         <version.mysql>8.0.22</version.mysql>
-        <version.org.postgresql>42.2.20</version.org.postgresql>
+        <version.org.postgresql>42.2.28</version.org.postgresql>
         <version.org.slf4j>2.0.12</version.org.slf4j>
         <version.scala>2.13.13</version.scala>
         <version.infinispan>14.0.25.Final</version.infinispan>

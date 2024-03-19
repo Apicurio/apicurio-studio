@@ -1,0 +1,18 @@
+
+.server-name-wrapper {
+  width: 80%;
+}
+
+.name-action {
+  margin-left: 5px;
+}
+
+#serverName {
+  width: 100%;
+}
+
+.readonly {
+  border-color: #002d45;
+  background-color: #efefef;
+  color: #666;
+}

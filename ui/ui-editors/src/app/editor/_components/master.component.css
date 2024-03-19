@@ -1,0 +1,6 @@
+.editor-master .editor-outline .master-entity-list {
+  border: 1px solid transparent;
+}
+.editor-master .editor-outline .master-entity-list:focus {
+  outline: none;
+}

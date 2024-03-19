@@ -1,0 +1,81 @@
+.security-scheme {
+  border: 1px solid transparent;
+}
+.security-scheme.expanded {
+  border: 1px solid #bbb;
+  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  margin-bottom: 3px;
+}
+
+.security-scheme .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+}
+.security-scheme .header:hover {
+  background-color: #edf8ff;
+}
+.security-scheme.expanded .header {
+  border-bottom: solid 1px #bbb;
+  background-color: #def3ff;
+}
+
+.security-scheme .header .expand {
+  flex-basis: 2%;
+}
+.security-scheme .header .name {
+  flex-basis: 20%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.security-scheme .header .name .scheme-type {
+  margin-left: 4px;
+}
+
+.security-scheme .header .validation-problem-icon {
+  margin-right: 5px;
+}
+.security-scheme .header .name .entity-icon {
+  margin-right: 5px;
+  color: #667;
+}
+.security-scheme .header .description {
+  flex-basis: 76%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 25px;
+}
+.security-scheme .header .actions {
+  flex-basis: 2%;
+  text-align: center;
+}
+.security-scheme .header .actions > div .fa-ellipsis-v {
+  visibility: hidden;
+}
+.security-scheme:hover .header .actions > div .fa-ellipsis-v {
+  visibility: visible;
+}
+
+.security-scheme .body {
+  position: relative;
+  padding: 15px;
+}
+.security-scheme .body .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.security-scheme .body .scheme-description form {
+  width: 100%;
+}
+.security-scheme .body .scheme-description .form-label {
+  font-weight: 600;
+}

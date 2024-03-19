@@ -1,0 +1,5 @@
+<span class="icon fa fa-fw fa-reply-all"></span>
+<span class="name">{{ responseName() }}</span>
+<span class="imported label label-info" *ngIf="isImported()">Imported</span>
+<collaborator-aggregate [nodePath]="asNodePath()"></collaborator-aggregate>
+<validation-aggregate [models]="[response]"></validation-aggregate>

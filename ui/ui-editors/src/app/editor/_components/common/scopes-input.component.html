@@ -1,0 +1,21 @@
+<div class="scopes">
+    <div class="scope" *ngFor="let scope of scopes">
+        <div class="scope-left">
+            <div class="scope-name">
+                <pf-inline-text-editor [noValueMessage]="'No Name'"
+                                       (onChange)="scope.name = $event"
+                                       [value]="scope.name"></pf-inline-text-editor>
+            </div>
+            <div class="scope-description">
+                <pf-inline-text-editor [noValueMessage]="'No description.'"
+                                       (onChange)="scope.description = $event"
+                                       [value]="scope.description"></pf-inline-text-editor>
+            </div>
+        </div>
+        <div class="scope-right">
+            <button class="btn icon-button" (click)="deleteScope(scope)"
+                    type="button" title="Delete scope."><span class="pficon pficon-delete"></span></button>
+        </div>
+    </div>
+    <button type="button" class="btn btn-default btn-sm" (click)="addScope()">Add Scope</button>
+</div>

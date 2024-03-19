@@ -1,0 +1,43 @@
+<div class="oneof" [class.expanded]="isEditing()" >
+    <div class="header">
+        <div class="reference">
+            <span>Reference</span>
+        </div>
+        <div class="name">
+            <span>{{displayOneOf()}}</span>
+        </div>
+        <div class="oneof-value" (click)="toggleDropDown()" [class.selected]="isEditing()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>
+            <schema-type [type]="displayType()"></schema-type>
+        </div>
+        <div class="actions">
+            <div class="dropdown dropdown-kebab-pf">
+                <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-11">
+                    <div class="oneof-content" *ngIf="isEditing()">
+                        <div class="oneof-sel">
+                            <span class="dropdown-label">Message (OneOf type) is</span>
+                            <drop-down id="api-oneof-sel"
+                                       [value]="oneOf(item)"
+                                       [options]="oneOfOptions(item)"
+                                       (onValueChange)="changeRef($event)"
+                                       [noSelectionLabel]="oneOfName"></drop-down>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

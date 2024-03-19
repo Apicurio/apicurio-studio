@@ -1,0 +1,36 @@
+<div (window:keydown)="onGlobalKeyDown($event)" class="aai-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
+
+    <title-bar [document]="document()" 
+               [validationErrors]="validationErrors" 
+               [undoableCommandCount]="_undoableCommandCount" 
+               [redoableCommandCount]="_redoableCommandCount" 
+               (onUndoClick)="undoLastCommand()" 
+               (onRedoClick)="redoLastCommand()" 
+               (onConfigureValidation)="onConfigureValidation.emit()"></title-bar>
+
+    <aaimaster [document]="document()" (onImportComponent)="importComponent($event)" #master></aaimaster>
+    <div class="editor-detail" [ngSwitch]="formType">
+        <aaimain-form [document]="document()" class="editor-detail-form" 
+                         *ngSwitchCase="'main_20'"></aaimain-form>
+        <channel-form [channel]="selectedChannel()" class="editor-detail-form"
+                         *ngSwitchCase="'channel_20'"></channel-form>
+        <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
+                         *ngSwitchCase="'definition_20'"></definition-form>
+        <operationtrait-form [operationTrait]="selectedOperationTrait()" class="editor-detail-form"
+                         *ngSwitchCase="'operationTrait_20'"></operationtrait-form>
+        <messagetrait-form [messageTrait]="selectedMessageTrait()" class="editor-detail-form"
+                            *ngSwitchCase="'messageTrait_20'"></messagetrait-form>
+        <message-form [message]="selectedMessage()" class="editor-detail-form"
+                           *ngSwitchCase="'message_20'"></message-form>
+    </div>
+
+    <data-type-editor #dataTypeEditor></data-type-editor>
+    <aaiserver-editor #aaiServerEditor></aaiserver-editor>
+    <security-scheme-editor #securitySchemeEditor></security-scheme-editor>
+    <security-requirement-editor #securityRequirementEditor></security-requirement-editor>
+    <operationtrait-editor #operationTraitEditor></operationtrait-editor>
+    <messagetrait-editor #messageTraitEditor></messagetrait-editor>
+    <message-editor #messageEditor></message-editor>
+    <property-editor #propertyEditor></property-editor>
+
+</div>

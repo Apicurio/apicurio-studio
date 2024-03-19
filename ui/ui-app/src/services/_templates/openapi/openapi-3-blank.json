@@ -1,0 +1,8 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "$NAME",
+    "description": "$SUMMARY",
+    "version": "1.0.0"
+  }
+}

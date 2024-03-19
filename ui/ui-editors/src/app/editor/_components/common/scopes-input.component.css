@@ -1,0 +1,31 @@
+.scopes {
+}
+
+.scopes .scope {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+.scopes .scope:hover {
+    background-color: #eef;
+}
+.scopes .scope .scope-left {
+    flex-grow: 1;
+}
+.scopes .scope .scope-right {}
+
+.scopes .scope .scope-name {
+    font-weight: 600;
+}
+.scopes .scope .scope-description {}
+
+.scopes .scope .icon-button {
+    border: 0px;
+    background-color: transparent;
+    box-shadow: none;
+    font-size: 14px;
+}

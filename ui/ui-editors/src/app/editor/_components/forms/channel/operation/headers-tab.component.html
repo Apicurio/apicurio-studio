@@ -1,0 +1,40 @@
+<div class="headers" [class.expanded]="isEditing()">
+    <div class="header">
+        <div class="reference">
+            <span>Reference</span>
+        </div>
+        <div class="problem-flex type" (click)="toggleType()" [class.selected]="isEditingType()">
+            <!-- <validation-problem [model]="message.headers" property="$ref"></validation-problem> --> 
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingType()"></span>
+            <schema-type [type]="displayType()"></schema-type>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-11">
+                    <div class="mt-content" *ngIf="isEditingType()">
+                        <div class="mt-type">
+                            <schema-type-editor [document]="document()" [value]="model()" [isParameter]="false"
+                                                [dataTypesOnly]="true"
+                                                (onChange)="changeRefType($event)"></schema-type-editor>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!--
+    <div class="headers-reference">
+        <div class="form-label">Reference</div>
+        <div class="problem-flex">
+            <pf-inline-text-editor [value]="messageHeadersRef()" [noValueMessage]="'No reference.'"
+                        [labelClass]="'api-version'"
+                        [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                        [baseNode]="message" nodePath="headers.$ref"
+                        (onChange)="changeReference($event)"></pf-inline-text-editor>
+        </div>
+    </div>
+    -->
+</div>

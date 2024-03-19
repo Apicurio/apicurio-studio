@@ -1,0 +1,30 @@
+button.icon-button {
+  border: 0px;
+  background-color: transparent;
+  color: #776;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+button.icon-button:hover {
+  color: #3f4950;
+}
+
+button.icon-button:disabled {
+  color: #ccc;
+}
+
+button.icon-button span {
+}
+
+button.icon-button span.fa {
+  font-size: 15px;
+}
+
+button.icon-button span.pficon-edit {
+  font-size: 11px;
+}
+
+button.icon-button span.pficon-add-circle-o {
+  font-size: 13px;
+}

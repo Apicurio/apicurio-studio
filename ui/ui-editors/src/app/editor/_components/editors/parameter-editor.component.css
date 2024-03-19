@@ -1,0 +1,23 @@
+
+.type-section .param-required {
+  margin-bottom: 20px;
+}
+.type-section .param-type {
+  margin-bottom: 10px;
+}
+
+.type-section .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.type-section .param-enum .enum-label {
+  display: block;
+  font-weight: 600;
+}
+
+.type-section .param-enum .inline-array-editor > .form-control-pf-edit > .form-control-pf-textbox > input {
+  width: 100%;
+  min-width: auto;
+}

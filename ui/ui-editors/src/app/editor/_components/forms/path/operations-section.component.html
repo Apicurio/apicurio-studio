@@ -1,0 +1,121 @@
+<section type="operations" label="OPERATIONS" [counterItems]="operations()" [inForm]="false"
+         [collaborationNodePath]="collaborationPaths()"
+         contextHelp="In this section you can manage the operations defined for the path."
+         [validationModels]="operations()">
+    <span actions></span>
+    <div body>
+        <div class="operation-tabs">
+            <div class="tabs">
+                <div class="operation-tab get-tab" [class.selected]="tab === 'get'" [class.enabled]="isDefined('get')" (click)="selectTab('get')">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('get')"></collaborator-overlay>
+                        <span>Get</span>
+                    </div>
+                    <validation-aggregate [models]="[ path.get ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab put-tab" [class.selected]="tab === 'put'" [class.enabled]="isDefined('put')" (click)="selectTab('put')">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('put')"></collaborator-overlay>
+                        <span>Put</span>
+                    </div>
+                    <validation-aggregate [models]="[ path.put ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab post-tab" [class.selected]="tab === 'post'" [class.enabled]="isDefined('post')" (click)="selectTab('post')">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('post')"></collaborator-overlay>
+                        <span>Post</span>
+                    </div>
+                    <validation-aggregate [models]="[ path.post ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab delete-tab" [class.selected]="tab === 'delete'" [class.enabled]="isDefined('delete')" (click)="selectTab('delete')">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('delete')"></collaborator-overlay>
+                        <span>Delete</span>
+                    </div>
+                    <validation-aggregate [models]="[ path.delete ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab options-tab" [class.selected]="tab === 'options'" [class.enabled]="isDefined('options')" (click)="selectTab('options')">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('options')"></collaborator-overlay>
+                        <span>Options</span>
+                    </div>
+                    <validation-aggregate [models]="[ path.options ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab head-tab" [class.selected]="tab === 'head'" [class.enabled]="isDefined('head')" (click)="selectTab('head')">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('head')"></collaborator-overlay>
+                        <span>Head</span>
+                    </div>
+                    <validation-aggregate [models]="[ path.head ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab patch-tab" [class.selected]="tab === 'patch'" [class.enabled]="isDefined('patch')" (click)="selectTab('patch')">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('patch')"></collaborator-overlay>
+                        <span>Patch</span>
+                    </div>
+                    <validation-aggregate [models]="[ path.patch ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab trace-tab" [class.selected]="tab === 'trace'" [class.enabled]="isDefined('trace')" (click)="selectTab('trace')" *ngIf="!is20Document()">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('trace')"></collaborator-overlay>
+                        <span>Trace</span>
+                    </div>
+                    <validation-aggregate [models]="[ path['trace'] ]"></validation-aggregate>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="dropdown dropdown-kebab-pf">
+                    <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                            data-toggle="dropdown" aria-haspopup="true">
+                        <span class="fa fa-ellipsis-v"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li [class.disabled]="!operation()"><a (click)="deleteOperation(operation())"><span class="fa fa-fw fa-trash"></span><span>Delete Operation</span></a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a (click)="deleteAllOperations()"><span class="fa fa-fw fa-trash-o"></span><span>Delete All Operations</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="operation" *ngIf="hasSelectedOperation()">
+            <!-- Info Section -->
+            <operation-info-section [operation]="operation()"></operation-info-section>
+
+            <!-- Servers (3.0 only) -->
+            <servers-section [parent]="operation()" [collapsed]="true" *ngIf="is3xDocument()"
+                             description="Configure servers specific to only this Operation.  Once defined, servers indicate where to access the API (e.g. host and port)."></servers-section>
+
+            <!-- Path Parameters Section -->
+            <path-params-section [parent]="operation()" [path]="path"></path-params-section>
+
+            <!-- Query Parameters Section -->
+            <query-params-section [parent]="operation()" [path]="path"></query-params-section>
+
+            <!-- Header Parameters Section -->
+            <header-params-section [parent]="operation()" [path]="path"></header-params-section>
+
+            <!-- Cookie Parameters Section -->
+            <cookie-params-section [parent]="operation()" [path]="path" *ngIf="is3xDocument()"></cookie-params-section>
+
+            <!-- Request Body Section -->
+            <requestBody-section [operation]="operation()"></requestBody-section>
+
+            <!-- Responses Section -->
+            <responses-section [operation]="operation()"></responses-section>
+
+            <!-- Security Requirements -->
+            <security-requirements-section [parent]="operation()" [global]="false"></security-requirements-section>
+
+            <!-- Vendor Extensions -->
+            <extensions-section [parent]="operation()"></extensions-section>
+
+        </div>
+
+        <div class="no-operation" *ngIf="!hasSelectedOperation()">
+            <no-operation [method]="tab" (add)="addOperation()"></no-operation>
+        </div>
+    </div>
+</section>
+
+

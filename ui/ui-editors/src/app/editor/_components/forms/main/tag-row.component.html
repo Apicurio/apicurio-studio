@@ -1,0 +1,42 @@
+<div class="tag" [class.expanded]="isEditing()">
+    <div class="header">
+        <div class="expand" (click)="toggle()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>
+        </div>
+        <div class="name" (click)="toggle()" [class.empty]="!hasName()">
+            <validation-problem [model]="item"></validation-problem>
+            <span class="fa fa-tag entity-icon"></span>
+            <span>{{ name() }}</span>
+        </div>
+        <div class="description" (click)="toggle()">
+            <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>
+        </div>
+        <div class="actions">
+            <div class="dropdown dropdown-kebab-pf">
+                <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a (click)="renameTag()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Rename</span></a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-11">
+                    <div class="tag-description">
+                        <div class="form-label">Description</div>
+                        <inline-markdown-editor [value]="item.description" [noValueMessage]="'Enter description here.'"
+                                                [baseNode]="item" nodePath="description"
+                                                (onChange)="setDescription($event)"></inline-markdown-editor>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

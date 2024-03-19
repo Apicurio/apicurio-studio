@@ -1,0 +1,4 @@
+<span class="checkbox-input">
+      <label for="{{ id }}">{{ label }}:</label>
+      <input type="checkbox"  #excludeCheckBox [checked]="getState()"  name="{{ name }}" id="{{ id }}" (click)="onSaveState(excludeCheckBox.checked)"  >
+</span>

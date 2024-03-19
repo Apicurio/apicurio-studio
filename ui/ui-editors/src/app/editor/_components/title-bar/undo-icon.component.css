@@ -1,0 +1,27 @@
+.undo-icon {
+  margin: 2px;
+  height: 38px;
+  line-height: 32px;
+}
+.undo-icon button {
+  color: #c6c6c6;
+  font-size: 19px;
+  margin: 0;
+  height: 38px;
+  padding-left: 10px;
+  padding-right: 10px;
+  cursor: default;
+}
+.undo-icon button:hover, .undo-icon button:focus {
+  color: #c6c6c6;
+}
+.undo-icon button.enabled {
+  color: #666;
+  cursor: pointer;
+}
+.undo-icon button.enabled:hover {
+  background-color: #d1eaf7;
+}
+.undo-icon button.enabled:active {
+  background-color: #a5d6ef;
+}

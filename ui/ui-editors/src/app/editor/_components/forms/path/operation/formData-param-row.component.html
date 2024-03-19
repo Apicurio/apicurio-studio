@@ -1,0 +1,58 @@
+<div class="formData-param" [class.expanded]="isEditing()" [class.required]="isRequired()">
+    <div class="header">
+        <div class="name">
+            <validation-problem [model]="item"></validation-problem>
+            <span title="{{ item.name }}">{{ item.name }}</span>
+        </div>
+        <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>
+            <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>
+        </div>
+        <div class="summary" (click)="toggleSummary()" [class.selected]="isEditingSummary()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingSummary()"></span>
+            <span class="parameter-required" *ngIf="isRequired()" title="This form data parameter is required.">[required]</span>
+            <schema-type [type]="displayType()"></schema-type>
+        </div>
+        <div class="actions">
+            <div class="dropdown dropdown-kebab-pf">
+                <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a (click)="rename()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Rename</span></a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-11">
+                    <div class="param-description" *ngIf="isEditingDescription()">
+                        <div class="form-label">Description</div>
+                        <inline-markdown-editor [value]="item.description" [noValueMessage]="'No description.'"
+                                                [baseNode]="item" nodePath="description"
+                                                (onChange)="setDescription($event)"></inline-markdown-editor>
+                    </div>
+                    <div class="param-content" *ngIf="isEditingSummary()">
+                        <div class="param-required">
+                            <span class="dropdown-label">Parameter is</span>
+                            <drop-down [id]="'api-param-required'"
+                                       [value]="required()"
+                                       [options]="requiredOptions()"
+                                       (onValueChange)="changeRequired($event)"
+                                       [noSelectionLabel]="'Not Required'"></drop-down>
+                        </div>
+                        <div class="param-type">
+                            <schema-type-editor [document]="document()" [value]="model()" [isParameter]="isParameter()"
+                                                (onChange)="changeType($event)"></schema-type-editor>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

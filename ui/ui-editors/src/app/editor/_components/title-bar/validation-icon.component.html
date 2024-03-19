@@ -1,0 +1,7 @@
+<div class="validation-icon" [class.has-errors]="hasErrors()">
+    <button class="btn btn-link nav-item-iconic drawer-pf-trigger-icon" title="{{ message() }}" (click)="onClick.emit(true)">
+        <span class="fa icon" [class.fa-exclamation-circle]="hasErrors()" [class.fa-check-circle]="!hasErrors()"></span>
+        <span class="issues-label">Issues</span>
+        <span>(</span><span>{{ numErrors() }}</span><span>)</span>
+    </button>
+</div>

@@ -1,0 +1,78 @@
+.operations-section .section-body .operation-tabs {
+  border-bottom: 1px solid #ddd;
+  margin-top: 15px;
+  display: flex;
+}
+
+.operations-section .section-body .operation-tabs .tabs {
+  flex-grow: 1;
+}
+
+.operations-section .section-body .operation-tabs .operation-tab {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 3px 3px 5px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  position: relative;
+}
+.operations-section .section-body .operation-tabs .operation-tab:hover {
+  border-color: #bbb;
+}
+
+.operations-section .section-body .operation-tabs .operation-tab.selected {
+  border-color: #0088ce;
+}
+
+.operations-section .section-body .operation-tabs .operation-tab .tab-label {
+  position: relative;
+  background-color: #dfdfdf;
+  display: inline-block;
+  width: 75px;
+  border-radius: 2px;
+  text-align: center;
+  padding: 4px;
+}
+.operations-section .section-body .operation-tabs .operation-tab .tab-label .collaborator-overlay {
+  border-radius: 2px;
+}
+
+.operations-section .section-body .operation-tabs .operation-tab.enabled .tab-label {
+  background-color: #00659c;
+  color: white;
+}
+.operations-section .section-body .operation-tabs .operation-tab.get-tab.enabled .tab-label {
+  background-color: #3f9c35;
+}
+.operations-section .section-body .operation-tabs .operation-tab.post-tab.enabled .tab-label {
+  background-color: #ec7a08;
+}
+.operations-section .section-body .operation-tabs .operation-tab.delete-tab.enabled .tab-label {
+  background-color: #c00;
+}
+
+.operations-section .section-body .operation-tabs .operation-tab .validation-aggregate {
+  position: absolute;
+  right: -5px;
+  top: -6px;
+}
+
+.operations-section .section-body .operation-tabs .actions {
+  float: right;
+  margin-right: 10px;
+  padding-top: 8px;
+}
+
+.operations-section .section-body .operation {
+  background-color: #f1f2f3;
+  padding-bottom: 20px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-top: 1px;
+}
+
+.operations-section .section-body .section .section-body {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 10px;
+}

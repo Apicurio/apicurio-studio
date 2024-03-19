@@ -1,0 +1,10 @@
+.editor-openapi-flex-container {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    width: 100%;
+}
+
+.editor-openapi-flex-container .editor-flex-editor {
+    flex-grow: 1;
+}

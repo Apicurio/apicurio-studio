@@ -1,0 +1,34 @@
+
+#compare-modal {
+    position: fixed;
+    bottom: 32px;
+    top: 32px;
+}
+
+#compare-modal .compare-label {
+    font-size: 15px;
+}
+
+#compare-modal .compare-label .divider {
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+#compare-modal .compare-editor {
+    flex-grow: 1;
+    border: 1px solid #ddd;
+}
+
+#compare-modal .compare-toggle-group {
+    padding: 5px 5px 10px 0px;
+}
+
+#compare-modal .compare-view {
+    position: absolute;
+    top: 64px;
+    bottom: 24px;
+    left: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+}

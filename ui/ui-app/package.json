@@ -1,0 +1,51 @@
+{
+  "name": "@apicurio/apicurio-studio-ui",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "repository": "https://github.com/Apicurio/apicurio-studio.git",
+  "scripts": {
+    "postinstall": "node .fix_yaml.cjs",
+    "clean": "rimraf dist",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives"
+  },
+  "devDependencies": {
+    "@apicurio/eslint-config": "0.2.0",
+    "@monaco-editor/react": "4.6.0",
+    "@types/react": "18.2.67",
+    "@types/react-dom": "18.2.22",
+    "@types/uuid": "9.0.8",
+    "@typescript-eslint/eslint-plugin": "7.3.1",
+    "@typescript-eslint/parser": "7.3.1",
+    "@vitejs/plugin-react-swc": "3.6.0",
+    "eslint": "8.57.0",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-plugin-react-refresh": "0.4.6",
+    "rimraf": "5.0.5",
+    "typescript": "5.4.2",
+    "vite": "5.1.6",
+    "vite-tsconfig-paths": "4.3.2"
+  },
+  "dependencies": {
+    "@apicurio/common-ui-components": "2.0.0",
+    "@monaco-editor/react": "4.6.0",
+    "@patternfly/patternfly": "5.2.1",
+    "@patternfly/react-core": "5.2.3",
+    "@patternfly/react-icons": "5.2.1",
+    "@patternfly/react-table": "5.2.4",
+    "axios": "1.6.8",
+    "dexie": "3.2.6",
+    "oidc-client-ts": "3.0.1",
+    "prop-types": "15.8.1",
+    "protobufjs": "7.2.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "6.22.3",
+    "use-resize-observer": "9.1.0",
+    "uuid": "9.0.1",
+    "yaml": "2.4.1"
+  }
+}

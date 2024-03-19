@@ -1,0 +1,27 @@
+.security-requirement {
+    margin-top: 10px;
+    width: 100%;
+    padding: 5px;
+}
+
+.security-requirement:hover {
+    background-color: #edf8ff;
+}
+
+.security-requirement .name {
+    display: inline-block;
+}
+
+.security-requirement .name .fa {
+    margin-right: 3px;
+}
+
+.security-requirement .actions {
+    display: inline-block;
+    float: right;
+    padding-right: 15px;
+}
+
+.security-requirement .requirement-label.no-security {
+    font-style: italic;
+}

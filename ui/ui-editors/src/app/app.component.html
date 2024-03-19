@@ -1,0 +1,12 @@
+<div *ngIf="isShowLoading" class="editor-loading">
+    <div>
+        <div class="spinner spinner-lg"></div>
+        <span class="loading-label">Loading</span>
+    </div>
+</div>
+<div *ngIf="isShowEditor" class="studio-editor">
+    <div class="content-editor">
+        <openapi-editor #openapiEditor *ngIf="config.content.type === 'OPENAPI'" [api]="api"></openapi-editor>
+        <asyncapi-editor #asyncapiEditor *ngIf="config.content.type === 'ASYNCAPI'" [api]="api"></asyncapi-editor>
+    </div>
+</div>

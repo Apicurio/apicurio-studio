@@ -1,0 +1,115 @@
+<div class="detail-title">
+    <div path-item class="detail-label" [path]="path.getPath()"></div>
+    <div class="detail-actions">
+        <div class="dropdown">
+            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="fa fa-ellipsis-v"></span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownKebab">
+                <li>
+                    <a href="#" onclick="return false" (click)="collapseAllSections()">
+                        <span class="fa fa-compress"></span>
+                        <span>Collapse All Sections</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false" (click)="expandAllSections()">
+                        <span class="fa fa-expand"></span>
+                        <span>Expand All Sections</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#" onclick="return false" (click)="newPath()">
+                        <span class="pficon pficon-add-circle-o"></span>
+                        <span>New Sub-Path</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:return false" (click)="rename()">
+                        <span class="fa fa-pencil-square-o"></span>
+                        <span>Rename Path</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:return false" (click)="clone()">
+                        <span class="fa fa-clone"></span>
+                        <span>Clone Path</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="javascript:return false" (click)="delete()">
+                        <span class="pficon pficon-delete"></span>
+                        <span>Delete Path</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="detail-tabs">
+    <ul class="nav nav-tabs nav-tabs-pf">
+        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()">Design</a></li>
+        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()">Source</a></li>
+    </ul>
+</div>
+
+<!-- Source Mode -->
+<div class="detail-actionbar" *ngIf="isSourceMode()">
+    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
+    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canToggleSourceFormat()" (click)="toggleSourceFormat()">
+        <span class="fa fa-fw fa-code"></span>
+        <span *ngIf="isSourceFormatYaml()">As JSON</span>
+        <span *ngIf="isSourceFormatJson()">As YAML</span>
+    </button>
+</div>
+<div class="detail-content" style="position: relative" *ngIf="isSourceMode()">
+    <code-editor #sourceEditor
+                 [(text)]="source"
+                 [theme]="sourceEditorTheme()"
+                 [mode]="sourceEditorMode()"
+                 [debounceTime]="250"
+                 [editorStyle]="{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, 'margin-top': '1px' }"></code-editor>
+</div>
+
+<!-- Design Mode -->
+<div class="detail-content" *ngIf="isDesignMode()">
+
+    <div class="api-path-detail">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
+                <!-- Info Section -->
+                <path-info-section [path]="path" *ngIf="is3xDocument()"></path-info-section>
+
+                <!-- Servers -->
+                <servers-section *ngIf="is3xDocument()" [parent]="path" [collapsed]="true"
+                                 [description]="'Configure servers specific to this Path Item and all its Operations.  Once defined, servers indicate where to access the API (e.g. host and port).'"></servers-section>
+
+                <!-- Path Parameters Section -->
+                <path-params-section [parent]="path" [path]="path"></path-params-section>
+
+                <!-- Query Parameters Section -->
+                <query-params-section [parent]="path" [path]="path"></query-params-section>
+
+                <!-- Header Parameters Section -->
+                <header-params-section [parent]="path" [path]="path"></header-params-section>
+
+                <!-- Cookie Parameters Section -->
+                <cookie-params-section [parent]="path" [path]="path" *ngIf="is3xDocument()"></cookie-params-section>
+
+                <!-- Vendor Extensions -->
+                <extensions-section [parent]="path"></extensions-section>
+
+                <!-- Operations Section -->
+                <operations-section [path]="path"></operations-section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
+<clone-path-dialog #clonePathDialog (onClone)="clone($event)"></clone-path-dialog>
+<rename-path-dialog #renamePathDialog (onRename)="rename($event)"></rename-path-dialog>

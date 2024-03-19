@@ -1,0 +1,14 @@
+<span class="collaborator-overlay" *ngIf="hasCollaborators()" [style.border-color]="'#' + overlayColor()">
+    <a (mouseover)="open($event)"
+       (mousemove)="open($event)"
+       (mouseleave)="close()"
+       (mouseout)="close()"
+       class="collaborator-overlay-icon"
+       [style.background-color]="'#' + overlayColor()">&nbsp;</a>
+    <div *ngIf="isOpen()" class="collaborator-overlay-panel" [style.left]="left" [style.top]="top">
+        <div class="collaborator" *ngFor="let collaborator of collaborators()" title="{{ collaborator.fullName }}">
+            <span class="collaborator-icon" [style.background-color]="'#' + iconColorFor(collaborator)">&nbsp;</span>
+            <span class="collaborator-name">{{ collaborator.fullName }}</span>
+            </div>
+    </div>
+</span>

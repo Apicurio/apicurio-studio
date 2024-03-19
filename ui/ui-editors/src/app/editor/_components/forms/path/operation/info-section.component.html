@@ -1,0 +1,122 @@
+<section type="info" label="INFO"
+         contextHelp="In this section you can easily edit the Summary, ID, and Description of the Operation."
+         [collaborationNodePath]="operationInfoPaths()"
+         [validationModels]="[operation]" [validationShallow]="true" [validationProperties]="[ 'operationId', 'summary', 'description' ]">
+    <span actions></span>
+    <div body>
+        <div class="half-section">
+            <!-- Summary -->
+            <div class="section-field-label">
+                <validation-problem [model]="operation" [shallow]="true" [property]="'summary'"></validation-problem>
+                <span>Summary</span>
+            </div>
+            <div class="section-field summary">
+                <pf-inline-text-editor [value]="operation.summary" [noValueMessage]="'No Summary'"
+                                       [labelClass]="'api-item-title'"
+                                       [inputClass]="'api-item-editor api-summary-editor api-item-title'"
+                                       [baseNode]="operation" nodePath="summary"
+                                       (onChange)="changeSummary($event)"></pf-inline-text-editor>
+            </div>
+        </div>
+
+        <div class="half-section right">
+            <!-- Operation ID -->
+            <div class="section-field-label">
+                <validation-problem [model]="operation" [shallow]="true" [property]="'operationId'"></validation-problem>
+                <span>Operation ID</span>
+            </div>
+            <div class="section-field operationId">
+                <pf-inline-text-editor [value]="operation.operationId" [noValueMessage]="'No Operation ID'"
+                                       [labelClass]="'api-item-operation-id'"
+                                       [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                       [baseNode]="operation" nodePath="operationId"
+                                       (onChange)="changeOperationId($event)"></pf-inline-text-editor>
+            </div>
+
+            <!-- Deprecated -->
+            <div class="section-field deprecated">
+                <drop-down [value]="operation.deprecated"
+                           [options]="deprecatedOptions()"
+                           (onValueChange)="changeDeprecated($event)"
+                           noSelectionLabel="Not Deprecated"></drop-down>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="section-field-label">
+            <validation-problem [model]="operation" [shallow]="true" [property]="'description'"></validation-problem>
+            <span>Description</span>
+        </div>
+        <div class="section-field description">
+            <inline-markdown-editor [value]="operation.description" [noValueMessage]="'No description.'"
+                                    [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
+                                    [inputClass]="'api-item-description'"
+                                    [formClass]="'api-description-editor-form'"
+                                    [baseNode]="operation" nodePath="description"
+                                    (onChange)="changeDescription($event)"></inline-markdown-editor>
+        </div>
+
+        <!-- Tags -->
+        <div class="section-field-label">
+            <validation-problem [model]="operation" [shallow]="true" [property]="'tags'"></validation-problem>
+            <span>Tags</span>
+        </div>
+        <div class="section-field tags">
+            <inline-array-editor noValueMessage="No tags configured." [value]="operation.tags" [items]="tagDefs()"
+                                 [baseNode]="operation" nodepath="tags"
+                                 (onChange)="changeTags($event)"></inline-array-editor>
+        </div>
+
+        <!-- Consumes and Produces (2.0 only) -->
+        <div *ngIf="is2xDocument()">
+            <!-- Consumes -->
+            <div class="section-field-label">
+                <validation-problem [model]="operation.ownerDocument()" property="consumes" [shallow]="true"></validation-problem>
+                <span>Consumes (Inputs)</span>
+            </div>
+            <div class="section-field consumes">
+                <div class="inherited-labels" *ngIf="showInheritedConsumes()">
+                    <span class="apicurio-icon-inherit-d icon-inherit" title="Content types inherited from global scope."></span>
+                    <div class="inherited-labels-inner">
+                        <span class="inherited-label label label-default" *ngFor="let item of inheritedConsumes()">{{ item }}</span>
+                    </div>
+                    <button class="btn btn-default btn-xs btn-override" title="Override the 'consumes' setting." (click)="overrideConsumes()">Override</button>
+                </div>
+                <div class="overridden-labels" *ngIf="!showInheritedConsumes()">
+                    <span *ngIf="hasGlobalConsumes()" class="apicurio-icon-override icon-override" title="Overrides the global 'consumes' setting."></span>
+                    <span *ngIf="!hasGlobalConsumes() && hasLocalConsumes()" class="apicurio-icon-local-d icon-local" title="Content types defined in this operation only (no global setting)."></span>
+                    <span *ngIf="!hasGlobalConsumes() && !hasLocalConsumes()" class="apicurio-icon-undefined-d icon-local" title="No content types defined at any level."></span>
+                    <inline-array-editor [value]="consumes()" [noValueMessage]="'No consumes content-type(s) set.'" #consumesEditor
+                                         [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
+                                         [baseNode]="operation" nodepath="consumes"
+                                         (onClose)="onConsumesClose()"
+                                         (onChange)="onConsumesChange($event)"></inline-array-editor>
+                </div>
+            </div>
+            <!-- Produces -->
+            <div class="section-field-label">
+                <validation-problem [model]="operation.ownerDocument()" property="produces" [shallow]="true"></validation-problem>
+                <span>Produces (Outputs)</span>
+            </div>
+            <div class="section-field produces">
+                <div class="inherited-labels" *ngIf="showInheritedProduces()">
+                    <span class="apicurio-icon-inherit-d icon-inherit" title="Content types inherited from global scope."></span>
+                    <div class="inherited-labels-inner">
+                        <span class="inherited-label label label-default" *ngFor="let item of inheritedProduces()">{{ item }}</span>
+                    </div>
+                    <button class="btn btn-default btn-xs btn-override" title="Override the produces setting." (click)="overrideProduces()">Override</button>
+                </div>
+                <div class="overridden-labels" *ngIf="!showInheritedProduces()">
+                    <span *ngIf="hasGlobalProduces()" class="apicurio-icon-override icon-override" title="Overrides the global 'produces' setting."></span>
+                    <span *ngIf="!hasGlobalProduces() && hasLocalProduces()" class="apicurio-icon-local-d icon-local" title="Content types defined in this operation only (no global setting)."></span>
+                    <span *ngIf="!hasGlobalProduces() && !hasLocalProduces()" class="apicurio-icon-undefined-d icon-local" title="No content types defined at any level."></span>
+                    <inline-array-editor [value]="produces()" [noValueMessage]="'No produces content-type(s) set.'" #producesEditor
+                                         [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
+                                         [baseNode]="operation" nodepath="produces"
+                                         (onClose)="onProducesClose()"
+                                         (onChange)="onProducesChange($event)"></inline-array-editor>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

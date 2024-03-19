@@ -1,0 +1,67 @@
+<div class="response">
+    <div class="response-description" *ngIf="!isRef()">
+        <div class="form-label">Description</div>
+        <div class="problem-flex">
+            <validation-problem [model]="response" property="description"></validation-problem>
+            <div class="grow">
+                <inline-markdown-editor [value]="response.description" noValueMessage="No description."
+                                        [baseNode]="response" nodePath="description"
+                                        (onChange)="setDescription($event)"></inline-markdown-editor>
+            </div>
+        </div>
+    </div>
+    <div class="response-type" *ngIf="!isRef()">
+        <div class="form-label">Response Type</div>
+        <div class="problem-flex">
+            <validation-problem [model]="response.schema"></validation-problem>
+            <div class="grow">
+                <schema-type-editor [document]="document()" [value]="model()" [isParameter]="false"
+                                    (onChange)="changeType($event)"></schema-type-editor>
+            </div>
+        </div>
+    </div>
+    <div class="response-examples" *ngIf="!isRef()">
+        <div class="form-label">Examples</div>
+        <div class="problem-flex">
+            <validation-problem [model]="response.examples"></validation-problem>
+            <div class="grow">
+                <table *ngIf="hasExamples()" class="table table-striped table-bordered table-examples">
+                    <thead>
+                    <tr>
+                        <th>Content Type</th>
+                        <th class="pre-actions">Example</th>
+                        <th class="actions"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let contentType of exampleContentTypes()">
+                        <td class="content-type">
+                            <span>{{ contentType }}</span>
+                        </td>
+                        <td class="value pre-actions">{{ exampleDisplayValue(contentType) }}</td>
+                        <td class="actions">
+                            <div>
+                                <icon-button (onClick)="deleteExample(contentType)" [pullRight]="true" type="delete"
+                                             [title]="'Delete example.'"></icon-button>
+                                <icon-button (onClick)="editExampleDialog.open(contentType, exampleValue(contentType))" [pullRight]="true" [type]="'edit'"
+                                             [title]="'Edit example.'"></icon-button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a (click)="addExampleDialog.open()">Add an example</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="response-ref" *ngIf="isRef()">
+        <div class="form-label">Response Definition</div>
+        <validation-problem [model]="response" property="$ref"></validation-problem>
+        <span>This response references the </span>
+        <em><a (click)="navigateToDefinition()">{{ definitionName() }}</a></em>
+        <span> Response Definition.</span>
+    </div>
+</div>
+<add-example-20-dialog #addExampleDialog (onAdd)="addExample($event)" [schema]="response.schema"></add-example-20-dialog>
+<edit-example-20-dialog #editExampleDialog (onEdit)="editExample($event)" [schema]="response.schema"></edit-example-20-dialog>

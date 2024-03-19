@@ -1,0 +1,26 @@
+<section type="schemas" label="INHERITED SCHEMAS"
+         contextHelp=""
+         [counterItems]="schemas()"
+         [collaborationNodePath]="schemasNodePath()"
+         [validationModels]="schemas()">
+                    <span actions>
+                        <icon-button (onClick)="addSchemaDialog.open(definition.ownerDocument())" [pullRight]="true" type="add"
+                                     [title]="'Add a schema (for inheritance).'"></icon-button>
+                        <icon-button (onClick)="deleteAllSchemas()" [disabled]="!hasSchemas()" [pullRight]="true" type="delete"
+                                     [title]="'Delete all schemas.'"></icon-button>
+                    </span>
+    <div body>
+        <!-- Warning when no schemas exist -->
+        <signpost *ngIf="!hasSchemas()">
+            <span>No schemas have been selected.</span>
+            <a (click)="addSchemaDialog.open(definition.ownerDocument())">Add a schema</a>
+        </signpost>
+
+        <!-- The list of schema schemas -->
+        <div class="container-fluid schemas typed-item-list">
+            <schema-row *ngFor="let schema of schemas()" [item]="schema"
+                          (onDelete)="deleteSchema(schema)"></schema-row>
+        </div>
+    </div>
+</section>
+<add-schema-dialog #addSchemaDialog (onAdd)="addSchema($event)"></add-schema-dialog>

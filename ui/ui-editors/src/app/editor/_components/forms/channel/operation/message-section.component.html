@@ -1,0 +1,144 @@
+<section type="message" label="MESSAGE"
+         contextHelp="Use this section to configure the operation's Message."
+         [collaborationNodePath]="messagePath()"
+         [validationModels]="[messageFromOperation()]" [validationProperties]="[ 'name', 'title', 'summary', 'description' ]">
+    <span actions>
+        <icon-button (onClick)="addOneOfDialog.open(getMessagesFromDocument(),referenceAlreadyAdd())" [pullRight]="true" type="add"
+                     [title]="'Add a refrence into the message.'"></icon-button>
+    </span>
+    <div body>
+        <!--<signpost *ngIf="!hasMessage()">
+            <span>No message has been defined.</span>
+            <a (click)="addMessage()">Add a message</a>
+        </signpost>-->
+
+        <div *ngIf="isMultiMessages()">
+            <!-- One Of -->
+            <!-- Inheritance -->
+            <div class="section-field-label">
+                <span>Inheritance Type OneOf</span>
+            </div><br>
+            <oneof-row *ngFor="let sel of this.messageFromOperation().oneOf; let idx = index" [item]="sel" [oneOfName]="oneOfName(sel)"
+                          (onDelete)="deleteMessageInOneOf(this.messageFromOperation(),idx)"></oneof-row>
+        </div>
+
+        <div class="half-section" *ngIf="hasMessage() && !isMultiMessages()">
+            <!-- Name -->
+            <div class="section-field-label">
+                <validation-problem [model]="messageFromOperation()" [shallow]="true" [property]="'name'"></validation-problem>
+                <span>Name</span>
+            </div>
+            <div class="section-field name">
+                <pf-inline-text-editor [value]="messageFromOperation().name" [noValueMessage]="'No name.'"
+                                        [labelClass]="'api-version'"
+                                        [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                        [baseNode]="messageFromOperation()" nodePath="name"
+                                        (onChange)="changeName($event)"></pf-inline-text-editor>
+            </div>
+
+            <!-- Title -->
+            <div class="section-field-label">
+                <validation-problem [model]="messageFromOperation()" [shallow]="true" [property]="'title'"></validation-problem>
+                <span>Title</span>
+            </div>
+            <div class="section-field title">
+                <pf-inline-text-editor [value]="messageFromOperation().title" [noValueMessage]="'No title.'"
+                                        [labelClass]="'api-version'"
+                                        [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                        [baseNode]="messageFromOperation()" nodePath="title"
+                                        (onChange)="changeTitle($event)"></pf-inline-text-editor>
+            </div>
+
+            <!-- Summary -->
+            <div class="section-field-label">
+                <validation-problem [model]="messageFromOperation()" [shallow]="true" [property]="'summary'"></validation-problem>
+                <span>Summary</span>
+            </div>
+            <div class="section-field summary">
+                <pf-inline-text-editor [value]="messageFromOperation().summary" [noValueMessage]="'No summary.'"
+                                        [labelClass]="'api-version'"
+                                        [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                        [baseNode]="messageFromOperation()" nodePath="summary"
+                                        (onChange)="changeSummary($event)"></pf-inline-text-editor>
+            </div>
+
+            <!-- Description -->
+            <div class="section-field-label">
+                <validation-problem [model]="messageFromOperation()" [shallow]="true" [property]="'description'"></validation-problem>
+                <span>Description</span>
+            </div>
+            <div class="section-field description">
+                <inline-markdown-editor [value]="messageFromOperation().description" [noValueMessage]="'No description.'"
+                                        [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
+                                        [inputClass]="'api-item-description'"
+                                        [formClass]="'api-description-editor-form'"
+                                        [baseNode]="messageFromOperation()" nodePath="description"
+                                        (onChange)="changeDescription($event)"></inline-markdown-editor>
+            </div>
+        </div>
+
+        <div class="half-section right" *ngIf="hasMessage() && !isMultiMessages()">
+            <!-- Correlation ID -->
+            <div class="section-field-label">
+                <validation-problem [model]="messageFromOperation()" [shallow]="true" [property]="'name'"></validation-problem>
+                <span>Correlation ID</span>
+            </div>
+            <div class="section-field name">
+                <pf-inline-text-editor [value]="messageFromOperation().name" [noValueMessage]="'No name.'"
+                                        [labelClass]="'api-version'"
+                                        [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                        [baseNode]="messageFromOperation()" nodePath="name"
+                                        (onChange)="changeName($event)"></pf-inline-text-editor>
+            </div>
+
+            <!-- Content Type -->
+            <div class="section-field-label" *ngIf="hasMessage() && !isMultiMessages()">
+                <validation-problem [model]="messageFromOperation()" [shallow]="true" [property]="'contentType'"></validation-problem>
+                <span>Content Type</span>
+            </div>
+            <div class="section-field contentType">
+                <pf-inline-text-editor [value]="messageFromOperation().contentType" [noValueMessage]="'No content type. Default will apply.'"
+                                        [labelClass]="'api-version'"
+                                        [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                        [baseNode]="messageFromOperation()" nodePath="contentType"
+                                        (onChange)="changeContentType($event)"></pf-inline-text-editor>
+            </div>
+
+            <!-- Schema Format -->
+            <div class="section-field-label">
+                <validation-problem [model]="messageFromOperation()" [shallow]="true" [property]="'schemaFormat'"></validation-problem>
+                <span>Schema Format</span>
+            </div>
+            <div class="section-field schemaFormat">
+                <drop-down [value]="messageFromOperation().schemaFormat"
+                                        [options]="schemaFormatOptions()"
+                                        (onValueChange)="changeSchemaFormat($event)"
+                                        noSelectionLabel="No Schema Format"></drop-down>
+            </div>
+        </div>
+
+        <div class="section-field-label" *ngIf="hasMessage() && !isMultiMessages()">
+            <validation-problem [model]="messageFromOperation()" [shallow]="true" [property]="'payload'"></validation-problem>
+            <span>Content</span>
+        </div>
+        <div class="parts-tabs" *ngIf="hasMessage() && !isMultiMessages()">
+            <div class="tab" [class.active]="isPartActive('payload')">
+                <a (click)="setActivePart('payload')">
+                    <span>Payload</span>
+                </a>
+            </div>
+            <div class="tab" [class.active]="isPartActive('headers')">
+                <a (click)="setActivePart('headers')">
+                    <span>Headers</span>
+                </a>
+            </div>
+        </div>
+        <div class="parts-tab-content" *ngIf="hasMessage() && !isMultiMessages() ">
+            <payload-tab [message]="messageFromOperation()" *ngIf="isPartActive('payload')"></payload-tab>
+            <headers-tab [message]="messageFromOperation()" *ngIf="isPartActive('headers')"></headers-tab>
+        </div>
+    </div>
+
+</section>
+<add-oneof-in-message-dialog #addOneOfDialog (onAdd)="addOneOf($event)" ></add-oneof-in-message-dialog>
+

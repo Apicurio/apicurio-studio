@@ -1,0 +1,62 @@
+<section type="info" label="INFO"
+         contextHelp="In this section you can easily edit the Summary, ID, and Description of the Operation."
+         [collaborationNodePath]="operationInfoPaths()"
+         [validationModels]="[operation]" [validationShallow]="true" [validationProperties]="[ 'operationId', 'summary', 'description' ]">
+    <span actions></span>
+    <div body>
+        <div class="half-section">
+            <!-- Summary -->
+            <div class="section-field-label">
+                <validation-problem [model]="operation" [shallow]="true" [property]="'summary'"></validation-problem>
+                <span>Summary</span>
+            </div>
+            <div class="section-field summary">
+                <pf-inline-text-editor [value]="operation.summary" [noValueMessage]="'No Summary'"
+                                       [labelClass]="'api-item-title'"
+                                       [inputClass]="'api-item-editor api-summary-editor api-item-title'"
+                                       [baseNode]="operation" nodePath="summary"
+                                       (onChange)="changeSummary($event)"></pf-inline-text-editor>
+            </div>
+        </div>
+
+        <div class="half-section right">
+            <!-- Operation ID -->
+            <div class="section-field-label">
+                <validation-problem [model]="operation" [shallow]="true" [property]="'operationId'"></validation-problem>
+                <span>Operation ID</span>
+            </div>
+            <div class="section-field operationId">
+                <pf-inline-text-editor [value]="operation.operationId" [noValueMessage]="'No Operation ID'"
+                                       [labelClass]="'api-item-operation-id'"
+                                       [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                       [baseNode]="operation" nodePath="operationId"
+                                       (onChange)="changeOperationId($event)"></pf-inline-text-editor>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="section-field-label">
+            <validation-problem [model]="operation" [shallow]="true" [property]="'description'"></validation-problem>
+            <span>Description</span>
+        </div>
+        <div class="section-field description">
+            <inline-markdown-editor [value]="operation.description" [noValueMessage]="'No description.'"
+                                    [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
+                                    [inputClass]="'api-item-description'"
+                                    [formClass]="'api-description-editor-form'"
+                                    [baseNode]="operation" nodePath="description"
+                                    (onChange)="changeDescription($event)"></inline-markdown-editor>
+        </div>
+
+        <!-- Tags -->
+        <div class="section-field-label">
+            <validation-problem [model]="operation" [shallow]="true" [property]="'tags'"></validation-problem>
+            <span>Tags</span>
+        </div>
+        <div class="section-field tags">
+            <inline-array-editor noValueMessage="No tags configured." [value]="operation.tags" [items]="tagDefs()"
+                                 [baseNode]="operation" nodepath="tags"
+                                 (onChange)="changeTags($event)"></inline-array-editor>
+        </div>
+    </div>
+</section>

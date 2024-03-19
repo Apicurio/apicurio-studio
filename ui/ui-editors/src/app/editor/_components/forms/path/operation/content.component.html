@@ -1,0 +1,17 @@
+<div class="content" *ngIf="hasMediaTypes()">
+    <div class="container-fluid media-types typed-item-list">
+        <media-type-row *ngFor="let mtName of mediaTypeNames()" [item]="mediaTypeByName(mtName)"></media-type-row>
+    </div>
+    <div class="actions">
+        <a (click)="addMediaTypeDialog.open(mediaTypeNames())">Add a media type</a>
+    </div>
+</div>
+
+<div class="content" *ngIf="!hasMediaTypes()">
+    <signpost>
+        <span>No media types have been defined.</span>
+        <a (click)="addMediaTypeDialog.open(mediaTypeNames())">Add a media type</a>
+    </signpost>
+</div>
+
+<add-media-type-dialog #addMediaTypeDialog (onAdd)="addMediaType($event)"></add-media-type-dialog>

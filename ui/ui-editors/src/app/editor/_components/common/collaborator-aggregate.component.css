@@ -1,0 +1,39 @@
+.collaborator-aggregate .collaborator-icon {
+  color: white;
+  display: inline-block;
+  font-size: 11px;
+  width: 14px;
+  line-height: 15px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.collaborator-aggregate .collaborator-icon:hover {
+  text-decoration: none;
+}
+
+.collaborator-aggregate .collaborator-aggregate-panel {
+  position: fixed;
+  margin: 0;
+  border: 1px solid #bbb;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+  z-index: 150;
+  background: white;
+  max-width: 425px;
+  max-height: 125px;
+  cursor: default;
+  overflow-y: auto;
+  color: #4d5258;
+  line-height: 18px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+}
+.collaborator-aggregate .collaborator-aggregate-panel .collaborator-icon {
+  display: inline-block;
+  width: 8px;
+  font-size: 8px;
+  line-height: 8px;
+  margin-right: 5px;
+}

@@ -1,0 +1,9 @@
+<span (window:keydown)="onGlobalKeyDown($event)" class="validation-aggregate" *ngIf="hasProblems()">
+    <a (click)="open($event)"><span class="fa fa-exclamation-circle"> </span></a>
+    <div *ngIf="isOpen()" class="validation-aggregate-panel" [style.left]="left" [style.top]="top">
+        <div class="problem" *ngFor="let problem of matchingProblems()" title="{{ problem.message }}">
+            <span class="pficon {{ iconFor(problem) }}"></span>
+            <a (click)="goTo(problem, $event)">{{ summaryFor(problem) }}</a>
+            </div>
+    </div>
+</span>

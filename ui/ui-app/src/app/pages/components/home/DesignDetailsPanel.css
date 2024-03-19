@@ -1,0 +1,19 @@
+
+div.grid {
+    display: grid;
+    grid-template-columns: min-content auto;
+    margin-top: 20px;
+}
+
+div.grid > div.grid-label {
+    font-size: 15px;
+    padding-right: 15px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    white-space: nowrap;
+}
+
+div.grid > div.grid-value {
+    font-size: 15px;
+    margin-bottom: 8px;
+}

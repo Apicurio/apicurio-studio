@@ -1,0 +1,24 @@
+.editor-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.editor-loading .loading-label {
+    font-size: 16px;
+}
+
+.studio-editor {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.studio-editor > .content-editor {
+    flex-grow: 1;
+}

@@ -1,0 +1,35 @@
+<div bsModal #editorDisconnectedModal="bs-modal" class="modal fade" id="editorDisconnectedModal" tabindex="-1" role="dialog"
+     aria-labelledby="editorDisconnectedModalLabel" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()" [config]="{ backdrop: true }" >
+    <div class="modal-dialog editor-disconnected-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="editorDisconnectedModalLabel">Editor Disconnected</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <span class="fa fa-plug icon"></span>
+                        </div>
+                        <div class="col-md-10">
+                            <div class="title"><strong>Lost Connection</strong></div>
+                            <div class="message">
+                                Connection to the server has been lost.  Any changes you make to this API will
+                                only be saved once a connection to the server can be re-established.  However,
+                                you may continue working in <em>Offline Mode</em> - just don't close this browser
+                                window!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="workOffline()">
+                    <span class="fa fa-fw fa-pencil-square-o"></span>
+                    <span>&nbsp;</span>
+                    <span>Work Offline</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

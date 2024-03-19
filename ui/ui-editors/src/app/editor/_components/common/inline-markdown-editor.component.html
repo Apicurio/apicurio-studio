@@ -1,0 +1,16 @@
+<div class="md-description inline-markdown-editor-label" *ngIf="!editing" (click)="onStartEditing()" title="Click to edit.">
+    <markdown [data]="displayValue()" *ngIf="!isEmpty()"></markdown>
+    <div *ngIf="isEmpty()">
+        <span class="empty">{{ noValueMessage }}</span>
+        <i class="glyphicon glyphicon-pencil"></i>
+    </div>
+</div>
+<div class="inline-editor inline-markdown-editor" *ngIf="editing" (keyup)="onInputKeypress($event)">
+    <code-editor [mode]="codeEditorMode()" #codeEditor
+                 [debounceTime]="150"
+                 [(text)]="evalue"
+                 wordWrap="true"
+                 [editorStyle]="{ position: 'relative', height: '220px', border: '1px solid #ccc', width: '100%' }"></code-editor>
+    <button title="Save changes." class="btn btn-xs btn-primary" (click)="onSave()"><span class="fa fa-fw fa-check"></span></button>
+    <button title="Cancel changes." class="btn btn-xs btn-default" (click)="onCancel()"><span class="fa fa-fw fa-close"></span></button>
+</div>

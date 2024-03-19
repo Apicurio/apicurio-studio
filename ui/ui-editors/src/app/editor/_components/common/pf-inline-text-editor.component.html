@@ -1,0 +1,20 @@
+<span *ngIf="!editing" class="inline-editor-label inline-text-editor-label {{ labelClass }} pf-inline-text-editor-label"
+      title="Click to edit." (click)="onStartEditing()" [class.disabled]="!enabled">
+    <span [class.empty]="isEmpty()" >{{ displayValue() }}</span>
+    <i class="glyphicon glyphicon-pencil" *ngIf="enabled"></i>
+</span>
+<div *ngIf="editing" class="inline-editor inline-text-editor pf-inline-text-editor">
+    <div class="form-control-pf-editable form-control-pf-edit">
+        <div class="form-control-pf-textbox">
+            <input #newvalue type="text" [(ngModel)]="evalue" class="form-control form-control-pf-editor"
+                   autocomplete="off" (keyup)="onInputKeypress($event)">
+            <button *ngIf="!isEditedValueEmpty()" type="button" class="form-control-pf-empty" aria-label="Clear Value" (click)="clearValue()">
+              <span class="fa fa-times-circle fa-lg"></span>
+            </button>
+        </div>
+        <button title="Save changes." type="button" class="btn btn-primary form-control-pf-save"
+                aria-label="Save" (click)="onSave()"><i class="glyphicon glyphicon-ok"></i></button>
+        <button title="Cancel changes." type="button" class="btn btn-default form-control-pf-cancel"
+                aria-label="Cancel" (click)="onCancel()"><i class="glyphicon glyphicon-remove"></i></button>
+    </div>
+</div>

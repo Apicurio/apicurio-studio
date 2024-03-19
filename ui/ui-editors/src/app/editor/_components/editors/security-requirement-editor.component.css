@@ -1,0 +1,74 @@
+.security-scheme-list {
+  margin-left: 20px;
+}
+
+.security-scheme-list .list-view-pf-main-info {
+  padding-top: 24px;
+}
+
+.security-scheme-list .list-group-item.anonymous {
+  border-bottom: 1px dashed #999;
+}
+
+.security-scheme-list .list-group-item-heading .type::before {
+  content: '(';
+}
+.security-scheme-list .list-group-item-heading .type {
+  font-weight: normal;
+  margin-left: 5px;
+}
+.security-scheme-list .list-group-item-heading .type::after {
+  content: ')';
+}
+
+.security-scheme-list .list-group-item-container {
+  padding: 10px 15px;
+}
+.security-scheme-list .list-group-item-container .instructions {
+  text-decoration: underline;
+  margin-bottom: 5px;
+}
+
+.security-scheme-list .list-group-item.list-view-pf-expand-active {
+  margin-bottom: 4px;
+}
+
+.no-scopes .alert {
+  margin-top: 18px;
+  margin-left: 15px;
+  margin-right: 35px;
+}
+
+.security-scheme-list .scopes {
+}
+.security-scheme-list .scopes .scope {
+  display: flex;
+  margin-bottom: 5px;
+}
+.security-scheme-list .scopes .scope .scope-check {
+  padding-left: 10px;
+  padding-right: 10px;
+  border-right: 1px solid #ccc;
+}
+.security-scheme-list .scopes .scope .scope-name {
+  padding-left: 10px;
+  flex-grow: 1;
+  font-weight: 600;
+  text-overflow: ellipsis;
+}
+.security-scheme-list .scopes .scope .scope-name a {
+  color: rgb(54, 54, 54);
+  cursor: default;
+  text-decoration: none;
+}
+.security-scheme-list .scopes .scope .scope-name a:hover {
+  color: rgb(92, 92, 92);
+  text-decoration: none;
+}
+.security-scheme-list .scopes .scope .scope-name a.disabled {
+  color: rgb(187, 187, 187);
+}
+
+.security-scheme-list .scopes-row .scopes-section {
+  padding-left: 50px;
+}

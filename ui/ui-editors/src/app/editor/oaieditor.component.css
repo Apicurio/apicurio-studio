@@ -1,0 +1,1212 @@
+.api-editor .dropdown.empty > button.btn > span {
+  color: #bbb;
+}
+.api-editor span.empty,
+.api-editor div.empty,
+.api-editor button.empty {
+  color: #bbb;
+}
+.api-editor span.path-param,
+.api-editor span.server-variable {
+  color: #ff6a7c;
+}
+.api-editor span.path-segment::before {
+  color: #363636;
+}
+.api-editor div.api-item-description {
+  margin-right: 30px;
+}
+.api-editor div.api-item-description.empty {
+  color: #bbb;
+}
+.api-editor .editor-master {
+  background-color: white;
+  border-right: 1px solid #ddd;
+}
+.api-editor .editor-detail {
+  background-color: white;
+}
+.api-editor .editor-detail table tbody tr:hover {
+  background-color: #efefef;
+}
+.api-editor .editor-master .editor-main {
+  background-color: #eee;
+  -webkit-transition: background-color 200ms;
+  -moz-transition: background-color 200ms;
+  -ms-transition: background-color 200ms;
+  -o-transition: background-color 200ms;
+  transition: background-color 200ms;
+}
+.api-editor .editor-master .editor-main:hover {
+  background-color: #d1eaf7;
+}
+.api-editor .editor-master .editor-main.selected {
+  background-color: #a5d6ef;
+}
+.api-editor .editor-master .editor-search {
+}
+.api-editor .editor-master .editor-search input {
+  background-color: #eee;
+  color: #333;
+}
+.api-editor .section .section-header {
+  border-bottom: 1px dotted #ddd;
+}
+.api-editor .section .section-header a {
+  color: #333;
+}
+.api-editor .editor-master .editor-outline .api-path {
+  -webkit-transition: background-color 200ms;
+  -moz-transition: background-color 200ms;
+  -ms-transition: background-color 200ms;
+  -o-transition: background-color 200ms;
+  transition: background-color 200ms;
+  display: flex;
+}
+.api-editor .editor-master .editor-outline .api-path:hover {
+  background-color: #d1eaf7;
+}
+.api-editor .editor-master .editor-outline .api-path.selected {
+  background-color: #a5d6ef;
+  border-left: 2px solid #39a5dc;
+}
+.api-editor .editor-master .editor-outline .api-path.contexted,
+.api-editor .editor-master .editor-outline .api-path.contexted:hover {
+  background-color: #FFCC87;
+  border-left: 2px dotted #E89F3D;
+}
+.api-editor .editor-master .editor-outline .api-path.selected .label {
+  -webkit-transition: border-color 350ms, box-shadow 350ms;
+  -moz-transition: border-color 350ms, box-shadow 350ms;
+  -ms-transition: border-color 350ms, box-shadow 350ms;
+  -o-transition: border-color 350ms, box-shadow 350ms;
+  transition: border-color 350ms, box-shadow 350ms;
+}
+.api-editor .editor-master .editor-outline .api-path.selected .label:hover {
+  box-shadow: 0 0 3px #646464;
+  border: 1px solid #666;
+}
+.api-editor .editor-master .editor-outline .api-path.selected .label.selected {
+  border: 1px solid black;
+  box-shadow: 0 0 3px #141414;
+}
+
+.api-editor .editor-master .editor-outline .api-path > * {
+  margin-right: 4px;
+}
+.api-editor .editor-master .editor-outline .api-path > .api-path-item {
+  flex-grow: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.api-editor .editor-master .editor-outline .api-definition {
+  -webkit-transition: background-color 200ms;
+  -moz-transition: background-color 200ms;
+  -ms-transition: background-color 200ms;
+  -o-transition: background-color 200ms;
+  transition: background-color 200ms;
+  display: flex;
+}
+.api-editor .editor-master .editor-outline .api-definition:hover {
+  background-color: #d1eaf7;
+}
+.api-editor .editor-master .editor-outline .api-definition.selected {
+  background-color: #a5d6ef;
+  border-left: 2px solid #39a5dc;
+}
+.api-editor .editor-master .editor-outline .api-response.contexted,
+.api-editor .editor-master .editor-outline .api-response.contexted:hover,
+.api-editor .editor-master .editor-outline .api-definition.contexted,
+.api-editor .editor-master .editor-outline .api-definition.contexted:hover {
+  background-color: #FFCC87;
+  border-left: 2px dotted #E89F3D;
+}
+
+.api-editor .editor-master .editor-outline .api-definition > * {
+  margin-right: 4px;
+}
+
+.api-editor .editor-master .editor-outline .api-response {
+  -webkit-transition: background-color 200ms;
+  -moz-transition: background-color 200ms;
+  -ms-transition: background-color 200ms;
+  -o-transition: background-color 200ms;
+  transition: background-color 200ms;
+  display: flex;
+}
+.api-editor .editor-master .editor-outline .api-response:hover {
+  background-color: #d1eaf7;
+}
+.api-editor .editor-master .editor-outline .api-response.selected {
+  background-color: #a5d6ef;
+  border-left: 2px solid #39a5dc;
+}
+
+.api-editor .editor-master .editor-outline .api-response > * {
+  margin-right: 4px;
+}
+
+.api-editor .editor-detail .detail-title {
+  border-bottom: 1px solid #ddd;
+}
+.api-editor .editor-detail .detail-title .detail-actions {
+  float: right;
+}
+.api-editor .editor-detail .detail-title .detail-actions:hover {
+  cursor: pointer;
+  background-color: #d1eaf7;
+}
+.api-editor .editor-detail .detail-title .detail-actions .dropdown-menu {
+  left: auto;
+  right: 0;
+}
+.api-editor .editor-detail .detail-title .detail-actions .dropdown .btn {
+  color: #333;
+  padding-left: 20px;
+  padding-right: 20px;
+  line-height: 38px;
+  font-size: 18px;
+  height: 44px;
+}
+.api-editor .editor-detail .detail-content .info-section .api-md-entry .md-label {
+  color: #333;
+}
+.api-editor .api-operation-parameters td.icons, .api-details table td.icons {
+  color: #666;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation {
+  border-bottom: 1px solid #ddd;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .type .label {
+  -webkit-transition: border-color 200ms, box-shadow 200ms;
+  -moz-transition: border-color 200ms, box-shadow 200ms;
+  -ms-transition: border-color 200ms, box-shadow 200ms;
+  -o-transition: border-color 200ms, box-shadow 200ms;
+  transition: border-color 200ms, box-shadow 200ms;
+  box-shadow: none;
+  border: 1px solid transparent;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .type .label:hover {
+  border-color: #666;
+  box-shadow: 0px 0px 8px #666;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .name.empty {
+  color: #bbb;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty {
+  color: #999;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label {
+  background-color: #ccc;
+  border-color: transparent;
+  box-shadow: none;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label:hover {
+  background-color: #ccc;
+  border-color: transparent;
+  box-shadow: none;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .delete-operation {
+  visibility: hidden;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation:hover .delete-operation {
+  visibility: visible;
+}
+
+.modal.in .modal-dialog {
+  -ms-transform: none;
+  transform: none;
+  margin-top: 50px;
+}
+.modal.fade .modal-dialog {
+  -ms-transform: none;
+  transform: none;
+  transition: margin-top 0.3s ease-out;
+}
+.modal-dialog {
+  width: 650px;
+  margin-top: 0px;
+  margin-left: auto;
+}
+.api-editor span.path-param,
+.api-editor span.server-variable {
+  font-weight: 400;
+}
+
+.api-editor .context-help {
+  margin-left: 10px;
+  position: relative;
+  display: none;
+}
+.api-editor .context-help a {
+  cursor: pointer;
+}
+.api-editor .context-help a .context-help-icon {
+  -webkit-transition: opacity 300ms;
+  -moz-transition: opacity 300ms;
+  -ms-transition: opacity 300ms;
+  -o-transition: opacity 300ms;
+  transition: opacity 300ms;
+}
+.api-editor .context-help .context-help-panel {
+  position: absolute;
+  left: 0;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid #bbb;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+  z-index: 150;
+  background: white;
+  line-height: 18px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  width: 450px;
+  cursor: default;
+}
+.api-editor .context-help .context-help-panel p {
+  padding: 3px;
+  margin: 0;
+  line-height: 18px;
+}
+.api-editor .context-help .context-help-panel p > a {
+  color: #0088ce;
+}
+.api-editor .context-help .context-help-panel p > a:hover {
+  color: #00659c;
+  text-decoration: underline;
+}
+.api-editor .context-help .context-help-panel pre {
+  margin-top: 10px;
+}
+.api-editor div.tab-panel {
+  border-top: none;
+}
+.api-editor div.tab-panel {
+  border-color: #dddddd;
+}
+.api-editor .nav-tabs > li > a {
+  cursor: pointer;
+}
+.api-editor .nav-tabs > li > a.active {
+  cursor: default;
+}
+.api-editor .nav-tabs > li > a > button {
+  visibility: hidden;
+}
+.api-editor .nav-tabs > li > a:hover > button {
+  visibility: visible;
+}
+
+.api-editor .editor-master {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  right: 70%;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.api-editor .editor-detail {
+  position: absolute;
+  left: 30%;
+  top: 42px;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.api-editor .editor-detail .editor-detail-form {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.api-editor .editor-master .editor-main:hover {
+  cursor: pointer;
+}
+.api-editor .editor-master .editor-main.selected {
+  cursor: default;
+}
+.api-editor .editor-master .editor-main h2 {
+  padding: 10px;
+  margin: 0;
+}
+
+.api-editor .editor-master .editor-search {
+  padding: 10px;
+  display: table;
+  width: 100%;
+}
+.api-editor .editor-master .editor-search > search {
+  display: table-cell;
+  width: 100%;
+  padding-right: 8px;
+}
+
+.api-editor .editor-problem-drawer {
+  position: absolute;
+  z-index: 200;
+  top: 41px;
+  right: 0;
+  width: 320px;
+  bottom: 0;
+}
+.api-editor .editor-problem-drawer .drawer-pf {
+  height: 100%;
+  width: 360px;
+}
+.api-editor .editor-problem-drawer .drawer-pf .panel-body {
+  padding: 0;
+}
+.api-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification {
+}
+.api-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification:hover {
+  background-color: #efefef;
+}
+.api-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-message {
+  line-height: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.api-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info {
+}
+.api-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info .explanation {
+  line-height: 15px;
+  font-size: 13px;
+}
+.api-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info a {
+  cursor: pointer;
+}
+
+.api-editor .editor-master .editor-outline {
+  padding: 5px;
+  height: 100%;
+  overflow-y: auto;
+}
+.api-editor .section {
+  padding: 0;
+  margin: 0;
+}
+.api-editor .section .section-header {
+  font-size: 15px;
+  padding-bottom: 3px;
+  margin-bottom: 5px;
+  line-height: inherit;
+}
+.api-editor .section .section-header a {
+  cursor: pointer;
+  text-decoration: none;
+}
+.api-editor .section .section-header a:before {
+  display: inline-block;
+  font-size: 13px;
+  margin-left: 5px;
+  margin-right: 3px;
+  text-align: center;
+  vertical-align: 0;
+  font-weight: 300;
+}
+.api-editor .section .section-header a span.section-label {
+  font-weight: 600;
+}
+.api-editor .section .section-header .context-help a span.fa {
+  opacity: 0;
+  font-size: 14px;
+}
+.api-editor .section .section-header:hover .context-help a span.fa {
+  opacity: 255;
+}
+.api-editor .section .section-header .context-help a:hover span.fa {
+  color: #356c8c;
+}
+.api-editor .section .section-header .btn {
+  margin-top: 1px;
+}
+.api-editor .section .section-body {
+  margin-bottom: 20px;
+}
+.api-editor .editor-master .editor-outline .api-path {
+  position: relative;
+  padding-left: 15px;
+  font-size: 14px;
+  border-left: 2px solid transparent;
+}
+.api-editor .editor-master .editor-outline .api-path:hover {
+  cursor: pointer;
+}
+.api-editor .editor-master .editor-outline .api-path.selected {
+  cursor: default;
+}
+.api-editor .editor-master .editor-outline .api-path.selected .label {
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 2px 8px 2px 8px;
+}
+.api-editor .editor-master .editor-outline .api-path.problem-marker:before {
+  top: 2px;
+  left: 1px;
+  font-size: 12px;
+}
+.api-editor .editor-master .editor-outline .api-path .api-operations {
+  margin-top: 5px;
+  padding-bottom: 10px;
+}
+.api-editor .editor-master .editor-outline .api-path .api-operations .label {
+  position: relative;
+  margin-right: 5px;
+}
+.api-editor .editor-master .editor-outline .api-path.contexted {
+  cursor: default;
+}
+.api-editor .editor-master .editor-outline .api-response,
+.api-editor .editor-master .editor-outline .api-definition {
+  padding-left: 15px;
+  font-size: 14px;
+  border-left: 2px solid transparent;
+  position: relative;
+}
+.api-editor .editor-master .editor-outline .api-definition:hover {
+  cursor: pointer;
+}
+.api-editor .editor-master .editor-outline .api-definition.selected {
+  cursor: default;
+}
+.api-editor .editor-master .editor-outline .api-definition.problem:before {
+  top: 4px;
+  left: 1px;
+}
+.api-editor .editor-master .editor-outline .api-response {
+  padding-left: 15px;
+  font-size: 14px;
+}
+.api-editor .editor-master .editor-outline .api-response:hover {
+  cursor: pointer;
+}
+.api-editor .editor-master .editor-outline .api-response.selected {
+  cursor: default;
+}
+.api-editor .editor-detail .section {
+  padding-top: 8px;
+}
+.api-editor .editor-detail .api-inline-editor-form {
+  display: inline-block;
+  position: relative;
+}
+.api-editor .editor-detail .api-description-editor-form {
+  width: 100%;
+}
+.api-editor .editor-detail .api-inline-editor-form input {
+  font-size: inherit;
+  display: inline;
+  height: auto;
+}
+.api-editor .editor-detail .api-inline-editor-form textarea {
+  width: 100%;
+  min-height: 50px;
+}
+.api-editor .editor-detail .api-inline-editor-form .inline-text-editor-input {
+  min-width: 90px;
+}
+
+.api-editor .editor-detail .detail-title {
+  height: 45px;
+}
+.api-editor .editor-detail .detail-title .detail-label {
+  float: left;
+  line-height: 44px;
+  font-size: 18px;
+  font-weight: 500;
+  padding-left: 10px;
+}
+.api-editor .editor-detail .detail-title .detail-icon {
+  float: left;
+  line-height: 44px;
+  height: 44px;
+  text-transform: uppercase;
+}
+.api-editor .editor-detail .detail-title .detail-icon .label {
+  border-radius: 2px;
+  padding: 2px 8px 2px 8px;
+}
+.api-editor .editor-detail .editor-detail-form .detail-tabs ul {
+  padding-left: 10px;
+}
+.api-editor .editor-detail .editor-detail-form .detail-tabs ul li a {
+  cursor: pointer;
+}
+.api-editor .editor-detail .editor-detail-form .detail-tabs ul li.disabled a {
+  cursor: not-allowed;
+}
+.api-editor .editor-detail .detail-actionbar {
+  text-align: right;
+  padding: 5px 25px 5px 5px;
+  border-bottom: 1px solid #ddd;
+}
+.api-editor .editor-detail .detail-actionbar > button {
+  margin-left: 4px;
+}
+.api-editor .editor-detail .detail-actionbar > button > span.pficon {
+  margin-right: 3px;
+}
+.api-editor .editor-detail .detail-content {
+  height: 100%;
+  overflow-y: auto;
+  padding: 10px;
+}
+.api-editor .editor-detail .detail-content .section .section-body {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.api-editor .editor-detail .detail-content .info-section .explanation {
+  font-size: 15px;
+}
+.api-editor #securitySchemeModal .nav-tabs > li.enabled > a {
+  font-weight: bold;
+}
+.api-editor .editor-detail .detail-content .set-license-modal .modal-dialog {
+  width: 950px;
+}
+.api-editor .editor-detail .detail-content .set-license-modal .modal-dialog .modal-body {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.api-editor .editor-detail .detail-content .container-fluid {
+  padding: 0;
+}
+.api-editor .editor-detail .detail-content .license h2 {
+  font-size: 17px;
+  font-weight: bold;
+}
+.api-editor .editor-detail .detail-content .license h2 span.fa {
+  font-size: 14px;
+  margin-left: 5px;
+}
+.api-editor .editor-detail .detail-content .license h3 {
+  font-size: 14px;
+  font-weight: bold;
+}
+.api-editor .editor-detail .detail-content .license ul {
+  margin: 0;
+  padding: 0 0 0 12px;
+}
+.api-editor .editor-detail .detail-content .license ul li > span {
+  color: #1D2225;
+  cursor: pointer;
+}
+.api-editor .editor-detail .detail-content .license ul li > span:hover {
+  border-bottom: 1px dotted;
+}
+.api-editor .editor-detail .detail-title .label {
+  margin-left: 10px;
+  font-size: 13px;
+}
+.api-editor .path-description {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+.api-editor .api-operation-parameters td.parameter {
+  width: 1%;
+  white-space: nowrap;
+}
+.api-editor .api-operation-parameters td.icons,
+.api-details table td.icons {
+  width: 1%;
+  white-space: nowrap;
+}
+.api-editor .api-operation-parameters td.icons i:hover {
+  cursor: pointer;
+}
+.api-editor .api-response .tlabel {
+  padding: 2px 10px 2px 2px;
+  text-align: right;
+}
+.api-editor .api-response .tlabel span {
+  font-weight: bold;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .type {
+  display: inline-table;
+  margin-right: 5px;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .type .label {
+  border-radius: 2px;
+  cursor: pointer;
+  padding: 2px 8px 2px 8px;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .name {
+  display: inline-table;
+  font-size: 15px;
+  font-weight: 600;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .description {
+  font-size: 14px;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation div.description {
+  margin-right: 30px;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation .actions {
+  margin-top: 5px;
+}
+.api-editor .editor-detail .api-path-detail .operations-section .api-operation.empty .type .label {
+  cursor: default;
+}
+
+.api-editor .editor-detail .requestBody-section .request-body-name {
+  font-size: 15px;
+  margin-left: 10px;
+}
+.api-editor .editor-detail .requestBody-section .api-item-description {
+  margin-top: 8px;
+  font-size: 14px;
+}
+.api-editor .editor-detail .requestBody-section .request-body-type {
+  margin-top: 20px;
+}
+.api-editor .editor-detail .requestBody-section .request-body-type .strong {
+  font-weight: 600;
+}
+.api-editor .editor-detail .requestBody-section .request-body-type .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.api-editor .editor-detail .requestBody-section .request-body-required {
+  margin-top: 15px;
+}
+.api-editor .editor-detail .requestBody-section .request-body-required .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.api-editor .editor-detail .requestBody-section .request-body-content {
+  margin-top: 15px;
+}
+.api-editor .editor-detail .requestBody-section .request-body-content .content .nav-tabs li > a .icon-button {
+  margin-left: 8px;
+}
+.api-editor .editor-detail .api-operation-detail .media-type .strong {
+  font-weight: 600;
+}
+.api-editor .editor-detail .api-operation-detail .media-type .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.api-editor .editor-detail .parameter.required {
+  box-shadow: 1px 1px 4px #aae;
+}
+.api-editor .editor-detail .row.property,
+.api-editor .editor-detail .row.parameter,
+.api-editor .editor-detail .row.response {
+  margin-left: 0;
+  margin-right: 0;
+}
+.api-editor .editor-detail table {
+  font-size: 13px;
+}
+.api-editor .editor-detail table tbody tr td.actions > div {
+  visibility: hidden;
+}
+.api-editor .editor-detail table tbody tr:hover td.actions > div {
+  visibility: visible;
+}
+.api-editor .editor-detail .type-editor-dropdown-menu {
+  right: 0;
+  left: auto;
+  min-width: 400px;
+}
+.api-editor .editor-detail table .inline-type-editor-label {
+  margin-right: 36px;
+}
+.api-editor .editor-detail .type-editor-dropdown-menu .dropdown {
+  display: inline;
+  margin-left: 2px;
+}
+.api-editor .editor-detail .type-editor-dropdown-menu .dropdown-menu {
+  top: inherit;
+}
+.api-editor .editor-detail .type-editor-dropdown-menu .typeinfo {
+  padding: 15px;
+}
+.api-editor .editor-detail .type-editor-dropdown-menu .actions {
+  border-top: 1px solid #bbb;
+  text-align: right;
+  padding: 5px;
+}
+.api-editor .editor-detail .type-editor-dropdown-menu .actions .overlay-action-save {
+  margin-right: 3px;
+}
+#path-context-menu,
+#definition-context-menu,
+#operation-context-menu,
+#response-context-menu {
+  display: block;
+  position: fixed;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item {
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  vertical-align: middle;
+  margin-top: 5px;
+  position: relative;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.missing {
+  opacity: .4;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.missing .description {
+  font-size: 12px;
+  line-height: 20px;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.overridable {
+  background-color: #eeeeef;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.editing {
+  border-bottom: none;
+  border-right: 1px solid #ccc;
+  background-color: #efefef;
+  box-shadow: 1px 1px 5px #ccc;
+  position: relative;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .typed-item-icon {
+  cursor: help;
+  color: inherit;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .typed-item-icon:hover {
+  color: inherit;
+  filter: brightness(80%);
+}
+.api-editor .editor-detail .section .typed-item-list .type-row {
+  padding-top: 12px;
+  padding-bottom: 10px;
+  border: 1px solid #ccc;
+  position: relative;
+  background-color: white;
+  box-shadow: 1px 1px 5px #ccc;
+  margin-left: 0;
+  margin-right: 0;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .metainfo {
+  padding-left: 0px;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .actions {
+  text-align: right;
+  padding-right: 10px;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .actions button {
+  opacity: .25;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item:hover {
+  background-color: #eee;
+  box-shadow: 1px 1px 4px #ddd;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.editing:hover {
+  box-shadow: 1px 1px 5px #ccc;
+  background-color: #efefef;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item:hover .actions button {
+  opacity: 1.0;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.editing .actions button {
+  display: none;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item.editing .type {
+  visibility: hidden;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .name {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 18px;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .description {
+  font-size: 14px;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .type {
+  line-height: 40px;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .type .empty {
+  color: #999;
+}
+.api-editor .editor-detail .section .typed-item-list .typed-item .actions {
+  line-height: 40px;
+}
+.api-editor .editor-detail .section .typed-item-list .type-row .form-group {
+  margin: 5px;
+}
+.api-editor .editor-detail .section .typed-item-list .type-row .form-group-actions {
+  padding-top: 5px;
+}
+.api-editor .editor-detail .problem-form .actions {
+  margin-top: 15px;
+}
+
+.api-editor .content .panel .examples {
+  margin-top: 10px;
+}
+.api-editor .content .panel .examples a {
+  cursor: pointer;
+}
+.api-editor .content .panel .examples .table-examples {
+  margin-bottom: 0px;
+}
+
+.api-editor .response-type .examples {
+  margin-top: 5px;
+}
+.api-editor .response-type .examples a {
+  cursor: pointer;
+}
+.api-editor .response-type .examples .table-examples {
+  margin-bottom: 0px;
+}
+.api-editor .response-type .examples .table-examples td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.api-editor .response-type .examples .table-examples .content-type {
+  width: 25%;
+}
+.api-editor .response-type .examples .table-examples .value {
+  width: 60%;
+}
+.api-editor .response-type .examples .table-examples .actions {
+  width: 15%;
+}
+
+.api-editor table th.pre-actions, .api-editor table td.pre-actions {
+  border-right-width: 0px;
+}
+.api-editor table th.actions, .api-editor table td.actions {
+  border-left-width: 0px;
+}
+
+.api-editor .securityscheme-form {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+}
+
+
+.api-editor .modal-header {
+  background-color: rgb(57, 165, 220);
+  color: white;
+}
+.api-editor .modal-header button.close {
+  color: white;
+}
+.api-editor .modal-footer {
+  border-top: 1px solid rgb(221, 221, 221);
+  background-color: rgb(239, 239, 239);
+}
+.api-editor .modal-dialog {
+  margin-top: 50px;
+}
+.api-editor form input.ng-invalid.ng-touched {
+  border-color: red;
+}
+.api-editor .center-text {
+  text-align: center;
+}
+.api-editor .dropdown-menu > li > a {
+  cursor: pointer;
+}
+.api-editor .dropdown-menu {
+  font-size: 13px;
+}
+.api-editor div.notice-of-required {
+  margin-top: 15px;
+  font-size: 11px;
+}
+.api-editor div.notice-of-required .required-icon {
+  color: red;
+}
+.api-editor div.modal-notice-of-required {
+  margin-bottom: -12px;
+  padding-left: 15px;
+}
+.api-editor .form-group .control-label {
+  white-space: nowrap;
+}
+.api-editor .form-group .control-label.required::after {
+  color: red;
+  content: '*'
+}
+.api-editor .form-group .form-error-message.error {
+  color: red;
+}
+
+.api-editor span.validation-aggregate {
+}
+.api-editor span.validation-aggregate > a > .fa-exclamation-circle {
+  color: #0088ce;
+  cursor: pointer;
+  font-size: 14px;
+}
+.api-editor span.validation-aggregate > a > .fa-exclamation-circle:hover {
+  color: #00659c;
+}
+.api-editor .section .section-header > a {
+  position: relative;
+}
+.api-editor .section .section-header > a .validation-aggregate {
+  position: absolute;
+  right: -15px;
+  top: -6px;
+}
+.api-editor .detail-content .operations-section .api-operation .type {
+  position: relative;
+}
+.api-editor .detail-content .operations-section .api-operation .type .validation-aggregate {
+  position: absolute;
+  right: -8px;
+  top: -11px;
+}
+.api-editor .request-body-content .content .nav-tabs li > a {
+  position: relative;
+}
+.api-editor .request-body-content .content .nav-tabs li > a .validation-aggregate {
+  position: absolute;
+  right: 28px;
+  top: 0px;
+}
+
+.api-editor .validation-problem-icon {
+  cursor: pointer;
+  margin-right: 4px;
+}
+.api-editor .validation-problem-icon:hover {
+  filter: brightness(125%);
+}
+.api-editor h2 .validation-problem-icon {
+  font-size: 15px;
+}
+
+.api-editor .validation-aggregate .validation-aggregate-panel, .api-editor .validation-problems-panel {
+  position: fixed;
+  margin: 0;
+  border: 1px solid #bbb;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+  z-index: 150;
+  background: white;
+  max-width: 425px;
+  max-height: 125px;
+  cursor: default;
+  overflow-y: auto;
+  color: #4d5258;
+  line-height: 18px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+}
+.api-editor .validation-aggregate .validation-aggregate-panel .problem,
+.api-editor .validation-problems-panel .problem {
+  width: 100%;
+  text-align: left;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.api-editor .validation-aggregate .validation-aggregate-panel .problem .fa,
+.api-editor .validation-problems-panel .problem .fa {
+  margin-right: 3px;
+}
+
+.api-editor .inline-editor-label {
+  cursor: pointer;
+}
+.api-editor .inline-editor-label .fa {
+  visibility: hidden;
+  color: #0088ce;
+}
+.api-editor .inline-editor-label .fa:hover {
+  color: #00659c;
+}
+.api-editor .inline-editor-label:hover .fa {
+  visibility: visible;
+}
+.api-editor .editor-detail .inline-text-editor {
+}
+.api-editor .editor-detail .inline-text-editor > input {
+  display: inline;
+  min-width: 90px;
+}
+.api-editor .editor-detail .inline-text-editor > input.form-control {
+  width: auto;
+}
+
+.api-editor .editor-detail .detail-content .info-section .section-field.version .inline-text-editor > input {
+  width: 110px;
+}
+
+.api-editor .editor-detail .section .half-section {
+  width: 50%;
+  display: inline-block;
+}
+.api-editor .editor-detail .section .half-section.right {
+  float: right;
+}
+
+.api-editor .editor-detail .section-field-label {
+  margin-bottom: 0px;
+}
+.api-editor .editor-detail .section-field-label > span {
+  font-weight: 600;
+}
+.api-editor .editor-detail .section-field {
+  margin-bottom: 8px;
+}
+
+.api-editor .editor-detail .detail-content .contact-section .section-field.name .inline-text-editor > input {
+  width: 275px;
+}
+.api-editor .editor-detail .detail-content .contact-section .section-field.email .inline-text-editor > input {
+  width: 275px;
+}
+.api-editor .editor-detail .detail-content .contact-section .section-field.url .inline-text-editor > input {
+  width: 375px;
+}
+
+.api-editor .editor-detail .detail-content .tags-section div.tags {
+
+}
+
+.api-editor .entity-editor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top:  0;
+  bottom: 0;
+  overflow-y: auto;
+  background-color: white;
+  z-index: 5;
+}
+.api-editor .entity-editor h1 {
+  font-size: 25px;
+}
+.api-editor .entity-editor .close-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 50px;
+  font-size: 32px;
+  cursor: pointer;
+  z-index: 6;
+  color: #666;
+}
+.api-editor .entity-editor .close-button:hover {
+  color: black;
+}
+.api-editor .entity-editor .context {
+  padding-bottom: 30px;
+  padding-top: 30px;
+}
+.api-editor .entity-editor .context .context-label {
+  color: #8b8d8f;
+  font-size: 18px;
+  margin-right: 15px;
+}
+.api-editor .entity-editor .context .context-value {
+  color: #8b8d8f;
+}
+.api-editor .entity-editor .context .operation > .label {
+  font-size: 16px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.api-editor .entity-editor .notice-of-required {
+  margin-bottom: -15px;
+  padding-left: 0;
+  margin-top: 10px;
+}
+.api-editor .entity-editor hr {
+  border-color: #bbb;
+}
+
+.api-editor .entity-editor .body-section {
+  width: 60%;
+  min-width: 400px;
+}
+.api-editor .entity-editor .body-section h3 {
+  font-weight: 600;
+  font-size: 19px;
+}
+.api-editor .entity-editor .body-section .explanation {
+  padding-left: 20px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  color: #8b8d8f;
+  line-height: 18px;
+}
+.api-editor .entity-editor .body-section > div > .form-group {
+  padding-left: 20px;
+}
+.api-editor .entity-editor .body-section > div > .form-group input {
+  min-width: 350px;
+  width: 90%;
+}
+.api-editor .entity-editor .body-section .form-group input.short {
+  width: 50%;
+}
+.api-editor .entity-editor .body-section > div > .form-group textarea {
+  min-width: 350px;
+  width: 90%;
+}
+.api-editor .entity-editor .body-section .form-group textarea.short {
+  width: 50%;
+}
+.api-editor .entity-editor .body-section .empty-state {
+  border: 1px solid #ccc;
+  color: #8b8d8f;
+  padding: 30px;
+  line-height: 18px;
+}
+.api-editor .entity-editor .actions-section .actions {
+  width: 60%;
+  min-width: 400px;
+  text-align: right;
+  padding-bottom: 30px;
+}
+
+.api-editor .dropdown-label {
+  margin-right: 3px;
+}
+.api-editor .dropdowns-label {
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.api-editor .detail-title .detail-actions .dropdown-menu li a span.pficon {
+  margin-right: 4px;
+}
+.api-editor .detail-title .detail-actions .dropdown-menu li a span.fa {
+  margin-right: 3px;
+}
+
+.api-editor .editor-master .context-menu li a span.pficon {
+  margin-right: 4px;
+}
+.api-editor .editor-master .context-menu li a span.fa {
+  margin-right: 3px;
+}

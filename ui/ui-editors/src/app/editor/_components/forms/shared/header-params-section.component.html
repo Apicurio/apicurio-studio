@@ -1,0 +1,34 @@
+<!-- Header Parameters Section -->
+<section type="header-parameters" label="HEADER PARAMETERS"
+         [counterItems]="headerParameters()"
+         [contextHelp]="contextHelp()" [expanded]="showSectionBody"
+         [collaborationNodePath]="headerParameterPaths()"
+         [validationModels]="headerParameters()">
+    <span actions>
+        <icon-button (onClick)="openAddHeaderParamEditor()" [pullRight]="true" type="add"
+                     [title]="'Add a new header parameter.'"></icon-button>
+        <icon-button (onClick)="deleteAllHeaderParams()" [disabled]="!hasHeaderParameters()"
+                     [pullRight]="true" type="delete"
+                     [title]="'Delete all header parameters.'"></icon-button>
+    </span>
+    <div body>
+        <signpost *ngIf="!hasHeaderParameters()">
+            <span>No header parameters have been defined.</span>
+            <a (click)="openAddHeaderParamEditor()">Add a header parameter</a>
+        </signpost>
+
+        <!-- The list of header parameters -->
+        <div class="container-fluid header-parameters typed-item-list" *ngIf="hasHeaderParameters()">
+            <header-param-row *ngFor="let param of headerParameters()" [item]="param"
+                              (onRename)="openRenameDialog(param)"
+                              (onDelete)="deleteParam(param)"></header-param-row>
+        </div>
+    </div>
+</section>
+<rename-entity-dialog #renameDialog
+                      type="Header"
+                      title="Rename Header"
+                      warning="Renaming a Header may also update any headers with the same name depending on path and operation hierarchies."
+                      validationPattern="[a-zA-Z0-9\.\-_\$]+"
+                      validationError="Enter a valid name (only alpha-numeric characters, ., -, _ and $ are allowed - no whitespace)."
+                      (onRename)="rename($event)"></rename-entity-dialog>

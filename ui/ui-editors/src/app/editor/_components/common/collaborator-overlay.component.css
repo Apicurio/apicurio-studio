@@ -1,0 +1,49 @@
+.collaborator-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.collaborator-overlay .collaborator-overlay-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  font-size: 4px;
+  width: 6px;
+  line-height: 6px;
+  text-decoration: none;
+}
+.collaborator-overlay .collaborator-overlay-icon:hover {
+  text-decoration: none;
+}
+
+.collaborator-overlay .collaborator-overlay-panel {
+  position: fixed;
+  margin: 0;
+  border: 1px solid #bbb;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+  z-index: 150;
+  background: white;
+  max-width: 425px;
+  max-height: 125px;
+  cursor: default;
+  overflow-y: auto;
+  color: #4d5258;
+  line-height: 18px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+}
+.collaborator-overlay .collaborator-overlay-panel .collaborator-icon {
+  display: inline-block;
+  width: 8px;
+  font-size: 8px;
+  line-height: 8px;
+  margin-right: 5px;
+}

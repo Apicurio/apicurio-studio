@@ -1,0 +1,64 @@
+.inline-array-editor-label {
+  border: 1px solid transparent;
+  padding: 2px 5px;
+  margin-left: -6px;
+  display: inline-block;
+}
+.inline-array-editor-label.novalue:hover {
+  border-color: #bbb;
+  cursor: pointer;
+}
+.inline-array-editor-label .label {
+  margin-right: 5px;
+  margin-bottom: 3px;
+  padding: 5px 5px 5px 8px;
+  display: inline-block;
+}
+.inline-array-editor-label .label:hover {
+  margin-right: 5px;
+  opacity: .8;
+}
+
+.inline-array-editor-label .glyphicon {
+  cursor: pointer;
+  font-size: 11px;
+  margin-left: 5px;
+}
+.inline-array-editor-label .pficon {
+  cursor: pointer;
+  margin-left: 5px;
+  margin-right: 2px;
+}
+.inline-array-editor-label .pficon:hover {
+  color: #dde;
+}
+
+.inline-array-editor .form-control-pf-textbox {
+  width: 100%;
+}
+
+.inline-array-editor .apriori-items {
+  margin-top: 4px;
+}
+
+.inline-array-editor .apriori-items .apriori-item {
+  background-color: #9c9c9c;
+  color: white;
+  cursor: pointer;
+  margin-right: 5px;
+  padding: 3px 6px;
+  margin-bottom: 3px;
+  display: inline-block;
+}
+
+.inline-array-editor .apriori-items .apriori-item.selected {
+  background-color: #39a5dc;
+}
+
+.inline-array-editor .apriori-items .apriori-item:hover {
+  filter: brightness(90%);
+}
+
+.inline-array-editor .apriori-items .apriori-item > .fa {
+  margin-right: 3px;
+}

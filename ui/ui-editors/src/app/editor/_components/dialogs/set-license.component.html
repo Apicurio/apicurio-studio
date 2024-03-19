@@ -1,0 +1,52 @@
+<!-- Choose License Dialog -->
+<div bsModal #setLicenseModal="bs-modal" class="set-license-modal modal fade" id="setLicenseModal" tabindex="-1" role="dialog"
+     aria-labelledby="setLicenseModalLabel" role="dialog" aria-hidden="true" [config]="{ backdrop: true }"
+     (onHidden)="close()" *ngIf="isOpen()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="setLicenseModalLabel">Choose a License</h4>
+            </div>
+            <div class="modal-body" #dialogBody>
+
+                <div *ngFor="let license of licenses()" class="container-fluid license">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h2><a href="{{ license.url }}" target="_blank">{{ license.name }}</a><span class="fa fa-fw fa-external-link"></span></h2>
+                            <p>{{ license.description }}</p>
+                            <button class="btn btn-xs btn-primary" (click)="chooseLicense(license)">Use This License</button>
+                            <a class="pull-right" href="{{ license.moreInfoUrl }}" target="_blank">View full {{ license.fullName }} »</a>
+                        </div>
+                        <div class="col-md-2">
+                            <h3>Permissions</h3>
+                            <ul class="permissions">
+                                <li *ngFor="let permission of license.permissions"><span title="{{ licenseService.permissionDescription(permission) }}">{{ licenseService.permissionName(permission) }}</span></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-2">
+                            <h3>Conditions</h3>
+                            <ul class="conditions">
+                                <li *ngFor="let condition of license.conditions"><span title="{{ licenseService.conditionDescription(condition) }}">{{ licenseService.conditionName(condition) }}</span></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-2">
+                            <h3>Limitations</h3>
+                            <ul class="limitations">
+                                <li *ngFor="let limitation of license.limitations"><span title="{{ licenseService.limitationDescription(limitation) }}">{{ licenseService.limitationName(limitation) }}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <span class="pull-left">License information provided by <a href="https://choosealicense.com/" target="_blank">Choose a License &copy; </a> under the <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank">Create Commons License</a>.</span>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

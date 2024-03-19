@@ -1,0 +1,41 @@
+<div (window:keydown)="onGlobalKeyDown($event)" class="api-editor" [class.light]="theme === 'light'" [class.dark]="theme === 'dark'">
+
+    <title-bar [document]="document()"
+               [validationErrors]="validationErrors"
+               [undoableCommandCount]="_undoableCommandCount"
+               [redoableCommandCount]="_redoableCommandCount"
+               (onUndoClick)="undoLastCommand()"
+               (onRedoClick)="redoLastCommand()"
+               (onConfigureValidation)="onConfigureValidation.emit()"></title-bar>
+    <master [document]="document()" (onImportComponent)="importComponent($event)" #master></master>
+    <div class="editor-detail" [ngSwitch]="formType">
+        <main-form [document]="document()" class="editor-detail-form"
+                      *ngSwitchCase="'main_20'"></main-form>
+        <main-form [document]="document()" class="editor-detail-form"
+                      *ngSwitchCase="'main_30'"></main-form>
+
+        <path-form [path]="selectedPath()" class="editor-detail-form"
+                   *ngSwitchCase="'path_20'"></path-form>
+        <path-form [path]="selectedPath()" class="editor-detail-form"
+                   *ngSwitchCase="'path_30'"></path-form>
+
+        <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
+                         *ngSwitchCase="'definition_20'"></definition-form>
+        <definition-form [definition]="selectedDefinition()" class="editor-detail-form"
+                         *ngSwitchCase="'definition_30'"></definition-form>
+
+        <response-form [response]="selectedResponse()" class="editor-detail-form"
+                         *ngSwitchCase="'response_20'"></response-form>
+        <response-form [response]="selectedResponse()" class="editor-detail-form"
+                         *ngSwitchCase="'response_30'"></response-form>
+    </div>
+
+    <server-editor #serverEditor></server-editor>
+    <security-scheme-editor #securitySchemeEditor></security-scheme-editor>
+    <security-requirement-editor #securityRequirementEditor></security-requirement-editor>
+    <data-type-editor #dataTypeEditor></data-type-editor>
+    <response-editor #responseEditor></response-editor>
+    <parameter-editor #parameterEditor></parameter-editor>
+    <property-editor #propertyEditor></property-editor>
+
+</div>

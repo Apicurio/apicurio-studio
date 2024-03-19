@@ -1,0 +1,9 @@
+{
+  "$id": "https://example.com/blank.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "$NAME",
+  "description": "$SUMMARY",
+  "type": "object",
+  "properties": {
+  }
+}

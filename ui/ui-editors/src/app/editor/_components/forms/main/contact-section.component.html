@@ -1,0 +1,55 @@
+<section type="contact" label="CONTACT"
+         contextHelp="Update the information contained in this section to provide users of the API details about how to contact you should they need help."
+         collaborationNodePath="/info/contact"
+         [validationModels]="[contact()]">
+    <span actions>
+        <icon-button (onClick)="deleteContact()" [disabled]="!hasContact()" [pullRight]="true" type="delete"
+                     [title]="'Delete the contact information.'"></icon-button>
+    </span>
+    <div body>
+        <signpost *ngIf="!hasContact()">
+            <span>No contact information has been entered.</span>
+            <a (click)="createEmptyContact()">Add contact info</a>
+        </signpost>
+        <div *ngIf="hasContact()">
+            <!-- Contact Name -->
+            <div class="section-field-label">
+                <validation-problem [model]="contact()" property="name"></validation-problem>
+                <span>Name</span>
+            </div>
+            <div class="section-field name">
+                <pf-inline-text-editor [value]="contactName()"
+                                       [labelClass]="'contact-name'"
+                                       [baseNode]="document.info.contact"
+                                       nodePath="name"
+                                       [noValueMessage]="'No name provided.'" (onChange)="changeContactName($event)"></pf-inline-text-editor>
+            </div>
+
+            <!-- Contact Email -->
+            <div class="section-field-label">
+                <validation-problem [model]="contact()" property="email"></validation-problem>
+                <span>Email</span>
+            </div>
+            <div class="section-field email">
+                <pf-inline-text-editor [value]="contactEmail()"
+                                       [labelClass]="'contact-email'"
+                                       [baseNode]="document.info.contact"
+                                       nodePath="email"
+                                       [noValueMessage]="'No email provided.'" (onChange)="changeContactEmail($event)"></pf-inline-text-editor>
+            </div>
+
+            <!-- Contact URL -->
+            <div class="section-field-label">
+                <validation-problem [model]="contact()" property="url"></validation-problem>
+                <span>URL</span>
+            </div>
+            <div class="section-field url">
+                <pf-inline-text-editor [value]="contactUrl()"
+                                       [labelClass]="'contact-url'"
+                                       [baseNode]="document.info.contact"
+                                       nodePath="url"
+                                       [noValueMessage]="'No URL provided.'" (onChange)="changeContactURL($event)"></pf-inline-text-editor>
+            </div>
+        </div>
+    </div>
+</section>

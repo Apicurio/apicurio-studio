@@ -1,0 +1,15 @@
+
+div.history {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: auto min-content;
+    font-size: 14px;
+}
+div.history > div.event-type {
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+div.history > div.event-time {
+    color: #999;
+    white-space: nowrap;
+}

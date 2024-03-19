@@ -1,0 +1,35 @@
+<section type="extensions" label="VENDOR EXTENSIONS" [counterItems]="extensions()"
+         contextHelp="Configure vendor extensions for the selected component in this section."
+         collaborationNodePath="extensionsNodePath()" [expanded]="showSectionBody"
+         [validationModels]="extensions()">
+    <span actions>
+        <icon-button (onClick)="openAddExtensionDialog()" [pullRight]="true" type="add"
+                     title="Add a new vendor extension."></icon-button>
+        <icon-button (onClick)="deleteAllExtensions()" [disabled]="!hasExtensions()"
+                     [pullRight]="true" type="delete"
+                     title="Delete all vendor extensions."></icon-button>
+    </span>
+    <div body>
+        <signpost *ngIf="extensions().length === 0">
+            <span>No vendor extensions have been configured.</span>
+            <a (click)="openAddExtensionDialog()">Add a vendor extension</a>
+        </signpost>
+
+        <!-- The list of extensions -->
+        <div class="extensions" *ngIf="extensions().length > 0">
+            <extension-row *ngFor="let extension of extensions()"
+                           [parent]="parent"
+                           [item]="extension"
+                           (onDelete)="deleteExtension(extension)"
+                           (onRename)="openRenameExtensionDialog(extension)"></extension-row>
+        </div>
+    </div>
+</section>
+<add-extension-dialog #addExtensionDialog (onAdd)="addExtension($event)"></add-extension-dialog>
+<rename-entity-dialog #renameDialog
+                      type="Extension"
+                      title="Rename Vendor Extension"
+                      warning="Renaming a vendor extension may have unknown consequences."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
+                      (onRename)="rename($event)"></rename-entity-dialog>

@@ -1,0 +1,33 @@
+.pf-inline-text-editor-label {
+  border: 1px solid transparent;
+  padding: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-left: -6px;
+  display: inline-block;
+}
+
+.pf-inline-text-editor-label:hover {
+  border-color: #bbb;
+  cursor: pointer;
+}
+.pf-inline-text-editor-label.disabled:hover {
+  border-color: transparent;
+  cursor: default;
+}
+
+.pf-inline-text-editor-label .glyphicon {
+  font-size: 11px;
+  margin-left: 5px;
+}
+.pf-inline-text-editor-label:hover .glyphicon {
+  color: #669;
+}
+
+.pf-inline-text-editor {
+  margin-right: 5px;
+}
+
+.pf-inline-text-editor .form-control-pf-textbox {
+  width: 100%;
+}

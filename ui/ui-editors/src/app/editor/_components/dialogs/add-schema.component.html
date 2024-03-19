@@ -1,0 +1,35 @@
+<!-- Add Schema Dialog -->
+<div bsModal #addSchemaModal="bs-modal" class="modal fade" id="addSchemaModal" tabindex="-1" role="dialog" [config]="{ backdrop: true }"
+     aria-labelledby="addSchemaModalLabel" role="dialog" aria-hidden="true" (onHidden)="close()" *ngIf="isOpen()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addSchemaModalLabel">Add Schema</h4>
+            </div>
+            <div class="modal-body">
+                <p>Choose a schema to add from the dropdown below and then click Add.</p>
+                <form id="addSchema-form" class="form-horizontal" (submit)="add()" #addSchemaForm="ngForm">
+                    <div class="form-group" *ngIf="hasReferences()">
+                        <label class="col-sm-5 control-label required" for="refDropDown">Schema</label>
+                        <div class="col-sm-7">
+                            <drop-down id="refDropDown" [id]="'refDropDown'"
+                                       [options]="getReferenceDropDownOptions()"
+                                       [value]="getReference()"
+                                       (onValueChange)="setReference($event)"
+                                       [noSelectionLabel]="'Schema Reference.'"></drop-down>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!isValid()">Add</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

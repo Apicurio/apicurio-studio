@@ -1,0 +1,7 @@
+html, body, #root {
+  height: 100%;
+}
+
+.pf-c-page__header-brand-link {
+  text-decoration: none;
+}

@@ -1,0 +1,167 @@
+.path-parameter {
+  border: 1px solid transparent;
+  position: relative;
+}
+.path-parameter.expanded {
+  border: 1px solid #bbb;
+  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  margin-bottom: 3px;
+}
+
+.path-parameter .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.path-parameter .header:hover {
+  background-color: #edf8ff;
+}
+.path-parameter.expanded .header {
+  border-bottom: solid 1px #bbb;
+  background-color: #def3ff;
+}
+
+.path-parameter.missing .header {
+  opacity: 0.4;
+}
+.path-parameter.missing .header:hover {
+  opacity: 0.8;
+}
+
+.path-parameter .header .name {
+  flex-basis: 18%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.path-parameter .header .name .name-label {
+  font-weight: 600;
+  color: #ff6a7c;
+}
+.path-parameter .header .name .icon-override {
+  font-size: 16px;
+  font-weight: normal;
+  cursor: help;
+  margin-right: 3px;
+  color: #ff6a7c;
+}
+
+.path-parameter .header .description {
+  flex-basis: 28%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.path-parameter .header .description:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+.path-parameter .header .summary {
+  flex-basis: 27%;
+}
+.path-parameter .header .summary:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.path-parameter .header .summary .parameter-required {
+  font-weight: 600;
+}
+.path-parameter .header .summary .parameter-required:hover {
+  filter: brightness(120%);
+}
+
+.path-parameter .header .examples {
+  flex-basis: 25%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.path-parameter .header .examples:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.path-parameter .header .actions {
+  flex-basis: 2%;
+  text-align: center;
+}
+
+.path-parameter .header .actions .btn-override, .path-parameter .header .actions .btn-create {
+  position: absolute;
+  right: 5px;
+  top: 6px;
+}
+
+.path-parameter .header .actions > div .fa-ellipsis-v {
+  visibility: hidden;
+}
+.path-parameter:hover .header .actions > div .fa-ellipsis-v {
+  visibility: visible;
+}
+
+.path-parameter .header > .selected {
+  margin-bottom: -4px;
+  border-bottom: 2px solid #0088ce;
+  color: #0088ce;
+}
+
+.path-parameter .body {
+  position: relative;
+  padding: 15px;
+}
+.path-parameter .body .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.path-parameter .body .param-description form {
+  width: 100%;
+}
+.path-parameter .body .param-description .form-label {
+  font-weight: 600;
+}
+
+.path-parameter .body span.strong {
+  font-weight: 600;
+}
+
+.path-parameter .body .param-required {
+  margin-bottom: 20px;
+}
+.path-parameter .body .param-type {
+  margin-bottom: 10px;
+}
+
+.path-parameter .body .param-examplesform {
+  width: 100%;
+}
+.path-parameter .body .param-examples .form-label {
+  font-weight: 600;
+}
+
+.path-parameter .body .param-required .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.path-parameter.overridable > .header > div > .fa-angle-right {
+  display: none;
+}
+.path-parameter.overridable .header .description:hover, .path-parameter.overridable .header .summary:hover {
+  color: inherit;
+  cursor: default;
+}
+
+.path-parameter .description > .fa,
+.path-parameter .summary > .fa {
+  margin-right: 2px;
+}

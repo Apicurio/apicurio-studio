@@ -1,0 +1,118 @@
+.aai-editor .editor-master .editor-outline .api-operationtrait {
+    padding-left: 15px;
+    font-size: 14px;
+}
+.aai-editor .editor-master .editor-outline .api-operationtrait.hover {
+    cursor: pointer;
+    background-color: #d1eaf7;
+}
+.aai-editor .editor-master .editor-outline .api-operationtrait.selected {
+    background-color: #a5d6ef;
+    border-left: 2px solid #39a5dc;
+}
+.aai-editor .editor-master .editor-outline .api-operationtrait.contexted, 
+.aai-editor .editor-master .editor-outline .api-operationtrait.contexted:hover {
+    background-color: #FFCC87;
+    border-left: 2px dotted #E89F3D;
+}
+.aai-editor .editor-master .editor-outline .api-operationtrait.selected .label {
+    -webkit-transition: border-color 350ms, box-shadow 350ms;
+    -moz-transition: border-color 350ms, box-shadow 350ms;
+    -ms-transition: border-color 350ms, box-shadow 350ms;
+    -o-transition: border-color 350ms, box-shadow 350ms;
+    transition: border-color 350ms, box-shadow 350ms;
+}
+.aai-editor .editor-master .editor-outline .api-operationtrait.selected .label:hover {
+    box-shadow: 0 0 3px #646464;
+    border: 1px solid #666;
+}
+.aai-editor .editor-master .editor-outline .api-operationtrait.selected .label.selected {
+    border: 1px solid black;
+    box-shadow: 0 0 3px #141414;
+}
+
+.api-operationtrait-item > * {
+    margin-right: 4px;
+}
+
+.aai-editor .editor-master .editor-outline .api-messagetrait {
+    padding-left: 15px;
+    font-size: 14px;
+}
+.aai-editor .editor-master .editor-outline .api-messagetrait.hover {
+    cursor: pointer;
+    background-color: #d1eaf7;
+}
+.aai-editor .editor-master .editor-outline .api-messagetrait.selected {
+    background-color: #a5d6ef;
+    border-left: 2px solid #39a5dc;
+}
+.aai-editor .editor-master .editor-outline .api-messagetrait.contexted, 
+.aai-editor .editor-master .editor-outline .api-messagetrait.contexted:hover {
+    background-color: #FFCC87;
+    border-left: 2px dotted #E89F3D;
+}
+.aai-editor .editor-master .editor-outline .api-messagetrait.selected .label {
+    -webkit-transition: border-color 350ms, box-shadow 350ms;
+    -moz-transition: border-color 350ms, box-shadow 350ms;
+    -ms-transition: border-color 350ms, box-shadow 350ms;
+    -o-transition: border-color 350ms, box-shadow 350ms;
+    transition: border-color 350ms, box-shadow 350ms;
+}
+.aai-editor .editor-master .editor-outline .api-messagetrait.selected .label:hover {
+    box-shadow: 0 0 3px #646464;
+    border: 1px solid #666;
+}
+.aai-editor .editor-master .editor-outline .api-messagetrait.selected .label.selected {
+    border: 1px solid black;
+    box-shadow: 0 0 3px #141414;
+}
+
+.api-messagetrait-item > * {
+    margin-right: 4px;
+}
+
+.aai-editor .editor-master .editor-outline .api-message {
+    padding-left: 15px;
+    font-size: 14px;
+}
+.aai-editor .editor-master .editor-outline .api-message.hover {
+    cursor: pointer;
+    background-color: #d1eaf7;
+}
+.aai-editor .editor-master .editor-outline .api-message.selected {
+    background-color: #a5d6ef;
+    border-left: 2px solid #39a5dc;
+}
+.aai-editor .editor-master .editor-outline .api-message.contexted,
+.aai-editor .editor-master .editor-outline .api-message.contexted:hover {
+    background-color: #FFCC87;
+    border-left: 2px dotted #E89F3D;
+}
+.aai-editor .editor-master .editor-outline .api-message.selected .label {
+    -webkit-transition: border-color 350ms, box-shadow 350ms;
+    -moz-transition: border-color 350ms, box-shadow 350ms;
+    -ms-transition: border-color 350ms, box-shadow 350ms;
+    -o-transition: border-color 350ms, box-shadow 350ms;
+    transition: border-color 350ms, box-shadow 350ms;
+}
+.aai-editor .editor-master .editor-outline .api-message.selected .label:hover {
+    box-shadow: 0 0 3px #646464;
+    border: 1px solid #666;
+}
+.aai-editor .editor-master .editor-outline .api-message.selected .label.selected {
+    border: 1px solid black;
+    box-shadow: 0 0 3px #141414;
+}
+
+.api-message-item > * {
+    margin-right: 4px;
+}
+
+.editor-master .editor-outline .master-entity-list {
+    border: 1px solid transparent;
+}
+
+.editor-master .editor-outline .master-entity-list:focus {
+    outline: none;
+}

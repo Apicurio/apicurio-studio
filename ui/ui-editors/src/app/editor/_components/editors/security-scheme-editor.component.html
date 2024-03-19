@@ -1,0 +1,675 @@
+<entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="security-scheme" *ngIf="isOpen()"
+               [showRequiredFieldsMessage]="true" heading="Define the Security Scheme" [valid]="isValid()">
+    <div class="row-fluid body-section">
+        <div class="col-md-12">
+            <h3>1. Enter Security Scheme Info</h3>
+            <p class="explanation">
+                <span>
+                    Enter the name, description, and type of the security scheme.
+                </span>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label required" for="securitySchemeName">Name</label>
+                <div *ngIf="_mode === 'create'">
+                    <input name="schemeName" type="text" id="securitySchemeName" class="form-control short" #nameInput="ngModel"
+                           placeholder="Enter Security Scheme Name" (ngModelChange)="schemeExists = schemeNames.indexOf($event) != -1"
+                           required [(ngModel)]="model.schemeName" pattern="[a-zA-Z0-9\.\-_]+">
+                    <div class="form-error-message error" *ngIf="schemeExists">Security Scheme already exists.</div>
+                    <form-error-message [inputModel]="nameInput" [type]="'required'">Security Scheme name is required.</form-error-message>
+                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                </div>
+                <div *ngIf="_mode === 'edit'">
+                    <input title="To change a security scheme name, choose the 'Rename' option from the previous screen."
+                           name="schemeName" type="text" id="name_ro" class="form-control" required [(ngModel)]="model.schemeName" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="description">Description</label>
+                <div>
+                    <textarea name="description" id="description" class="form-control" autosize #descriptionInput
+                              placeholder="Server description" [(ngModel)]="model.description"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label required">Security Type</label>
+                <div>
+                    <div class="dropdown" *ngIf="is2x()">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                            <span *ngIf="!model.type"><i>Choose Type</i></span>
+                            <span *ngIf="model.type === 'basic'">BASIC</span>
+                            <span *ngIf="model.type === 'apiKey'">API Key</span>
+                            <span *ngIf="model.type === 'oauth2'">OAuth 2</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                            <li role="presentation"><a role="menuitem" (click)="setType('basic')">BASIC</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('apiKey')">API Key</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('oauth2')">OAuth 2</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown" *ngIf="is3x()">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                            <span *ngIf="!model.type"><i>Choose Type</i></span>
+                            <span *ngIf="model.type === 'http'">HTTP</span>
+                            <span *ngIf="model.type === 'apiKey'">API Key</span>
+                            <span *ngIf="model.type === 'oauth2'">OAuth 2</span>
+                            <span *ngIf="model.type === 'openIdConnect'">OpenID Connect</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                            <li role="presentation"><a role="menuitem" (click)="setType('http')">HTTP</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('apiKey')">API Key</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('oauth2')">OAuth 2</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('openIdConnect')">OpenID Connect</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown" *ngIf="isAai2x()">
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                            <span *ngIf="!model.type"><i>Choose Type</i></span>
+                            <span *ngIf="model.type === 'http'">HTTP</span>
+                            <span *ngIf="model.type === 'httpApiKey'">HTTP API Key</span>
+                            <span *ngIf="model.type === 'apiKey'">API Key</span>
+                            <span *ngIf="model.type === 'oauth2'">OAuth 2</span>
+                            <span *ngIf="model.type === 'openIdConnect'">OpenID Connect</span>
+                            <span *ngIf="model.type === 'userPassword'">User Password</span>
+                            <span *ngIf="model.type === 'X509'">X509 Certificate</span>
+                            <span *ngIf="model.type === 'symmetricEncryption'">Symmetric Encryption</span>
+                            <span *ngIf="model.type === 'asymmetricEncryption'">Asymmetric Encryption</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                            <li role="presentation"><a role="menuitem" (click)="setType('http')">HTTP</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="modelAai20().in = ''; setType('httpApiKey')">HTTP API Key</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="modelAai20().in = ''; setType('apiKey')">API Key</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('oauth2')">OAuth 2</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('openIdConnect')">OpenID Connect</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('userPassword')">User Password</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('X509')">X509 Certificate</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('symmetricEncryption')">Symmetric Encryption</a></li>
+                            <li role="presentation"><a role="menuitem" (click)="setType('asymmetricEncryption')">Asymmetric Encryption</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid divider-section">
+        <div class="col-md-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row-fluid body-section">
+        <div class="col-md-12">
+            <h3>2. Configure Security Scheme Details</h3>
+            <p class="explanation">
+                <span>
+                    Configure the type-specific details for the security scheme.  You must first configure the scheme type above.
+                </span>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <p class="empty-state" *ngIf="!model.type">
+                No security type has been configured for this security scheme.  A type must first be selected prior to configuring
+                the scheme's type-specific details.
+            </p>
+
+            <div class="scheme-details" *ngIf="model.type">
+
+                <div *ngIf="is2x()">
+                    <!-- BASIC Auth -->
+                    <div class="basic-auth" *ngIf="model20().type === 'basic'">
+                        <div class="alert alert-success">
+                            <span class="pficon pficon-ok"></span>
+                            <strong>All Set!</strong> No additional configuration options are needed for BASIC authentication.
+                        </div>
+                    </div>
+                    <!-- API Key Auth Config -->
+                    <div class="apiKey-auth" *ngIf="model20().type === 'apiKey'">
+                        <div class="form-group">
+                            <label class="control-label" for="in20">Key Location</label>
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="in20" data-toggle="dropdown">
+                                        <span *ngIf="!model20().in"><i>Choose Location</i></span>
+                                        <span *ngIf="model20().in === 'header'">HTTP header</span>
+                                        <span *ngIf="model20().in === 'query'">Query Parameter</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="model20().in = 'header'">HTTP header</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model20().in = 'query'">Query Parameter</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="name20">Header/Parameter Name</label>
+                            <div>
+                                <input name="name" type="text" id="name20" class="form-control short" [(ngModel)]="model20().name"
+                                       placeholder="Enter a {{ model20().in == 'header' ? 'header' : 'query parameter' }} name">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- OAuth2 Auth Config -->
+                    <div class="oauth2-auth" *ngIf="model20().type === 'oauth2'">
+                        <div class="form-group">
+                            <label class="control-label" for="flow">OAuth Flow</label>
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="flow" data-toggle="dropdown">
+                                        <span *ngIf="!model20().flow"><i>Choose Flow</i></span>
+                                        <span *ngIf="model20().flow === 'implicit'">Implicit</span>
+                                        <span *ngIf="model20().flow === 'password'">Password</span>
+                                        <span *ngIf="model20().flow === 'application'">Application</span>
+                                        <span *ngIf="model20().flow === 'accessCode'">Access Code</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li role="presentation"><a role="menuitem" (click)="setFlow('implicit')">Implicit</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="setFlow('password')">Password</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="setFlow('application')">Application</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="setFlow('accessCode')">Access Code</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="model20().flow === 'implicit' || model20().flow === 'accessCode'">
+                            <label class="control-label" for="authorizationUrl">Auth URL</label>
+                            <div>
+                                <input name="authorizationUrl" type="text" id="authorizationUrl" class="form-control"
+                                       placeholder="Enter the authorization URL" [(ngModel)]="model20().authorizationUrl">
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="model20().flow === 'password' || model20().flow === 'application' || model20().flow === 'accessCode'">
+                            <label class="control-label" for="tokenUrl">Token URL</label>
+                            <div>
+                                <input name="tokenUrl" type="text" id="tokenUrl" class="form-control"
+                                       placeholder="Enter the token URL" [(ngModel)]="model20().tokenUrl">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="scopes20">Scopes</label>
+                            <scopes-input id="scopes20" [scopes]="model20().scopes" (onChange)="model20().scopes = $event"></scopes-input>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="is3x()">
+                    <!-- HTTP Auth Config -->
+                    <div class="http-auth" *ngIf="model30().type === 'http'">
+                        <div class="form-group">
+                            <label class="control-label" for="scheme">Scheme</label>
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="scheme" data-toggle="dropdown">
+                                        <span *ngIf="!model30().scheme"><i>Choose Scheme</i></span>
+                                        <span *ngIf="model30().scheme === 'basic'">BASIC</span>
+                                        <span *ngIf="model30().scheme === 'bearer'">Bearer</span>
+                                        <span *ngIf="model30().scheme === 'digest'">Digest</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="model30().scheme = 'basic'">BASIC</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model30().scheme = 'bearer'">Bearer</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model30().scheme = 'digest'">Digest</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="model30().scheme === 'bearer'">
+                            <label class="control-label" for="bearerFormat">Format</label>
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="bearerFormat" data-toggle="dropdown">
+                                        <span *ngIf="model30().bearerFormat === '' || !model30().bearerFormat"><i>Choose Format</i></span>
+                                        <span *ngIf="model30().bearerFormat === 'jwt'">JWT</span>
+                                        <span *ngIf="model30().bearerFormat === 'oauth'">OAuth</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="model30().bearerFormat = 'jwt'">JWT</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model30().bearerFormat = 'oauth'">OAuth</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model30().bearerFormat = null"><i>None</i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- OpenID Connect Config -->
+                    <div class="openIdConnect-auth" *ngIf="model30().type === 'openIdConnect'">
+                        <div class="form-group">
+                            <label class="control-label" for="openIdConnectUrl">OpenID Connect URL</label>
+                            <div>
+                                <input name="name" type="text" id="openIdConnectUrl" class="form-control" pattern="https?://.+"
+                                       placeholder="Enter a valid OpenID Connect URL" [(ngModel)]="model30().openIdConnectUrl" #oidConnectUrl="ngModel">
+                                <form-error-message [inputModel]="oidConnectUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- API Key Auth Config -->
+                    <div class="apiKey-auth" *ngIf="model30().type === 'apiKey'">
+                        <div class="form-group">
+                            <label class="control-label" for="in">Key Location</label>
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="in" data-toggle="dropdown">
+                                        <span *ngIf="!model30().in"><i>Choose Location</i></span>
+                                        <span *ngIf="model30().in === 'header'">HTTP header</span>
+                                        <span *ngIf="model30().in === 'query'">Query Parameter</span>
+                                        <span *ngIf="model30().in === 'cookie'">Cookie</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="model30().in = 'header'">HTTP header</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model30().in = 'query'">Query Parameter</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="model30().in = 'cookie'">Cookie</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="name">Name</label>
+                            <div>
+                                <input name="name" type="text" id="name" class="form-control short"
+                                       placeholder="Name of {{ model30().in === 'query' ? 'query parameter' : (!model30().in ? 'parameter' : model30().in) }}"
+                                       [(ngModel)]="model30().name">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- OAuth2 Auth Config -->
+                    <div class="oauth2-auth" *ngIf="model30().type === 'oauth2'">
+                        <ul class="nav nav-tabs">
+                            <li [class.enabled]="model30().flows.implicit.enabled" [class.active]="oauthTab === 'implicit'"><a (click)="oauthTab = 'implicit'">Implicit</a></li>
+                            <li [class.enabled]="model30().flows.password.enabled" [class.active]="oauthTab === 'password'"><a (click)="oauthTab = 'password'">Password</a></li>
+                            <li [class.enabled]="model30().flows.clientCredentials.enabled" [class.active]="oauthTab === 'clientCredentials'"><a (click)="oauthTab = 'clientCredentials'">Client Credentials</a></li>
+                            <li [class.enabled]="model30().flows.authorizationCode.enabled" [class.active]="oauthTab === 'authorizationCode'"><a (click)="oauthTab = 'authorizationCode'">Authorization Code</a></li>
+                        </ul>
+                        <div class="panel panel-default tab-panel">
+                            <!-- Implicit Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'implicit'">
+                                <div>
+                                    <input name="implicit_enabled" id="implicit_enabled" type="checkbox" [(ngModel)]="model30().flows.implicit.enabled">
+                                    <label for="implicit_enabled">Enable this OAuth flow</label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="implicit_authorizationUrl">Auth URL</label>
+                                    <div>
+                                        <input name="implicit_authorizationUrl" type="text" id="implicit_authorizationUrl" class="form-control"
+                                               placeholder="OAuth Authorization URL" [(ngModel)]="model30().flows.implicit.authorizationUrl"
+                                               pattern="https?://.+" #implicitAuthUrl="ngModel">
+                                        <form-error-message [inputModel]="implicitAuthUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="implicit_refreshUrl">Refresh URL</label>
+                                    <div>
+                                        <input name="implicit_refreshUrl" type="text" id="implicit_refreshUrl" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model30().flows.implicit.refreshUrl"
+                                               pattern="https?://.+" #implicitRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="implicitRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="control-label" for="implicit-scopes">Scopes</label>
+                                    <scopes-input id="implicit-scopes" [scopes]="model30().flows.implicit.scopes"
+                                                  (onChange)="model30().flows.implicit.scopes = $event"></scopes-input>
+                                </div>
+                            </div>
+                            <!-- Password Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'password'">
+                                <div>
+                                    <input name="password_enabled" id="password_enabled" type="checkbox" [(ngModel)]="model30().flows.password.enabled">
+                                    <label for="password_enabled">Enable this OAuth flow</label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="password_tokenUrl">Token URL</label>
+                                    <div>
+                                        <input name="password_tokenUrl" type="text" id="password_tokenUrl" class="form-control"
+                                               placeholder="OAuth Token URL" [(ngModel)]="model30().flows.password.tokenUrl"
+                                               pattern="https?://.+" #passwordTokenUrl="ngModel">
+                                        <form-error-message [inputModel]="passwordTokenUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="password_refreshUrl">Refresh URL</label>
+                                    <div>
+                                        <input name="password_refreshUrl" type="text" id="password_refreshUrl" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model30().flows.password.refreshUrl"
+                                               pattern="https?://.+" #passwordRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="passwordRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="control-label" for="password-scopes">Scopes</label>
+                                    <scopes-input id="password-scopes" [scopes]="model30().flows.password.scopes"
+                                                  (onChange)="model30().flows.password.scopes = $event"></scopes-input>
+                                </div>
+                            </div>
+                            <!-- Client Credentials Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'clientCredentials'">
+                                <div>
+                                    <input name="clientCredentials_enabled" id="clientCredentials_enabled" type="checkbox" [(ngModel)]="model30().flows.clientCredentials.enabled">
+                                    <label for="clientCredentials_enabled">Enable this OAuth flow</label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="clientCredentials_tokenUrl">Token URL</label>
+                                    <div>
+                                        <input name="clientCredentials_tokenUrl" type="text" id="clientCredentials_tokenUrl" class="form-control"
+                                               placeholder="OAuth Token URL" [(ngModel)]="model30().flows.clientCredentials.tokenUrl"
+                                               pattern="https?://.+" #clientCredsTokenUrl="ngModel">
+                                        <form-error-message [inputModel]="clientCredsTokenUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="clientCredentials_refreshUrl">Refresh URL</label>
+                                    <div>
+                                        <input name="clientCredentials_refreshUrl" type="text" id="clientCredentials_refreshUrl" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model30().flows.clientCredentials.refreshUrl"
+                                               pattern="https?://.+" #clientCredsRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="clientCredsRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="control-label" for="cc-scopes">Scopes</label>
+                                    <scopes-input id="cc-scopes" [scopes]="model30().flows.clientCredentials.scopes"
+                                                  (onChange)="model30().flows.clientCredentials.scopes = $event"></scopes-input>
+                                </div>
+                            </div>
+                            <!-- Authorization Code Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'authorizationCode'">
+                                <div>
+                                    <input name="authorizationCode_enabled" id="authorizationCode_enabled" type="checkbox" [(ngModel)]="model30().flows.authorizationCode.enabled">
+                                    <label for="authorizationCode_enabled">Enable this OAuth flow</label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="authorizationCode_authorizationUrl">Auth URL</label>
+                                    <div>
+                                        <input name="authorizationCode_authorizationUrl" type="text" id="authorizationCode_authorizationUrl" class="form-control"
+                                               placeholder="OAuth Authorization URL" [(ngModel)]="model30().flows.authorizationCode.authorizationUrl"
+                                               pattern="https?://.+" #authCodeAuthUrl="ngModel">
+                                        <form-error-message [inputModel]="authCodeAuthUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="authorizationCode_tokenUrl">Token URL</label>
+                                    <div>
+                                        <input name="authorizationCode_tokenUrl" type="text" id="authorizationCode_tokenUrl" class="form-control"
+                                               placeholder="OAuth Token URL" [(ngModel)]="model30().flows.authorizationCode.tokenUrl"
+                                               pattern="https?://.+" #authCodeTokenUrl="ngModel">
+                                        <form-error-message [inputModel]="authCodeTokenUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="authorizationCode_refreshUrl">Refresh URL</label>
+                                    <div>
+                                        <input name="authorizationCode_refreshUrl" type="text" id="authorizationCode_refreshUrl" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="model30().flows.authorizationCode.refreshUrl"
+                                               pattern="https?://.+" #authCodeRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="authCodeRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="control-label" for="authcode-scopes">Scopes</label>
+                                    <scopes-input id="authcode-scopes" [scopes]="model30().flows.authorizationCode.scopes"
+                                                  (onChange)="model30().flows.authorizationCode.scopes = $event"></scopes-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="isAai2x()">
+                <!-- HTTP Auth Config -->
+                    <div class="http-auth" *ngIf="modelAai20().type === 'http'">
+                        <div class="form-group">
+                            <label class="control-label" for="schemeAai20">Scheme</label>
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="schemeAai20" data-toggle="dropdown">
+                                        <span *ngIf="!modelAai20().scheme"><i>Choose Scheme</i></span>
+                                        <span *ngIf="modelAai20().scheme === 'basic'">BASIC</span>
+                                        <span *ngIf="modelAai20().scheme === 'bearer'">Bearer</span>
+                                        <span *ngIf="modelAai20().scheme === 'digest'">Digest</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().scheme = 'basic'">BASIC</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().scheme = 'bearer'">Bearer</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().scheme = 'digest'">Digest</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" *ngIf="modelAai20().scheme === 'bearer'">
+                            <label class="control-label" for="bearerFormatAai20">Format</label>
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="bearerFormatAai20" data-toggle="dropdown">
+                                        <span *ngIf="modelAai20().bearerFormat === '' || !modelAai20().bearerFormat"><i>Choose Format</i></span>
+                                        <span *ngIf="modelAai20().bearerFormat === 'jwt'">JWT</span>
+                                        <span *ngIf="modelAai20().bearerFormat === 'oauth'">OAuth</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().bearerFormat = 'jwt'">JWT</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().bearerFormat = 'oauth'">OAuth</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().bearerFormat = null"><i>None</i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- OpenID Connect Config -->
+                    <div class="openIdConnect-auth" *ngIf="modelAai20().type === 'openIdConnect'">
+                        <div class="form-group">
+                            <label class="control-label" for="openIdConnectUrlAai20">OpenID Connect URL</label>
+                            <div>
+                                <input name="name" type="text" id="openIdConnectUrlAai20" class="form-control" pattern="https?://.+"
+                                       placeholder="Enter a valid OpenID Connect URL" [(ngModel)]="modelAai20().openIdConnectUrl" #oidConnectUrl="ngModel">
+                                <form-error-message [inputModel]="oidConnectUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- API Key Auth Config -->
+                    <div class="apiKey-auth" *ngIf="modelAai20().type === 'apiKey'">
+                        <div class="form-group">
+                            <label class="control-label" for="inApiKeyAai20">Key Location</label>
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="inApiKeyAai20" data-toggle="dropdown">
+                                        <span *ngIf="!modelAai20().in"><i>Choose Location</i></span>
+                                        <span *ngIf="modelAai20().in === 'user'">User</span>
+                                        <span *ngIf="modelAai20().in === 'password'">Password</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().in = 'user'">User</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().in = 'password'">Password</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- HTTP API Key Auth Config -->
+                    <div class="apiKey-auth" *ngIf="modelAai20().type === 'httpApiKey'">
+                        <div class="form-group">
+                            <label class="control-label" for="inHttpApiKeyAai20">Key Location</label>
+                            <div>
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="inHttpApiKeyAai20" data-toggle="dropdown">
+                                        <span *ngIf="!modelAai20().in"><i>Choose Location</i></span>
+                                        <span *ngIf="modelAai20().in === 'header'">HTTP header</span>
+                                        <span *ngIf="modelAai20().in === 'query'">Query Parameter</span>
+                                        <span *ngIf="modelAai20().in === 'cookie'">Cookie</span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().in = 'header'">HTTP header</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().in = 'query'">Query Parameter</a></li>
+                                        <li role="presentation"><a role="menuitem" (click)="modelAai20().in = 'cookie'">Cookie</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="nameAai20">Name</label>
+                            <div>
+                                <input name="name" type="text" id="nameAai20" class="form-control short"
+                                       placeholder="Name of {{ modelAai20().in === 'query' ? 'query parameter' : (!modelAai20().in ? 'parameter' : modelAai20().in) }}"
+                                       [(ngModel)]="modelAai20().name">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- OAuth2 Auth Config -->
+                    <div class="oauth2-auth" *ngIf="modelAai20().type === 'oauth2'">
+                        <ul class="nav nav-tabs">
+                            <li [class.enabled]="modelAai20().flows.implicit.enabled" [class.active]="oauthTab === 'implicit'"><a (click)="oauthTab = 'implicit'">Implicit</a></li>
+                            <li [class.enabled]="modelAai20().flows.password.enabled" [class.active]="oauthTab === 'password'"><a (click)="oauthTab = 'password'">Password</a></li>
+                            <li [class.enabled]="modelAai20().flows.clientCredentials.enabled" [class.active]="oauthTab === 'clientCredentials'"><a (click)="oauthTab = 'clientCredentials'">Client Credentials</a></li>
+                            <li [class.enabled]="modelAai20().flows.authorizationCode.enabled" [class.active]="oauthTab === 'authorizationCode'"><a (click)="oauthTab = 'authorizationCode'">Authorization Code</a></li>
+                        </ul>
+                        <div class="panel panel-default tab-panel">
+                            <!-- Implicit Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'implicit'">
+                                <div>
+                                    <input name="implicit_enabledAai20" id="implicit_enabledAai20" type="checkbox" [(ngModel)]="modelAai20().flows.implicit.enabled">
+                                    <label for="implicit_enabledAai20">Enable this OAuth flow</label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="implicit_authorizationUrlAai20">Auth URL</label>
+                                    <div>
+                                        <input name="implicit_authorizationUrlAai20" type="text" id="implicit_authorizationUrlAai20" class="form-control"
+                                               placeholder="OAuth Authorization URL" [(ngModel)]="modelAai20().flows.implicit.authorizationUrl"
+                                               pattern="https?://.+" #implicitAuthUrl="ngModel">
+                                        <form-error-message [inputModel]="implicitAuthUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="implicit_refreshUrlAai20">Refresh URL</label>
+                                    <div>
+                                        <input name="implicit_refreshUrlAai20" type="text" id="implicit_refreshUrlAai20" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="modelAai20().flows.implicit.refreshUrl"
+                                               pattern="https?://.+" #implicitRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="implicitRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="control-label" for="implicit-scopesAai20">Scopes</label>
+                                    <scopes-input id="implicit-scopesAai20" [scopes]="modelAai20().flows.implicit.scopes"
+                                                  (onChange)="modelAai20().flows.implicit.scopes = $event"></scopes-input>
+                                </div>
+                            </div>
+                            <!-- Password Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'password'">
+                                <div>
+                                    <input name="password_enabledAai20" id="password_enabledAai20" type="checkbox" [(ngModel)]="modelAai20().flows.password.enabled">
+                                    <label for="password_enabledAai20">Enable this OAuth flow</label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="password_tokenUrlAai20">Token URL</label>
+                                    <div>
+                                        <input name="password_tokenUrlAai20" type="text" id="password_tokenUrlAai20" class="form-control"
+                                               placeholder="OAuth Token URL" [(ngModel)]="modelAai20().flows.password.tokenUrl"
+                                               pattern="https?://.+" #passwordTokenUrl="ngModel">
+                                        <form-error-message [inputModel]="passwordTokenUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="password_refreshUrlAai20">Refresh URL</label>
+                                    <div>
+                                        <input name="password_refreshUrlAai20" type="text" id="password_refreshUrlAai20" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="modelAai20().flows.password.refreshUrl"
+                                               pattern="https?://.+" #passwordRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="passwordRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="control-label" for="password-scopesAai20">Scopes</label>
+                                    <scopes-input id="password-scopesAai20" [scopes]="modelAai20().flows.password.scopes"
+                                                  (onChange)="modelAai20().flows.password.scopes = $event"></scopes-input>
+                                </div>
+                            </div>
+                            <!-- Client Credentials Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'clientCredentials'">
+                                <div>
+                                    <input name="clientCredentials_enabledAai20" id="clientCredentials_enabledAai20" type="checkbox" [(ngModel)]="modelAai20().flows.clientCredentials.enabled">
+                                    <label for="clientCredentials_enabledAai20">Enable this OAuth flow</label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="clientCredentials_tokenUrlAai20">Token URL</label>
+                                    <div>
+                                        <input name="clientCredentials_tokenUrlAai20" type="text" id="clientCredentials_tokenUrlAai20" class="form-control"
+                                               placeholder="OAuth Token URL" [(ngModel)]="modelAai20().flows.clientCredentials.tokenUrl"
+                                               pattern="https?://.+" #clientCredsTokenUrl="ngModel">
+                                        <form-error-message [inputModel]="clientCredsTokenUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="clientCredentials_refreshUrlAai20">Refresh URL</label>
+                                    <div>
+                                        <input name="clientCredentials_refreshUrlAai20" type="text" id="clientCredentials_refreshUrlAai20" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="modelAai20().flows.clientCredentials.refreshUrl"
+                                               pattern="https?://.+" #clientCredsRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="clientCredsRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="control-label" for="cc-scopesAai20">Scopes</label>
+                                    <scopes-input id="cc-scopesAai20" [scopes]="modelAai20().flows.clientCredentials.scopes"
+                                                  (onChange)="modelAai20().flows.clientCredentials.scopes = $event"></scopes-input>
+                                </div>
+                            </div>
+                            <!-- Authorization Code Flow -->
+                            <div class="panel-body" *ngIf="oauthTab === 'authorizationCode'">
+                                <div>
+                                    <input name="authorizationCode_enabledAai20" id="authorizationCode_enabledAai20" type="checkbox" [(ngModel)]="modelAai20().flows.authorizationCode.enabled">
+                                    <label for="authorizationCode_enabledAai20">Enable this OAuth flow</label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="authorizationCode_authorizationUrlAai20">Auth URL</label>
+                                    <div>
+                                        <input name="authorizationCode_authorizationUrlAai20" type="text" id="authorizationCode_authorizationUrlAai20" class="form-control"
+                                               placeholder="OAuth Authorization URL" [(ngModel)]="modelAai20().flows.authorizationCode.authorizationUrl"
+                                               pattern="https?://.+" #authCodeAuthUrl="ngModel">
+                                        <form-error-message [inputModel]="authCodeAuthUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="authorizationCode_tokenUrlAai20">Token URL</label>
+                                    <div>
+                                        <input name="authorizationCode_tokenUrlAai20" type="text" id="authorizationCode_tokenUrlAai20" class="form-control"
+                                               placeholder="OAuth Token URL" [(ngModel)]="modelAai20().flows.authorizationCode.tokenUrl"
+                                               pattern="https?://.+" #authCodeTokenUrl="ngModel">
+                                        <form-error-message [inputModel]="authCodeTokenUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="authorizationCode_refreshUrlAai20">Refresh URL</label>
+                                    <div>
+                                        <input name="authorizationCode_refreshUrlAai20" type="text" id="authorizationCode_refreshUrlAai20" class="form-control"
+                                               placeholder="OAuth Refresh URL" [(ngModel)]="modelAai20().flows.authorizationCode.refreshUrl"
+                                               pattern="https?://.+" #authCodeRefreshUrl="ngModel">
+                                        <form-error-message [inputModel]="authCodeRefreshUrl" [type]="'pattern'">Please enter a valid URL.</form-error-message>
+                                    </div>
+                                </div>
+                                <!-- Scopes -->
+                                <div class="form-group">
+                                    <label class="control-label" for="authcode-scopesAai20">Scopes</label>
+                                    <scopes-input id="authcode-scopesAai20" [scopes]="modelAai20().flows.authorizationCode.scopes"
+                                                  (onChange)="modelAai20().flows.authorizationCode.scopes = $event"></scopes-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</entity-editor>

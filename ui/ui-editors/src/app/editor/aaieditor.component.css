@@ -1,0 +1,1470 @@
+.aai-editor .dropdown.empty>button.btn>span {
+    color: #bbb;
+}
+
+.aai-editor span.empty,
+.aai-editor div.empty,
+.aai-editor button.empty {
+    color: #bbb;
+}
+
+.aai-editor span.channel-param,
+.aai-editor span.server-variable {
+    color: #ff6a7c;
+}
+
+.aai-editor span.channel-segment::before {
+    color: #363636;
+}
+
+.aai-editor div.api-item-description {
+    margin-right: 30px;
+}
+
+.aai-editor div.api-item-description.empty {
+    color: #bbb;
+}
+
+.aai-editor .editor-master {
+    background-color: white;
+    border-right: 1px solid #ddd;
+}
+
+.aai-editor .editor-detail {
+    background-color: white;
+}
+
+.aai-editor .editor-detail table tbody tr:hover {
+    background-color: #efefef;
+}
+
+.aai-editor .editor-master .editor-main {
+    background-color: #eee;
+    -webkit-transition: background-color 200ms;
+    -moz-transition: background-color 200ms;
+    -ms-transition: background-color 200ms;
+    -o-transition: background-color 200ms;
+    transition: background-color 200ms;
+}
+
+.aai-editor .editor-master .editor-main:hover {
+    background-color: #d1eaf7;
+}
+
+.aai-editor .editor-master .editor-main.selected {
+    background-color: #a5d6ef;
+}
+
+.aai-editor .editor-master .editor-search {}
+
+.aai-editor .editor-master .editor-search input {
+    background-color: #eee;
+    color: #333;
+}
+
+.aai-editor .section .section-header {
+    border-bottom: 1px dotted #ddd;
+}
+
+.aai-editor .section .section-header a {
+    color: #333;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel {
+    -webkit-transition: background-color 200ms;
+    -moz-transition: background-color 200ms;
+    -ms-transition: background-color 200ms;
+    -o-transition: background-color 200ms;
+    transition: background-color 200ms;
+    display: flex;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel:hover {
+    background-color: #d1eaf7;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel.selected {
+    background-color: #a5d6ef;
+    border-left: 2px solid #39a5dc;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel.contexted,
+.aai-editor .editor-master .editor-outline .api-channel.contexted:hover {
+    background-color: #FFCC87;
+    border-left: 2px dotted #E89F3D;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel.selected .label {
+    -webkit-transition: border-color 350ms, box-shadow 350ms;
+    -moz-transition: border-color 350ms, box-shadow 350ms;
+    -ms-transition: border-color 350ms, box-shadow 350ms;
+    -o-transition: border-color 350ms, box-shadow 350ms;
+    transition: border-color 350ms, box-shadow 350ms;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel.selected .label:hover {
+    box-shadow: 0 0 3px #646464;
+    border: 1px solid #666;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel.selected .label.selected {
+    border: 1px solid black;
+    box-shadow: 0 0 3px #141414;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel>* {
+    margin-right: 4px;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel>.api-channel-item {
+    flex-grow: 2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.aai-editor .editor-master .editor-outline .api-definition {
+    -webkit-transition: background-color 200ms;
+    -moz-transition: background-color 200ms;
+    -ms-transition: background-color 200ms;
+    -o-transition: background-color 200ms;
+    transition: background-color 200ms;
+    display: flex;
+}
+
+.aai-editor .editor-master .editor-outline .api-definition:hover {
+    background-color: #d1eaf7;
+}
+
+.aai-editor .editor-master .editor-outline .api-definition.selected {
+    background-color: #a5d6ef;
+    border-left: 2px solid #39a5dc;
+}
+
+.aai-editor .editor-master .editor-outline .api-response.contexted,
+.aai-editor .editor-master .editor-outline .api-response.contexted:hover,
+.aai-editor .editor-master .editor-outline .api-definition.contexted,
+.aai-editor .editor-master .editor-outline .api-definition.contexted:hover {
+    background-color: #FFCC87;
+    border-left: 2px dotted #E89F3D;
+}
+
+.aai-editor .editor-master .editor-outline .api-definition>* {
+    margin-right: 4px;
+}
+
+.aai-editor .editor-master .editor-outline .api-message:hover {
+    background-color: #d1eaf7;
+}
+
+.aai-editor .editor-master .editor-outline .api-message.selected {
+    background-color: #a5d6ef;
+    border-left: 2px solid #39a5dc;
+}
+
+.aai-editor .editor-master .editor-outline .api-response.contexted,
+.aai-editor .editor-master .editor-outline .api-response.contexted:hover,
+.aai-editor .editor-master .editor-outline .api-message.contexted,
+.aai-editor .editor-master .editor-outline .api-message.contexted:hover {
+    background-color: #FFCC87;
+    border-left: 2px dotted #E89F3D;
+}
+
+.aai-editor .editor-master .editor-outline .api-message>* {
+    margin-right: 4px;
+}
+
+
+.aai-editor .editor-master .editor-outline .api-response {
+    -webkit-transition: background-color 200ms;
+    -moz-transition: background-color 200ms;
+    -ms-transition: background-color 200ms;
+    -o-transition: background-color 200ms;
+    transition: background-color 200ms;
+    display: flex;
+}
+
+.aai-editor .editor-detail .detail-title {
+    border-bottom: 1px solid #ddd;
+}
+
+.aai-editor .editor-detail .detail-title .detail-actions {
+    float: right;
+}
+
+.aai-editor .editor-detail .detail-title .detail-actions:hover {
+    cursor: pointer;
+    background-color: #d1eaf7;
+}
+
+.aai-editor .editor-detail .detail-title .detail-actions .dropdown-menu {
+    left: auto;
+    right: 0;
+}
+
+.aai-editor .editor-detail .detail-title .detail-actions .dropdown .btn {
+    color: #333;
+    padding-left: 20px;
+    padding-right: 20px;
+    line-height: 38px;
+    font-size: 18px;
+    height: 44px;
+}
+
+.aai-editor .editor-detail .detail-content .info-section .api-md-entry .md-label {
+    color: #333;
+}
+
+.aai-editor .api-operation-parameters td.icons,
+.api-details table td.icons {
+    color: #666;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation {
+    border-bottom: 1px solid #ddd;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation .type .label {
+    -webkit-transition: border-color 200ms, box-shadow 200ms;
+    -moz-transition: border-color 200ms, box-shadow 200ms;
+    -ms-transition: border-color 200ms, box-shadow 200ms;
+    -o-transition: border-color 200ms, box-shadow 200ms;
+    transition: border-color 200ms, box-shadow 200ms;
+    box-shadow: none;
+    border: 1px solid transparent;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation .type .label:hover {
+    border-color: #666;
+    box-shadow: 0px 0px 8px #666;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation .name.empty {
+    color: #bbb;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation.empty {
+    color: #999;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation.empty .type .label {
+    background-color: #ccc;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation.empty .type .label:hover {
+    background-color: #ccc;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation .delete-operation {
+    visibility: hidden;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation:hover .delete-operation {
+    visibility: visible;
+}
+
+.modal.in .modal-dialog {
+    -ms-transform: none;
+    transform: none;
+    margin-top: 50px;
+}
+
+.modal.fade .modal-dialog {
+    -ms-transform: none;
+    transform: none;
+    transition: margin-top 0.3s ease-out;
+}
+
+.modal-dialog {
+    width: 650px;
+    margin-top: 0px;
+    margin-left: auto;
+}
+
+.aai-editor span.channel-param,
+.aai-editor span.server-variable {
+    font-weight: 400;
+}
+
+.aai-editor .context-help {
+    margin-left: 10px;
+    position: relative;
+    display: none;
+}
+
+.aai-editor .context-help a {
+    cursor: pointer;
+}
+
+.aai-editor .context-help a .context-help-icon {
+    -webkit-transition: opacity 300ms;
+    -moz-transition: opacity 300ms;
+    -ms-transition: opacity 300ms;
+    -o-transition: opacity 300ms;
+    transition: opacity 300ms;
+}
+
+.aai-editor .context-help .context-help-panel {
+    position: absolute;
+    left: 0;
+    margin: 0;
+    padding: 10px 14px;
+    border: 1px solid #bbb;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+    z-index: 150;
+    background: white;
+    line-height: 18px;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    width: 450px;
+    cursor: default;
+}
+
+.aai-editor .context-help .context-help-panel p {
+    padding: 3px;
+    margin: 0;
+    line-height: 18px;
+}
+
+.aai-editor .context-help .context-help-panel p>a {
+    color: #0088ce;
+}
+
+.aai-editor .context-help .context-help-panel p>a:hover {
+    color: #00659c;
+    text-decoration: underline;
+}
+
+.aai-editor .context-help .context-help-panel pre {
+    margin-top: 10px;
+}
+
+.aai-editor div.tab-panel {
+    border-top: none;
+}
+
+.aai-editor div.tab-panel {
+    border-color: #dddddd;
+}
+
+.aai-editor .nav-tabs>li>a {
+    cursor: pointer;
+}
+
+.aai-editor .nav-tabs>li>a.active {
+    cursor: default;
+}
+
+.aai-editor .nav-tabs>li>a>button {
+    visibility: hidden;
+}
+
+.aai-editor .nav-tabs>li>a:hover>button {
+    visibility: visible;
+}
+
+.aai-editor .editor-master {
+    position: absolute;
+    top: 42px;
+    left: 0;
+    right: 70%;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.aai-editor .editor-detail {
+    position: absolute;
+    left: 30%;
+    top: 42px;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.aai-editor .editor-detail .editor-detail-form {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+.aai-editor .editor-master .editor-main:hover {
+    cursor: pointer;
+}
+
+.aai-editor .editor-master .editor-main.selected {
+    cursor: default;
+}
+
+.aai-editor .editor-master .editor-main h2 {
+    padding: 10px;
+    margin: 0;
+}
+
+.aai-editor .editor-master .editor-search {
+    padding: 10px;
+    display: table;
+    width: 100%;
+}
+
+.aai-editor .editor-master .editor-search>search {
+    display: table-cell;
+    width: 100%;
+    padding-right: 8px;
+}
+
+.aai-editor .editor-problem-drawer {
+    position: absolute;
+    z-index: 200;
+    top: 41px;
+    right: 0;
+    width: 320px;
+    bottom: 0;
+}
+
+.aai-editor .editor-problem-drawer .drawer-pf {
+    height: 100%;
+    width: 360px;
+}
+
+.aai-editor .editor-problem-drawer .drawer-pf .panel-body {
+    padding: 0;
+}
+
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification {}
+
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification:hover {
+    background-color: #efefef;
+}
+
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-message {
+    line-height: 16px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info {}
+
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info .explanation {
+    line-height: 15px;
+    font-size: 13px;
+}
+
+.aai-editor .editor-problem-drawer .drawer-pf .drawer-pf-notification-info a {
+    cursor: pointer;
+}
+
+.aai-editor .editor-master .editor-outline {
+    padding: 5px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.aai-editor .section {
+    padding: 0;
+    margin: 0;
+}
+
+.aai-editor .section .section-header {
+    font-size: 15px;
+    padding-bottom: 3px;
+    margin-bottom: 5px;
+    line-height: inherit;
+}
+
+.aai-editor .section .section-header a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.aai-editor .section .section-header a:before {
+    display: inline-block;
+    font-size: 13px;
+    margin-left: 5px;
+    margin-right: 3px;
+    text-align: center;
+    vertical-align: 0;
+    font-weight: 300;
+}
+
+.aai-editor .section .section-header a span.section-label {
+    font-weight: 600;
+}
+
+.aai-editor .section .section-header .context-help a span.fa {
+    opacity: 0;
+    font-size: 14px;
+}
+
+.aai-editor .section .section-header:hover .context-help a span.fa {
+    opacity: 255;
+}
+
+.aai-editor .section .section-header .context-help a:hover span.fa {
+    color: #356c8c;
+}
+
+.aai-editor .section .section-header .btn {
+    margin-top: 1px;
+}
+
+.aai-editor .section .section-body {
+    margin-bottom: 20px;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel {
+    position: relative;
+    padding-left: 15px;
+    font-size: 14px;
+    border-left: 2px solid transparent;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel:hover {
+    cursor: pointer;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel.selected {
+    cursor: default;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel.selected .label {
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    padding: 2px 8px 2px 8px;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel.problem-marker:before {
+    top: 2px;
+    left: 1px;
+    font-size: 12px;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel .api-operations {
+    margin-top: 5px;
+    padding-bottom: 10px;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel .api-operations .label {
+    position: relative;
+    margin-right: 5px;
+}
+
+.aai-editor .editor-master .editor-outline .api-channel.contexted {
+    cursor: default;
+}
+
+.aai-editor .editor-master .editor-outline .api-response,
+.aai-editor .editor-master .editor-outline .api-definition {
+    padding-left: 15px;
+    font-size: 14px;
+    border-left: 2px solid transparent;
+    position: relative;
+}
+
+.aai-editor .editor-master .editor-outline .api-definition:hover {
+    cursor: pointer;
+}
+
+.aai-editor .editor-master .editor-outline .api-definition.selected {
+    cursor: default;
+}
+
+.aai-editor .editor-master .editor-outline .api-definition.problem:before {
+    top: 4px;
+    left: 1px;
+}
+
+.aai-editor .editor-master .editor-outline .api-response {
+    padding-left: 15px;
+    font-size: 14px;
+}
+
+.aai-editor .editor-master .editor-outline .api-response:hover {
+    cursor: pointer;
+}
+
+.aai-editor .editor-master .editor-outline .api-response.selected {
+    cursor: default;
+}
+
+.aai-editor .editor-detail .section {
+    padding-top: 8px;
+}
+
+.aai-editor .editor-detail .api-inline-editor-form {
+    display: inline-block;
+    position: relative;
+}
+
+.aai-editor .editor-detail .api-description-editor-form {
+    width: 100%;
+}
+
+.aai-editor .editor-detail .api-inline-editor-form input {
+    font-size: inherit;
+    display: inline;
+    height: auto;
+}
+
+.aai-editor .editor-detail .api-inline-editor-form textarea {
+    width: 100%;
+    min-height: 50px;
+}
+
+.aai-editor .editor-detail .api-inline-editor-form .inline-text-editor-input {
+    min-width: 90px;
+}
+
+.aai-editor .editor-detail .detail-title {
+    height: 45px;
+}
+
+.aai-editor .editor-detail .detail-title .detail-label {
+    float: left;
+    line-height: 44px;
+    font-size: 18px;
+    font-weight: 500;
+    padding-left: 10px;
+}
+
+.aai-editor .editor-detail .detail-title .detail-icon {
+    float: left;
+    line-height: 44px;
+    height: 44px;
+    text-transform: uppercase;
+}
+
+.aai-editor .editor-detail .detail-title .detail-icon .label {
+    border-radius: 2px;
+    padding: 2px 8px 2px 8px;
+}
+
+.aai-editor .editor-detail .editor-detail-form .detail-tabs ul {
+    padding-left: 10px;
+}
+
+.aai-editor .editor-detail .editor-detail-form .detail-tabs ul li a {
+    cursor: pointer;
+}
+
+.aai-editor .editor-detail .editor-detail-form .detail-tabs ul li.disabled a {
+    cursor: not-allowed;
+}
+
+.aai-editor .editor-detail .detail-actionbar {
+    text-align: right;
+    padding: 5px 25px 5px 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.aai-editor .editor-detail .detail-actionbar>button {
+    margin-left: 4px;
+}
+
+.aai-editor .editor-detail .detail-actionbar>button>span.pficon {
+    margin-right: 3px;
+}
+
+.aai-editor .editor-detail .detail-content {
+    height: 100%;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.aai-editor .editor-detail .detail-content .section .section-body {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.aai-editor .editor-detail .detail-content .info-section .explanation {
+    font-size: 15px;
+}
+
+.aai-editor #securitySchemeModal .nav-tabs>li.enabled>a {
+    font-weight: bold;
+}
+
+.aai-editor .editor-detail .detail-content .set-license-modal .modal-dialog {
+    width: 950px;
+}
+
+.aai-editor .editor-detail .detail-content .set-license-modal .modal-dialog .modal-body {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.aai-editor .editor-detail .detail-content .container-fluid {
+    padding: 0;
+}
+
+.aai-editor .editor-detail .detail-content .license h2 {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.aai-editor .editor-detail .detail-content .license h2 span.fa {
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.aai-editor .editor-detail .detail-content .license h3 {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.aai-editor .editor-detail .detail-content .license ul {
+    margin: 0;
+    padding: 0 0 0 12px;
+}
+
+.aai-editor .editor-detail .detail-content .license ul li>span {
+    color: #1D2225;
+    cursor: pointer;
+}
+
+.aai-editor .editor-detail .detail-content .license ul li>span:hover {
+    border-bottom: 1px dotted;
+}
+
+.aai-editor .editor-detail .detail-title .label {
+    margin-left: 10px;
+    font-size: 13px;
+}
+
+.aai-editor .channel-description {
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.aai-editor .api-operation-parameters td.parameter {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.aai-editor .api-operation-parameters td.icons,
+.api-details table td.icons {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.aai-editor .api-operation-parameters td.icons i:hover {
+    cursor: pointer;
+}
+
+.aai-editor .api-response .tlabel {
+    padding: 2px 10px 2px 2px;
+    text-align: right;
+}
+
+.aai-editor .api-response .tlabel span {
+    font-weight: bold;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation .type {
+    display: inline-table;
+    margin-right: 5px;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation .type .label {
+    border-radius: 2px;
+    cursor: pointer;
+    padding: 2px 8px 2px 8px;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation .name {
+    display: inline-table;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation .description {
+    font-size: 14px;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation div.description {
+    margin-right: 30px;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation .actions {
+    margin-top: 5px;
+}
+
+.aai-editor .editor-detail .api-channel-detail .operations-section .api-operation.empty .type .label {
+    cursor: default;
+}
+
+.aai-editor .editor-detail .requestBody-section .request-body-name {
+    font-size: 15px;
+    margin-left: 10px;
+}
+
+.aai-editor .editor-detail .requestBody-section .api-item-description {
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.aai-editor .editor-detail .requestBody-section .request-body-type {
+    margin-top: 20px;
+}
+
+.aai-editor .editor-detail .requestBody-section .request-body-type .strong {
+    font-weight: 600;
+}
+
+.aai-editor .editor-detail .requestBody-section .request-body-type .dropdown {
+    display: inline-block;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.aai-editor .editor-detail .requestBody-section .request-body-required {
+    margin-top: 15px;
+}
+
+.aai-editor .editor-detail .requestBody-section .request-body-required .dropdown {
+    display: inline-block;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.aai-editor .editor-detail .requestBody-section .request-body-content {
+    margin-top: 15px;
+}
+
+.aai-editor .editor-detail .requestBody-section .request-body-content .content .nav-tabs li>a .icon-button {
+    margin-left: 8px;
+}
+
+.aai-editor .editor-detail .api-operation-detail .media-type .strong {
+    font-weight: 600;
+}
+
+.aai-editor .editor-detail .api-operation-detail .media-type .dropdown {
+    display: inline-block;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.aai-editor .editor-detail .parameter.required {
+    box-shadow: 1px 1px 4px #aae;
+}
+
+.aai-editor .editor-detail .row.property,
+.aai-editor .editor-detail .row.parameter,
+.aai-editor .editor-detail .row.response {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.aai-editor .editor-detail table {
+    font-size: 13px;
+}
+
+.aai-editor .editor-detail table tbody tr td.actions>div {
+    visibility: hidden;
+}
+
+.aai-editor .editor-detail table tbody tr:hover td.actions>div {
+    visibility: visible;
+}
+
+.aai-editor .editor-detail .type-editor-dropdown-menu {
+    right: 0;
+    left: auto;
+    min-width: 400px;
+}
+
+.aai-editor .editor-detail table .inline-type-editor-label {
+    margin-right: 36px;
+}
+
+.aai-editor .editor-detail .type-editor-dropdown-menu .dropdown {
+    display: inline;
+    margin-left: 2px;
+}
+
+.aai-editor .editor-detail .type-editor-dropdown-menu .dropdown-menu {
+    top: inherit;
+}
+
+.aai-editor .editor-detail .type-editor-dropdown-menu .typeinfo {
+    padding: 15px;
+}
+
+.aai-editor .editor-detail .type-editor-dropdown-menu .actions {
+    border-top: 1px solid #bbb;
+    text-align: right;
+    padding: 5px;
+}
+
+.aai-editor .editor-detail .type-editor-dropdown-menu .actions .overlay-action-save {
+    margin-right: 3px;
+}
+
+#channel-context-menu,
+#definition-context-menu,
+#message-context-menu,
+#operationtrait-context-menu,
+#messagetrait-context-menu {
+    display: block;
+    position: fixed;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    vertical-align: middle;
+    margin-top: 5px;
+    position: relative;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item.missing {
+    opacity: .4;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item.missing .description {
+    font-size: 12px;
+    line-height: 20px;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item.overridable {
+    background-color: #eeeeef;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item.editing {
+    border-bottom: none;
+    border-right: 1px solid #ccc;
+    background-color: #efefef;
+    box-shadow: 1px 1px 5px #ccc;
+    position: relative;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item .typed-item-icon {
+    cursor: help;
+    color: inherit;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item .typed-item-icon:hover {
+    color: inherit;
+    filter: brightness(80%);
+}
+
+.aai-editor .editor-detail .section .typed-item-list .type-row {
+    padding-top: 12px;
+    padding-bottom: 10px;
+    border: 1px solid #ccc;
+    position: relative;
+    background-color: white;
+    box-shadow: 1px 1px 5px #ccc;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item .metainfo {
+    padding-left: 0px;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item .actions {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item .actions button {
+    opacity: .25;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item:hover {
+    background-color: #eee;
+    box-shadow: 1px 1px 4px #ddd;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item.editing:hover {
+    box-shadow: 1px 1px 5px #ccc;
+    background-color: #efefef;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item:hover .actions button {
+    opacity: 1.0;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item.editing .actions button {
+    display: none;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item.editing .type {
+    visibility: hidden;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item .name {
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 18px;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item .description {
+    font-size: 14px;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item .type {
+    line-height: 40px;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item .type .empty {
+    color: #999;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .typed-item .actions {
+    line-height: 40px;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .type-row .form-group {
+    margin: 5px;
+}
+
+.aai-editor .editor-detail .section .typed-item-list .type-row .form-group-actions {
+    padding-top: 5px;
+}
+
+.aai-editor .editor-detail .problem-form .actions {
+    margin-top: 15px;
+}
+
+.aai-editor .content .panel .examples {
+    margin-top: 10px;
+}
+
+.aai-editor .content .panel .examples a {
+    cursor: pointer;
+}
+
+.aai-editor .content .panel .examples .table-examples {
+    margin-bottom: 0px;
+}
+
+.aai-editor .response-type .examples {
+    margin-top: 5px;
+}
+
+.aai-editor .response-type .examples a {
+    cursor: pointer;
+}
+
+.aai-editor .response-type .examples .table-examples {
+    margin-bottom: 0px;
+}
+
+.aai-editor .response-type .examples .table-examples td {
+    max-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.aai-editor .response-type .examples .table-examples .content-type {
+    width: 25%;
+}
+
+.aai-editor .response-type .examples .table-examples .value {
+    width: 60%;
+}
+
+.aai-editor .response-type .examples .table-examples .actions {
+    width: 15%;
+}
+
+.aai-editor table th.pre-actions,
+.aai-editor table td.pre-actions {
+    border-right-width: 0px;
+}
+
+.aai-editor table th.actions,
+.aai-editor table td.actions {
+    border-left-width: 0px;
+}
+
+.aai-editor .securityscheme-form {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 10px;
+}
+
+.aai-editor .modal-header {
+    background-color: rgb(57, 165, 220);
+    color: white;
+}
+
+.aai-editor .modal-header button.close {
+    color: white;
+}
+
+.aai-editor .modal-footer {
+    border-top: 1px solid rgb(221, 221, 221);
+    background-color: rgb(239, 239, 239);
+}
+
+.aai-editor .modal-dialog {
+    margin-top: 50px;
+}
+
+.aai-editor form input.ng-invalid.ng-touched {
+    border-color: red;
+}
+
+.aai-editor .center-text {
+    text-align: center;
+}
+
+.aai-editor .dropdown-menu>li>a {
+    cursor: pointer;
+}
+
+.aai-editor .dropdown-menu {
+    font-size: 13px;
+}
+
+.aai-editor div.notice-of-required {
+    margin-top: 15px;
+    font-size: 11px;
+}
+
+.aai-editor div.notice-of-required .required-icon {
+    color: red;
+}
+
+.aai-editor div.modal-notice-of-required {
+    margin-bottom: -12px;
+    padding-left: 15px;
+}
+
+.aai-editor .form-group .control-label {
+    white-space: nowrap;
+}
+
+.aai-editor .form-group .control-label.required::after {
+    color: red;
+    content: '*'
+}
+
+.aai-editor .form-group .form-error-message.error {
+    color: red;
+}
+
+.aai-editor span.validation-aggregate {}
+
+.aai-editor span.validation-aggregate>a>.fa-exclamation-circle {
+    color: #0088ce;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.aai-editor span.validation-aggregate>a>.fa-exclamation-circle:hover {
+    color: #00659c;
+}
+
+.aai-editor .section .section-header>a {
+    position: relative;
+}
+
+.aai-editor .section .section-header>a .validation-aggregate {
+    position: absolute;
+    right: -15px;
+    top: -6px;
+}
+
+.aai-editor .detail-content .operations-section .api-operation .type {
+    position: relative;
+}
+
+.aai-editor .detail-content .operations-section .api-operation .type .validation-aggregate {
+    position: absolute;
+    right: -8px;
+    top: -11px;
+}
+
+.aai-editor .request-body-content .content .nav-tabs li>a {
+    position: relative;
+}
+
+.aai-editor .request-body-content .content .nav-tabs li>a .validation-aggregate {
+    position: absolute;
+    right: 28px;
+    top: 0px;
+}
+
+.aai-editor .validation-problem-icon {
+    cursor: pointer;
+    margin-right: 4px;
+}
+
+.aai-editor .validation-problem-icon:hover {
+    filter: brightness(125%);
+}
+
+.aai-editor h2 .validation-problem-icon {
+    font-size: 15px;
+}
+
+.aai-editor .validation-aggregate .validation-aggregate-panel,
+.aai-editor .validation-problems-panel {
+    position: fixed;
+    margin: 0;
+    border: 1px solid #bbb;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.1);
+    z-index: 150;
+    background: white;
+    max-width: 425px;
+    max-height: 125px;
+    cursor: default;
+    overflow-y: auto;
+    color: #4d5258;
+    line-height: 18px;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.aai-editor .validation-aggregate .validation-aggregate-panel .problem,
+.aai-editor .validation-problems-panel .problem {
+    width: 100%;
+    text-align: left;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.aai-editor .validation-aggregate .validation-aggregate-panel .problem .fa,
+.aai-editor .validation-problems-panel .problem .fa {
+    margin-right: 3px;
+}
+
+.aai-editor .inline-editor-label {
+    cursor: pointer;
+}
+
+.aai-editor .inline-editor-label .fa {
+    visibility: hidden;
+    color: #0088ce;
+}
+
+.aai-editor .inline-editor-label .fa:hover {
+    color: #00659c;
+}
+
+.aai-editor .inline-editor-label:hover .fa {
+    visibility: visible;
+}
+
+.aai-editor .editor-detail .inline-text-editor {}
+
+.aai-editor .editor-detail .inline-text-editor>input {
+    display: inline;
+    min-width: 90px;
+}
+
+.aai-editor .editor-detail .inline-text-editor>input.form-control {
+    width: auto;
+}
+
+.aai-editor .editor-detail .detail-content .info-section .section-field.version .inline-text-editor>input {
+    width: 110px;
+}
+
+.aai-editor .editor-detail .section .half-section {
+    width: 50%;
+    display: inline-block;
+}
+
+.aai-editor .editor-detail .section .half-section.right {
+    float: right;
+}
+
+.aai-editor .editor-detail .section-field-label {
+    margin-bottom: 0px;
+}
+
+.aai-editor .editor-detail .section-field-label>span {
+    font-weight: 600;
+}
+
+.aai-editor .editor-detail .section-field {
+    margin-bottom: 8px;
+}
+
+.aai-editor .editor-detail .detail-content .contact-section .section-field.name .inline-text-editor>input {
+    width: 275px;
+}
+
+.aai-editor .editor-detail .detail-content .contact-section .section-field.email .inline-text-editor>input {
+    width: 275px;
+}
+
+.aai-editor .editor-detail .detail-content .contact-section .section-field.url .inline-text-editor>input {
+    width: 375px;
+}
+
+.aai-editor .editor-detail .detail-content .tags-section div.tags {}
+
+.aai-editor .entity-editor {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    overflow-y: auto;
+    background-color: white;
+    z-index: 5;
+}
+
+.aai-editor .entity-editor h1 {
+    font-size: 25px;
+}
+
+.aai-editor .entity-editor .close-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-right: 50px;
+    font-size: 32px;
+    cursor: pointer;
+    z-index: 6;
+    color: #666;
+}
+
+.aai-editor .entity-editor .close-button:hover {
+    color: black;
+}
+
+.aai-editor .entity-editor .context {
+    padding-bottom: 30px;
+    padding-top: 30px;
+}
+
+.aai-editor .entity-editor .context .context-label {
+    color: #8b8d8f;
+    font-size: 18px;
+    margin-right: 15px;
+}
+
+.aai-editor .entity-editor .context .context-value {
+    color: #8b8d8f;
+}
+
+.aai-editor .entity-editor .context .operation>.label {
+    font-size: 16px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.aai-editor .entity-editor .notice-of-required {
+    margin-bottom: -15px;
+    padding-left: 0;
+    margin-top: 10px;
+}
+
+.aai-editor .entity-editor hr {
+    border-color: #bbb;
+}
+
+.aai-editor .entity-editor .body-section {
+    width: 60%;
+    min-width: 400px;
+}
+
+.aai-editor .entity-editor .body-section h3 {
+    font-weight: 600;
+    font-size: 19px;
+}
+
+.aai-editor .entity-editor .body-section .explanation {
+    padding-left: 20px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    color: #8b8d8f;
+    line-height: 18px;
+}
+
+.aai-editor .entity-editor .body-section>div>.form-group {
+    padding-left: 20px;
+}
+
+.aai-editor .entity-editor .body-section>div>.form-group input {
+    min-width: 350px;
+    width: 90%;
+}
+
+.aai-editor .entity-editor .body-section .form-group input.short {
+    width: 50%;
+}
+
+.aai-editor .entity-editor .body-section>div>.form-group textarea {
+    min-width: 350px;
+    width: 90%;
+}
+
+.aai-editor .entity-editor .body-section .form-group textarea.short {
+    width: 50%;
+}
+
+.aai-editor .entity-editor .body-section .empty-state {
+    border: 1px solid #ccc;
+    color: #8b8d8f;
+    padding: 30px;
+    line-height: 18px;
+}
+
+.aai-editor .entity-editor .actions-section .actions {
+    width: 60%;
+    min-width: 400px;
+    text-align: right;
+    padding-bottom: 30px;
+}
+
+.aai-editor .dropdown-label {
+    margin-right: 3px;
+}
+
+.aai-editor .dropdowns-label {
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.aai-editor .detail-title .detail-actions .dropdown-menu li a span.pficon {
+    margin-right: 4px;
+}
+
+.aai-editor .detail-title .detail-actions .dropdown-menu li a span.fa {
+    margin-right: 3px;
+}
+
+.aai-editor .editor-master .context-menu li a span.pficon {
+    margin-right: 4px;
+}
+
+.aai-editor .editor-master .context-menu li a span.fa {
+    margin-right: 3px;
+}

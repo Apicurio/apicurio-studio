@@ -1,0 +1,61 @@
+.schema {
+  border: 1px solid transparent;
+  position: relative;
+}
+.schema.expanded {
+  border: 1px solid #bbb;
+  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  margin-bottom: 3px;
+}
+
+.schema .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.schema .header:hover {
+  background-color: #edf8ff;
+}
+.schema.expanded .header {
+  border-bottom: solid 1px #bbb;
+  background-color: #def3ff;
+}
+
+.schema .header .name {
+  flex-basis: 98%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.schema .header .name > span {
+  font-weight: 600;
+}
+
+.schema .header .actions {
+  flex-basis: 2%;
+  text-align: center;
+}
+
+.schema .header > .selected {
+  margin-bottom: -4px;
+  border-bottom: 2px solid #0088ce;
+  color: #0088ce;
+}
+
+.schema .body {
+  position: relative;
+  padding: 15px;
+}
+.schema .body .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.schema .body span.strong {
+  font-weight: 600;
+}

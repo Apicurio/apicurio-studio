@@ -1,0 +1,257 @@
+<div class="editor-master">
+    <!-- Channel Context Menu -->
+    <ul id="channel-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'channel'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameChannel()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="return false" (click)="cloneChannel()">
+                <span class="fa fa-clone"></span>
+                <span>Clone</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteChannel()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Data Type Context Menu -->
+    <ul id="definition-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'definition'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameDefinition()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="return false" (click)="cloneDefinition()">
+                <span class="fa fa-clone"></span>
+                <span>Clone</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteDefinition()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Operation Trait Context Menu -->
+    <ul id="operationtrait-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'operationTrait'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameOperationTrait()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteOperationTrait()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Message Trait Context Menu -->
+    <ul id="messagetrait-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'messageTrait'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameMessageTrait()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteMessageTrait()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Message Context Menu -->
+    <ul id="message-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'message'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameMessage()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteMessage()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Search - Used to Filter Channels and Data Type -->
+    <div class="editor-search">
+        <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
+    </div>
+
+    <!-- Outline - Channels, Data Types, Traits -->
+    <div class="editor-outline">
+        <!-- Channels Section -->
+        <section type="channel" label="Channels" [counterItems]="channels()" [inForm]="false" 
+                    collaborationNodePath="/channels"
+                    contextHelp="The core of any Async API is the set of channesl it exposes. Each channels is of the form 'channel' and can support either Publish or Subscribe operations.">
+            <span actions>
+                <icon-button (onClick)="addChannelDialog.open(document, getCurrentChannelSelection())" [pullRight]="true" type="add"></icon-button>
+            </span>
+            <div body tabindex="0" class="channel-list master-entity-list" (keydown)="onChannelsKeypress($event)" #channelList>
+                <signpost *ngIf="!hasChannels()">
+                    <span>No channels have been created.</span>
+                    <a (click)="addChannelDialog.open(document, '')">Add a channel</a>
+                </signpost>
+
+                <div class="api-channel {{ channelClasses(channel) }}" *ngFor="let channel of channels()">
+                    <div class="api-channel-item" path-item [path]="channel.getName()" (click)="channelList.focus() ; selectChannel(channel)"
+                        (contextmenu)="showChannelContextMenu($event, channel)"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Types Section -->
+        <section type="definition" label="Data Types" [counterItems]="definitions()" [inForm]="false"
+                    [collaborationNodePath]="definitionsPath()"
+                    contextHelp="It is often necessary for many operations to publish/consume the same type of data (or a list of that same data type).  Rather than define the same data type multiple times within each operation, you can create named Data Types in this section.">
+            <span actions>
+                <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" type="add" title="Create Data Type"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importDataTypes()" [pullRight]="true" type="import" title="Import Data Type"></icon-button>
+            </span>
+            <div body tabindex="0" class="definition-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #defList>
+                <signpost *ngIf="!hasDefinitions()">
+                    <span>No reusable types have been created.</span>
+                    <a (click)="openAddDefinitionEditor()">Add a data type</a>
+                </signpost>
+
+                <div definition-item *ngFor="let def of definitions()" class="api-definition {{ definitionClasses(def) }}" [schema]="def"
+                        (click)="defList.focus() ; selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"></div>
+            </div>
+        </section>
+
+        <!-- Messages Section -->
+        <section type="message" label="Messages" [counterItems]="messages()" [inForm]="false"
+                 collaborationNodePath="/components/messages"
+                 contextHelp="Reusable message properties (headers, correlationId, contentType, ...) can be defined through Messages.">
+            <span actions>
+                <icon-button (onClick)="openAddMessageEditor()" [pullRight]="true" type="add" title="Create Message"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importMessages()" [pullRight]="true" type="import" title="Import Messages"></icon-button>
+            </span>
+            <div body tabindex="0" class="message-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #msgList>
+                <signpost *ngIf="!hasMessages()">
+                    <span>No messages have been created.</span>
+                    <a (click)="openAddMessageEditor()">Add a message</a>
+                </signpost>
+
+                <div class="api-message {{ messageClasses(message) }}" *ngFor="let message of messages()">
+                    <div class="api-message-item" message-item [message]="message"
+                         (click)="msgList.focus() ; selectMessage(message)"
+                         (contextmenu)="showMessageContextMenu($event, message)"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Operation Traits Section -->
+        <section type="operationtrait" label="Operation Traits" [counterItems]="operationTraits()" [inForm]="false"
+                    collaborationNodePath="/components/operationTraits"
+                    contextHelp="Reusable operation properties (tags, bindings, ...) can be defined through Operation Traits.">
+            <span actions>
+                <icon-button (onClick)="openAddOperationTraitEditor()" [pullRight]="true" type="add" title="Create Operation Trait"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importMessageTraits()" [pullRight]="true" type="import" title="Import Message Traits"></icon-button>
+            </span>
+            <div body tabindex="0" class="operationtrait-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #opTraitList>
+                <signpost *ngIf="!hasOperationTraits()">
+                    <span>No operation traits have been created.</span>
+                    <a (click)="openAddOperationTraitEditor()">Add an operation trait</a>
+                </signpost>
+
+                <div class="api-operationtrait {{ operationTraitClasses(operationTrait) }}" *ngFor="let operationTrait of operationTraits()">
+                    <div class="api-operationtrait-item" operationtrait-item [operationTrait]="operationTrait"
+                        (click)="opTraitList.focus() ; selectOperationTrait(operationTrait)"
+                        (contextmenu)="showOperationTraitContextMenu($event, operationTrait)"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Message Traits Section -->
+        <section type="messagetrait" label="Message Traits" [counterItems]="messageTraits()" [inForm]="false"
+                    collaborationNodePath="/components/messageTraits"
+                    contextHelp="Reusable message properties (headers, correlationId, contentType, ...) can be defined through Message Traits.">
+            <span actions>
+                <icon-button (onClick)="openAddMessageTraitEditor()" [pullRight]="true" type="add" title="Create Message Trait"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importMessageTraits()" [pullRight]="true" type="import" title="Import Message Traits"></icon-button>
+            </span>
+            <div body tabindex="0" class="messagetrait-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #msgTraitList>
+                <signpost *ngIf="!hasMessageTraits()">
+                    <span>No message traits have been created.</span>
+                    <a (click)="openAddMessageTraitEditor()">Add a message trait</a>
+                </signpost>
+
+                <div class="api-messagetrait {{ messageTraitClasses(messageTrait) }}" *ngFor="let messageTrait of messageTraits()">
+                    <div class="api-messagetrait-item" messagetrait-item [messageTrait]="messageTrait"
+                        (click)="msgTraitList.focus() ; selectMessageTrait(messageTrait)"
+                        (contextmenu)="showMessageTraitContextMenu($event, messageTrait)"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Dialogs -->
+    <add-channel-dialog #addChannelDialog (onAdd)="addChannel($event)"></add-channel-dialog>
+    <rename-entity-dialog #renameChannelDialog
+                          type="Channel"
+                          title="Rename Channel"
+                          warning="Renaming a Channel will also update its parameters."
+                          validationPattern="{{ channelNameRegex }}"
+                          validationError="Enter a valid name (Channel names need to be valid URIs)."
+                          (onRename)="renameChannel($event)"></rename-entity-dialog>
+    <clone-channel-dialog #cloneChannelDialog (onClone)="cloneChannel($event)"></clone-channel-dialog>
+
+    <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
+    <rename-entity-dialog #renameDefinitionDialog
+                          type="Data Type"
+                          title="Rename Data Type"
+                          warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. operation payload bodies)."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
+                          (onRename)="renameDefinition($event)"></rename-entity-dialog>
+
+    <rename-entity-dialog #renameMessageTraitDialog
+                          type="Message Trait"
+                          title="Rename Message Trait"
+                          warning="Renaming a Message Trait Type will also update any references to the trait elsewhere in the API (e.g. operation payloads)."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
+                          (onRename)="renameMessageTrait($event)"></rename-entity-dialog>
+
+    <rename-entity-dialog #renameMessageDialog
+                          type="Message"
+                          title="Rename Message"
+                          warning="Renaming a Message will also update any references to the message elsewhere in the API (e.g. operation payloads)."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
+                          (onRename)="renameMessage($event)"></rename-entity-dialog>
+</div>

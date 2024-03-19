@@ -1,0 +1,14 @@
+<!-- Path Parameters Section -->
+<section type="path-parameters" label="PATH PARAMETERS"
+         [counterItems]="pathParameters()" *ngIf="canHavePathParams()"
+         [collaborationNodePath]="pathParameterPaths()"
+         [contextHelp]="contextHelp()" [validationModels]="pathParameters()">
+    <span actions></span>
+    <div body>
+        <!-- The list of path parameters -->
+        <div class="container-fluid path-parameters typed-item-list">
+            <path-param-row *ngFor="let param of pathParameters()" [item]="param"
+                            (onDelete)="deleteParam(param)"></path-param-row>
+        </div>
+    </div>
+</section>

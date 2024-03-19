@@ -1,0 +1,113 @@
+<entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="security-requirement" *ngIf="isOpen()"
+               [showRequiredFieldsMessage]="false" heading="Define the Security Requirement" [valid]="isValid()">
+    <div class="row-fluid body-section">
+        <div class="col-md-12">
+            <h3>Configure a Security Requirement</h3>
+            <p class="explanation">
+                <span>
+                    Choose which combination of security schemes are required by clients accessing
+                    <span class="strong" *ngIf="!isGlobalContext()">this operation.</span>
+                    <span class="strong" *ngIf="isGlobalContext()">any operation in this API.</span>
+                    When necessary (depending on the type of scheme) also configure required scopes for each enabled scheme.
+                </span>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <div class="list-group list-view-pf list-view-pf-view security-scheme-list">
+
+                <!-- No Schemes Found -->
+                <div class="blank-slate-pf " *ngIf="schemes.length === 0">
+                    <div class="blank-slate-pf-icon">
+                        <span class="pficon pficon pficon-warning-triangle-o"></span>
+                    </div>
+                    <h1>No Security Schemes Found</h1>
+                    <p>
+                        There are currently no <strong>Security Schemes</strong> defined for this API.  Before you can
+                        configure the <strong>security requirements</strong>, you must first configure the possible schemes.
+                        Security schemes are configured at the root/global of the API.
+                    </p>
+                </div>
+
+                <!-- Select from list of Schemes -->
+                <div class="list-group-item anonymous" [class.active]="anonEnabled" *ngIf="schemes.length > 0">
+                    <div class="list-group-item-header">
+                        <div class="list-view-pf-expand" [style.visibility]="'hidden'">
+                            <span class="fa fa-angle-right"></span>
+                        </div>
+                        <div class="list-view-pf-checkbox">
+                            <input type="checkbox" [checked]="anonEnabled" (change)="setAnon($event.target['checked'])">
+                        </div>
+                        <div class="list-view-pf-main-info" (click)="setAnon(!anonEnabled)">
+                            <div class="list-view-pf-body">
+                                <div class="list-view-pf-description">
+                                    <div class="list-group-item-heading">
+                                        <span class="name">No Security</span>
+                                        <span class="type">anonymous</span>
+                                    </div>
+                                </div>
+                                <div class="list-view-pf-additional-info">
+                                    <div class="list-group-item-text">Allow access to the API without authentication (cannot be <strong>combined</strong> with other security).</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-item" *ngFor="let scheme of schemes" [class.active]="isChecked(scheme)"
+                     [class.list-view-pf-expand-active]="isExpanded(scheme)">
+                    <div class="list-group-item-header">
+                        <div class="list-view-pf-expand" [style.visibility]="canExpand(scheme) ? 'visible' : 'hidden'">
+                            <span class="fa fa-angle-right" [class.fa-angle-down]="isExpanded(scheme)"
+                                  (click)="toggleExpansion(scheme)"></span>
+                        </div>
+                        <div class="list-view-pf-checkbox">
+                            <input type="checkbox" [checked]="isChecked(scheme)" (change)="toggleSecurityScheme(scheme, $event.target['checked'])">
+                        </div>
+                        <div class="list-view-pf-main-info" (click)="toggleSecurityScheme(scheme)">
+                            <div class="list-view-pf-body">
+                                <div class="list-view-pf-description">
+                                    <div class="list-group-item-heading">
+                                        <span class="name">{{ scheme.getSchemeName() }}</span>
+                                        <span class="type">{{ scheme.type }}</span>
+                                    </div>
+                                </div>
+                                <div class="list-view-pf-additional-info">
+                                    <div class="list-group-item-text">{{ scheme.description }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="canExpand(scheme)" class="list-group-item-container container-fluid" [class.hidden]="!isExpanded(scheme)">
+                        <div class="close">
+                            <span class="pficon pficon-close" (click)="collapse(scheme)"></span>
+                        </div>
+                        <div class="row scopes-row">
+                            <td class="col-md-12 scopes-section">
+                                <div class="instructions" *ngIf="scopes(scheme).length > 0 && isGlobalContext()">Specify scopes to define the permissions necessary for users to access operations in this API.</div>
+                                <div class="instructions" *ngIf="scopes(scheme).length > 0 && !isGlobalContext()">Specify scopes to define the permissions necessary for a user to access the operation.</div>
+                                <div class="no-scopes" *ngIf="scopes(scheme).length === 0">
+                                    <div class="alert alert-warning">
+                                        <span class="pficon pficon-warning-triangle-o"></span>
+                                        <strong>No Available Scopes</strong> No scopes have been configured for this Security Scheme.
+                                    </div>
+                                </div>
+                                <div class="scopes" *ngIf="scopes(scheme).length > 0">
+                                    <div class="scope" *ngFor="let scope of scopes(scheme)">
+                                        <div class="scope-check">
+                                            <input type="checkbox" [checked]="isScopeChecked(scheme, scope.name)" [disabled]="!isChecked(scheme)"
+                                                   (change)="toggleScope(scheme, scope.name, $event.target['checked'])">
+                                        </div>
+                                        <div class="scope-name">
+                                            <a [class.disabled]="!isChecked(scheme)" title="{{ scope.description }}"
+                                               (click)="toggleScope(scheme, scope.name)">{{ scope.name }}</a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</entity-editor>

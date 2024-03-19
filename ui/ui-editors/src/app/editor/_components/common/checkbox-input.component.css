@@ -1,0 +1,10 @@
+.checkbox-input {
+}
+
+.checkbox-input > label {
+    min-width: 100px;
+}
+
+.checkbox-input > input {
+    margin-left: 10px;
+}

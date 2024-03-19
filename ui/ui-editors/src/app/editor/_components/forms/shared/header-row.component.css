@@ -1,0 +1,142 @@
+.http-header {
+  border: 1px solid transparent;
+  position: relative;
+}
+.http-header.expanded {
+  border: 1px solid #bbb;
+  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  margin-bottom: 3px;
+}
+
+.http-header .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.http-header .header:hover {
+  background-color: #edf8ff;
+}
+.http-header.expanded .header {
+  border-bottom: solid 1px #bbb;
+  background-color: #def3ff;
+}
+
+.http-header .header .name {
+  flex-basis: 22%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.http-header .header .name > span {
+  font-weight: 600;
+  color: #333;
+}
+.http-header .header .name > span.fa {
+  font-weight: normal;
+  margin-right: 3px;
+}
+.http-header .header .name .icon-override {
+  font-size: 16px;
+  font-weight: normal;
+  cursor: help;
+  margin-right: 3px;
+}
+
+.http-header .header .aa-header {
+  flex-basis: 38%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.http-header .header .aa-header:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+.http-header .header .examples {
+  flex-basis: 38%;
+}
+.http-header .header .examples:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.http-header .header .actions {
+  flex-basis: 2%;
+  text-align: center;
+}
+
+.http-header .header .actions .btn-override {
+  position: absolute;
+  right: 5px;
+  top: 6px;
+}
+
+.http-header .header .actions > div .fa-ellipsis-v {
+  visibility: hidden;
+}
+.http-header:hover .header .actions > div .fa-ellipsis-v {
+  visibility: visible;
+}
+
+.http-header .header > .selected {
+  margin-bottom: -4px;
+  border-bottom: 2px solid #0088ce;
+  color: #0088ce;
+}
+
+.http-header .body {
+  position: relative;
+  padding: 15px;
+}
+.http-header .body .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.http-header .body .hr-examples .form-label {
+  font-weight: 600;
+  margin-top: 0px;
+}
+
+.http-header .body span.strong {
+  font-weight: 600;
+}
+
+.http-header .body .hr-header {
+  margin-bottom: 10px;
+}
+
+
+.http-header .hr-examples table {
+  margin-bottom: 3px;
+}
+.http-header .hr-examples table td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.http-header .mt-examples table td.name {
+  width: 30%;
+}
+.http-header .hr-examples table td.value {
+  width: 60%;
+}
+.http-header .hr-examples table td.actions {
+  width: 10%;
+}
+
+.http-header .hr-examples a {
+  cursor: pointer;
+}
+
+.http-header .aa-header > .fa,
+.http-header .examples > .fa {
+  margin-right: 2px;
+}

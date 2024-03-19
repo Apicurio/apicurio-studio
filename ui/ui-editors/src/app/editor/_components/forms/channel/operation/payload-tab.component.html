@@ -1,0 +1,77 @@
+<div class="payload" [class.expanded]="isEditing()">
+    <div class="header">
+        <div class="reference">
+            <span>Reference</span>
+        </div>
+        <div class="problem-flex type" (click)="toggleType()" [class.selected]="isEditingType()">
+            <!-- <validation-problem [model]="message.payload" property="$ref"></validation-problem> --> 
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingType()"></span>
+            <schema-type [type]="displayType()"></schema-type>
+        </div>
+        <div class="examples" (click)="toggleExamples()" [class.selected]="isEditingExamples()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingExamples()"></span>
+            <span [class.empty]="!messageHasExamples()">{{ displayExamples() }}</span>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-11">
+                    <div class="mt-content" *ngIf="isEditingType()">
+                        <div class="mt-type">
+                            <schema-type-editor [document]="document()" [value]="model()" [isParameter]="false"
+                                                [dataTypesOnly]="true"
+                                                (onChange)="changeRefType($event)"></schema-type-editor>
+                        </div>
+                    </div>
+                    <div class="mt-examples" *ngIf="isEditingExamples()">
+                        <div class="form-label">Examples</div>
+                        <signpost *ngIf="!messageHasExamples()">
+                            <span>No examples have been defined.</span>
+                            <a (click)="addExampleDialog.open()">Add an example</a>
+                        </signpost>
+                        <div *ngIf="messageHasExamples()">
+                            <table class="table table-striped table-bordered table-examples">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th class="pre-actions">Payload</th>
+                                    <th class="pre-actions">Headers</th>
+                                    <th class="actions"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let example of messageExamples()">
+                                    <td class="name">
+                                        <span>{{ exampleName(example) }}</span>
+                                    </td>
+                                    <td class="payloadValue pre-actions">
+                                        <span>{{ examplePayloadValue(example) }}</span>
+                                    </td>
+                                    <td class="payloadHeaders pre-actions">
+                                        <span>{{ exampleHeadersValue(example) }}</span>
+                                    </td>
+                                    <td class="actions">
+                                        <div>
+                                            <icon-button (onClick)="deleteExample(example)" [pullRight]="true" type="delete"
+                                                         [title]="'Delete example.'"></icon-button>
+                                            <!-- <icon-button (onClick)="editExampleDialog.open(example)" [pullRight]="true" type="edit"
+                                                         [title]="'Edit example.'"></icon-button> -->
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <a (click)="addExampleDialog.open()">Add an example</a>
+                            <a (click)="deleteAllExamples()" class="pull-right">Delete all examples</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<add-aai-example-dialog #addExampleDialog (onAdd)="addExample($event)"
+    [payloadSchema]="schemaForExamplePayload()" [headersSchema]="schemaForExampleHeaders()"></add-aai-example-dialog>
+<edit-aai-example-dialog #editExampleDialog (onEdit)="editExample($event)"
+    [payloadSchema]="schemaForExamplePayload()" [headersSchema]="schemaForExampleHeaders()"></edit-aai-example-dialog>

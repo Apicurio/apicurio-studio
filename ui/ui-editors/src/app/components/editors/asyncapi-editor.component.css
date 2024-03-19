@@ -1,0 +1,9 @@
+#asyncapi-editor {
+  font-size: 13px;
+}
+
+.asyncapi-editor {
+    position: relative;
+    height: 100%;
+}
+

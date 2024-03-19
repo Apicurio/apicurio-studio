@@ -1,0 +1,27 @@
+.redo-icon {
+  margin: 2px;
+  height: 38px;
+  line-height: 32px;
+}
+.redo-icon button {
+  color: #c6c6c6;
+  font-size: 19px;
+  margin: 0;
+  height: 38px;
+  padding-left: 10px;
+  padding-right: 10px;
+  cursor: default;
+}
+.redo-icon button:hover, .redo-icon button:focus {
+  color: #c6c6c6;
+}
+.redo-icon button.enabled {
+  color: #666;
+  cursor: pointer;
+}
+.redo-icon button.enabled:hover {
+  background-color: #d1eaf7;
+}
+.redo-icon button.enabled:active {
+  background-color: #a5d6ef;
+}

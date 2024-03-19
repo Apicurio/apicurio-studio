@@ -1,0 +1,57 @@
+.response {
+}
+
+.response .problem-flex {
+  display: flex;
+}
+.response .problem-flex .grow {
+  flex-grow: 1;
+}
+.response .problem-flex > *:first-child {
+  margin-right: 7px;
+  margin-top: 2px;
+}
+
+.response div.form-label {
+  margin-top: 15px;
+  font-weight: 600;
+}
+.response .response-description div.form-label {
+  margin-top: 2px;
+}
+.response .response-type div.form-label {
+  margin-bottom: 5px;
+}
+.response .response-examples div.form-label {
+  margin-bottom: 5px;
+}
+
+.response .response-examples table {
+  margin-bottom: 3px;
+}
+.response .response-examples table td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.response .response-examples table td.content-type {
+  width: 30%;
+}
+.response .response-examples table td.value {
+  width: 60%;
+}
+.response .response-examples table td.actions {
+  width: 10%;
+}
+
+.response .response-examples a {
+  cursor: pointer;
+}
+
+.response .response-ref em {
+  font-style: normal;
+}
+.response .response-ref em > a {
+  font-weight: bold;
+}

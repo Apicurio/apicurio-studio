@@ -1,0 +1,22 @@
+
+.server-url-wrapper {
+  width: 80%;
+}
+
+.server-variables {
+  margin-left: 20px
+}
+
+#server_ro {
+  border-color: #002d45;
+  background-color: #efefef;
+  color: #666;
+}
+
+.url-action {
+  margin-left: 5px;
+}
+
+#serverUrl {
+  width: 100%;
+}

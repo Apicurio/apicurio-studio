@@ -1,0 +1,3 @@
+{
+  "template": "syntax = \"proto2\";\n\nmessage Example {\n  required string name = 1;\n}\n"
+}

@@ -1,0 +1,11 @@
+node_modules
+node
+build
+dist
+.idea
+.turbo
+.settings
+.project
+.classpath
+target
+.notes

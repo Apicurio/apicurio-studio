@@ -1,0 +1,77 @@
+.server {
+  border: 1px solid transparent;
+}
+.server.expanded {
+  border: 1px solid #bbb;
+  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  margin-bottom: 3px;
+}
+
+.server .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+}
+.server .header:hover {
+  background-color: #edf8ff;
+}
+.server.expanded .header {
+  border-bottom: solid 1px #bbb;
+  background-color: #def3ff;
+}
+
+.server .header .expand {
+  flex-basis: 2%;
+}
+.server .header .url {
+  flex-basis: 40%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.server .header .url .entity-icon {
+  margin-right: 5px;
+  color: #667;
+}
+.server .header .validation-problem-icon {
+  margin-right: 5px;
+}
+.server .header .description {
+  flex-basis: 56%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 25px;
+}
+.server .header .actions {
+  flex-basis: 2%;
+  text-align: center;
+}
+.server .header .actions > div .fa-ellipsis-v {
+  visibility: hidden;
+}
+.server:hover .header .actions > div .fa-ellipsis-v {
+  visibility: visible;
+}
+
+.server .body {
+  position: relative;
+  padding: 15px;
+}
+.server .body .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.server .body .server-description form {
+  width: 100%;
+}
+.server .body .server-description .form-label {
+  font-weight: 600;
+}

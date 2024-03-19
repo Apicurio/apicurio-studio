@@ -1,0 +1,34 @@
+.section .section-actions {
+  display: inline;
+}
+
+.section .section-body.collapsed {
+  display: none;
+}
+
+.section .section-context-menu {
+  display: block;
+  position: fixed;
+}
+
+.section .section-context-menu li a span.fa {
+  margin-right: 3px;
+}
+
+.section .section-header .collaborator-aggregate {
+  margin-left: 5px;
+  margin-left: 18px;
+}
+
+.section .section-header .collaborator-aggregate > a.collaborator-icon {
+  color: white;
+}
+
+.section .section-body {
+  border: 1px solid transparent;
+}
+
+.section.highlight .section-body {
+  border: 1px solid #0088ce;
+  box-shadow: 0 0 3px 1px #0088ce;
+}

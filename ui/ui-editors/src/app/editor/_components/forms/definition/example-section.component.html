@@ -1,0 +1,17 @@
+<section type="example" label="EXAMPLE"
+         contextHelp="This section allows you to modify the Data Type's Example."
+         [collaborationNodePath]="exampleNodePath()"
+         [validationModels]="[definition]" [validationProperties]="['example']" [validationShallow]="true">
+    <span actions></span>
+    <div body>
+        <div class="section-field example">
+            <inline-example-editor [value]="example()"
+                                   [schema]="definition"
+                                   [labelClass]="'api-definition-example api-item-example'"
+                                   [formClass]="'api-definition-example-editor-form'"
+                                   [inputClass]="'api-item-editor api-example-editor api-definition-example api-item-example'"
+                                   [baseNode]="definition" nodePath="example"
+                                   [noValueMessage]="'No example.'" (onChange)="onExampleChange($event)"></inline-example-editor>
+        </div>
+    </div>
+</section>

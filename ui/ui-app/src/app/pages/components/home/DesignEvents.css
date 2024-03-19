@@ -1,0 +1,42 @@
+
+div.origin {
+    display: grid;
+    grid-template-columns: min-content auto;
+    margin-top: 20px;
+    font-size: 15px;
+}
+div.origin > div.label {
+    padding-right: 15px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    white-space: nowrap;
+}
+div.origin > div.value {
+    margin-bottom: 8px;
+}
+
+div.divider {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+div.exports {
+    display: grid;
+    grid-template-columns: auto min-content;
+    font-size: 15px;
+}
+div.exports > div.label {
+    padding-right: 15px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    white-space: nowrap;
+}
+div.exports > div.item {
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+div.exports > div.time {
+    margin-bottom: 8px;
+    color: #999;
+    white-space: nowrap;
+}

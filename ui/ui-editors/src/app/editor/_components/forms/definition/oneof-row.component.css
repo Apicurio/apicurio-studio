@@ -1,0 +1,142 @@
+.oneof {
+    border: 1px solid transparent;
+    position: relative;
+}
+
+.oneof.expanded {
+    border: 1px solid #bbb;
+    box-shadow: 0 2px 6px rgba(3, 3, 3, .2);
+    margin-bottom: 3px;
+}
+
+.oneof-config-tabcontent {
+    margin-top: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.oneof .header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 8px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #f5f5f5;
+}
+.oneof .header:hover {
+    background-color: #edf8ff;
+}
+.oneof.expanded .header {
+    border-bottom: solid 1px #bbb;
+    background-color: #def3ff;
+}
+
+.oneof .header .reference {
+    flex-basis: 20%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 5px;
+}
+.oneof .header .reference > span {
+    font-weight: 600;
+}
+
+.oneof .header .name {
+    flex-basis: 40%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 5px;
+}
+.oneof .header .name > span {
+    font-weight: 600;
+}
+.oneof .header .oneof-value {
+    flex-basis: 40%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 5px;
+}
+.oneof .header .oneof-value:hover {
+    color: #0088ce;
+    cursor: pointer;
+}
+
+.oneof .header .summary .oneof-sel {
+    font-weight: 600;
+    margin-right: 3px;
+}
+.oneof .header .summary .oneof-sel:hover {
+    filter: brightness(120%);
+}
+
+.oneof .header .actions {
+    flex-basis: 2%;
+    text-align: center;
+}
+
+.oneof .header > .selected {
+    margin-bottom: -4px;
+    border-bottom: 2px solid #0088ce;
+    color: #0088ce;
+}
+
+.oneof .body {
+    position: relative;
+    padding: 15px;
+}
+
+.oneof .body .close {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+.oneof .body .oneof-description form {
+    width: 100%;
+}
+
+.oneof .body .oneof-description .form-label {
+    font-weight: 600;
+}
+
+.oneof .body span.strong {
+    font-weight: 600;
+}
+
+.oneof .body .oneof-sel {
+    margin-bottom: 20px;
+}
+.oneof .body .oneof-type {
+    margin-bottom: 10px;
+}
+
+.oneof .body .toggle-buttons{
+    margin: 20px auto;
+}
+
+.oneof .body .toggle-buttons button {
+    margin-left: 10px;
+}
+
+.oneof .body .divider {
+    height: 1px;
+    width:100%;
+    display:block;
+    margin: 15px 0;
+    overflow: hidden;
+    background-color: #e5e5e5;
+}
+
+.oneof .body .oneof-sel .dropdown {
+    display: inline-block;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
+.oneof-label > label {
+    margin-bottom: 0px;
+    margin-top: 3px;
+}

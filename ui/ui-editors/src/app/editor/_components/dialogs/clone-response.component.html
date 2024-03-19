@@ -1,0 +1,36 @@
+<!-- Clone Response Dialog -->
+<div bsModal #cloneResponseModal="bs-modal" class="modal fade" id="cloneResponseModal" tabindex="-1" role="dialog"
+     aria-labelledby="cloneResponseModalLabel" role="dialog" aria-hidden="true" (onHidden)="close()" *ngIf="isOpen()"
+     [config]="{ backdrop: true }">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="cloneResponseModalLabel">Clone Response</h4>
+            </div>
+            <div class="modal-body">
+                <p>Enter information about the new response below and then click Clone.</p>
+                <form id="cloneResponse-form" class="form-horizontal" (submit)="clone()" #cloneResponseForm="ngForm">
+                    <div class="form-group">
+                        <label class="col-sm-5 control-label required" for="statusCodeDropDown">Response Status Code</label>
+                        <div class="col-sm-7">
+                            <drop-down id="statusCodeDropDown" [id]="'statusCodeDropDown'"
+                                [options]="getStatusCodeDropDownOptions()"
+                                [value]="getStatusCode()"
+                                (onValueChange)="setStatusCode($event)"
+                                [noSelectionLabel]="'Choose HTTP Status Code'"></drop-down>
+                            <div class="form-error-message error" *ngIf="codeExists">Response with this code already exists.</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="clone()" [disabled]="!isValid()">Clone</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

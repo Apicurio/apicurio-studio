@@ -1,0 +1,63 @@
+<div class="entity-editor {{ entityType }}-entity-editor container-fluid" (window:keydown)="onGlobalKeyDown($event)">
+    <a class="close-button" (click)="onClose.emit()"><span class="pficon pficon-close"></span></a>
+    <form id="entity-editor-form" class="entity-editor-form" #entityEditorForm="ngForm">
+        <div class="row-fluid header">
+            <div class="col-md-12">
+                <h1 class="title">{{ heading }}</h1>
+            </div>
+            <div class="context" *ngIf="contextIs === 'operation' || contextIs === 'pathItem'">
+                <div class="col-md-6 path">
+                    <div class="context-label">Path</div>
+                    <div path-item class="context-value" [path]="pathItem().getPath()"></div>
+                </div>
+                <div class="col-md-6 operation" *ngIf="contextIs === 'operation'">
+                    <span class="context-label">Operation</span>
+                    <span class="label"
+                          [class.label-info]="operation().getMethod() !== 'get' && operation().getMethod() !== 'post' && operation().getMethod() !== 'delete'"
+                          [class.label-success]="operation().getMethod() === 'get'"
+                          [class.label-warning]="operation().getMethod() === 'post'"
+                          [class.label-danger]="operation().getMethod() === 'delete'">{{ operation().getMethod() }}</span>
+                </div>
+            </div>
+            <div class="context" *ngIf="contextIs === 'dataType'">
+                <div class="col-md-6 dataType">
+                    <div class="context-label">Data Type</div>
+                    <div class="context-value">
+                        <span class="fa fa-code"></span>
+                        <span>{{ dataTypeName() }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid required-fields-notification divider-section">
+            <div class="col-md-12">
+                <div class="action-header">
+                    <div class="notice">
+                        <div *ngIf="showRequiredFieldsMessage" class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-default" (click)="onClose.emit()">Cancel</button>
+                        <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid || !entityEditorForm.valid">Save</button>
+                    </div>
+                </div>
+                <hr />
+            </div>
+        </div>
+
+        <ng-content></ng-content>
+
+        <div class="row-fluid divider-section">
+            <div class="col-md-12">
+                <hr />
+            </div>
+        </div>
+        <div class="row-fluid actions-section">
+            <div class="col-md-12">
+                <div class="actions">
+                    <button class="btn btn-default" (click)="onClose.emit()">Cancel</button>
+                    <button class="btn btn-primary" (click)="onSave.emit()" [disabled]="!valid || !entityEditorForm.valid">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

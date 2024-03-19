@@ -1,0 +1,41 @@
+.inline-json-editor-label {
+  display: inline-block;
+  width: 100%;
+}
+.inline-json-editor-label:hover > pre {
+  filter: brightness(95%);
+  cursor: pointer;
+}
+
+.inline-json-editor-label .glyphicon {
+  font-size: 11px;
+  margin-left: 5px;
+}
+.inline-json-editor-label:hover .glyphicon {
+  color: #669;
+}
+
+.inline-json-editor-label .md-container p:last-child {
+  margin-bottom: 0px;
+}
+
+.inline-json-editor {
+  position: relative;
+}
+
+.inline-json-editor-label .no-value {
+  border: 1px solid transparent;
+  padding: 2px 5px;
+  margin-left: -6px;
+  display: inline-block;
+  width: 100%;
+}
+.inline-json-editor-label .no-value:hover {
+  border-color: #bbb;
+  cursor: pointer;
+}
+
+.inline-json-editor > .btn-save {
+  margin-right: 3px;
+}
+

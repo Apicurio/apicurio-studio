@@ -1,0 +1,33 @@
+<section type="tags" label="TAG DEFINITIONS" [counterItems]="tags()"
+         contextHelp="Configure tags for your API in this section.  Once defined, tags can be used to organize your API's operations by arbitrary criteria."
+         collaborationNodePath="/tags"
+         [validationModels]="tags()">
+    <span actions>
+        <icon-button (onClick)="addTagDialog.open(document)" [pullRight]="true" type="add"
+                     title="Add a tag to the API."></icon-button>
+        <icon-button (onClick)="deleteAllTags()" [disabled]="!hasTags()"
+                     [pullRight]="true" type="delete"
+                     title="Delete all tag definitions."></icon-button>
+    </span>
+    <div body>
+        <signpost *ngIf="tags().length === 0">
+            <span>No tags have been configured.</span>
+            <a (click)="addTagDialog.open(document)">Add a tag</a>
+        </signpost>
+
+        <!-- The list of tags -->
+        <div class="tags" *ngIf="tags().length > 0">
+            <tag-row *ngFor="let tag of tags()" [item]="tag"
+                     (onRename)="openRenameDialog(tag)"
+                     (onDelete)="deleteTag(tag)"></tag-row>
+        </div>
+    </div>
+</section>
+<add-tag-dialog #addTagDialog (onAdd)="addTag($event)"></add-tag-dialog>
+<rename-entity-dialog #renameDialog
+                      type="Tag"
+                      title="Rename Tag"
+                      warning="Renaming a Tag will also update any references to that tag elsewhere in the API (e.g. tagging on operations)."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
+                      (onRename)="rename($event)"></rename-entity-dialog>

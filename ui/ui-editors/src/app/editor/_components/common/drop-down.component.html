@@ -1,0 +1,21 @@
+<div class="dropdown {{ classes }}" dropdown [class.empty]="!hasValue()" [isOpen]="_open" (isOpenChange)="setOpen($event)">
+    <button class="btn btn-default dropdown-toggle" type="button" id="{{ id }}" dropdownToggle>
+        <span *ngIf="hasValue() && !loading">{{ displayValue() }}</span>
+        <span *ngIf="!hasValue() && !loading">{{ noSelectionLabel }}</span>
+        <span *ngIf="loading"><span class="spinner spinner-xs spinner-inline"></span> {{ loadingLabel }}</span>
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" [style.max-height]="'400px'" [style.overflow-y]="'auto'" role="menu" [attr.aria-labelledby]="id" *dropdownMenu>
+        <li role="filter" class="filter" *ngIf="shouldShowFilter()">
+            <input type="text" class="form-control" id="dd-filter" placeholder="Filter..." #filter autocomplete="off"
+                   [(ngModel)]="criteria" (ngModelChange)="filterOptions()" (keypress)="inputKeypress($event)">
+        </li>
+        <li class="divider" *ngIf="shouldShowFilter()"></li>
+        <li role="presentation" *ngFor="let option of filteredOptions" [class.divider]="option.divider" [class.disabled]="option.disabled">
+            <a *ngIf="!option.divider" role="menuitem" tabindex="-1" (click)="option.disabled ? false : setValue(option.value)">{{ option.name }}</a>
+        </li>
+        <li role="presentation" *ngIf="!hasOptions()">
+            <span>{{ noOptionsLabel }}</span>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,10 @@
+.editor-asyncapi-flex-container {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    width: 100%;
+}
+
+.editor-asyncapi-flex-container .editor-flex-editor {
+    flex-grow: 1;
+}

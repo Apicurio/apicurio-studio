@@ -1,0 +1,25 @@
+{
+    "name": "@apicurio/apicurio-studio",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "postinstall": "npm install --prefix ./ui-app && npm install --prefix ./ui-editors",
+        "clean-app": "npm run clean --prefix ./ui-app",
+        "clean-editors": "npm run clean --prefix ./ui-editors",
+        "clean": "rimraf dist && npm run clean-app && npm run clean-editors",
+        "lint-app": "npm run lint --prefix ./ui-app",
+        "lint-editors": "npm run lint --prefix ./ui-editors",
+        "lint": "npm run lint-app && npm run lint-editors",
+        "build-app": "npm run build --prefix ./ui-app",
+        "build-editors": "npm run build --prefix ./ui-editors",
+        "build": "npm run build-app && npm run build-editors && node .scripts/generate-version.cjs",
+        "package": "node .scripts/package.cjs",
+        "dev": "npm run dev --prefix ./ui-app"
+    },
+    "devDependencies": {
+        "rimraf": "5.0.5",
+        "shelljs": "0.8.5"
+    }
+  }
+  

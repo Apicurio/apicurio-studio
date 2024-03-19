@@ -1,0 +1,31 @@
+<span *ngIf="!editing" class="inline-array-editor-label" [class.novalue]="isEmpty()">
+    <span *ngIf="isEmpty()" class="inline-editor-label" [class.empty]="isEmpty()"
+          (click)="onStartEditing()">{{ noValueMessage }}</span>
+    <span class="label label-default" *ngFor="let item of value">
+        <span>{{ item }}</span>
+        <i class="pficon pficon-close" (click)="removeItem(item)"></i>
+    </span>
+    <i class="glyphicon glyphicon-pencil" (click)="onStartEditing()" title="Click to edit."></i>
+</span>
+<span *ngIf="editing" class="inline-editor inline-array-editor">
+    <div class="form-control-pf-editable form-control-pf-edit">
+        <div class="form-control-pf-textbox">
+            <input #newvalue type="text" [(ngModel)]="evalue" class="form-control form-control-pf-editor" placeholder="{{ placeholderText() }}"
+                   autocomplete="off" (keypress)="onInputKeypress($event)" (keydown)="onInputKeypress($event)">
+            <button type="button" class="form-control-pf-empty" aria-label="Clear Value" (click)="clearValue()">
+              <span class="fa fa-times-circle fa-lg"></span>
+            </button>
+        </div>
+        <button title="Save changes." type="button" class="btn btn-primary form-control-pf-save"
+                aria-label="Save" (click)="onSave()"><i class="glyphicon glyphicon-ok"></i></button>
+        <button title="Cancel changes." type="button" class="btn btn-default form-control-pf-cancel"
+                aria-label="Cancel" (click)="onCancel()"><i class="glyphicon glyphicon-remove"></i></button>
+    </div>
+    <div class="apriori-items" *ngIf="hasItems()">
+        <span class="apriori-item" *ngFor="let item of getItems()" (click)="toggleItem(item)" [class.selected]="hasItem(item)">
+            <span class="fa fa-square-o" *ngIf="!hasItem(item)"></span>
+            <span class="fa fa-check-square-o" *ngIf="hasItem(item)"></span>
+            <span>{{ item }}</span>
+        </span>
+    </div>
+</span>

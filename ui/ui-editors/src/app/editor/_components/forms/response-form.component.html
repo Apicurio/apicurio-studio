@@ -1,0 +1,119 @@
+<div class="detail-title">
+    <div class="detail-label">
+        <span class="fa fa-fw fa-reply-all"></span>
+        <span>{{ responseName() }}</span>
+        <span class="imported label label-info" *ngIf="isImported()">Imported</span>
+    </div>
+    <div class="detail-actions">
+        <div class="dropdown">
+            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="fa fa-ellipsis-v"></span>
+            </button>
+            <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
+                <li>
+                    <a href="#" onclick="return false" (click)="collapseAllSections()">
+                        <span class="fa fa-compress"></span>
+                        <span>Collapse All Sections</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false" (click)="expandAllSections()">
+                        <span class="fa fa-expand"></span>
+                        <span>Expand All Sections</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#" onclick="return false" (click)="rename()">
+                        <span class="fa fa-pencil-square-o"></span>
+                        <span>Rename Response</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false" (click)="clone()">
+                        <span class="fa fa-clone"></span>
+                        <span>Clone Response</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#" onclick="return false" (click)="delete()">
+                        <span class="pficon pficon-delete"></span>
+                        <span>Delete Response</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="detail-tabs">
+    <ul class="nav nav-tabs nav-tabs-pf">
+        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()">Design</a></li>
+        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()">Source</a></li>
+    </ul>
+</div>
+
+<!-- Source Mode -->
+<div class="detail-actionbar" *ngIf="isSourceMode()">
+    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
+    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canToggleSourceFormat()" (click)="toggleSourceFormat()">
+        <span class="fa fa-fw fa-code"></span>
+        <span *ngIf="isSourceFormatYaml()">As JSON</span>
+        <span *ngIf="isSourceFormatJson()">As YAML</span>
+    </button>
+</div>
+<div class="detail-content" style="position: relative" *ngIf="isSourceMode()">
+    <code-editor #sourceEditor
+                 [(text)]="source"
+                 [theme]="sourceEditorTheme()"
+                 [mode]="sourceEditorMode()"
+                 [debounceTime]="250"
+                 [editorStyle]="{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, 'margin-top': '1px' }"></code-editor>
+</div>
+
+<!-- Design Mode -->
+<div class="detail-content" *ngIf="isDesignMode()">
+    <div class="api-response-detail" *ngIf="!isImported()">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active">
+                <response-tab [response]="response" *ngIf="is20Document()"></response-tab>
+                <response-tab-30 [response]="response" *ngIf="is30Document()"></response-tab-30>
+            </div>
+        </div>
+    </div>
+    <div class="api-response-detail" *ngIf="isImported()">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active">
+                <!-- Reference -->
+                <section type="respReference" label="REFERENCE"
+                         contextHelp="This section describes the externally referenced Response."
+                         [validationModels]="[ response ]"
+                         [validationProperties]="['$ref']"
+                         [validationShallow]="true">
+                    <div body>
+                        <span>This Response is an external reference to: </span>
+                        <em><a [href]="refLink()" target="_blank"><span class="fa fa-fw fa-external-link"></span>{{ response.$ref }}</a></em>
+                    </div>
+                </section>
+                <!-- Reference Details -->
+                <section type="respReferenceDetails" label="REFERENCE DETAILS"
+                         contextHelp="This section shows details about the externally referenced Response.">
+                    <div body>
+                        <pre>{{ referenceContent() }}</pre>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<clone-response-definition-dialog #cloneResponseDialog (onClone)="clone($event)"></clone-response-definition-dialog>
+<rename-entity-dialog #renameResponseDialog
+                      type="Response"
+                      title="Rename Response"
+                      warning="Renaming a Response will also update any references to the response elsewhere in the API (e.g. operations)."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      validationError="Enter a valid name (only alpha-numeric characters, ., - and _ are allowed - no whitespace)."
+                      (onRename)="rename($event)"></rename-entity-dialog>

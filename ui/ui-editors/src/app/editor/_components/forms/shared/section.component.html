@@ -1,0 +1,44 @@
+<div class="section {{ type }}-section panel-group" [class.highlight]="showHighlight">
+    <div class="section-header panel-title" #sectionHeader>
+        <a [class.collapsed]="!expanded" (click)="toggleExpansion()" (contextmenu)="openContextMenu($event)">
+            <span class="section-label">{{ label }} <counter [items]="counterItems" *ngIf="hasCounter()"></counter></span>
+            <validation-aggregate *ngIf="hasValidationAggregate()" [models]="validationModels"
+                                  [shallow]="validationShallow" [properties]="validationProperties"></validation-aggregate>
+        </a>
+        <context-help>
+            <p>{{ contextHelp }}</p>
+        </context-help>
+        <collaborator-aggregate [nodePath]="collaborationNodePath"></collaborator-aggregate>
+        <div class="section-actions">
+            <ng-content select="[actions]"></ng-content>
+        </div>
+    </div>
+    <div class="section-body" [class.collapsed]="!expanded" #sectionBody>
+        <ng-content select="[body]"></ng-content>
+    </div>
+
+    <!-- Section Context Menu -->
+    <ul class="dropdown-menu context-menu section-context-menu" *ngIf="showContextMenu" (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="collapseAllOtherSections()">
+                <span class="fa fa-long-arrow-right"></span>
+                <span>Collapse All Other Sections</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="collapseAllSections()">
+                <span class="fa fa-compress"></span>
+                <span>Collapse All Sections</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="return false" (click)="expandAllSections()">
+                <span class="fa fa-expand"></span>
+                <span>Expand All Sections</span>
+            </a>
+        </li>
+    </ul>
+
+</div>

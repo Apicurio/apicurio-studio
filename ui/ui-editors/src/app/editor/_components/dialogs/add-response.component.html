@@ -1,0 +1,48 @@
+<!-- Add Response Dialog -->
+<div bsModal #addResponseModal="bs-modal" class="modal fade" id="addResponseModal" tabindex="-1" role="dialog" [config]="{ backdrop: true }"
+     aria-labelledby="addResponseModalLabel" role="dialog" aria-hidden="true" (onHidden)="close()" *ngIf="isOpen()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addResponseModalLabel">Add Response</h4>
+            </div>
+            <div class="modal-body">
+                <p>Enter information about the new response below and then click Add.</p>
+                <form id="addResponse-form" class="form-horizontal" (submit)="add()" #addResponseForm="ngForm">
+                    <div class="form-group">
+                        <label class="col-sm-5 control-label required" for="statusCodeDropDown">Response Status Code</label>
+                        <div class="col-sm-7">
+                            <drop-down id="statusCodeDropDown" [id]="'statusCodeDropDown'"
+                                [options]="getStatusCodeDropDownOptions()"
+                                [value]="getStatusCode()"
+                                (onValueChange)="setStatusCode($event)"
+                                [noSelectionLabel]="'Choose HTTP Status Code'"></drop-down>
+                            <div class="form-error-message error" *ngIf="codeExists">Response with this code already exists.</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" *ngIf="hasReferences()">
+                        <label class="col-sm-5 control-label" for="refDropDown">Response Definition <i>(optional)</i></label>
+                        <div class="col-sm-7">
+                            <drop-down id="refDropDown" [id]="'refDropDown'"
+                                       [options]="getReferenceDropDownOptions()"
+                                       [value]="getReference()"
+                                       (onValueChange)="setReference($event)"
+                                       [noSelectionLabel]="'Response Reference.'"></drop-down>
+                            <a *ngIf="refName" (click)="setReference(null)">(reset)</a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!isValid()">Add</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

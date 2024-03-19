@@ -1,0 +1,16 @@
+<div class="inline-json-editor-label" *ngIf="!editing" (click)="onStartEditing()" title="Click to edit.">
+    <pre *ngIf="!isEmpty()">{{ displayValue() }}</pre>
+    <div class="no-value" *ngIf="isEmpty()">
+        <span class="empty">{{ noValueMessage }}</span>
+        <i class="glyphicon glyphicon-pencil"></i>
+    </div>
+</div>
+<div class="inline-editor inline-json-editor" *ngIf="editing" (keyup)="onInputKeypress($event)">
+    <code-editor [mode]="codeEditorMode()" #codeEditor
+                 [debounceTime]="150"
+                 [(text)]="evalue"
+                 wordWrap="true"
+                 [editorStyle]="{ position: 'relative', height: '220px', border: '1px solid #ccc', width: '100%' }"></code-editor>
+    <button title="Save changes." class="btn btn-xs btn-primary btn-save" (click)="onSave()"><span class="fa fa-fw fa-check"></span></button>
+    <button title="Cancel changes." class="btn btn-xs btn-default btn-cancel" (click)="onCancel()"><span class="fa fa-fw fa-close"></span></button>
+</div>

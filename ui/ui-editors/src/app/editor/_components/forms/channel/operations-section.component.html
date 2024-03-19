@@ -1,0 +1,53 @@
+<section type="operations" label="OPERATIONS" [counterItems]="operations()" [inForm]="false"
+         [collaborationNodePath]="collaborationPaths()"
+         contextHelp="In this section you can manage the operations defined for the channel."
+         [validationModels]="operations()">
+    <span actions></span>
+    <div body>
+        <div class="operation-tabs">
+            <div class="tabs">
+                <div class="operation-tab subscribe-tab" [class.selected]="tab === 'subscribe'" [class.enabled]="isDefined('subscribe')" (click)="selectTab('subscribe')">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('subscribe')"></collaborator-overlay>
+                        <span>Subscribe</span>
+                    </div>
+                    <validation-aggregate [models]="[ channel.subscribe ]"></validation-aggregate>
+                </div>
+                <div class="operation-tab publish-tab" [class.selected]="tab === 'publish'" [class.enabled]="isDefined('publish')" (click)="selectTab('publish')">
+                    <div class="tab-label">
+                        <collaborator-overlay [nodePath]="operationPath('publish')"></collaborator-overlay>
+                        <span>Publish</span>
+                    </div>
+                    <validation-aggregate [models]="[ channel.publish ]"></validation-aggregate>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="dropdown dropdown-kebab-pf">
+                    <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                            data-toggle="dropdown" aria-haspopup="true">
+                        <span class="fa fa-ellipsis-v"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li [class.disabled]="!operation()"><a (click)="deleteOperation(operation())"><span class="fa fa-fw fa-trash"></span><span>Delete Operation</span></a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a (click)="deleteAllOperations()"><span class="fa fa-fw fa-trash-o"></span><span>Delete All Operations</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="operation" *ngIf="hasSelectedOperation()">
+            <!-- Info Section -->
+            <channel-operation-info-section [operation]="operation()"></channel-operation-info-section>
+
+            <!-- Message Section -->
+            <message-section [operation]="operation()"></message-section>
+        </div>
+
+        <div class="no-operation" *ngIf="!hasSelectedOperation()">
+            <no-operation [method]="tab" (add)="addOperation()"></no-operation>
+        </div>
+    </div>
+</section>
+
+

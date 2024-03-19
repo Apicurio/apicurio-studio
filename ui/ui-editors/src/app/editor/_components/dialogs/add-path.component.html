@@ -1,0 +1,36 @@
+<!-- Add Path Dialog -->
+<div bsModal #addPathModal="bs-modal" class="modal fade" id="addPathModal" tabindex="-1" role="dialog" aria-labelledby="addPathModalLabel"
+     role="dialog" aria-hidden="true" (onShown)="doSelect()" [config]="{ backdrop: true }"
+     (onHidden)="close()" *ngIf="isOpen()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addPathModalLabel">Add Path</h4>
+            </div>
+            <div class="modal-body">
+                <p>Enter a new resource path below and then click Add.</p>
+                <form id="addpath-form" class="form-horizontal" (submit)="add()" #addPathForm="ngForm" data-dismiss="modal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label required" for="path">Path</label>
+                        <div class="col-sm-10">
+                            <input #addPathInput name="path" type="text" id="path" class="form-control" placeholder="Enter a Path"
+                                   pattern="(\/[^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+" required [(ngModel)]="path"
+                                   (ngModelChange)="validatePath($event)" #thepath="ngModel">
+                            <div class="form-error-message error" *ngIf="pathExists">Path already exists.</div>
+                            <form-error-message [inputModel]="thepath" [type]="'pattern'" [alwaysOn]="true">Enter a valid path.</form-error-message>
+                            <form-error-message [inputModel]="thepath" [type]="'required'">Path is required.</form-error-message>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!addPathForm.form.valid || pathExists">Add</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

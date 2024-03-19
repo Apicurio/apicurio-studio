@@ -1,0 +1,205 @@
+.property {
+  border: 1px solid transparent;
+  position: relative;
+}
+
+.property.expanded {
+  border: 1px solid #bbb;
+  box-shadow: 0 2px 6px rgba(3, 3, 3, .2);
+  margin-bottom: 3px;
+}
+
+.property-config-tabcontent {
+  margin-top: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.property .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.property .header:hover {
+  background-color: #edf8ff;
+}
+.property.expanded .header {
+  border-bottom: solid 1px #bbb;
+  background-color: #def3ff;
+}
+
+.property .header .name {
+  flex-basis: 18%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.property .header .name > span {
+  font-weight: 600;
+}
+.property .header .description {
+  flex-basis: 39%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.property .header .description:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+.property .header .example {
+  flex-basis: 39%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.property .header .example:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+.property .header .summary {
+  flex-basis: 41%;
+}
+.property .header .summary:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.property .header .summary .property-required {
+  font-weight: 600;
+  margin-right: 3px;
+}
+.property .header .summary .property-required:hover {
+  filter: brightness(120%);
+}
+
+.property .header .minmax {
+  flex-basis: 41%;
+}
+.property .header .minmax:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.property .header .minmax .property-required {
+  font-weight: 600;
+  margin-right: 3px;
+}
+.property .header .minmax .property-required:hover {
+  filter: brightness(120%);
+}
+
+.property .header .actions {
+  flex-basis: 2%;
+  text-align: center;
+}
+
+.property .header > .selected {
+  margin-bottom: -4px;
+  border-bottom: 2px solid #0088ce;
+  color: #0088ce;
+}
+
+.property .body {
+  position: relative;
+  padding: 15px;
+}
+.property .body .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.property .body .property-description form {
+  width: 100%;
+}
+.property .body .property-description .form-label {
+  font-weight: 600;
+}
+
+.property .body .property-example form {
+  width: 100%;
+}
+.property .body .property-example .form-label {
+  font-weight: 600;
+}
+
+.property .body span.strong {
+  font-weight: 600;
+}
+
+.property .body .property-required {
+  margin-bottom: 20px;
+}
+.property .body .property-type {
+  margin-bottom: 10px;
+}
+
+.property .body .property-minmax {
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.property .body .toggle-buttons{
+  margin: 20px auto;
+}
+
+.property .body .toggle-buttons button {
+  margin-left: 10px;
+}
+
+.property .body .divider {
+  height: 1px;
+  width:100%;
+  display:block;
+  margin: 15px 0;
+  overflow: hidden;
+  background-color: #e5e5e5;
+}
+
+.property .body .property-pattern {
+  margin-bottom: 10px;
+}
+
+.property .body .property-required .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.property .header .description > .fa,
+.property .header .summary > .fa,
+.property .header .example > .fa{
+  margin-right: 2px;
+}
+
+.property .summary .parameter-required {
+  margin-right: 3px;
+}
+
+.property .header .minmax > .fa {
+  margin-right: 2px;
+}
+
+.property .minmax .parameter-required {
+  margin-right: 3px;
+}
+
+.property .body .exclusive-div {
+  margin-top: 10px;
+}
+
+.property .body .nullable-div {
+  margin-top: 10px;
+}
+
+.property-label > label {
+  margin-bottom: 0px;
+  margin-top: 3px;
+}

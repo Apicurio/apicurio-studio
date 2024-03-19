@@ -1,0 +1,110 @@
+<div class="query-param" [class.expanded]="isEditing()" [class.required]="isRequired()" [class.overridable]="isOverridable()">
+    <div class="header">
+        <div class="name">
+            <validation-problem [model]="item"></validation-problem>
+            <span class="apicurio-icon-override icon-override" *ngIf="isParentOperation() && isOverride()"
+                  title="Overrides a parameter defined at the Path level."></span>
+            <span class="apicurio-icon-inherit-d icon-override" *ngIf="isParentOperation() && isOverridable()"
+                  title="Query parameter inherited from the Path level."></span>
+            <span class="apicurio-icon-local-d icon-override" *ngIf="isParentOperation() && isLocalOnly()"
+                  title="Query parameter defined for this operation only."></span>
+            <span title="{{ item.name }}">{{ item.name }}</span>
+        </div>
+        <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>
+            <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>
+        </div>
+        <div class="summary" (click)="toggleSummary()" [class.selected]="isEditingSummary()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingSummary()"></span>
+            <span class="parameter-required" *ngIf="isRequired()" title="This query parameter is required.">[required]</span>
+            <schema-type [type]="displayType()"></schema-type>
+        </div>
+        <div class="examples" (click)="toggleExamples()" [class.selected]="isEditingExamples()" *ngIf="is3xDocument()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingExamples()"></span>
+            <span [class.empty]="!hasExamples()"> {{ displayExamples() }}</span>
+        </div>
+        <div class="actions">
+            <div class="dropdown dropdown-kebab-pf" *ngIf="!isOverridable()">
+                <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a (click)="rename()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Rename</span></a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                </ul>
+            </div>
+            <button *ngIf="isOverridable()" (click)="override()" title="Override the query parameter."
+                    class="btn btn-default btn-xs btn-override">Override</button>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-11">
+                    <div class="param-description" *ngIf="isEditingDescription()">
+                        <div class="form-label">Description</div>
+                        <inline-markdown-editor [value]="item.description" [noValueMessage]="'No description.'"
+                                                [baseNode]="item" nodePath="description"
+                                                (onChange)="setDescription($event)"></inline-markdown-editor>
+                    </div>
+                    <div class="param-content" *ngIf="isEditingSummary()">
+                        <div class="param-required">
+                            <span class="dropdown-label">Parameter is</span>
+                            <drop-down [id]="'api-param-required'"
+                                       [value]="required()"
+                                       [options]="requiredOptions()"
+                                       (onValueChange)="changeRequired($event)"
+                                       [noSelectionLabel]="'Not Required'"></drop-down>
+                        </div>
+                        <div class="param-type">
+                            <schema-type-editor [document]="document()" [value]="model()" [isParameter]="isParameter()"
+                                                (onChange)="changeType($event)"></schema-type-editor>
+                        </div>
+                    </div>
+                    <div class="param-examples" *ngIf="isEditingExamples()">
+                        <div class="form-label">Examples</div>
+                        <signpost *ngIf="!hasExamples()">
+                            <span>No examples have been defined.</span>
+                            <a (click)="addExampleDialog.open()">Add an example</a>
+                        </signpost>
+                        <div *ngIf="hasExamples()">
+                            <table class="table table-striped table-bordered table-examples">
+                                <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th class="pre-actions">Example</th>
+                                    <th class="actions"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let example of paramExamples()">
+                                    <td class="name">
+                                        <validation-problem [model]="example"></validation-problem>
+                                        <span>{{ example.getName() }}</span>
+                                    </td>
+                                    <td class="value pre-actions">
+                                        <span>{{ exampleValue(example) }}</span>
+                                    </td>
+                                    <td class="actions">
+                                        <div>
+                                            <icon-button (onClick)="deleteExample(example)" [pullRight]="true" type="delete"
+                                                            [title]="'Delete example.'"></icon-button>
+                                            <icon-button (onClick)="editExampleDialog.open(example)" [pullRight]="true" type="edit"
+                                                            [title]="'Edit example.'"></icon-button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <a (click)="addExampleDialog.open()">Add an example</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <add-example-dialog #addExampleDialog (onAdd)="addExample($event)" [schema]="schemaForExample()"></add-example-dialog>
+    <edit-example-dialog #editExampleDialog (onEdit)="editExample($event)" [schema]="schemaForExample()"></edit-example-dialog>
+</div>

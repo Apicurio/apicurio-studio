@@ -1,0 +1,74 @@
+
+.responses-section .section-body .response-tabs {
+  display: flex;
+  width: 100%;
+}
+
+.responses-section .section-body .response-tabs .tab {
+  position: relative;
+  padding: 5px 10px;
+  background-color: #efefef;
+  border: 1px solid transparent;
+  margin-right: 5px;
+}
+.responses-section .section-body .response-tabs .tab:hover {
+  background-color: #e4e4e4;
+}
+
+.responses-section .section-body .response-tabs .tab.active {
+  border-color: #ddd;
+  border-bottom: 1px solid transparent;
+  background-color: white;
+  margin-bottom: -1px;
+}
+.responses-section .section-body .response-tabs .tab.active:hover {
+}
+
+.responses-section .section-body .response-tabs .tab:first-child {
+  border-left: 1px solid transparent;
+}
+.responses-section .section-body .response-tabs .tab:first-child.active {
+  border-left: 1px solid #ddd;
+}
+
+.responses-section .section-body .response-tabs .tab > a {
+  cursor: pointer;
+  text-decoration: none;
+  color: #666;
+}
+.responses-section .section-body .response-tabs .tab.active > a {
+  cursor: default;
+}
+
+.responses-section .section-body .response-tabs .tab.statusCode.success > a {
+  color: green;
+}
+.responses-section .section-body .response-tabs .tab.statusCode.redirect > a {
+  color: blue;
+}
+.responses-section .section-body .response-tabs .tab.statusCode.problem > a {
+  color: orange;
+}
+.responses-section .section-body .response-tabs .tab.statusCode.error > a {
+  color: red;
+}
+
+
+.responses-section .section-body .response-tabs .tab .validation-aggregate {
+  position: absolute;
+  right: -3px;
+  top: -7px;
+}
+
+.responses-section .section-body .response-tabs .actions {
+  flex-grow: 1;
+  text-align: right;
+  padding-right: 10px;
+  margin-top: 5px;
+}
+
+.responses-section .section-body .response-tab-content {
+  border: 1px solid #ddd;
+  background-color: white;
+  padding: 10px;
+}

@@ -1,0 +1,34 @@
+<!-- Cookie Parameters Section -->
+<section type="cookie-parameters" label="COOKIE PARAMETERS"
+         [counterItems]="cookieParameters()"
+         [contextHelp]="contextHelp()" [expanded]="showSectionBody"
+         [collaborationNodePath]="cookieParameterPaths()"
+         [validationModels]="cookieParameters()">
+    <span actions>
+        <icon-button (onClick)="openAddCookieParamEditor()" [pullRight]="true" type="add"
+                     [title]="'Add a new cookie parameter.'"></icon-button>
+        <icon-button (onClick)="deleteAllCookieParams()" [disabled]="!hasCookieParameters()"
+                     [pullRight]="true" type="delete"
+                     [title]="'Delete all cookie parameters.'"></icon-button>
+    </span>
+    <div body>
+        <signpost *ngIf="!hasCookieParameters()">
+            <span>No cookie parameters have been defined.</span>
+            <a (click)="openAddCookieParamEditor()">Add a cookie parameter</a>
+        </signpost>
+
+        <!-- The list of cookie parameters -->
+        <div class="container-fluid cookie-parameters typed-item-list" *ngIf="hasCookieParameters()">
+            <cookie-param-row *ngFor="let param of cookieParameters()" [item]="param"
+                             (onRename)="openRenameDialog(param)"
+                             (onDelete)="deleteParam(param)"></cookie-param-row>
+        </div>
+    </div>
+</section>
+<rename-entity-dialog #renameDialog
+                      type="Cookie Parameter"
+                      title="Rename Cookie Parameter"
+                      warning="Renaming a Cookie Parameter may also update any cookie parameters with the same name depending on path and operation hierarchies."
+                      validationPattern="[a-zA-Z0-9\.\-_\$]+"
+                      validationError="Enter a valid name (only alpha-numeric characters, ., -, _ and $ are allowed - no whitespace)."
+                      (onRename)="rename($event)"></rename-entity-dialog>

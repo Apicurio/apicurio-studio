@@ -1,0 +1,18 @@
+.security-scheme-entity-editor .body-section .scheme-details {
+  margin-left: 20px
+}
+
+.security-scheme-entity-editor .body-section #name_ro {
+  border-color: #002d45;
+  background-color: #efefef;
+  color: #666;
+}
+
+.security-scheme-entity-editor .scheme-details .form-group div input {
+  min-width: 350px;
+  width: 100%;
+}
+
+.security-scheme-entity-editor .oauth2-auth input[type="checkbox"] {
+  margin-right: 3px;
+}

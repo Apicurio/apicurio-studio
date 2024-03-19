@@ -1,0 +1,35 @@
+<!-- Edit Example Dialog -->
+<div>
+    <div bsModal #editExampleModal="bs-modal" class="modal fade" id="editExampleModal" tabindex="-1" role="dialog" [config]="{ backdrop: true }"
+         aria-labelledby="editExampleModalLabel" role="dialog" aria-hidden="true" *ngIf="isOpen()" (onHidden)="close()">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                        <span class="pficon pficon-close"></span>
+                    </button>
+                    <h4 class="modal-title" id="editExampleModalLabel">Edit Example</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Enter the new example value below and then click Edit.</p>
+                    <form id="editexample-form" class="form-horizontal" #editExampleForm="ngForm" data-dismiss="modal">
+                        <div class="example">
+                            <code-editor [theme]="valueEditorTheme()" #codeEditor
+                                         [mode]="valueEditorMode()"
+                                         [debounceTime]="200"
+                                         [(text)]="value"
+                                         [editorStyle]="{ position: 'relative', height: '300px', border: '1px solid #ccc', width: '100%' }"></code-editor>
+                            <button type="button" title="Generate example." class="btn btn-xs btn-default btn-generate" (click)="generate()"
+                                    *ngIf="canGenerateExample()"><span class="fa fa-fw fa-code"></span> Generate</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" (click)="edit()"
+                            [disabled]="!editExampleForm.form.valid || !hasValue()">Edit</button>
+                    <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

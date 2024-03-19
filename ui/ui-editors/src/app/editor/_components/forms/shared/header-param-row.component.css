@@ -1,0 +1,164 @@
+.header-param {
+  border: 1px solid transparent;
+  position: relative;
+}
+.header-param.expanded {
+  border: 1px solid #bbb;
+  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  margin-bottom: 3px;
+}
+
+.header-param .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.header-param .header:hover {
+  background-color: #edf8ff;
+}
+.header-param.expanded .header {
+  border-bottom: solid 1px #bbb;
+  background-color: #def3ff;
+}
+
+.header-param .header .name {
+  flex-basis: 18%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.header-param .header .name > span {
+  font-weight: 600;
+  color: #39a5dc;
+}
+.header-param .header .name .icon-override {
+  font-size: 16px;
+  font-weight: normal;
+  cursor: help;
+  margin-right: 3px;
+}
+
+.header-param .header .description {
+  flex-basis: 28%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.header-param .header .description:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+.header-param .header .summary {
+  flex-basis: 27%;
+}
+.header-param .header .summary:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.header-param .header .summary .parameter-required {
+  font-weight: 600;
+}
+.header-param .header .summary .parameter-required:hover {
+  filter: brightness(120%);
+}
+
+.header-param .header .examples {
+  flex-basis: 25%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.header-param .header .examples:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.header-param .header .actions {
+  flex-basis: 2%;
+  text-align: center;
+}
+
+.header-param .header .actions .btn-override {
+  position: absolute;
+  right: 5px;
+  top: 6px;
+}
+
+.header-param .header .actions > div .fa-ellipsis-v {
+  visibility: hidden;
+}
+.header-param:hover .header .actions > div .fa-ellipsis-v {
+  visibility: visible;
+}
+
+.header-param .header > .selected {
+  margin-bottom: -4px;
+  border-bottom: 2px solid #0088ce;
+  color: #0088ce;
+}
+
+.header-param .body {
+  position: relative;
+  padding: 15px;
+}
+.header-param .body .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.header-param .body .param-description form {
+  width: 100%;
+}
+.header-param .body .param-description .form-label {
+  font-weight: 600;
+}
+
+.header-param .body span.strong {
+  font-weight: 600;
+}
+
+.header-param .body .param-required {
+  margin-bottom: 20px;
+}
+.header-param .body .param-type {
+  margin-bottom: 10px;
+}
+
+.header-param .body .param-examplesform {
+  width: 100%;
+}
+.header-param .body .param-examples .form-label {
+  font-weight: 600;
+}
+
+.header-param .body .param-required .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+
+.header-param.overridable > .header > div > .fa-angle-right {
+  display: none;
+}
+.header-param.overridable .header .description:hover, .header-param.overridable .header .summary:hover {
+  color: inherit;
+  cursor: default;
+}
+
+.header-param .description > .fa,
+.header-param .summary > .fa {
+  margin-right: 2px;
+}
+
+.header-param .summary .parameter-required {
+  margin-right: 3px;
+}

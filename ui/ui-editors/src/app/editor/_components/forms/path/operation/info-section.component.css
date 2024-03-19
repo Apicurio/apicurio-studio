@@ -1,0 +1,34 @@
+
+.inherited-labels .inherited-label {
+  margin-right: 5px;
+  margin-bottom: 3px;
+  padding: 5px 5px 5px 8px;
+  display: inline-block;
+}
+.inherited-labels .inherited-label:hover {
+  filter: brightness(110%);
+}
+
+.inherited-labels, .overridden-labels {
+  padding-left: 28px;
+  position: relative;
+}
+
+
+.overridden-labels .icon-override, .inherited-labels .icon-inherit, .overridden-labels .icon-local {
+  position: absolute;
+  top: 7px;
+  left: 1px;
+  font-size: 16px;
+  color: #666;
+  cursor: help;
+}
+
+.inherited-labels-inner {
+  display: inline-block;
+  padding-top: 3px;
+}
+.inherited-labels button {
+  display: inline-block;
+  margin-top: -2px;
+}

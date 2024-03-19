@@ -1,0 +1,29 @@
+.validation-icon {
+  margin: 2px;
+  height: 38px;
+  line-height: 32px;
+}
+.validation-icon button {
+  color: #666;
+  font-size: 16px;
+  margin: 0;
+  height: 38px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.validation-icon:hover {
+  background-color: #d1eaf7;
+}
+
+.validation-icon button .icon {
+  color: #0088ce;
+  margin-right: 3px;
+}
+
+.validation-icon button .issues-label {
+  margin-right: 3px;
+}
+
+.validation-icon button:hover, .validation-icon button:focus {
+  text-decoration: none;
+}

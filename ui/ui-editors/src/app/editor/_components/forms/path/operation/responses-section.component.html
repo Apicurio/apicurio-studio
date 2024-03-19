@@ -1,0 +1,51 @@
+<section type="responses" label="RESPONSES" [counterItems]="responses()"
+         contextHelp="Use this section to configure the operation's Responses (e.g. 200, 404, 500)."
+         [collaborationNodePath]="responsesPath()"
+         [validationModels]="responses()">
+    <span actions>
+        <icon-button (onClick)="openAddResponseModal()" [pullRight]="true" type="add"
+                     [title]="'Add a response to the operation.'"></icon-button>
+        <icon-button (onClick)="deleteAllResponses()" [disabled]="!hasResponses()"
+                     [pullRight]="true" type="delete"
+                     [title]="'Delete all responses from the operation.'"></icon-button>
+    </span>
+    <div body>
+
+        <signpost *ngIf="!hasResponses()">
+            <validation-problem [model]="operation" [code]="'OP-007'" *ngIf="is20Document()"></validation-problem>
+            <validation-problem [model]="operation" [code]="'OP-3-004'" *ngIf="is30Document()"></validation-problem>
+            <span>No responses have been defined.</span>
+            <a (click)="openAddResponseModal()">Add a response</a>
+        </signpost>
+
+        <!-- The list of responses -->
+        <div class="response-tabs" *ngIf="hasResponses()">
+            <div class="tab statusCode {{ statusCodeType(response.getStatusCode()) }}" [class.active]="isTabActive(response)" *ngFor="let response of responses()">
+                <a (click)="setTab(response)">
+                    <span>{{ response.getStatusCode() }}</span>
+                    <span>&nbsp;</span>
+                    <span>{{ statusCodeLine(response.getStatusCode()) }}</span>
+                </a>
+                <validation-aggregate [models]="[ response ]"></validation-aggregate>
+            </div>
+            <div class="actions">
+                <div class="dropdown dropdown-kebab-pf">
+                    <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                            data-toggle="dropdown" aria-haspopup="true">
+                        <span class="fa fa-ellipsis-v"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a (click)="deleteResponse(currentResponse())"><span class="fa fa-fw fa-trash"></span><span>Delete Response</span></a></li>
+                        <li><a (click)="openCloneResponseModal(currentResponse())"><span class="fa fa-fw fa-clone"></span><span>Clone Response</span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="response-tab-content" *ngIf="hasResponses()">
+            <response-tab [response]="currentResponse()" *ngIf="is20Document()"></response-tab>
+            <response-tab-30 [response]="currentResponse()" *ngIf="is30Document()"></response-tab-30>
+        </div>
+    </div>
+</section>
+<add-response-dialog #addResponseDialog (onAdd)="addResponse($event)"></add-response-dialog>
+<clone-response-dialog #cloneResponseDialog (onClone)="cloneResponse($event)"></clone-response-dialog>

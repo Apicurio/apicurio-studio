@@ -1,0 +1,65 @@
+<section type="properties" label="PROPERTIES"
+         contextHelp="Use this section to define the properties that make up this data type."
+         [counterItems]="properties()"
+         [collaborationNodePath]="propertiesNodePath()"
+         [validationModels]="properties()">
+                    <span actions>
+                        <icon-button (onClick)="togglePropertiesConfig()" [pullRight]="true" type="config"
+                                     [title]="'Configure advanced properties options (e.g. min/maxProperties).'"></icon-button>
+                        <icon-button (onClick)="openAddSchemaPropertyEditor()" [pullRight]="true" type="add"
+                                     [title]="'Add a property to the schema.'"></icon-button>
+                        <icon-button (onClick)="deleteAllSchemaProperties()" [disabled]="!hasProperties()" [pullRight]="true" type="delete"
+                                     [title]="'Delete all properties from the schema.'"></icon-button>
+                    </span>
+    <div body>
+        <!-- Warning when no properties exist -->
+        <signpost *ngIf="!hasProperties()">
+            <span>No schema properties have been defined.</span>
+            <a (click)="openAddSchemaPropertyEditor()">Add a property</a>
+        </signpost>
+
+        <!-- Configuration of min/max/additional properties -->
+        <div *ngIf="_pconfigOpen" class="properties-config">
+            <div class="property-min-properties">
+                <div class="property-label">
+                    <label for="min-properties">Minimum Properties</label>
+                </div>
+                <div class="property-value">
+                    <pf-inline-text-editor [value]="minProperties()" noValueMessage="No minItems."
+                                           [baseNode]="definition" nodePath="minProperties" id="min-properties"
+                                           (onChange)="setMinProps($event)"></pf-inline-text-editor>
+                </div>
+            </div>
+
+            <div class="property-max-properties">
+                <div class="property-label">
+                    <label for="max-properties">Maximum Properties</label>
+                </div>
+                <div class="property-value">
+                    <pf-inline-text-editor [value]="maxProperties()" noValueMessage="No maxItems."
+                                           [baseNode]="definition" nodePath="maxProperties" id="max-properties"
+                                           (onChange)="setMaxProps($event)"></pf-inline-text-editor>
+                </div>
+            </div>
+
+            <div class="property-unique-items">
+                <checkbox-input [defaultValue]="!additionalProperties()" name="additional-properties" label="Allow only defined properties"
+                                id="unique-items" [baseNode]="definition" nodePath="additionalProperties"
+                                (onChange)="setAdditionalProperties(!$event)"></checkbox-input>
+            </div>
+        </div>
+
+        <!-- The list of schema properties -->
+        <div class="container-fluid path-parameters typed-item-list">
+            <property-row *ngFor="let property of properties()" [item]="property"
+                          (onDelete)="deleteProperty(property)"
+                          (onRename)="openRenamePropertyDialog(property)"></property-row>
+        </div>
+    </div>
+</section>
+<rename-entity-dialog #renamePropertyDialog
+                      type="Property"
+                      title="Rename Property"
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
+                      (onRename)="renameProperty($event)"></rename-entity-dialog>

@@ -1,0 +1,28 @@
+<!-- Visual Mode -->
+<div class="editor-title-bar {{ mainClasses() }}" *ngIf="!editMode">
+    <h1 [class.no-title]="!hasTitle()" (click)="selectMain()">
+        <span>{{ title() }}</span>
+        <a class="editor-title-bar-edit" (click)="editTitle()"><span class="fa fa-fw fa-pencil"></span></a>
+    </h1>
+    <undo-icon (onClick)="onUndoClick.emit(true)" [commandStackCount]="undoableCommandCount"></undo-icon>
+    <redo-icon (onClick)="onRedoClick.emit(true)" [commandStackCount]="redoableCommandCount"></redo-icon>
+    <validation-icon [validationErrors]="validationErrors" (onClick)="toggleProblemDrawer()"></validation-icon>
+</div>
+<!-- Edit Mode -->
+<div class="editor-title-bar editing {{ mainClasses() }}" *ngIf="editMode" >
+    <form #editform="ngForm" name="title-edit-form" class="title-editor-form" (submit)="save()">
+        <input #newtitle required [(ngModel)]="newTitle" type="text" class="form-control title-editor-input"
+               name="title-input" autocomplete="off" required (keypress)="onInputKeypress($event)">
+        <div class="edit-buttons">
+            <button title="Save changes." [disabled]="!editform.form.valid" class="btn btn-primary btn-save" type="submit">
+                <i class="glyphicon glyphicon-ok"></i>
+            </button>
+            <button title="Cancel changes." class="btn btn-default btn-cancel" (click)="cancel()">
+                <i class="glyphicon glyphicon-remove"></i>
+            </button>
+        </div>
+    </form>
+</div>
+<problem-drawer *ngIf="showProblems" [validationErrors]="validationErrors"
+                (onConfigureValidation)="onConfigureValidation.emit()"
+                (close)="closeProblemDrawer()"></problem-drawer>

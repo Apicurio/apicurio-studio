@@ -1,0 +1,49 @@
+.editor-context {
+    display: flex;
+}
+
+.editor-context .editor-context-breadcrumbs {
+    flex-grow: 1;
+    line-height: 34px;
+}
+.editor-context .editor-context-last-modified {
+    margin-left: 10px;
+    line-height: 34px;
+    color: #666;
+    font-size: 14px;
+}
+.editor-context .editor-context-actions {
+    margin-left: 20px;
+}
+.editor-context .editor-context-save {
+    margin-left: 10px;
+}
+.editor-context .editor-context-toggle {
+    border-left: 1px solid #ccc;
+    margin-left: 20px;
+}
+
+.editor-context .editor-context-last-modified > span {
+    margin-right: 5px;
+}
+
+.editor-context-details {
+}
+.editor-context-details .description {
+    font-size: 14px;
+    line-height: 18px;
+    padding-right: 30px;
+}
+
+.editor-context-details .metadata {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+#action-toggle > span {
+    color: var(--pf-c-dropdown__toggle--Color);
+}
+
+#action-toggle {
+    padding-right: 5px;
+}

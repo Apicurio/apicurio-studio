@@ -1,0 +1,87 @@
+<entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="schemaProperty" *ngIf="isOpen()"
+               [showRequiredFieldsMessage]="true" heading="Define a new Data Type Property." [valid]="isValid() && nameInput.valid">
+
+    <div class="row-fluid body-section">
+        <div class="col-md-12">
+            <h3>1. Enter Basic Information</h3>
+            <p class="explanation">
+                <span>Enter a name and description for the new property.</span>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label required" for="qp_name">Name</label>
+                <div>
+                    <input name="name" type="text" id="qp_name" class="form-control" required #nameInput="ngModel"
+                           [(ngModel)]="model.name" placeholder="Enter a unique property name." pattern="[a-zA-Z0-9\.\-_]+"
+                           (ngModelChange)="propExists = props.indexOf($event) != -1" autocomplete="off">
+                    <form-error-message [inputModel]="nameInput" type="required">Name is required.</form-error-message>
+                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                    <div class="form-error-message error" *ngIf="propExists">Property named <strong>{{ model.name }}</strong> already exists.</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="description">Description</label>
+                <div>
+                    <markdown-editor [(value)]="model.description" id="description"
+                                     [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc', width: '100%' }"></markdown-editor>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid divider-section">
+        <div class="col-md-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row-fluid body-section type-section">
+        <div class="col-md-12">
+            <h3>2. Enter Type Information <span class="optional empty">(optional)</span></h3>
+            <p class="explanation">
+                <span>
+                    Enter information about the property's type (and whether it is required).
+                </span>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <div>
+                    <div class="prop-type">
+                        <span class="propIs-label dropdown-label">Property is</span>
+                        <drop-down [id]="'api-prop-required'"
+                                   [value]="required()"
+                                   [options]="requiredOptions()"
+                                   (onValueChange)="changeRequired($event)"
+                                   [noSelectionLabel]="'Not Required'"></drop-down>
+                        <span class="strong type-label dropdowns-label">and has type</span>
+                        <drop-down [id]="'api-prop-type'"
+                                   [value]="type()"
+                                   [options]="typeOptions()"
+                                   (onValueChange)="changeType($event)"
+                                   [noSelectionLabel]="'Choose Type'"></drop-down>
+                        <span class="of-label dropdowns-label" *ngIf="type() === 'array'">of</span>
+                        <drop-down *ngIf="type() === 'array'"
+                                   [id]="'api-prop-type-of'"
+                                   [value]="typeOf()"
+                                   [options]="typeOfOptions()"
+                                   (onValueChange)="changeTypeOf($event)"
+                                   [noSelectionLabel]="'Choose Type'"></drop-down>
+                        <span class="as-label dropdowns-label" *ngIf="shouldShowFormattedAs()">as</span>
+                        <drop-down *ngIf="shouldShowFormattedAs()"
+                                   [id]="'api-prop-type-as'"
+                                   [value]="typeAs()"
+                                   [options]="typeAsOptions()"
+                                   (onValueChange)="changeTypeAs($event)"
+                                   [noSelectionLabel]="'Format'"></drop-down>
+                    </div>
+                    <div class="prop-enum" id="prop-enum" *ngIf="shouldShowEnumEditor()">
+                        <span class="enum-label">Enum Values: </span>
+                        <inline-array-editor *ngIf="shouldShowEnumEditor()" [value]="model.type.enum_" (onChange)="changeTypeEnum($event)"
+                                             noValueMessage="Click to define enum values."></inline-array-editor>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</entity-editor>

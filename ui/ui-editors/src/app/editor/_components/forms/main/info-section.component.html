@@ -1,0 +1,59 @@
+<section type="info" label="INFO"
+         contextHelp="This section allows you to modify the Version and Description of the API."
+         [collaborationNodePath]="[ '/info/version', '/info/description' ]"
+         [validationModels]="[info()]" [validationProperties]="['version', 'description']" [validationShallow]="true">
+    <span actions></span>
+    <div body>
+        <!-- Version -->
+        <div class="section-field-label">
+            <validation-problem [model]="info()" property="version" [shallow]="true"></validation-problem>
+            <span>Version</span>
+        </div>
+        <div class="section-field version">
+            <pf-inline-text-editor [value]="version()"
+                                   [labelClass]="'api-version'"
+                                   [formClass]="'api-title-editor-form'"
+                                   [inputClass]="'api-item-editor api-version-editor api-version api-item-version'"
+                                   [baseNode]="info()" nodePath="version"
+                                   [noValueMessage]="'N/A'" (onChange)="onVersionChange($event)"></pf-inline-text-editor>
+        </div>
+        <!-- Description -->
+        <div class="section-field-label">
+            <validation-problem [model]="info()" property="description" [shallow]="true"></validation-problem>
+            <span>Description</span>
+        </div>
+        <div class="section-field description">
+            <inline-markdown-editor [value]="description()"
+                                    [labelClass]="'api-description api-item-description'"
+                                    [formClass]="'api-description-editor-form'"
+                                    [inputClass]="'api-item-editor api-description-editor api-description api-item-description'"
+                                    [baseNode]="info()" nodePath="description"
+                                    [noValueMessage]="'No description.'" (onChange)="onDescriptionChange($event)"></inline-markdown-editor>
+        </div>
+        <!-- Consumes and Produces (2.0 only) -->
+        <div *ngIf="document.is2xDocument()">
+            <!-- Consumes -->
+            <div class="section-field-label">
+                <validation-problem [model]="document" property="consumes" [shallow]="true"></validation-problem>
+                <span>Consumes (Inputs)</span>
+            </div>
+            <div class="section-field consumes">
+                <inline-array-editor [value]="consumes()" [noValueMessage]="'Set the consumes content-type.'"
+                                     [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
+                                     [baseNode]="document" nodePath="consumes"
+                                     (onChange)="onConsumesChange($event)"></inline-array-editor>
+            </div>
+            <!-- Produces -->
+            <div class="section-field-label">
+                <validation-problem [model]="document" property="produces" [shallow]="true"></validation-problem>
+                <span>Produces (Outputs)</span>
+            </div>
+            <div class="section-field produces">
+                <inline-array-editor [value]="produces()" [noValueMessage]="'Set the produces content-type.'"
+                                     [items]="[ 'application/json', 'text/xml', 'multipart/form-data' ]"
+                                     [baseNode]="document" nodePath="produces"
+                                     (onChange)="onProducesChange($event)"></inline-array-editor>
+            </div>
+        </div>
+    </div>
+</section>

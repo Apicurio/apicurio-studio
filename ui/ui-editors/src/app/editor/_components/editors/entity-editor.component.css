@@ -1,0 +1,31 @@
+.action-header {
+  display: flex;
+  width: 60%;
+  min-width: 400px;
+}
+
+.action-header .notice {
+  flex-basis: 50%;
+}
+
+.action-header .actions {
+  text-align: right;
+  flex-basis: 50%;
+}
+.action-header .actions > button {
+  text-align: right;
+  flex-basis: 50%;
+  margin-left: 4px;
+}
+
+.required-fields-notification hr {
+  margin-top: 8px;
+}
+
+.actions-section .actions > button {
+  margin-left: 4px;
+}
+
+.entity-editor .entity-editor-form .context .context-value span.fa {
+  margin-right: 3px;
+}

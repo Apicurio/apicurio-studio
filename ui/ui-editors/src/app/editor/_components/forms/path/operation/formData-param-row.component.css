@@ -1,0 +1,124 @@
+.formData-param {
+  border: 1px solid transparent;
+  position: relative;
+}
+.formData-param.expanded {
+  border: 1px solid #bbb;
+  box-shadow: 0 2px 6px rgba(3,3,3,.2);
+  margin-bottom: 3px;
+}
+
+.formData-param .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #f5f5f5;
+}
+.formData-param .header:hover {
+  background-color: #edf8ff;
+}
+.formData-param.expanded .header {
+  border-bottom: solid 1px #bbb;
+  background-color: #def3ff;
+}
+
+.formData-param .header .name {
+  flex-basis: 18%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 5px;
+}
+.formData-param .header .name > span {
+  font-weight: 600;
+  color: #336;
+}
+
+.formData-param .header .description {
+  flex-basis: 39%;
+  overflow-x: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 15px;
+}
+.formData-param .header .description:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+.formData-param .header .summary {
+  flex-basis: 41%;
+}
+.formData-param .header .summary:hover {
+  color: #0088ce;
+  cursor: pointer;
+}
+
+.formData-param .header .summary .parameter-required {
+  font-weight: 600;
+}
+.formData-param .header .summary .parameter-required:hover {
+  filter: brightness(120%);
+}
+
+.formData-param .header .actions {
+  flex-basis: 2%;
+  text-align: center;
+}
+
+.formData-param .header .actions > div .fa-ellipsis-v {
+  visibility: hidden;
+}
+.formData-param:hover .header .actions > div .fa-ellipsis-v {
+  visibility: visible;
+}
+
+.formData-param .header > .selected {
+  margin-bottom: -4px;
+  border-bottom: 2px solid #0088ce;
+  color: #0088ce;
+}
+
+.formData-param .body {
+  position: relative;
+  padding: 15px;
+}
+.formData-param .body .close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.formData-param .body .param-description form {
+  width: 100%;
+}
+.formData-param .body .param-description .form-label {
+  font-weight: 600;
+}
+
+.formData-param .body span.strong {
+  font-weight: 600;
+}
+
+.formData-param .body .param-required {
+  margin-bottom: 20px;
+}
+.formData-param .body .param-type {
+  margin-bottom: 10px;
+}
+
+.formData-param .body .param-required .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.formData-param .description > .fa,
+.formData-param .summary > .fa {
+  margin-right: 2px;
+}
+
+.formData-param .summary .parameter-required {
+  margin-right: 3px;
+}

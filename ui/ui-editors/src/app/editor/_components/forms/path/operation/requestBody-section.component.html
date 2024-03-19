@@ -1,0 +1,92 @@
+<section type="requestBody" label="REQUEST BODY" [expanded]="showRequestBody"
+         contextHelp="Use this section to configure the operation's Request Body.  Typically a request body is used for PUT and POST only."
+         [collaborationNodePath]="requestBodyPaths()"
+         [validationModels]="validationModels()">
+    <span actions>
+        <icon-button *ngIf="is20Document()"
+                     (onClick)="openAddFormDataParamEditor()" [pullRight]="true" type="add"
+                     [invisible]="!hasFormDataParams()"
+                     [title]="'Add a response to the operation.'"></icon-button>
+        <icon-button *ngIf="is20Document()"
+                     (onClick)="deleteRequestBody()" [disabled]="!hasBodyParam() && !hasFormDataParams()"
+                     [pullRight]="true" type="delete"
+                     [title]="'Delete the request body.'"></icon-button>
+
+        <icon-button *ngIf="is30Document()"
+                     (onClick)="deleteRequestBody()" [pullRight]="true" type="delete" [disabled]="!hasRequestBody()"
+                     [title]="'Delete the request body.'"></icon-button>
+    </span>
+    <div body>
+        <signpost *ngIf="!hasAnything()">
+            <span>No request body has been defined.</span>
+            <a (click)="addRequestBody()">Add a request body</a>
+            <span *ngIf="is20Document()">, or</span>
+            <a *ngIf="is20Document()" (click)="openAddFormDataParamEditor()">add request form data</a>
+        </signpost>
+
+        <!-- If we're using a 'body' param -->
+        <div *ngIf="hasBodyParam()">
+            <div class="alert alert-warning" *ngIf="operation.getMethod() === 'get'">
+                <span class="pficon pficon-warning-triangle-o"></span>
+                <strong>Not Recommended</strong>
+                <span>It is unusual and not recommended to define a request body for a <strong>GET</strong> operation.</span>
+            </div>
+            <inline-markdown-editor [value]="bodyDescription()" noValueMessage="No request body description."
+                                    labelClass="request-body-description api-item-description description"
+                                    inputClass="api-description-editor api-item-description request-body-description api-item-description description"
+                                    formClass="api-description-editor-form"
+                                    [baseNode]="bodyParam()" nodePath="description"
+                                    (onChange)="changeBodyDescription($event)"></inline-markdown-editor>
+            <div class="request-body-type">
+                <schema-type-editor [document]="operation.ownerDocument()" [isParameter]="false" [value]="requestBodyType()"
+                                    typeLabel="Request Body Type" [validationModel]="bodyParam()"
+                                    (onChange)="changeRequestBodyType($event)"></schema-type-editor>
+            </div>
+        </div>
+
+        <!-- If we're using 'formData' params -->
+        <div *ngIf="hasFormDataParams()">
+            <div class="container-fluid formData-parameters typed-item-list">
+                <formData-param-row *ngFor="let param of formDataParameters()" [item]="param"
+                                    (onRename)="openRenameFormDataParameterDialog(param)"
+                                    (onDelete)="deleteParam(param)"></formData-param-row>
+            </div>
+        </div>
+
+        <!-- If it's a 3.0 document -->
+        <div *ngIf="hasRequestBody()">
+            <div class="alert alert-warning" *ngIf="operation.getMethod() === 'get'">
+                <span class="pficon pficon-warning-triangle-o"></span>
+                <strong>Not Recommended</strong>
+                <span>It is unusual and not recommended to define a request body for a <strong>GET</strong> operation.</span>
+            </div>
+            <inline-markdown-editor [value]="bodyDescription()" noValueMessage="No request body description."
+                                    labelClass="request-body-description api-item-description description"
+                                    inputClass="api-description-editor api-item-description request-body-description api-item-description description"
+                                    formClass="api-description-editor-form"
+                                    [baseNode]="requestBody()" nodePath="description"
+                                    (onChange)="changeBodyDescription($event)"></inline-markdown-editor>
+            <div class="request-body-required">
+                <span class="dropdown-label">It is</span>
+                <drop-down [id]="'api-request-body-required'"
+                           [value]="requestBody().required ? 'required' : 'not-required'"
+                           [options]="requestBodyRequiredOptions()"
+                           (onValueChange)="changeRequestBodyRequired($event)"
+                           [noSelectionLabel]="'Not Required'"></drop-down>
+                <span class="dropdowns-label">that clients include the request body.</span>
+            </div>
+            <div class="request-body-content">
+                <div class="form-label">Media Types</div>
+                <content [parent]="requestBody()"></content>
+            </div>
+        </div>
+
+    </div>
+</section>
+<rename-entity-dialog #renameFormDataDialog
+                      type="Form Data Parameter"
+                      title="Rename Form Data Parameter"
+                      warning="Renaming a Form Data Parameter may also update any form data parameters with the same name depending on path and operation hierarchies."
+                      validationPattern="[a-zA-Z0-9\.\-_\$]+"
+                      validationError="Enter a valid name (only alpha-numeric characters, ., -, _ and $ are allowed - no whitespace)."
+                      (onRename)="renameFormDataParameter($event)"></rename-entity-dialog>

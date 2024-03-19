@@ -1,0 +1,26 @@
+<section type="servers" label="SERVERS"
+         [counterItems]="servers()"
+         [contextHelp]="description"
+         [collaborationNodePath]="serversPath()"
+         [validationModels]="servers()" [expanded]="showSectionBody">
+    <span actions>
+        <icon-button (onClick)="onAddServer()" [pullRight]="true" type="add"
+                     [title]="'Add a server to the API.'"></icon-button>
+        <icon-button (onClick)="deleteAllServers()" [disabled]="!hasServers()"
+                     [pullRight]="true" type="delete"
+                     [title]="'Delete all servers.'"></icon-button>
+    </span>
+    <div body>
+        <signpost *ngIf="servers().length === 0">
+            <span>No servers have been defined.</span>
+            <a (click)="onAddServer()">Add a server</a>
+        </signpost>
+
+        <!-- The list of servers -->
+        <div class="tags" *ngIf="servers().length > 0">
+            <server-row *ngFor="let server of servers()" [item]="server"
+                        (onEdit)="changeServer($event)"
+                        (onDelete)="deleteServer(server)"></server-row>
+        </div>
+    </div>
+</section>

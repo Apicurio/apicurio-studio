@@ -1,0 +1,108 @@
+<entity-editor (onClose)="close()" (onSave)="save()" [context]="context" entityType="dataType" *ngIf="isOpen()"
+               [showRequiredFieldsMessage]="true" heading="Define a New Data Type" [valid]="isValid() && nameInput.valid">
+
+    <div class="row-fluid body-section">
+        <div class="col-md-12">
+            <h3>1. Enter Basic Information</h3>
+            <p class="explanation">
+                <span>
+                    Enter a name and description for the new data type.
+                </span>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label required" for="dt_name">Name</label>
+                <div>
+                    <input name="name" type="text" id="dt_name" class="form-control" required #nameInput="ngModel"
+                           [(ngModel)]="model.name" placeholder="Enter a unique data type name." pattern="[a-zA-Z0-9\.\-_]+"
+                           (ngModelChange)="defExists = defs.indexOf($event) != -1" autocomplete="off">
+                    <form-error-message [inputModel]="nameInput" type="required">Name is required.</form-error-message>
+                    <form-error-message [inputModel]="nameInput" [type]="'pattern'" [alwaysOn]="true">Enter a valid name (only alpha-numeric characters are allowed - no whitespace).</form-error-message>
+                    <div class="form-error-message error" *ngIf="defExists">Data type named <strong>{{ model.name }}</strong> already exists.</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="description">Description</label>
+                <div>
+                    <markdown-editor [(value)]="model.description" id="description"
+                                     [editorStyle]="{ position: 'relative', height: '100px', border: '1px solid #ccc', width: '100%' }"></markdown-editor>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid divider-section">
+        <div class="col-md-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row-fluid body-section">
+        <div class="col-md-12">
+            <h3>2. Enter JSON Example <span class="optional empty">(optional)</span></h3>
+            <p class="explanation">
+                <span>
+                    Enter a JSON formatted example of the data type that will be used to bootstrap the Data Type's
+                    schema properties.
+                </span>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="control-label" for="description">JSON Example</label>
+                <div>
+                    <code-editor [theme]="exampleEditorTheme()"
+                                 [mode]="exampleEditorMode()"
+                                 [debounceTime]="200"
+                                 [(text)]="example"
+                                 [editorStyle]="{ position: 'relative', height: '200px', border: '1px solid #ccc', width: '100%' }"></code-editor>
+                    <button class="btn btn-default btn-xs" type="button"
+                            [disabled]="!isExampleDefinitionFormattable()" (click)="formatExampleDefinition()">
+                        <span class="fa fa-fw fa-indent"></span>
+                        <span>Format</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="row-fluid divider-section">
+        <div class="col-md-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row-fluid body-section">
+        <div class="col-md-12">
+            <h3>3. Choose to create a REST Resource with the Data Type <span class="optional empty">(optional)</span></h3>
+            <p class="explanation">
+                <span>
+                    Create the new Data Type with some additional paths and operations automatically generated.
+                </span>
+            </p>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group create-option-group">
+                <div class="create-option" (click)="model.template = null" [class.selected]="model.template === null">
+                    <span class="check fa"
+                          [class.fa-circle-o]="model.template !== null"
+                          [class.fa-dot-circle-o]="model.template === null"></span>
+                    <span class="icon fa fa-ban"></span>
+                    <span class="option-label">No Resource</span>
+                </div>
+                <div class="create-option" (click)="model.template = 'resource'" [class.selected]="model.template === 'resource'">
+                    <span class="check fa"
+                          [class.fa-circle-o]="model.template !== 'resource'"
+                          [class.fa-dot-circle-o]="model.template === 'resource'"></span>
+                    <span class="icon fa fa-align-left"></span>
+                    <span class="option-label">REST Resource</span>
+                </div>
+                <div class="create-option-divider">
+                </div>
+                <div class="create-option-explanation">
+                    <span *ngIf="model.template === null">No additional paths or operations will be generated when creating this Data Type - only the Data Type itself will be created.</span>
+                    <span *ngIf="model.template === 'resource'">This will cause paths and operations to be created for the new Data Type, using a standard REST resource pattern and based on the name of the Data Type.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</entity-editor>

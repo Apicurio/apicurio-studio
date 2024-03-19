@@ -1,0 +1,19 @@
+.schema-type-type .dropdown {
+  display: inline-block;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.schema-type-enum {
+  margin-top: 5px;
+}
+
+.schema-type-enum .enum-label {
+  display: block;
+  font-weight: 600;
+}
+
+.schema-type-enum .inline-array-editor > .form-control-pf-edit > .form-control-pf-textbox > input {
+  width: 100%;
+  min-width: auto;
+}

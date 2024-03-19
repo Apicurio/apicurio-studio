@@ -1,0 +1,6 @@
+div.content > div.actions {
+  padding-left: 10px;
+}
+div.content > div.actions > a {
+  cursor: pointer;
+}

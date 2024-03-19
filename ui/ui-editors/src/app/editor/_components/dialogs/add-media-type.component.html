@@ -1,0 +1,42 @@
+<!-- Add Media Type Dialog -->
+<div bsModal #addMediaTypeModal="bs-modal" class="modal fade" id="addMediaTypeModal" tabindex="-1" role="dialog"
+     aria-labelledby="addMediaTypeModalLabel" role="dialog" (onHidden)="close()" *ngIf="isOpen()" [config]="{ backdrop: true }">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="addMediaTypeModalLabel">Add Media Type</h4>
+            </div>
+            <div class="modal-body">
+                <p>Choose a Media Type (e.g. application/json) below and then click Add.</p>
+                <form id="addmediaType-form" class="form-horizontal" (submit)="add()" #addMediaTypeForm="ngForm" data-dismiss="modal">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label required" for="mt">Media Type</label>
+                        <div class="col-sm-9">
+                            <drop-down id="mt" [id]="'api-mediaType'" [value]="mediaType" [options]="mediaTypeOptions()"
+                                       (onValueChange)="mediaType = $event" noSelectionLabel="Choose Media Type"></drop-down>
+                            <div class="form-error-message error" *ngIf="isMediaTypeAlreadyAdded() && mediaType !== 'custom'">Selected media type already exists.</div>
+                        </div>
+                    </div>
+                    <div class="form-group" *ngIf="mediaType === 'custom'">
+                        <label class="col-sm-3 control-label required" for="mediaType">Custom Type</label>
+                        <div class="col-sm-9">
+                            <input #customMediaTypeInput name="mediaType" type="text" id="mediaType" class="form-control"
+                                   placeholder="Enter a custom Media Type"
+                                   required [(ngModel)]="customType" #mtype="ngModel">
+                            <form-error-message [inputModel]="mtype" [type]="'required'">Custom media type is required.</form-error-message>
+                            <div class="form-error-message error" *ngIf="isMediaTypeAlreadyAdded()">Selected media type already exists.</div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="add()" [disabled]="!addMediaTypeForm.form.valid || !isValid()">Add</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

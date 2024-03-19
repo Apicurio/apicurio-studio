@@ -1,0 +1,5 @@
+<div class="openapi-editor" id="openapi-editor">
+    <aai-editor #apiEditor [api]="api" [embedded]="true" (onCommandExecuted)="documentChanged()"
+                (onUndo)="documentChanged()" (onRedo)="documentChanged()"
+                [features]="{ componentImports: false, validationSettings: false }"></aai-editor>
+</div>

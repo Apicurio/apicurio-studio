@@ -1,0 +1,211 @@
+<div class="property" [class.expanded]="isEditing()" [class.required]="isRequired()">
+    <div class="header">
+        <div class="name">
+            <validation-problem [model]="item"></validation-problem>
+            <span title="{{ item.getPropertyName() }}">{{ item.getPropertyName() }}</span>
+        </div>
+        <div class="description" (click)="toggleDescription()" [class.selected]="isEditingDescription()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingDescription()"></span>
+            <markdown-summary [data]="description()" emptyText="No description."></markdown-summary>
+        </div>
+        <div class="summary" (click)="toggleSummary()" [class.selected]="isEditingSummary()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingSummary()"></span>
+            <span class="property-required" *ngIf="isRequired()" title="This property is required.">[required]</span>
+            <schema-type [type]="displayType()"></schema-type>
+        </div>
+        <div class="example" (click)="toggleExample()" [class.selected]="isEditingExample()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditingExample()"></span>
+            <markdown-summary [data]="example()" emptyText="No example."></markdown-summary>
+        </div>
+        <div class="actions">
+            <div class="dropdown dropdown-kebab-pf">
+                <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="fa fa-ellipsis-v"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a (click)="rename()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Rename</span></a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-11">
+                    <div class="property-description" *ngIf="isEditingDescription()">
+                        <div class="form-label">Description</div>
+                        <inline-markdown-editor [value]="item.description" [noValueMessage]="'No description.'"
+                                                [baseNode]="item" nodePath="description"
+                                                (onChange)="setDescription($event)"></inline-markdown-editor>
+                    </div>
+                    <div class="property-content" *ngIf="isEditingSummary()">
+                        <div class="property-required">
+                            <span class="dropdown-label">Property is</span>
+                            <drop-down id="api-property-required"
+                                       [value]="required()"
+                                       [options]="requiredOptions()"
+                                       (onValueChange)="changeRequired($event)"
+                                       [noSelectionLabel]="'Not Required'"></drop-down>
+                        </div>
+                        <div class="property-type">
+                            <schema-type-editor [document]="document()" [value]="model()" [isParameter]="isParameter()"
+                                                (onChange)="changeType($event)"></schema-type-editor>
+                        </div>
+
+                        <div class="property-config-tabs" *ngIf="hasType()">
+                            <ul class="nav nav-tabs nav-tabs-pf">
+                                <li [class.active]="_ptab == null"><a (click)="_ptab = null">Advanced</a></li>
+                                <li [class.active]="_ptab == 'minmax'" *ngIf="isIntFloatEligible()"><a (click)="_ptab = 'minmax'">Minimum/Maximum</a></li>
+                                <li [class.active]="_ptab == 'length'" *ngIf="isStringEligible()"><a (click)="_ptab = 'length'">Min/Max Length</a></li>
+                                <li [class.active]="_ptab == 'exclusive'" *ngIf="isStringEligible()"><a (click)="_ptab = 'exclusive'">Min/Max Exclusive</a></li>
+                                <li [class.active]="_ptab == 'items'" *ngIf="isArrayEligible()"><a (click)="_ptab = 'items'">Min/Max/Unique Items</a></li>
+                            </ul>
+                        </div>
+                        <div class="property-config-tabcontent" *ngIf="hasType()">
+                            <!-- Advanced tab content -->
+                            <div class="tabcontent-advanced" *ngIf="_ptab == null">
+                                <div class="property-readOnly">
+                                    <checkbox-input [defaultValue]="readOnlyIsSet()" [name]="'readOnly'" label="Read Only"
+                                                    id="read-only" [baseNode]="item" nodePath="readOnly"
+                                                    (onChange)="setBoolean($event,'readOnly')"></checkbox-input>
+                                </div>
+                                <div class="property-writeOnly">
+                                    <checkbox-input [defaultValue]="writeOnlyIsSet()" [name]="'writeOnly'" label="Write Only"
+                                                    id="write-only" [baseNode]="item" nodePath="writeOnly"
+                                                    (onChange)="setBoolean($event,'writeOnly')"></checkbox-input>
+                                </div>
+
+                                <div class="property-pattern" *ngIf="isStringEligible()">
+                                    <div class="property-label">
+                                        <label for="pattern">Pattern</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="item.pattern"
+                                                               noValueMessage="No pattern."
+                                                               id="pattern"
+                                                               [baseNode]="item"
+                                                               nodePath="pattern"
+                                                               (onChange)="setPattern($event)"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Min/max tab content -->
+                            <div class="tabcontent-minmax" *ngIf="_ptab == 'minmax'">
+                                <div class="property-minimum">
+                                    <div class="property-label">
+                                        <label for="minimum">Minimum</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="minimumIsSet()" noValueMessage="No minimum."
+                                                                [baseNode]="item" nodePath="minimum" id="minimum"
+                                                                (onChange)="setNumValue($event,'minimum')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+
+                                <div class="property-maximum">
+                                    <div class="property-label">
+                                        <label for="maximum">Maximum</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="maximumIsSet()" noValueMessage="No maximum."
+                                                                [baseNode]="item" nodePath="maximum" id="maximum"
+                                                                (onChange)="setNumValue($event,'maximum')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+
+                                <div class="property-multipleOf">
+                                    <div class="property-label">
+                                        <label for="multiple-of">MultipleOf</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="multipleOfIsSet()" noValueMessage="No multipleOf."
+                                                                [baseNode]="item" nodePath="multipleOf" id="multiple-of"
+                                                                (onChange)="setNumValue($event,'multipleOf')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Min/Max Length tab content -->
+                            <div class="tabcontent-length" *ngIf="_ptab == 'length'">
+                                <div class="property-min-length">
+                                    <div class="property-label">
+                                        <label for="min-length">Minimum Length</label>
+                                    </div>
+                                    <pf-inline-text-editor [value]="minLengthIsSet()" noValueMessage="No minLength."
+                                                            [baseNode]="item" nodePath="minLength" id="min-length"
+                                                            (onChange)="setNumValue($event,'minLength')"></pf-inline-text-editor>
+                                </div>
+
+                                <div class="property-max-length">
+                                    <div class="property-label">
+                                        <label for="max-length">Maximum Length</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="maxLengthIsSet()" noValueMessage="No maxLength."
+                                                                [baseNode]="item" nodePath="maxLength" id="max-length"
+                                                                (onChange)="setNumValue($event,'maxLength')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Exclusive min/max tab content -->
+                            <div class="tabcontent-exclusive" *ngIf="_ptab == 'exclusive'">
+                                <div class="property-exclusive-minimum">
+                                    <checkbox-input [defaultValue]="exclusiveMinIsSet()" name="exclusive-minimum" label="Exclusive Min"
+                                                    id="exclusive-minimum" [baseNode]="item" nodePath="exclusiveMinimum"
+                                                    (onChange)="setBoolean($event,'exclusiveMinimum')"></checkbox-input>
+                                </div>
+                                <div class="property-exclusive-maximum">
+                                    <checkbox-input [defaultValue]="exclusiveMaxIsSet()" name="exclusive-maximum" label="Exclusive Max"
+                                                    id="exclusive-maximum" [baseNode]="item" nodePath="exclusiveMaximum"
+                                                    (onChange)="setBoolean($event,'exclusiveMaximum')"></checkbox-input>
+                                </div>
+                            </div>
+
+                            <!-- Min/max Items tab content -->
+                            <div class="tabcontent-items" *ngIf="_ptab == 'items'">
+                                <div class="property-min-items">
+                                    <div class="property-label">
+                                        <label for="min-items">Minimum Items</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="minItemsIsSet()" noValueMessage="No minItems."
+                                                                [baseNode]="item" nodePath="minItems" id="min-items"
+                                                                (onChange)="setNumValue($event,'minItems')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+
+                                <div class="property-max-items">
+                                    <div class="property-label">
+                                        <label for="max-items">Maximum Items</label>
+                                    </div>
+                                    <div class="property-value">
+                                        <pf-inline-text-editor [value]="maxItemsIsSet()" noValueMessage="No maxItems."
+                                                                [baseNode]="item" nodePath="maxItems" id="max-items"
+                                                                (onChange)="setNumValue($event,'maxItems')"></pf-inline-text-editor>
+                                    </div>
+                                </div>
+
+                                <div class="property-unique-items">
+                                    <checkbox-input [defaultValue]="uniqueItemsIsSet()" name="unique-items" label="Unique Items"
+                                                    id="unique-items" [baseNode]="item" nodePath="uniqueItems"
+                                                    (onChange)="setBoolean($event,'uniqueItems')"></checkbox-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="property-example" *ngIf="isEditingExample()">
+                        <div class="form-label">Example</div>
+                        <inline-markdown-editor [value]="item.example" [noValueMessage]="'No example.'"
+                                                [baseNode]="item" nodePath="example"
+                                                (onChange)="setExample($event)"></inline-markdown-editor>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

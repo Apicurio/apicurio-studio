@@ -1,0 +1,6 @@
+<div class="redo-icon">
+    <button class="btn btn-link nav-item-iconic" [class.enabled]="isRedoable()"
+            title="Click to redo the last change." (click)="onClick.emit(true)">
+        <span class="fa fa-share"></span>
+    </button>
+</div>

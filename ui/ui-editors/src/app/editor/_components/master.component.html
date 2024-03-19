@@ -1,0 +1,175 @@
+<div class="editor-master">
+    <!-- Path Context Menu -->
+    <ul id="path-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'path'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="newPath()">
+                <span class="pficon pficon-add-circle-o"></span>
+                <span>New Sub-Path</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="renamePath()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="return false" (click)="clonePath()">
+                <span class="fa fa-clone"></span>
+                <span>Clone</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deletePath()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Data Type Context Menu -->
+    <ul id="definition-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'definition'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameDefinition()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="return false" (click)="cloneDefinition()">
+                <span class="fa fa-clone"></span>
+                <span>Clone</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteDefinition()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Response Context Menu -->
+    <ul id="response-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'response'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameResponse()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="return false" (click)="cloneResponse()">
+                <span class="fa fa-clone"></span>
+                <span>Clone</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteResponse()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Search - Used to Filter Paths and Data Type -->
+    <div class="editor-search">
+        <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
+    </div>
+
+    <!-- Outline - Paths, Data Types, Responses -->
+    <div class="editor-outline">
+        <!-- Paths Section -->
+        <section type="path" label="Paths" [counterItems]="paths()" [inForm]="false"
+                 collaborationNodePath="/paths"
+                 contextHelp="The core of any REST API is the set of resources/paths it exposes.  Each path is of the form '/path/to/resource' and can support a number of operations.">
+            <span actions>
+                <icon-button (onClick)="addPathDialog.open(document, getCurrentPathSelection())" [pullRight]="true" type="add"></icon-button>
+            </span>
+            <div body tabindex="0" class="path-list master-entity-list" (keydown)="onPathsKeypress($event)" #pathList>
+                <signpost *ngIf="paths().length === 0">
+                    <span>No paths have been created.</span>
+                    <a (click)="addPathDialog.open(document, '/')">Add a path</a>
+                </signpost>
+
+                <div class="api-path {{ pathClasses(path) }}" *ngFor="let path of paths()">
+                    <div class="api-path-item" path-item [path]="path.getPath()" (click)="pathList.focus() ; selectPath(path)"
+                         (contextmenu)="showPathContextMenu($event, path)"></div>
+                    <collaborator-aggregate [nodePath]="asNodePath(path)"></collaborator-aggregate>
+                    <validation-aggregate [models]="[path]" *ngIf="shouldShowValidationAggregate()"></validation-aggregate>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Types Section -->
+        <section type="definition" label="Data Types" [counterItems]="definitions()" [inForm]="false"
+                 [collaborationNodePath]="definitionsPath()"
+                 contextHelp="It is often necessary for many operations to return the same type of data (or a list of that same data type).  Rather than define the same data type multiple times within each operation, you can create named Data Types in this section.">
+            <span actions>
+                <icon-button (onClick)="openAddDefinitionEditor()" [pullRight]="true" type="add" title="Create Data Type"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importDataTypes()" [pullRight]="true" type="import" title="Import Data Type"></icon-button>
+            </span>
+            <div body tabindex="0" class="definition-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #defList>
+                <signpost *ngIf="definitions().length === 0">
+                    <span>No reusable types have been created.</span>
+                    <a (click)="openAddDefinitionEditor()">Add a data type</a>
+                </signpost>
+
+                <div definition-item *ngFor="let def of definitions()" class="api-definition {{ definitionClasses(def) }}" [schema]="def"
+                     (click)="defList.focus() ; selectDefinition(def)" (contextmenu)="showDefinitionContextMenu($event, def)"></div>
+            </div>
+        </section>
+
+        <!-- Responses Section -->
+        <section type="response" label="Responses" [counterItems]="responses()" [inForm]="false"
+                 [collaborationNodePath]="responsesPath()"
+                 contextHelp="Define re-usable response definition in this section, allowing quick re-use across multiple operations.">
+            <span actions>
+                <icon-button (onClick)="openAddResponseEditor()" [pullRight]="true" type="add" title="Create Response"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importResponses()" [pullRight]="true" type="import" title="Import Response"></icon-button>
+            </span>
+            <div body tabindex="0" class="response-list master-entity-list" (keydown)="onResponsesKeypress($event)" #respList>
+                <signpost *ngIf="responses().length === 0">
+                    <span>No reusable responses have been created.</span>
+                    <a (click)="openAddResponseEditor()">Add a response</a>
+                </signpost>
+
+                <div response-item *ngFor="let resp of responses()" class="api-response {{ responseClasses(resp) }}" [response]="resp"
+                     (click)="respList.focus() ; selectResponse(resp)" (contextmenu)="showResponseContextMenu($event, resp)"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Dialogs -->
+    <add-path-dialog #addPathDialog (onAdd)="addPath($event)"></add-path-dialog>
+    <clone-path-dialog #clonePathDialog (onClone)="clonePath($event)"></clone-path-dialog>
+    <rename-path-dialog #renamePathDialog (onRename)="renamePath($event)"></rename-path-dialog>
+
+    <clone-definition-dialog #cloneDefinitionDialog (onClone)="cloneDefinition($event)"></clone-definition-dialog>
+    <rename-entity-dialog #renameDefinitionDialog
+                          type="Data Type"
+                          title="Rename Data Type"
+                          warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters, ., - and _ are allowed - no whitespace)."
+                          (onRename)="renameDefinition($event)"></rename-entity-dialog>
+
+    <clone-response-definition-dialog #cloneResponseDialog (onClone)="cloneResponse($event)"></clone-response-definition-dialog>
+    <rename-entity-dialog #renameResponseDialog
+                          type="Response"
+                          title="Rename Response"
+                          warning="Renaming a Response will also update any references to it elsewhere in the API."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters, ., - and _ are allowed - no whitespace)."
+                          (onRename)="renameResponse($event)"></rename-entity-dialog>
+</div>

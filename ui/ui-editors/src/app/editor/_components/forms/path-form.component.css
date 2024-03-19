@@ -1,0 +1,33 @@
+.detail-content .api-path-detail {
+  padding-bottom: 40px;
+}
+
+.operations-section .section-body .api-operation > .header {
+  display: flex;
+}
+.operations-section .section-body .api-operation > .header > .type {
+  line-height: 32px;
+}
+.operations-section .section-body .api-operation > .header > .summary {
+  padding-left: 9px;
+  padding-right: 10px;
+  flex-grow: 1;
+}
+.operations-section .section-body .api-operation > .header > .summary .pf-inline-text-editor {
+  margin-top: 3px;
+}
+.operations-section .section-body .api-operation > .header > .delete {
+}
+.operations-section .section-body .api-operation > .header > .delete > button {
+  margin-top: 4px;
+}
+
+.operations-section .section-body .api-operation .md-description {
+  margin-top: 5px;
+  margin-left: 0px;
+  width: 100%;
+}
+
+.operations-section .section-body .api-operation .inline-markdown-editor {
+  margin-top: 5px;
+}

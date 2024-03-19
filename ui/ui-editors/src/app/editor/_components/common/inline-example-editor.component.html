@@ -1,0 +1,19 @@
+<div class="inline-example-editor-label" *ngIf="!editing" (click)="onStartEditing()" title="Click to edit.">
+    <pre *ngIf="!isEmpty()">{{ displayValue() }}</pre>
+    <div class="no-value" *ngIf="isEmpty()">
+        <span class="empty">{{ noValueMessage }}</span>
+        <i class="glyphicon glyphicon-pencil"></i>
+    </div>
+</div>
+<div class="inline-editor inline-example-editor" *ngIf="editing" (keyup)="onInputKeypress($event)">
+    <code-editor [mode]="codeEditorMode()" #codeEditor
+                 [debounceTime]="150"
+                 [(text)]="evalue"
+                 (textChange)="updateModeFromContent($event)"
+                 wordWrap="true"
+                 [editorStyle]="{ position: 'relative', height: '220px', border: '1px solid #ccc', width: '100%' }"></code-editor>
+    <button title="Save changes." class="btn btn-xs btn-primary btn-save" (click)="onSave()"><span class="fa fa-fw fa-check"></span></button>
+    <button title="Cancel changes." class="btn btn-xs btn-default btn-cancel" (click)="onCancel()"><span class="fa fa-fw fa-close"></span></button>
+    <button title="Generate example." class="btn btn-xs btn-default btn-generate" (click)="generate()"
+            *ngIf="canGenerateExample()"><span class="fa fa-fw fa-code"></span> Generate</button>
+</div>

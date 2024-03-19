@@ -1,0 +1,36 @@
+<!-- Clone Path Dialog -->
+<div bsModal #clonePathModal="bs-modal" class="modal fade" id="clonePathModal" tabindex="-1" role="dialog" aria-labelledby="clonePathModalLabel"
+     role="dialog" aria-hidden="true" (onShown)="doSelect()" [config]="{ backdrop: true }"
+     (onHidden)="close()" *ngIf="isOpen()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" aria-hidden="true" (click)="cancel()">
+                    <span class="pficon pficon-close"></span>
+                </button>
+                <h4 class="modal-title" id="clonePathModalLabel">Clone Path</h4>
+            </div>
+            <div class="modal-body">
+                <p>Enter a new resource path below and then click Clone.</p>
+                <form id="clonepath-form" class="form-horizontal" (submit)="clone()" #clonePathForm="ngForm" data-dismiss="modal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label required" for="path">Path</label>
+                        <div class="col-sm-10">
+                            <input #pname="ngModel" name="path" type="text" id="path" class="form-control" placeholder="Enter a Path"
+                                   pattern="(\/[^{}\/]*(\{[a-zA-Z_][0-9a-zA-Z_]*\})?)+" required [(ngModel)]="path"
+                                   (ngModelChange)="validatePath($event)">
+                            <div class="form-error-message error" *ngIf="pathExists">Path already exists.</div>
+                            <form-error-message [inputModel]="pname" [type]="'pattern'" [alwaysOn]="true">Enter a valid path.</form-error-message>
+                            <form-error-message [inputModel]="pname" [type]="'required'">Path is required.</form-error-message>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="notice-of-required modal-notice-of-required">The fields marked with <span class="required-icon">*</span> are required.</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="clone()" [disabled]="!clonePathForm.form.valid || pathExists">Clone</button>
+                <button type="button" class="btn btn-default" (click)="cancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

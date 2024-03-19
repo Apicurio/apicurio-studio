@@ -1,0 +1,158 @@
+<div class="detail-title">
+    <div class="detail-label">
+        <span class="fa fa-fw fa-code"></span>
+        <span>{{ definitionName() }}</span>
+        <span class="imported label label-info" *ngIf="isImported()">Imported</span>
+    </div>
+    <div class="detail-actions">
+        <div class="dropdown">
+            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                <span class="fa fa-ellipsis-v"></span>
+            </button>
+            <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
+                <li>
+                    <a href="#" onclick="return false" (click)="collapseAllSections()">
+                        <span class="fa fa-compress"></span>
+                        <span>Collapse All Sections</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false" (click)="expandAllSections()">
+                        <span class="fa fa-expand"></span>
+                        <span>Expand All Sections</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#" onclick="return false" (click)="rename()">
+                        <span class="fa fa-pencil-square-o"></span>
+                        <span>Rename Data Type</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" onclick="return false" (click)="clone()">
+                        <span class="fa fa-clone"></span>
+                        <span>Clone Data Type</span>
+                    </a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#" onclick="return false" (click)="delete()">
+                        <span class="pficon pficon-delete"></span>
+                        <span>Delete Data Type</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="detail-tabs">
+    <ul class="nav nav-tabs nav-tabs-pf">
+        <li [class.active]="isDesignMode()" [class.disabled]="canSaveSource()"><a (click)="enableDesignMode()">Design</a></li>
+        <li [class.active]="isSourceMode()"><a (click)="enableSourceMode()">Source</a></li>
+    </ul>
+</div>
+
+<!-- Source Mode -->
+<div class="detail-actionbar" *ngIf="isSourceMode()">
+    <button class="btn btn-default btn-xs" [disabled]="!canFormatSource()" (click)="formatSource()"><span class="fa fa-fw fa-indent"></span> <span>Format</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canRevertSource()" (click)="revertSource()"><span class="fa fa-fw fa-undo"></span> <span>Revert</span></button>
+    <button class="btn btn-primary btn-xs" [disabled]="!canSaveSource()" (click)="saveSource()"><span class="pficon pficon-save"></span> <span>Save</span></button>
+    <button class="btn btn-default btn-xs" [disabled]="!canToggleSourceFormat()" (click)="toggleSourceFormat()">
+        <span class="fa fa-fw fa-code"></span>
+        <span *ngIf="isSourceFormatYaml()">As JSON</span>
+        <span *ngIf="isSourceFormatJson()">As YAML</span>
+    </button>
+</div>
+<div class="detail-content" style="position: relative" *ngIf="isSourceMode()">
+    <code-editor #sourceEditor
+                 [(text)]="source"
+                 [theme]="sourceEditorTheme()"
+                 [mode]="sourceEditorMode()"
+                 [debounceTime]="250"
+                 [editorStyle]="{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, 'margin-top': '1px' }"></code-editor>
+</div>
+
+<!-- Design Mode -->
+<div class="detail-content" *ngIf="isDesignMode()">
+    <div class="api-definition-detail" *ngIf="!isImported()">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active">
+
+                <!-- Info about the Definition -->
+                <definition-info-section [definition]="definition"></definition-info-section>
+
+                <!-- Simple Type -->
+                <section type="simpleType" label="TYPE" *ngIf="!isObject()"
+                         contextHelp="Use this section to manage the type information."
+                         [validationModels]="[ definition ]"
+                         [validationProperties]="['type', 'format', 'items']"
+                         [validationShallow]="true">
+                    <div body>
+                        <schema-type-editor [document]="definition.ownerDocument()" [value]="simpleType()" [isParameter]="false"
+                                            (onChange)="changeSimpleType($event)"></schema-type-editor>
+                    </div>
+                </section>
+
+                <!-- Inheritance -->
+                <section type="inheritance" label="INHERITANCE" *ngIf="isObject()">
+                    <div body>
+                        <div class="section-field-label">
+                            <span>Inheritance Type</span>
+                        </div>
+                        <div class="section-field inheritance-type">
+                            <drop-down [id]="'inheritance-type'" [value]="inheritanceType()" [options]="inheritanceTypeOptions()"
+                                       (onValueChange)="setInheritanceType($event)"></drop-down>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Object Type : Properties -->
+                <schemas-section [definition]="definition" *ngIf="isInheritanceEnabled()"></schemas-section>
+
+                <!-- Object Type : Properties -->
+                <properties-section [definition]="definition" *ngIf="isObject()"></properties-section>
+
+                <!-- Definition Example -->
+                <definition-example-section [definition]="definition"></definition-example-section>
+
+                <!-- Vendor Extensions -->
+                <extensions-section [parent]="definition"></extensions-section>
+
+            </div>
+        </div>
+    </div>
+    <div class="api-definition-detail" *ngIf="isImported()">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active">
+                <!-- Reference -->
+                <section type="dtReference" label="REFERENCE"
+                         contextHelp="This section describes the externally referenced Data Type."
+                         [validationModels]="[ definition ]"
+                         [validationProperties]="['$ref']"
+                         [validationShallow]="true">
+                    <div body>
+                        <span>This Data Type is an external reference to: </span>
+                        <em><a [href]="refLink()" target="_blank"><span class="fa fa-fw fa-external-link"></span>{{ definition.$ref }}</a></em>
+                    </div>
+                </section>
+                <!-- Reference Details -->
+                <section type="dtReferenceDetails" label="REFERENCE DETAILS"
+                         contextHelp="This section shows details about the externally referenced Data Type.">
+                    <div body>
+                        <pre>{{ referenceContent() }}</pre>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<clone-definition-dialog #cloneDefinitionDialog (onClone)="clone($event)"></clone-definition-dialog>
+<rename-entity-dialog #renameDefinitionDialog
+                      type="Data Type"
+                      title="Rename Data Type"
+                      warning="Renaming a Data Type will also update any references to the type elsewhere in the API (e.g. responses and request bodies)."
+                      validationPattern="[a-zA-Z0-9\.\-_]+"
+                      validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
+                      (onRename)="rename($event)"></rename-entity-dialog>

@@ -1,0 +1,37 @@
+.response {
+}
+
+.response .problem-flex {
+  display: flex;
+}
+.response .problem-flex .grow {
+  flex-grow: 1;
+}
+.response .problem-flex > *:first-child {
+  margin-top: 2px;
+}
+.response .problem-flex > *:first-child > span {
+  margin-right: 8px;
+}
+
+.response div.form-label {
+  margin-top: 15px;
+  font-weight: 600;
+}
+.response .response-description div.form-label {
+  margin-top: 2px;
+}
+.response .response-content div.form-label {
+  margin-bottom: 5px;
+}
+
+.response .response-header div.form-label {
+  margin-bottom: 5px;
+}
+
+.response .response-ref em {
+  font-style: normal;
+}
+.response .response-ref em > a {
+  font-weight: bold;
+}

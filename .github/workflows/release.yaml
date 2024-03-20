@@ -1,0 +1,147 @@
+name: Release Workflow
+on:
+  workflow_dispatch:
+    inputs:
+      release-version:
+        description: 'Version being released'
+        required: true
+      snapshot-version:
+        description: 'Next snapshot version'
+        required: true
+      branch:
+        description: 'Branch to release from'
+        required: true
+        default: 'main'
+      skip-maven-deploy:
+        description: 'Skip maven deploy'
+        required: true
+        default: 'false'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'Apicurio'
+    steps:
+      - name: Log Metadata
+        run: |
+          echo "==========================================================================================================="
+          echo "Release Module: ${{ env.GITHUB_REPOSITORY }}
+          echo "Release Version: ${{ github.event.inputs.release-version }}
+          echo "Release Branch: ${{ github.event.inputs.branch }}"
+          echo "Release Actor: ${{ env.GITHUB_ACTOR }}"
+          echo "Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
+          echo "==========================================================================================================="
+
+      - name: Configure Git
+        run: |
+         git config --global user.name "apicurio-ci[bot]"
+         git config --global user.email "apicurio-ci@users.noreply.github.com"
+          
+      - name: Checkout Code with Ref ${{github.event.inputs.BRANCH}}
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
+          token: ${{ secrets.ACCESS_TOKEN }}
+          path: studio
+          
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Update Release Version ${{ github.event.inputs.release-version }} in pom.xml
+        run: |
+          cd studio
+          mvn versions:set -DnewVersion=${{ github.event.inputs.release-version }} -DgenerateBackupPoms=false -DprocessAllModules=true
+          cd ui
+          npm version ${{ github.event.inputs.release-version }}
+          cd ui-app
+          npm version ${{ github.event.inputs.release-version }}
+          cd ../ui-editors
+          npm version ${{ github.event.inputs.release-version }}
+
+      - name: Build Apicurio Studio
+        run: |
+          cd studio
+          mvn install -Dmaven.javadoc.skip=false --no-transfer-progress -DtrimStackTrace=false
+          cd ui
+          npm install
+          npm run build
+          npm run package
+
+      - name: Set up settings.xml
+        if: github.event.inputs.skip-maven-deploy == 'false'
+        run: |
+          pwd
+          mkdir -p /home/runner/.m2
+          chmod 755 /home/runner/.m2
+          echo "<settings><servers><server><id>${{ secrets.OSSRH_ID }}</id><username>${{ secrets.OSSRH_USERNAME }}</username><password>${{ secrets.OSSRH_TOKEN }}</password></server></servers><profiles><profile><id>${{ secrets.OSSRH_ID }}</id><activation><activeByDefault>true</activeByDefault></activation><properties><gpg.executable>gpg</gpg.executable><gpg.passphrase>${{ secrets.GPG_PASSPHRASE}}</gpg.passphrase></properties></profile></profiles></settings>" > /home/runner/.m2/settings.xml
+          cat /home/runner/.m2/settings.xml
+
+      - name: Import GPG Key
+        if: github.event.inputs.skip-maven-deploy == 'false'
+        uses: crazy-max/ghaction-import-gpg@v1
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        
+      - name: Push Changes for Release Version ${{ github.event.inputs.release-version }}
+        run: |
+          cd studio
+          git add .
+          git commit -m "Automated update for Release Version: ${{ github.event.inputs.release-version }}"
+          git push origin ${{github.event.inputs.branch}}
+
+      - name: Fetch Latest Commit SHA
+        run: |
+          cd studio
+          echo "latest-commit-sha=$(git log -n 1 --pretty=format:"%H")" >> $GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
+        with:
+          name: ${{ github.event.inputs.release-version }}
+          tag_name: ${{ github.event.inputs.release-version }}
+          token: ${{ secrets.ACCESS_TOKEN }}
+          target_commitish: ${{ env.latest-commit-sha }}
+          prerelease: false
+
+      - name: Update Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
+        run: |
+          cd studio
+          mvn versions:set -DnewVersion=${{ github.event.inputs.snapshot-version }} -DgenerateBackupPoms=false -DprocessAllModules=true
+          cd ui
+          npm version ${{ github.event.inputs.snapshot-version }}
+          cd ui-app
+          npm version ${{ github.event.inputs.snapshot-version }}
+          cd ../ui-editors
+          npm version ${{ github.event.inputs.snapshot-version }}
+
+      - name: Push Changes for Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
+        run: |
+          cd studio
+          git add .
+          git commit -m "Automated update for Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
+          git push origin ${{github.event.inputs.branch}}
+
+      - name: Google Chat Notification (Always)
+        if: always()
+        uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
+        with:
+          name: ${{ github.job }}
+          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+          status: ${{ job.status }}
+
+      - name: Google Chat Notification (Error)
+        if: failure()
+        uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
+        with:
+          name: ${{ github.job }}
+          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK_ERRORS }}
+          status: ${{ job.status }}

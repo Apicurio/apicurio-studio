@@ -1,0 +1,31 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  groups:
+    app-dependencies:
+      patterns:
+        - "*"
+
+- package-ecosystem: npm
+  directory: "/ui"
+  schedule:
+    interval: daily
+  versioning-strategy: increase
+  groups:
+    ui-dependencies:
+      patterns:
+        - "*"
+
+- package-ecosystem: npm
+  directory: "/ui/ui-app"
+  schedule:
+    interval: daily
+  versioning-strategy: increase
+  groups:
+    ui-app-dependencies:
+      patterns:
+        - "*"
+  

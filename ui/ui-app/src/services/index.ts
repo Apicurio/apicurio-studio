@@ -1,6 +1,6 @@
 export * from "./useAlertsService";
-export * from "./useApicurioStudioConfig";
 export * from "./useAppNavigation";
+export * from "./useConfigService";
 export * from "./useDesignsService";
 export * from "./useDownloadService";
 export * from "./useLocalStorageService";

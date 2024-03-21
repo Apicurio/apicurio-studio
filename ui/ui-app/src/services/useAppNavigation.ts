@@ -1,5 +1,5 @@
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import { ApicurioStudioConfig, useApicurioStudioConfig } from "@services/useApicurioStudioConfig.ts";
+import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 
 export const navigateTo = (path: string, appConfig: ApicurioStudioConfig, navigateFunc: NavigateFunction): void => {
     const to: string = `${appConfig.ui.navPrefixPath}${path}`;
@@ -16,7 +16,7 @@ export type AppNavigationService = {
 
 export const useAppNavigation: () => AppNavigationService = (): AppNavigationService => {
     const navigate: NavigateFunction = useNavigate();
-    const appConfig: ApicurioStudioConfig = useApicurioStudioConfig();
+    const appConfig: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
 
     return {
         navigateTo: (path: string): void => {

@@ -3,7 +3,7 @@ import "./AsyncApiEditor.css";
 import { Editor as DesignEditor, EditorProps } from "./editor-types";
 import { ContentTypes } from "@models/designs";
 import { parseJson, parseYaml, toJsonString, toYamlString } from "@utils/content.utils.ts";
-import { ApicurioStudioConfig, useApicurioStudioConfig } from "@services/useApicurioStudioConfig.ts";
+import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 
 
 export type AsyncApiEditorProps = {
@@ -18,7 +18,7 @@ export type AsyncApiEditorProps = {
  */
 export const AsyncApiEditor: DesignEditor = ({ content, onChange, className }: AsyncApiEditorProps) => {
     const ref: RefObject<any> = React.createRef();
-    const config: ApicurioStudioConfig = useApicurioStudioConfig();
+    const config: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
 
     const editorsUrl: string = config.components.editors.url;
 

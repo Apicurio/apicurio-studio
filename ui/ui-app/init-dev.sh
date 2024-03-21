@@ -8,7 +8,7 @@ CONFIG_TYPE=$1
 
 if [ "x$CONFIG_TYPE" = "x" ]
 then
-  CONFIG_TYPE="none"
+  CONFIG_TYPE="local"
 fi
 
 cp configs/config-$CONFIG_TYPE.js config.js

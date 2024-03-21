@@ -464,6 +464,33 @@
                 }
             ]
         },
+        "/system/uiConfig": {
+            "summary": "Get UI configuration",
+            "description": "This endpoint is used by the user interface to retrieve UI specific configuration\nin a JSON payload.  This allows the UI and the backend to be configured in the \nsame place (the backend process/pod).  When the UI loads, it will make an API call\nto this endpoint to determine what UI features and options are configured.",
+            "get": {
+                "tags": [
+                    "System"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserInterfaceConfig"
+                                }
+                            }
+                        },
+                        "description": "The UI config."
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "getUIConfig",
+                "summary": "Get UI config",
+                "description": "Returns the UI configuration properties for this server.  The registry UI can be\nconnected to a backend using just a URL.  The rest of the UI configuration can then\nbe fetched from the backend using this operation.  This allows UI and backend to\nboth be configured in the same place.\n\nThis operation may fail for one of the following reasons:\n\n* A server error occurred (HTTP error `500`)\n"
+            }
+        },
         "x-codegen-contextRoot": "/apis/studio/v1"
     },
     "components": {
@@ -841,6 +868,152 @@
                     "registry": {
                         "$ref": "#/components/schemas/RegistryArtifactCoordinates",
                         "description": ""
+                    }
+                }
+            },
+            "UserInterfaceConfig": {
+                "title": "Root Type for UserInterfaceConfig",
+                "description": "Defines the user interface configuration data type.",
+                "required": [
+                    "auth"
+                ],
+                "type": "object",
+                "properties": {
+                    "ui": {
+                        "$ref": "#/components/schemas/UserInterfaceConfigUi"
+                    },
+                    "auth": {
+                        "$ref": "#/components/schemas/UserInterfaceConfigAuth"
+                    },
+                    "components": {
+                        "$ref": "#/components/schemas/UserInterfaceConfigComponents"
+                    }
+                },
+                "example": {
+                    "ui": {
+                        "contextPath": "/",
+                        "navPrefixPath": ""
+                    },
+                    "apis": {
+                        "studio": "https://studio-api.company.com/apis/studio/v1"
+                    },
+                    "components": {
+                        "masthead": {
+                            "show": true,
+                            "label": "APICURIO STUDIO"
+                        },
+                        "editors": {
+                            "url": "/editors"
+                        }
+                    },
+                    "auth": {
+                        "type": "oidc",
+                        "options": {
+                            "redirectUri": "http://studio.company.com",
+                            "clientId": "apicurio-studio-ui",
+                            "url": "https://sso.company.com/realms/apicurio"
+                        }
+                    }
+                }
+            },
+            "UserInterfaceConfigComponents": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "masthead": {
+                        "$ref": "#/components/schemas/UserInterfaceConfigComponentsMasthead",
+                        "description": ""
+                    },
+                    "editors": {
+                        "$ref": "#/components/schemas/UserInterfaceConfigComponentsEditors",
+                        "description": ""
+                    }
+                }
+            },
+            "UserInterfaceConfigAuth": {
+                "title": "Root Type for UserInterfaceConfigAuth",
+                "description": "",
+                "required": [
+                    "obacEnabled",
+                    "rbacEnabled"
+                ],
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "enum": [
+                            "none",
+                            "oidc"
+                        ],
+                        "type": "string"
+                    },
+                    "rbacEnabled": {
+                        "type": "boolean"
+                    },
+                    "obacEnabled": {
+                        "type": "boolean"
+                    },
+                    "options": {
+                        "$ref": "#/components/schemas/Labels"
+                    }
+                },
+                "example": {
+                    "type": "oidc",
+                    "rbacEnabled": true,
+                    "obacEnabled": false,
+                    "options": {
+                        "url": "https://auth.apicur.io/realms/apicurio",
+                        "redirectUri": "https://registry.apicur.io",
+                        "clientId": "registry-ui"
+                    }
+                }
+            },
+            "UserInterfaceConfigUi": {
+                "title": "Root Type for UserInterfaceConfigUi",
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "contextPath": {
+                        "type": "string"
+                    },
+                    "navPrefixPath": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "contextPath": "/",
+                    "navPrefixPath": "/"
+                }
+            },
+            "Labels": {
+                "description": "User-defined name-value pairs. Name and value must be strings.",
+                "type": "object",
+                "additionalProperties": {
+                    "type": "string"
+                },
+                "x-codegen-inline": true,
+                "x-codegen-type": "StringMap"
+            },
+            "UserInterfaceConfigComponentsMasthead": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "show": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "label": {
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            },
+            "UserInterfaceConfigComponentsEditors": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "description": "",
+                        "type": "string"
                     }
                 }
             }

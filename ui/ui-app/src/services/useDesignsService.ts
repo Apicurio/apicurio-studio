@@ -11,8 +11,8 @@ import {
     Paging, RenameDesign,
 } from "@models/designs";
 import { createEndpoint, createOptions, httpDelete, httpGet, httpPostWithReturn, httpPut } from "@utils/rest.utils";
-import { ApicurioStudioConfig, useApicurioStudioConfig } from "@services/useApicurioStudioConfig.ts";
 import { AuthService, useAuth } from "@apicurio/common-ui-components";
+import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 
 function limit(value: string | undefined, size: number): string {
     if (value != undefined && value.length > size) {
@@ -220,7 +220,7 @@ export interface DesignsService {
  * React hook to get the Designs service.
  */
 export const useDesignsService: () => DesignsService = (): DesignsService => {
-    const appConfig: ApicurioStudioConfig = useApicurioStudioConfig();
+    const appConfig: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
     const auth: AuthService = useAuth();
 
     return {

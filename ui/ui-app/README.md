@@ -18,7 +18,7 @@ Initialize config-oidc.js
 `./init-dev.sh none`
 
 Note: the init-dev.sh script just copies an appropriate file from config/config-*.js to the right place.  You can 
-either specify `none` or `oidc` as the argument to the script.  The choice depends on how you are running the 
+either specify `local` or `3scale` as the argument to the script.  The choice depends on how you are running the 
 back-end component.
 
 Start the development server

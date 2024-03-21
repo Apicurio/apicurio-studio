@@ -2,8 +2,8 @@ import { FunctionComponent } from "react";
 import { Brand, Masthead, MastheadBrand, MastheadContent, MastheadMain } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
 import { AppHeaderToolbar } from "@app/components";
-import { ApicurioStudioConfig, useApicurioStudioConfig } from "@services/useApicurioStudioConfig.ts";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
+import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 
 
 export type AppHeaderProps = {
@@ -13,7 +13,7 @@ export type AppHeaderProps = {
 
 export const AppHeader: FunctionComponent<AppHeaderProps> = () => {
     const appNav: AppNavigationService = useAppNavigation();
-    const config: ApicurioStudioConfig | undefined = useApicurioStudioConfig();
+    const config: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
 
     if (config?.components.masthead.show === false) {
         return (<></>);

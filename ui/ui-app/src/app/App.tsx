@@ -7,12 +7,12 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { EditorPage, EmbeddedEditorPage, HomePage } from "@app/pages";
 import { AppHeader } from "@app/components";
 import { Page } from "@patternfly/react-core";
-import { ApicurioStudioConfig, useApicurioStudioConfig } from "@services/useApicurioStudioConfig.ts";
 import { ApplicationAuth, AuthConfigContext, AuthConfig } from "@apicurio/common-ui-components";
+import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 
 
 export const App: React.FunctionComponent = () => {
-    const appConfig: ApicurioStudioConfig = useApicurioStudioConfig();
+    const appConfig: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
 
     return (
         <AuthConfigContext.Provider value={appConfig.auth as AuthConfig}>

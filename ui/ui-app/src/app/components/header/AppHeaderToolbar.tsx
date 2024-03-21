@@ -3,8 +3,8 @@ import { Button, Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem } from "@pat
 import { QuestionCircleIcon } from "@patternfly/react-icons";
 import { AvatarDropdown } from "@app/components";
 import { AppAboutModal, BackendInfo, FrontendInfo, IfAuth } from "@apicurio/common-ui-components";
-import { ApicurioStudioConfig, useApicurioStudioConfig, VersionType } from "@services/useApicurioStudioConfig.ts";
 import { SystemService, useSystemService } from "@services/useSystemService.ts";
+import { ApicurioStudioConfig, useConfigService, VersionType } from "@services/useConfigService.ts";
 
 
 export type AppHeaderToolbarProps = {
@@ -14,7 +14,7 @@ export type AppHeaderToolbarProps = {
 
 export const AppHeaderToolbar: FunctionComponent<AppHeaderToolbarProps> = () => {
     const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
-    const config: ApicurioStudioConfig = useApicurioStudioConfig();
+    const config: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
     const version: VersionType = config?.version as VersionType;
     const system: SystemService = useSystemService();
 

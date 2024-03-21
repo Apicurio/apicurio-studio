@@ -1,7 +1,7 @@
-import { ApicurioStudioConfig, useApicurioStudioConfig } from "@services/useApicurioStudioConfig.ts";
 import { AuthService, useAuth } from "@apicurio/common-ui-components";
 import { SystemInfo } from "@models/system/SystemInfo.ts";
 import { createEndpoint, createOptions, httpGet } from "@utils/rest.utils.ts";
+import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 
 
 const getInfo = async (appConfig: ApicurioStudioConfig, auth: AuthService, ): Promise<SystemInfo> => {
@@ -21,7 +21,7 @@ export interface SystemService {
 
 
 export const useSystemService: () => SystemService = (): SystemService => {
-    const appConfig: ApicurioStudioConfig = useApicurioStudioConfig();
+    const appConfig: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
     const auth: AuthService = useAuth();
 
     return {

@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <name>apicurio-studio</name>
 
-    <url>https://www.apicur.io/</url>
+    <url>https://www.apicur.io/studio</url>
     <description>Open Source web-based API design suite for contract-first API development.</description>
 
     <organization>

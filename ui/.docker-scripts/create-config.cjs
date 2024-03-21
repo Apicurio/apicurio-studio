@@ -8,17 +8,17 @@ console.info("Generating application config at:", CONFIG_OUTPUT_PATH);
 
 const APICURIO_STUDIO_API_URL=process.env["APICURIO_STUDIO_API_URL"] || "/apis/studio/v1";
 
-const CONTEXT_PATH=process.env["APICURIO_CONTEXT_PATH"] || "/";
-const NAV_PREFIX_PATH=process.env["APICURIO_NAV_PREFIX_PATH"] || "";
+const CONTEXT_PATH=process.env["APICURIO_CONTEXT_PATH"];
+const NAV_PREFIX_PATH=process.env["APICURIO_NAV_PREFIX_PATH"];
 
-const SHOW_MASTHEAD=process.env["APICURIO_SHOW_MASTHEAD"] || "true";
-const MASTHEAD_LABEL=process.env["APICURIO_MASTHEAD_LABEL"] || "APICURIO STUDIO";
-const EDITORS_URL=process.env["APICURIO_EDITORS_URL"] || "/editors/";
+const SHOW_MASTHEAD=process.env["APICURIO_SHOW_MASTHEAD"];
+const MASTHEAD_LABEL=process.env["APICURIO_MASTHEAD_LABEL"];
+const EDITORS_URL=process.env["APICURIO_EDITORS_URL"];
 
-const AUTH_TYPE=process.env["APICURIO_AUTH_TYPE"] || "none";
-const AUTH_URL=process.env["APICURIO_AUTH_URL"] || "";
-const AUTH_CLIENT_ID=process.env["APICURIO_AUTH_CLIENT_ID"] || "api-studio-ui";
-const AUTH_REDIRECT_URL=process.env["APICURIO_AUTH_REDIRECT_URL"] || "";
+const AUTH_TYPE=process.env["APICURIO_AUTH_TYPE"];
+const AUTH_URL=process.env["APICURIO_AUTH_URL"];
+const AUTH_CLIENT_ID=process.env["APICURIO_AUTH_CLIENT_ID"];
+const AUTH_REDIRECT_URL=process.env["APICURIO_AUTH_REDIRECT_URL"];
 
 // Create the config to output.
 const CONFIG = {

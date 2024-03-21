@@ -142,5 +142,5 @@ jobs:
   trigger-3scale-deploy:
     needs: [build-test]
     if: github.event_name == 'push'
-    uses: apicurio/apicurio-3scale-gitops/.github/workflows/deploy_latest_designer.yml@main
+    uses: apicurio/apicurio-3scale-gitops/.github/workflows/deploy_latest_studio.yml@main
     secrets: inherit

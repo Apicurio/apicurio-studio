@@ -32,7 +32,7 @@ public class SystemResourceImpl implements SystemResource {
     @Inject
     UserInterfaceConfigProperties uiConfig;
 
-    @ConfigProperty(name = "app.git.commit-id")
+    @ConfigProperty(name = "apicurio.app.git.commit-id")
     Optional<String> commitIdFull;
 
     @Override

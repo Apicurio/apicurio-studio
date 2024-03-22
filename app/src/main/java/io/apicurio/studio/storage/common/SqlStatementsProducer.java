@@ -1,6 +1,8 @@
 package io.apicurio.studio.storage.common;
 
-import io.apicurio.common.apps.config.Info;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.slf4j.Logger;
+
 import io.apicurio.common.apps.storage.sql.SqlStatements;
 import io.apicurio.studio.spi.storage.StudioSqlStatements;
 import io.apicurio.studio.storage.h2.H2StudioSqlStatements;
@@ -9,8 +11,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.slf4j.Logger;
 
 @ApplicationScoped
 public class SqlStatementsProducer {
@@ -19,7 +19,6 @@ public class SqlStatementsProducer {
     Logger log;
 
     @ConfigProperty(name = "apicurio.storage.db-kind", defaultValue = "h2")
-    @Info(category = "storage", description = "Datasource Db kind", availableSince = "1.0.0.Final")
     String databaseType;
 
     /**

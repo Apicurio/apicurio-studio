@@ -41,11 +41,11 @@ import jakarta.servlet.http.HttpServletResponse;
 public class RedirectFilter implements Filter {
     
     @ConfigProperty(name = "apicurio.enable-redirects", defaultValue = "true")
-    @Info(category = "redirects", description = "Enable redirects", availableSince = "1.0.0.Final")
+    @Info(category = "redirects", description = "Enable redirects", availableSince = "1.0.0")
     Boolean redirectsEnabled;
 
     @ConfigProperty(name = "apicurio.redirects")
-    @Info(category = "redirects", description = "Studio redirects", availableSince = "1.0.0.Final")
+    @Info(category = "redirects", description = "Studio redirects", availableSince = "1.0.0")
     Map<String, String> redirectsConfig;
     Map<String, String> redirects = new HashMap<>();
 

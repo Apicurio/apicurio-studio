@@ -56,8 +56,8 @@ public class UserInterfaceConfigProperties {
     @Info(category = "ui", description = "The masthead label (shown if the logo does not render)", availableSince = "1.0.0")
     public String mastheadLabel;
 
-    @ConfigProperty(name = "apicurio.ui.editors.url", defaultValue = "true")
-    @Info(category = "ui", description = "Enabled to show the masthead", availableSince = "1.0.0")
+    @ConfigProperty(name = "apicurio.ui.editors.url", defaultValue = "/editors/")
+    @Info(category = "ui", description = "URL to the 'editors' UI component", availableSince = "1.0.0")
     public String editorsUrl;
 
 }

@@ -82,6 +82,7 @@
 
     <modules>
         <module>common</module>
+        <module>java-sdk</module>
         <module>spi</module>
         <module>app</module>
         <module>dist</module>

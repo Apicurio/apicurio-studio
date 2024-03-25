@@ -10,6 +10,16 @@ updates:
         - "*"
 
 - package-ecosystem: npm
+  directory: "/typescript-sdk"
+  schedule:
+    interval: daily
+  versioning-strategy: increase
+  groups:
+    typescript-sdk-dependencies:
+      patterns:
+        - "*"
+
+- package-ecosystem: npm
   directory: "/ui"
   schedule:
     interval: daily

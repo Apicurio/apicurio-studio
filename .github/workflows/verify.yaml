@@ -79,6 +79,14 @@ jobs:
       - name: Build Apicurio Studio back-end
         run: mvn install -Dmaven.javadoc.skip=true --no-transfer-progress -DtrimStackTrace=false
 
+      - name: Build Apicurio Studio typescript SDK
+        run: |
+          cd typescrip-sdk
+          npm install
+          npm run generate-studio-sdk
+          npm run lint
+          npm run build
+
       - name: Build Apicurio Studio front-end
         run: |
           cd ui

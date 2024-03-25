@@ -1,0 +1,4 @@
+node_modules
+dist
+.kiota
+src-generated

@@ -81,7 +81,7 @@ jobs:
 
       - name: Build Apicurio Studio typescript SDK
         run: |
-          cd typescrip-sdk
+          cd typescript-sdk
           npm install
           npm run generate-studio-sdk
           npm run lint

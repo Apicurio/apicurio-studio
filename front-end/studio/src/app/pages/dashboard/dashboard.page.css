@@ -45,3 +45,7 @@
 .container-dashboard .api-recent-apis .api-item .api-icon {
   padding-right: 20px;
 }
+
+.container-dashboard .card-pf-announcement {
+  border-color: rgb(236, 122, 8);
+}

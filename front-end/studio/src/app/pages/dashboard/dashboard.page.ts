@@ -46,6 +46,7 @@ export class DashboardPageComponent extends AbstractPageComponent {
     public activityEnd: number = 10;
     public hasMoreActivity: boolean = false;
     public gettingMoreActivity: boolean = false;
+    public showDeprecationWarning: boolean = false;
 
     /**
      * C'tor.
@@ -100,6 +101,7 @@ export class DashboardPageComponent extends AbstractPageComponent {
             console.error("[DashboardPageComponent] Error getting user activity");
             this.error(error);
         });
+        this.showDeprecationWarning = window.location.host.indexOf("studio.apicur.io") >= 0;
     }
 
     /**

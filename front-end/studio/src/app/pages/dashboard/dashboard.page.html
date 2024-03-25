@@ -5,8 +5,34 @@
         <!-- Left Column -->
         <div class="col-xs-12 col-sm-6 col-md-6">
 
+            <!-- Announcement Card -->
+            <div class="card-pf card-pf-accented card-pf-announcement" *ngIf="showDeprecationWarning">
+                <div class="card-pf-heading">
+                    <h2 class="card-pf-title">
+                        <span class="fa fa-fw fa-info-circle"></span>
+                        <span>Announcing the deprecation of Apicurio Studio 0.2!</span>
+                    </h2>
+                </div>
+                <div class="card-pf-body">
+                    <div class="alert alert-warning">
+                        <span class="pficon pficon-info"></span>
+                        <p>
+                            Hey everyone.  Thanks for using Apicurio Studio for all these years.  If you're seeing this
+                            notification, it means you still find Studio useful.
+                        </p>
+                        <p>
+                            We want to let you know that <b>Apicurio Studio 0.2 is being deprecated</b> and <u>we're starting
+                            work on Apicurio Studio 1.0</u>!
+                        </p>
+                        <p>
+                            <a target="_blank" href="https://www.apicur.io/blog/2024/03/22/studio-1.0">Read more about our plans for Apicurio Studio 1.0 here!</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Welcome Card -->
-            <div class="card-pf card-pf-accented">
+            <div class="card-pf card-pf-accented" *ngIf="!showDeprecationWarning">
                 <div class="card-pf-heading">
                     <h2 class="card-pf-title">
                         <span class="fa fa-fw fa-comment"></span>

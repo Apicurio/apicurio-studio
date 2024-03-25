@@ -77,7 +77,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-          cache-dependency-path: 'ui/**/package-lock.json'
+          cache-dependency-path: 'typescript-sdk/**/package-lock.json'
 
       - name: Build Apicurio Studio typescript SDK
         run: |

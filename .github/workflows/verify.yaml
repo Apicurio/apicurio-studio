@@ -48,14 +48,6 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      # Set up node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-          cache: 'npm'
-          cache-dependency-path: 'ui/**/package-lock.json'
-
       # Open-Source Machine emulator that allows you to emulate multiple CPU architectures on your machine
       - name: Set up QEMU
         if: github.event_name == 'push'
@@ -79,6 +71,14 @@ jobs:
       - name: Build Apicurio Studio back-end
         run: mvn install -Dmaven.javadoc.skip=true --no-transfer-progress -DtrimStackTrace=false
 
+      # Set up node.js version 18 (required to build the typescript SDK)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'ui/**/package-lock.json'
+
       - name: Build Apicurio Studio typescript SDK
         run: |
           cd typescript-sdk
@@ -86,6 +86,14 @@ jobs:
           npm run generate-studio-sdk
           npm run lint
           npm run build
+
+      # Set up node.js version 16 (downgrade so we can build the editors component)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+          cache-dependency-path: 'ui/**/package-lock.json'
 
       - name: Build Apicurio Studio front-end
         run: |

@@ -38,4 +38,14 @@ updates:
     ui-app-dependencies:
       patterns:
         - "*"
+
+- package-ecosystem: npm
+  directory: "/ui/tests"
+  schedule:
+    interval: daily
+  versioning-strategy: increase
+  groups:
+    ui-tests-dependencies:
+      patterns:
+        - "*"
   

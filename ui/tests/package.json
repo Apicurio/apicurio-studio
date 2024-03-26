@@ -1,0 +1,23 @@
+{
+  "name": "@apicurio/studio-ui-tests",
+  "version": "1.0.0",
+  "description": "UI tests (playwright) for Apicurio Studio UI",
+  "repository": "https://github.com/Apicurio/apicurio-studio.git",
+  "main": "index.js",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "test": "npx playwright test",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives"
+  },
+  "devDependencies": {
+    "@apicurio/eslint-config": "0.2.0",
+    "@playwright/test": "1.42.1",
+    "@types/node": "20.11.30",
+    "@typescript-eslint/eslint-plugin": "7.4.0",
+    "@typescript-eslint/parser": "7.4.0",
+    "eslint": "8.57.0",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-plugin-react-refresh": "0.4.6"
+  }
+}

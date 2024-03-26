@@ -56,7 +56,7 @@ export const DeleteDesignModal: FunctionComponent<DeleteDesignModalProps> = ({ d
                 <Text component="p">The following API or schema design will be deleted.</Text>
             </TextContent>
 
-            <Form>
+            <Form id="delete-design-modal-form" test-id="delete-design-modal-form">
                 <FormGroup label="Name" fieldId="delete-design-name">
                     <TextContent data-testid="text-design-name">{design?.name}</TextContent>
                 </FormGroup>

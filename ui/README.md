@@ -71,3 +71,24 @@ You can then access the UI on port 8888 or your localhost.
 
 **Note**:  you will need the REST API running for the UI to work.  See the README at the root of
 this repository for examples of how to do that.
+
+## Testing
+Whenever changes are made to the UI, it is helpful to add new tests to the [Playwright-based](https://playwright.dev/)
+test suite.  The test suite can be found in the `tests` directory.
+
+You can run the tests like this:
+
+```
+cd tests
+npm install
+npm run test
+```
+
+The tests assume that the UI is running on localhost port 8888.
+
+Note that you need to have Playwright installed for this to work.  Typically you can install
+Playwright with the following command:
+
+```
+npx playwright install
+```

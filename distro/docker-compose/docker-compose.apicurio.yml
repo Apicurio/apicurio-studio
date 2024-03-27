@@ -91,6 +91,8 @@ services:
   keycloak-server:
     image: quay.io/keycloak/keycloak:19.0.2
     environment:
+      QUARKUS_HTTP_PORT: 8090
+
       KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
       KEYCLOAK_IMPORT: /microcks-keycloak-config/apicurio-realm.json,/microcks-keycloak-config/microcks-realm.json

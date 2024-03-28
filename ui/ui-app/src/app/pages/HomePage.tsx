@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useRef, useState } from "react";
+import { FunctionComponent, useRef, useState } from "react";
 import {
     Drawer,
     DrawerActions,
@@ -8,6 +8,7 @@ import {
     DrawerHead,
     DrawerPanelBody,
     DrawerPanelContent,
+    Page,
     PageSection,
     PageSectionVariants,
     Text,
@@ -29,6 +30,7 @@ import {
     ImportFrom
 } from "@app/pages/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
+import { AppHeader } from "@app/components";
 
 export type HomePageProps = Record<string, never>;
 
@@ -133,7 +135,7 @@ export const HomePage: FunctionComponent<HomePageProps> = () => {
     );
 
     return (
-        <React.Fragment>
+        <Page className="pf-m-redhat-font" isManagedSidebar={false} header={<AppHeader />}>
             <Drawer isStatic={false} position="right" isInline={false} isExpanded={isDrawerExpanded} onExpand={onDrawerExpand}>
                 <DrawerContent panelContent={panelContent}>
                     <DrawerContentBody className="home-panel-body">
@@ -165,6 +167,6 @@ export const HomePage: FunctionComponent<HomePageProps> = () => {
                     </DrawerContentBody>
                 </DrawerContent>
             </Drawer>
-        </React.Fragment>
+        </Page>
     );
 };

@@ -1,5 +1,13 @@
 import React, { CSSProperties, FunctionComponent, useEffect, useState } from "react";
-import { Button, PageSection, PageSectionVariants, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
+import {
+    Button,
+    Page,
+    PageSection,
+    PageSectionVariants,
+    Toolbar,
+    ToolbarContent,
+    ToolbarItem
+} from "@patternfly/react-core";
 import { ArtifactTypes, ContentTypes, DesignContent } from "@models/designs";
 import { TextEditor } from "@editors/TextEditor.tsx";
 import { ProtoEditor } from "@editors/ProtoEditor.tsx";
@@ -8,6 +16,7 @@ import { AsyncApiEditor } from "@editors/AsyncApiEditor.tsx";
 import { CompareModal } from "@app/pages/components";
 import { IfNotLoading } from "@apicurio/common-ui-components";
 import { formatContent, toJsonString, toYamlString } from "@utils/content.utils.ts";
+import { AppHeader } from "@app/components";
 
 const sectionContextStyle: CSSProperties = {
     borderBottom: "1px solid #ccc",
@@ -169,32 +178,34 @@ export const EmbeddedEditorPage: FunctionComponent<EmbeddedEditorPageProps> = ()
     };
 
     return (
-        <IfNotLoading isLoading={isLoading}>
-            <PageSection variant={PageSectionVariants.light} id="section-context" style={sectionContextStyle}>
-                <Toolbar id="embedded-editor-toolbar">
-                    <ToolbarContent>
-                        <ToolbarItem>
-                            <Button variant="secondary" isDisabled={!isDirty} onClick={onCompareContent}>Diff changes</Button>
-                        </ToolbarItem>
-                        <ToolbarItem>
-                            <Button variant="secondary" onClick={onFormat}>Format content</Button>
-                        </ToolbarItem>
-                        <ToolbarItem variant="separator" />
-                        <ToolbarItem>
-                            <Button variant="primary" isDisabled={!isDirty} onClick={onSave}>Save</Button>
-                        </ToolbarItem>
-                    </ToolbarContent>
-                </Toolbar>
-            </PageSection>
-            <PageSection variant={PageSectionVariants.light} id="section-editor" style={sectionEditorStyle}>
-                <div className="editor-parent" style={editorParentStyle} children={editor() as any} />
-            </PageSection>
-            <CompareModal isOpen={isCompareModalOpen}
-                onClose={closeCompareEditor}
-                before={originalContent}
-                beforeName={""}
-                after={currentContent}
-                afterName={""}/>
-        </IfNotLoading>
+        <Page className="pf-m-redhat-font" isManagedSidebar={false} header={<AppHeader />}>
+            <IfNotLoading isLoading={isLoading}>
+                <PageSection variant={PageSectionVariants.light} id="section-context" style={sectionContextStyle}>
+                    <Toolbar id="embedded-editor-toolbar">
+                        <ToolbarContent>
+                            <ToolbarItem>
+                                <Button variant="secondary" isDisabled={!isDirty} onClick={onCompareContent}>Diff changes</Button>
+                            </ToolbarItem>
+                            <ToolbarItem>
+                                <Button variant="secondary" onClick={onFormat}>Format content</Button>
+                            </ToolbarItem>
+                            <ToolbarItem variant="separator" />
+                            <ToolbarItem>
+                                <Button variant="primary" isDisabled={!isDirty} onClick={onSave}>Save</Button>
+                            </ToolbarItem>
+                        </ToolbarContent>
+                    </Toolbar>
+                </PageSection>
+                <PageSection variant={PageSectionVariants.light} id="section-editor" style={sectionEditorStyle}>
+                    <div className="editor-parent" style={editorParentStyle} children={editor() as any} />
+                </PageSection>
+                <CompareModal isOpen={isCompareModalOpen}
+                    onClose={closeCompareEditor}
+                    before={originalContent}
+                    beforeName={""}
+                    after={currentContent}
+                    afterName={""}/>
+            </IfNotLoading>
+        </Page>
     );
 };

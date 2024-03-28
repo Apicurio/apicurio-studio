@@ -1,8 +1,5 @@
 import React, { CSSProperties, FunctionComponent, useEffect, useState } from "react";
-import {
-    PageSection,
-    PageSectionVariants
-} from "@patternfly/react-core";
+import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { ArtifactTypes, ContentTypes, Design, DesignContent } from "@models/designs";
 import { DesignsService, useDesignsService } from "@services/useDesignsService.ts";
 import { DownloadService, useDownloadService } from "@services/useDownloadService.ts";
@@ -18,9 +15,10 @@ import { ProtoEditor } from "@editors/ProtoEditor.tsx";
 import { OpenApiEditor } from "@editors/OpenApiEditor.tsx";
 import { AsyncApiEditor } from "@editors/AsyncApiEditor.tsx";
 import { CompareModal, DeleteDesignModal, EditorContext, RenameData, RenameModal } from "@app/pages/components";
-import { useParams } from "react-router-dom";
+import { unstable_usePrompt, useParams } from "react-router-dom";
 import { IfNotLoading } from "@apicurio/common-ui-components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
+import { AppHeader } from "@app/components";
 
 const sectionContextStyle: CSSProperties = {
     borderBottom: "1px solid #ccc",
@@ -112,6 +110,12 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
             window.removeEventListener("beforeunload", onBeforeUnload);
         }
     }, [isDirty]);
+
+    // Add a react router prompt that will be used when *navigating* but the editor is dirty
+    unstable_usePrompt({
+        message: "You have unsaved changes.  Do you really want to navigate away and lose them?",
+        when: () => isDirty
+    });
 
     // Called when the user makes an edit in the editor.
     const onEditorChange = (value: any): void => {
@@ -230,39 +234,41 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     };
 
     return (
-        <IfNotLoading isLoading={isLoading}>
-            <PageSection variant={PageSectionVariants.light} id="section-context" style={sectionContextStyle}>
-                <EditorContext
-                    design={design as Design}
-                    dirty={isDirty}
-                    onSave={onSave}
-                    onFormat={onFormat}
-                    onDelete={onDelete}
+        <Page className="pf-m-redhat-font" isManagedSidebar={false} header={<AppHeader />}>
+            <IfNotLoading isLoading={isLoading}>
+                <PageSection variant={PageSectionVariants.light} id="section-context" style={sectionContextStyle}>
+                    <EditorContext
+                        design={design as Design}
+                        dirty={isDirty}
+                        onSave={onSave}
+                        onFormat={onFormat}
+                        onDelete={onDelete}
+                        onDownload={onDownload}
+                        onRename={() => setRenameModalOpen(true)}
+                        onCompareContent={onCompareContent}
+                        artifactContent={currentContent}
+                    />
+                </PageSection>
+                <PageSection variant={PageSectionVariants.light} id="section-editor" style={sectionEditorStyle}>
+                    <div className="editor-parent" style={editorParentStyle} children={editor() as any} />
+                </PageSection>
+                <CompareModal isOpen={isCompareModalOpen}
+                    onClose={closeCompareEditor}
+                    before={originalContent}
+                    beforeName={design?.name || ""}
+                    after={currentContent}
+                    afterName={design?.name || ""}/>
+                <RenameModal design={design}
+                    isOpen={isRenameModalOpen}
+                    onRename={doRenameDesign}
+                    onCancel={() => setRenameModalOpen(false)}/>
+                <DeleteDesignModal design={design}
+                    isOpen={isDeleteModalOpen}
+                    onDelete={onDeleteDesignConfirmed}
                     onDownload={onDownload}
-                    onRename={() => setRenameModalOpen(true)}
-                    onCompareContent={onCompareContent}
-                    artifactContent={currentContent}
-                />
-            </PageSection>
-            <PageSection variant={PageSectionVariants.light} id="section-editor" style={sectionEditorStyle}>
-                <div className="editor-parent" style={editorParentStyle} children={editor() as any} />
-            </PageSection>
-            <CompareModal isOpen={isCompareModalOpen}
-                onClose={closeCompareEditor}
-                before={originalContent}
-                beforeName={design?.name || ""}
-                after={currentContent}
-                afterName={design?.name || ""}/>
-            <RenameModal design={design}
-                isOpen={isRenameModalOpen}
-                onRename={doRenameDesign}
-                onCancel={() => setRenameModalOpen(false)}/>
-            <DeleteDesignModal design={design}
-                isOpen={isDeleteModalOpen}
-                onDelete={onDeleteDesignConfirmed}
-                onDownload={onDownload}
-                onCancel={() => setDeleteModalOpen(false)}/>
-            {/*<Prompt when={isDirty} message={ "You have unsaved changes.  Do you really want to leave?" }/>*/}
-        </IfNotLoading>
+                    onCancel={() => setDeleteModalOpen(false)}/>
+                {/*<Prompt when={isDirty} message={ "You have unsaved changes.  Do you really want to leave?" }/>*/}
+            </IfNotLoading>
+        </Page>
     );
 };

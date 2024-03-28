@@ -21,7 +21,7 @@ public class SystemService {
                 .name(system.getName())
                 .description(system.getDescription())
                 .version(system.getVersion())
-                .apiVersion("v0")
+                .apiVersion("v1") // TODO
                 .builtOn(Instant.now()) // TODO
                 .build();
     }

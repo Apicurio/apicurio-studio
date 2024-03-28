@@ -1,0 +1,52 @@
+{
+	"type": "record",
+	"name": "userInfo",
+	"namespace": "my.example",
+	"fields": [
+		{
+			"name": "username",
+			"type": "string",
+			"default": "NONE"
+		},
+		{
+			"name": "age",
+			"type": "int",
+			"default": -1
+		},
+		{
+			"name": "phone",
+			"type": "string",
+			"default": "NONE"
+		},
+		{
+			"name": "housenum",
+			"type": "string",
+			"default": "NONE"
+		},
+		{
+			"name": "street",
+			"type": "string",
+			"default": "NONE"
+		},
+		{
+			"name": "city",
+			"type": "string",
+			"default": "NONE"
+		},
+		{
+			"name": "state_province",
+			"type": "string",
+			"default": "NONE"
+		},
+		{
+			"name": "country",
+			"type": "string",
+			"default": "NONE"
+		},
+		{
+			"name": "zip",
+			"type": "string",
+			"default": "NONE"
+		}
+	]
+} 

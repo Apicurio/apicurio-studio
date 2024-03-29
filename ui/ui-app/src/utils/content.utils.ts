@@ -108,18 +108,6 @@ export function fileExtensionForDesign(design: Design, content: DesignContent): 
     if (design.type === ArtifactTypes.PROTOBUF) {
         return "proto";
     }
-    if (design.type === ArtifactTypes.WSDL) {
-        return "wsdl";
-    }
-    if (design.type === ArtifactTypes.XSD) {
-        return "xsd";
-    }
-    if (design.type === ArtifactTypes.XML) {
-        return "xml";
-    }
-    if (design.type === ArtifactTypes.GRAPHQL) {
-        return "graphql";
-    }
 
     if (content.contentType && content.contentType === ContentTypes.APPLICATION_JSON) {
         return "json";
@@ -138,18 +126,6 @@ export function contentTypeForDesign(design: Design, content: DesignContent): st
 
     if (design.type === ArtifactTypes.PROTOBUF) {
         return ContentTypes.APPLICATION_PROTOBUF;
-    }
-    if (design.type === ArtifactTypes.WSDL) {
-        return ContentTypes.APPLICATION_WSDL;
-    }
-    if (design.type === ArtifactTypes.XSD) {
-        return ContentTypes.TEXT_XML;
-    }
-    if (design.type === ArtifactTypes.XML) {
-        return ContentTypes.TEXT_XML;
-    }
-    if (design.type === ArtifactTypes.GRAPHQL) {
-        return ContentTypes.APPLICATION_GRAPHQL;
     }
 
     return ContentTypes.APPLICATION_JSON;

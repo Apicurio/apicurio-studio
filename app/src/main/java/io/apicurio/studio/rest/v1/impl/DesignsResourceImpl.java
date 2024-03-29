@@ -1,35 +1,35 @@
 package io.apicurio.studio.rest.v1.impl;
 
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.Date;
+import java.util.List;
+import java.util.function.Consumer;
+
 import io.apicurio.common.apps.content.handle.ContentHandle;
 import io.apicurio.studio.auth.Authorized;
 import io.apicurio.studio.common.MediaTypes;
 import io.apicurio.studio.rest.v1.DesignsResource;
+import io.apicurio.studio.rest.v1.beans.CreateDesign;
 import io.apicurio.studio.rest.v1.beans.CreateDesignEvent;
 import io.apicurio.studio.rest.v1.beans.Design;
 import io.apicurio.studio.rest.v1.beans.DesignEvent;
 import io.apicurio.studio.rest.v1.beans.DesignOriginType;
 import io.apicurio.studio.rest.v1.beans.DesignSearchResults;
+import io.apicurio.studio.rest.v1.beans.DesignType;
 import io.apicurio.studio.rest.v1.beans.EditableDesignMetadata;
 import io.apicurio.studio.rest.v1.beans.SortBy;
 import io.apicurio.studio.rest.v1.beans.SortOrder;
-import io.apicurio.studio.rest.v1.impl.ex.BadRequestException;
 import io.apicurio.studio.service.DesignEventService;
 import io.apicurio.studio.service.DesignService;
 import io.apicurio.studio.spi.storage.ResourceNotFoundStorageException;
 import io.apicurio.studio.spi.storage.SearchQuerySpecification.SearchOrdering;
 import io.apicurio.studio.spi.storage.SearchQuerySpecification.SearchQuery;
 import io.apicurio.studio.spi.storage.model.DesignMetadataDto;
-
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.function.Consumer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.ValidationException;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.core.Response;
 
 /**
@@ -81,43 +81,36 @@ public class DesignsResourceImpl implements DesignsResource {
     }
 
     /**
-     * @see io.apicurio.studio.rest.v1.DesignsResource#createDesign(java.lang.String, java.lang.String, java.lang.String, io.apicurio.studio.rest.v1.beans.DesignOriginType, java.io.InputStream)
+     * @see io.apicurio.studio.rest.v1.DesignsResource#createDesign(io.apicurio.studio.rest.v1.beans.CreateDesign)
      */
     @Override
     @Authorized
-    public Design createDesign(String xStudioName, String xStudioDescription, String xStudioType,
-                               DesignOriginType xStudioOrigin, InputStream data) {
-
-        BadRequestException.requireNotNullAnd(xStudioName, "Valid 'X-Studio-Name' header is required.", p -> !p.isBlank());
-        BadRequestException.requireNotNullAnd(xStudioType, "Valid 'X-Studio-Type' header is required.", p -> !p.isBlank());
-        BadRequestException.requireNotNullAnd(xStudioOrigin, "Valid 'X-Studio-Origin' header is required.", p -> true);
-
-        if (xStudioName.startsWith("==")) {
-            xStudioName = decodeHeaderValue(xStudioName);
-        }
-        if (xStudioDescription != null && xStudioDescription.startsWith("==")) {
-            xStudioDescription = decodeHeaderValue(xStudioDescription);
-        }
-
+    public Design createDesign(@NotNull CreateDesign data) {
         var metadata = DesignMetadataDto.builder()
-                .name(xStudioName)
-                .description(xStudioDescription)
-                .type(xStudioType)
-                .origin(xStudioOrigin.name())
+                .name(data.getName())
+                .description(data.getDescription())
+                .type(data.getType().name())
+                .origin(data.getOrigin().name())
                 .build();
-        return convert(designService.createDesign(metadata, ContentHandle.create(data)));
+        return convert(designService.createDesign(metadata, ContentHandle.create(data.getContent())));
     }
 
+    /**
+     * @see io.apicurio.studio.rest.v1.DesignsResource#getDesignContent(java.lang.String)
+     */
     @Override
     @Authorized
-    public Response getDesign(String designId) {
+    public Response getDesignContent(String designId) {
         var content = designService.getDesignContent(designId);
         return Response.ok(content.string(), MediaTypes.BINARY).build();
     }
 
+    /**
+     * @see io.apicurio.studio.rest.v1.DesignsResource#updateDesignContent(java.lang.String, java.io.InputStream)
+     */
     @Override
     @Authorized
-    public Design updateDesign(String designId, InputStream data) {
+    public Design updateDesignContent(String designId, @NotNull InputStream data) {
         return convert(designService.updateDesignContent(designId, ContentHandle.create(data)));
     }
 
@@ -153,22 +146,12 @@ public class DesignsResourceImpl implements DesignsResource {
                 .orElseThrow(() -> new ResourceNotFoundStorageException("There is no first event yet."));
     }
 
-    private static String decodeHeaderValue(String encodedString) {
-        if (encodedString.length() == 2) {
-            return "";
-        }
-        byte[] decodedBytes = Base64.getDecoder().decode(encodedString.substring(2));
-        return new String(decodedBytes, StandardCharsets.UTF_8);
-    }
-
     private Design convert(DesignMetadataDto from) {
         return Design.builder()
-                .id(from.getId())
-                .kind("DesignMetadata")
-                .href("/apis/studio/v1/designs/" + from.getId())
+                .designId(from.getId())
                 .name(from.getName())
                 .description(from.getDescription())
-                .type(from.getType())
+                .type(DesignType.valueOf(from.getType()))
                 .origin(DesignOriginType.fromValue(from.getOrigin()))
                 .createdOn(Date.from(from.getCreatedOn()))
                 .createdBy(from.getCreatedBy())

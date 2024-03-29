@@ -54,7 +54,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     const [isLoading, setLoading] = useState(true);
     const [design, setDesign] = useState<Design>();
     const [editorDesignContent, setEditorDesignContent] = useState<DesignContent>({
-        id: "",
+        designId: "",
         contentType: ContentTypes.APPLICATION_JSON,
         data: ""
     });
@@ -130,7 +130,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     const onSave = (): void => {
         designsService.updateDesignContent({
             contentType: editorDesignContent.contentType,
-            id: design?.id as string,
+            designId: design?.designId as string,
             data: currentContent
         }).then(() => {
             if (design) {
@@ -150,7 +150,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
         const formattedContent: string = formatContent(currentContent, editorDesignContent.contentType);
         console.info("[EditorPage] New content is: ", formattedContent);
         setEditorDesignContent({
-            id: design?.id as string,
+            designId: design?.designId as string,
             contentType: editorDesignContent.contentType,
             data: formattedContent
         });
@@ -162,7 +162,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     };
 
     const onDeleteDesignConfirmed = (design: Design): void => {
-        designsService.deleteDesign(design.id).then(() => {
+        designsService.deleteDesign(design.designId).then(() => {
             alerts.designDeleted(design as Design);
             navigation.navigateTo("/");
         }).catch(error => {
@@ -182,7 +182,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     };
 
     const doRenameDesign = (event: RenameData): void => {
-        designsService.renameDesign(design?.id as string, event.name, event.description).then(() => {
+        designsService.renameDesign(design?.designId as string, event.name, event.description).then(() => {
             if (design) {
                 design.name = event.name;
                 design.description = event.description;

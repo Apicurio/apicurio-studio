@@ -26,7 +26,7 @@ export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({
 
     useEffect(() => {
         if (design) {
-            designsService.getEvents(design.id).then((events: DesignEvent[]) => {
+            designsService.getEvents(design.designId).then((events: DesignEvent[]) => {
                 setEvents(events);
                 setLoading(false);
             }).catch((error: any) => {

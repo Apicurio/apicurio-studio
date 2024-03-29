@@ -92,7 +92,6 @@
     <properties>
 
         <!-- Build -->
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
@@ -103,12 +102,10 @@
         <skipCommitIdPlugin>false</skipCommitIdPlugin>
 
         <!-- Quarkus -->
-
         <version.quarkus>3.8.2</version.quarkus>
         <quarkus.profile>dev</quarkus.profile>
 
         <!-- Dependency Versions -->
-
         <lombok.version>1.18.32</lombok.version>
         <apicurio-common-app-components.version>1.1.0</apicurio-common-app-components.version>
         <apicurio-common-rest-client.version>0.1.18.Final</apicurio-common-rest-client.version>
@@ -116,17 +113,17 @@
         <version.puppycrawl>10.14.2</version.puppycrawl>
 
         <!-- Test Dependency Versions -->
-
         <version.org.testcontainers.postgresql>1.19.7</version.org.testcontainers.postgresql>
         <version.wiremock>2.35.2</version.wiremock>
+        <embedded-postgres.version>2.0.6</embedded-postgres.version>
 
         <!-- Plugin Versions -->
-
         <version.compiler.plugin>3.13.0</version.compiler.plugin>
         <version.deploy.plugin>3.1.1</version.deploy.plugin>
         <version.javadoc.plugin>3.6.3</version.javadoc.plugin>
         <version.source.plugin>3.3.0</version.source.plugin>
         <version.surefire.plugin>3.2.5</version.surefire.plugin>
+        <version.failsafe.plugin>3.2.5</version.failsafe.plugin>
         <version.jar.plugin>3.3.0</version.jar.plugin>
         <version.checkstyle.plugin>3.3.1</version.checkstyle.plugin>
         <version.properties.plugin>1.2.1</version.properties.plugin>
@@ -273,7 +270,13 @@
                 <version>${version.wiremock}</version>
                 <scope>test</scope>
             </dependency>
-
+            
+            <dependency>
+                <groupId>io.zonky.test</groupId>
+                <artifactId>embedded-postgres</artifactId>
+                <version>${embedded-postgres.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -311,6 +314,12 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${version.surefire.plugin}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${version.failsafe.plugin}</version>
                 </plugin>
 
                 <plugin>
@@ -441,6 +450,7 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <executions>
                     <execution>
@@ -461,6 +471,8 @@
                     <failOnError>false</failOnError>
                     <failOnWarnings>false</failOnWarnings>
                     <source>${maven.compiler.source}</source>
+                    <additionalOptions>-Xdoclint:none</additionalOptions>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
                 </configuration>
             </plugin>
 
@@ -533,6 +545,13 @@
             <properties>
                 <quarkus.profile>prod</quarkus.profile>
             </properties>
+        </profile>
+        
+        <profile>
+            <id>integration-tests</id>
+            <modules>
+                <module>integration-tests</module>
+            </modules>
         </profile>
 
         <profile>

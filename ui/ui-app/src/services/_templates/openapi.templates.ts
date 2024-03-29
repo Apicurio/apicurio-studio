@@ -11,26 +11,20 @@ export const OPENAPI_3_TEMPLATES: Template[] = [
     {
         id: "openapi_3_blank",
         name: "Blank API",
-        content: {
-            contentType: ContentTypes.APPLICATION_JSON,
-            data: OPENAPI_3_BLANK
-        }
+        contentType: ContentTypes.APPLICATION_JSON,
+        content: JSON.stringify(OPENAPI_3_BLANK, null, 4)
     },
     {
         id: "openapi_3_petstore",
         name: "Pet Store Example",
-        content: {
-            contentType: ContentTypes.APPLICATION_JSON,
-            data: OPENAPI_3_PETSTORE
-        }
+        contentType: ContentTypes.APPLICATION_JSON,
+        content: JSON.stringify(OPENAPI_3_PETSTORE, null, 4)
     },
     {
         id: "openapi_3_uspto",
         name: "USPTO Dataset API",
-        content: {
-            contentType: ContentTypes.APPLICATION_JSON,
-            data: OPENAPI_3_USPTO
-        }
+        contentType: ContentTypes.APPLICATION_JSON,
+        content: JSON.stringify(OPENAPI_3_USPTO, null, 4)
     }
 ];
 
@@ -38,17 +32,13 @@ export const OPENAPI_2_TEMPLATES: Template[] = [
     {
         id: "openapi_2_blank",
         name: "Blank API",
-        content: {
-            contentType: ContentTypes.APPLICATION_JSON,
-            data: OPENAPI_2_BLANK
-        }
+        contentType: ContentTypes.APPLICATION_JSON,
+        content: JSON.stringify(OPENAPI_2_BLANK, null, 4)
     },
     {
         id: "openapi_2_petstore",
         name: "Pet Store Example",
-        content: {
-            contentType: ContentTypes.APPLICATION_JSON,
-            data: OPENAPI_2_PETSTORE
-        }
+        contentType: ContentTypes.APPLICATION_JSON,
+        content: JSON.stringify(OPENAPI_2_PETSTORE, null, 4)
     }
 ];

@@ -7,17 +7,13 @@ export const ASYNCAPI_2_TEMPLATES: Template[] = [
     {
         id: "asyncapi_2_blank",
         name: "Blank API",
-        content: {
-            contentType: ContentTypes.APPLICATION_JSON,
-            data: ASYNCAPI_2_BLANK
-        }
+        contentType: ContentTypes.APPLICATION_JSON,
+        content: JSON.stringify(ASYNCAPI_2_BLANK, null, 4)
     },
     {
         id: "asyncapi_2_streetlights",
         name: "Street Lights Example",
-        content: {
-            contentType: ContentTypes.APPLICATION_JSON,
-            data: ASYNCAPI_2_STREETLIGHTS
-        }
+        contentType: ContentTypes.APPLICATION_JSON,
+        content: JSON.stringify(ASYNCAPI_2_STREETLIGHTS, null, 4)
     }
 ];

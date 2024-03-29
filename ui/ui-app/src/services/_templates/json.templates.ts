@@ -6,9 +6,7 @@ export const JSON_TEMPLATES: Template[] = [
     {
         id: "json_blank",
         name: "Blank JSON Schema",
-        content: {
-            contentType: ContentTypes.APPLICATION_JSON,
-            data: JSON_BLANK
-        }
+        contentType: ContentTypes.APPLICATION_JSON,
+        content: JSON.stringify(JSON_BLANK, null, 4)
     }
 ];

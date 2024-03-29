@@ -1,6 +1,6 @@
 export interface DesignContent {
 
-    id: string;
+    designId: string;
     contentType: string;
     data: any;
 

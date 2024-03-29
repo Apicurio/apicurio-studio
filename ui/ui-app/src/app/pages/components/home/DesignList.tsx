@@ -47,7 +47,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
             return (
                 <div>
                     <NavLink className="design-title" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                        location={`/designs/${column.id}/editor`}>
+                        location={`/designs/${column.designId}/editor`}>
                         <Truncate content={column.name} tooltipPosition="top" />
                     </NavLink>
                     <DesignDescription className="design-description" style={{ overflow: "hidden", textOverflow: "hidden", whiteSpace: "nowrap", fontSize: "14px" }}
@@ -80,13 +80,13 @@ export const DesignList: FunctionComponent<DesignListProps> = (
 
     const actionsFor = (design: Design): (DesignAction | DesignActionSeparator)[] => {
         return [
-            { label: "View design details", onClick: () => onSelect(design), testId: `view-design-${design.id}` },
+            { label: "View design details", onClick: () => onSelect(design), testId: `view-design-${design.designId}` },
             { isSeparator: true, },
-            { label: "Edit design content", onClick: () => onEdit(design), testId: `edit-design-content-${design.id}` },
-            { label: "Edit design metadata", onClick: () => onRename(design), testId: `edit-design-metadata-${design.id}` },
-            { label: "Download design", onClick: () => onDownload(design), testId: `download-design-${design.id}` },
+            { label: "Edit design content", onClick: () => onEdit(design), testId: `edit-design-content-${design.designId}` },
+            { label: "Edit design metadata", onClick: () => onRename(design), testId: `edit-design-metadata-${design.designId}` },
+            { label: "Download design", onClick: () => onDownload(design), testId: `download-design-${design.designId}` },
             { isSeparator: true, },
-            { label: "Delete design", onClick: () => onDelete(design), testId: `delete-design-${design.id}` }
+            { label: "Delete design", onClick: () => onDelete(design), testId: `delete-design-${design.designId}` }
         ];
     };
 
@@ -120,7 +120,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                 data={designs.designs}
                 expectedLength={designs.count}
                 minimumColumnWidth={350}
-                onRowClick={(row) => onSelect(row.row.id === selectedDesign?.id ? undefined : row.row)}
+                onRowClick={(row) => onSelect(row.row.designId === selectedDesign?.designId ? undefined : row.row)}
                 renderHeader={({ column, Th }) => (
                     <Th sort={sortParams(column)}
                         className="design-list-header"
@@ -129,7 +129,7 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                         modifier="truncate">{column.label}</Th>
                 )}
                 renderCell={({ row, colIndex, Td }) => (
-                    <Td className="design-list-cell" key={`cell-${colIndex}-${row.id}`}
+                    <Td className="design-list-cell" key={`cell-${colIndex}-${row.designId}`}
                         style={{ maxWidth: "0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
                         children={renderColumnData(row as Design, colIndex) as any} />
                 )}
@@ -142,13 +142,13 @@ export const DesignList: FunctionComponent<DesignListProps> = (
                         itemToTestId={item => item.testId}
                         itemIsDivider={item => item.isSeparator}
                         onSelect={item => item.onClick()}
-                        testId={`api-actions-${row.id}`}
+                        testId={`api-actions-${row.designId}`}
                         popperProps={{
                             position: "right"
                         }}
                     />
                 )}
-                isRowSelected={({ row }) => row.id === selectedDesign?.id}
+                isRowSelected={({ row }) => row.designId === selectedDesign?.designId}
             />
         </div>
     );

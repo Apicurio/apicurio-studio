@@ -1,7 +1,7 @@
-import { ArtifactTypes } from "@models/designs";
+import { ArtifactTypes, DesignType } from "@models/designs";
 
 export type TypeItem = {
-    value: string;
+    value: DesignType;
     label: string;
 }
 

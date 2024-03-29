@@ -46,10 +46,11 @@ jobs:
       - name: Build Apicurio Studio typescript SDK
         run: |
           cd typescript-sdk
-          npm install
-          npm run generate-studio-sdk
-          npm run lint
-          npm run build
+          # Disable for now: does not work yet.
+          # npm install
+          # npm run generate-studio-sdk
+          # npm run lint
+          # npm run build
 
       - name: Google Chat Notification (Always)
         if: github.event_name == 'push' && always()

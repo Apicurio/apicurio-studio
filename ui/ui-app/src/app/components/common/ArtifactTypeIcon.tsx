@@ -15,16 +15,6 @@ const icon = (type: string | undefined): string => {
             return "type-openapi";
         case ArtifactTypes.ASYNCAPI:
             return "type-asyncapi";
-        case ArtifactTypes.GRAPHQL:
-            return "type-graphql";
-        case ArtifactTypes.KCONNECT:
-            return "type-kconnect";
-        case ArtifactTypes.WSDL:
-            return "type-wsdl";
-        case ArtifactTypes.XSD:
-            return "type-xsd";
-        case ArtifactTypes.XML:
-            return "type-xml";
     }
     return "";
 };
@@ -59,21 +49,6 @@ export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({ cla
             case ArtifactTypes.ASYNCAPI:
                 title = "AsyncAPI Definition";
                 break;
-            case ArtifactTypes.GRAPHQL:
-                title = "GraphQL Definition";
-                break;
-            case ArtifactTypes.KCONNECT:
-                title = "Kafka Connect Schema";
-                break;
-            case ArtifactTypes.WSDL:
-                title = "WSDL";
-                break;
-            case ArtifactTypes.XSD:
-                title = "XML Schema";
-                break;
-            case ArtifactTypes.XML:
-                title = "XML";
-                break;
         }
         return title;
     };
@@ -95,21 +70,6 @@ export const ArtifactTypeIcon: FunctionComponent<ArtifactTypeIconProps> = ({ cla
                 break;
             case ArtifactTypes.ASYNCAPI:
                 title = "AsyncAPI";
-                break;
-            case ArtifactTypes.GRAPHQL:
-                title = "GraphQL";
-                break;
-            case ArtifactTypes.KCONNECT:
-                title = "Kafka Connect";
-                break;
-            case ArtifactTypes.WSDL:
-                title = "WSDL";
-                break;
-            case ArtifactTypes.XSD:
-                title = "XML Schema";
-                break;
-            case ArtifactTypes.XML:
-                title = "XML";
                 break;
         }
         return title;

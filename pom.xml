@@ -85,7 +85,6 @@
         <module>java-sdk</module>
         <module>spi</module>
         <module>app</module>
-        <module>integration-tests</module>
         <module>dist</module>
         <module>dist/docker</module>
     </modules>
@@ -546,6 +545,13 @@
             <properties>
                 <quarkus.profile>prod</quarkus.profile>
             </properties>
+        </profile>
+        
+        <profile>
+            <id>integration-tests</id>
+            <modules>
+                <module>integration-tests</module>
+            </modules>
         </profile>
 
         <profile>

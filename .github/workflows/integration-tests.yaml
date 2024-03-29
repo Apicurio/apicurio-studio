@@ -168,17 +168,16 @@ jobs:
     name: Integration Tests UI
     runs-on: ubuntu-20.04
     needs: [prepare-ui-tests, prepare-integration-tests]
-    steps:      - name: Run UI tests
-        run: |
-          echo "Starting Studio App (In Memory)"
-          docker run -it -p 8080:8080 -d ttl.sh/${{ github.sha }}/apicurio/apicurio-studio:1d
-          echo "Starting Studio UI"
-          docker run -it -p 8888:8080 -d ttl.sh/${{ github.sha }}/apicurio/apicurio-studio-ui:1d
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-          cd ui/tests
-          npm install
-          npx playwright install --with-deps
-son'
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'ui/tests/package-lock.json'
 
       - name: Run UI tests
         run: |

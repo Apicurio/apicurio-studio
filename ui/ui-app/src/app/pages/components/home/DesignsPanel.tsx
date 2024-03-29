@@ -65,7 +65,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({ selectedDes
     };
 
     const onEditDesign = (design: Design): void => {
-        nav.navigateTo(`/designs/${design.id}/editor`);
+        nav.navigateTo(`/designs/${design.designId}/editor`);
     };
 
     const onRenameDesign = (design: Design): void => {
@@ -74,7 +74,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({ selectedDes
     };
 
     const doRenameDesign = (event: RenameDesign): void => {
-        designsSvc.renameDesign(designToRename?.id as string, event.name, event.description).then(() => {
+        designsSvc.renameDesign(designToRename?.designId as string, event.name, event.description).then(() => {
             if (designToRename) {
                 designToRename.name = event.name;
                 designToRename.description = event.description;
@@ -93,7 +93,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({ selectedDes
     };
 
     const onDeleteDesignConfirmed = (design: Design): void => {
-        designsSvc.deleteDesign(design.id).then(() => {
+        designsSvc.deleteDesign(design.designId).then(() => {
             doRefresh();
             alerts.designDeleted(design);
         }).catch(error => {
@@ -104,7 +104,7 @@ export const DesignsPanel: FunctionComponent<DesignsPanelProps> = ({ selectedDes
     };
 
     const onDownloadDesign = (design: Design): void => {
-        designsSvc.getDesignContent(design.id).then(content => {
+        designsSvc.getDesignContent(design.designId).then(content => {
             const filename: string = `${convertToValidFilename(design.name)}.${fileExtensionForDesign(design, content)}`;
             const contentType: string = contentTypeForDesign(design, content);
             const theContent: string = typeof content.data === "object" ? JSON.stringify(content.data, null, 4) : content.data as string;

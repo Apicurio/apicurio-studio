@@ -6,9 +6,7 @@ export const PROTOBUF_TEMPLATES: Template[] = [
     {
         id: "protobuf_blank",
         name: "Blank Protobuf Schema",
-        content: {
-            contentType: ContentTypes.APPLICATION_PROTOBUF,
-            data: PROTOBUF_BLANK.template
-        }
+        contentType: ContentTypes.APPLICATION_PROTOBUF,
+        content: PROTOBUF_BLANK.template
     }
 ];

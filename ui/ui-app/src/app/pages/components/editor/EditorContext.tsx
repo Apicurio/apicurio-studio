@@ -106,7 +106,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
 
     useEffect(() => {
         if (props.design) {
-            designService.getFirstEvent(props.design.id).then(event => {
+            designService.getFirstEvent(props.design.designId).then(event => {
                 setOriginEvent(event);
             }).catch(error => {
                 // FIXME handle errors

@@ -124,6 +124,7 @@
         <version.javadoc.plugin>3.6.3</version.javadoc.plugin>
         <version.source.plugin>3.3.0</version.source.plugin>
         <version.surefire.plugin>3.2.5</version.surefire.plugin>
+        <version.failsafe.plugin>3.2.5</version.failsafe.plugin>
         <version.jar.plugin>3.3.0</version.jar.plugin>
         <version.checkstyle.plugin>3.3.1</version.checkstyle.plugin>
         <version.properties.plugin>1.2.1</version.properties.plugin>
@@ -318,6 +319,12 @@
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${version.failsafe.plugin}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>${version.deploy.plugin}</version>
                 </plugin>
@@ -444,6 +451,7 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <executions>
                     <execution>
@@ -464,6 +472,8 @@
                     <failOnError>false</failOnError>
                     <failOnWarnings>false</failOnWarnings>
                     <source>${maven.compiler.source}</source>
+                    <additionalOptions>-Xdoclint:none</additionalOptions>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
                 </configuration>
             </plugin>
 

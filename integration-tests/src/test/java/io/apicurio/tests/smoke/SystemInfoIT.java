@@ -1,4 +1,4 @@
-package io.apicurio.tests.smokeTests.apicurio;
+package io.apicurio.tests.smoke;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -20,7 +20,7 @@ class SystemInfoIT extends ApicurioStudioBaseIT {
 
     @Test
     @Tag(SMOKE)
-    void createAvroDesign() throws Exception {
+    void getSystemInfo() throws Exception {
         SystemInfo systemInfo = studioClient.system().info().get();
         
         LOGGER.info("-----------------------------------------");

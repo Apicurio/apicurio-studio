@@ -329,7 +329,7 @@ public class ApicurioStudioBaseIT implements TestSeparator, Constants {
         } catch (Exception e) {
             Assertions.assertEquals(io.apicurio.studio.rest.client.models.Error.class, e.getClass());
             Assertions.assertEquals(expectedErrorName, ((io.apicurio.studio.rest.client.models.Error)e).getName());
-            Assertions.assertEquals(expectedCode, ((io.apicurio.studio.rest.client.models.Error)e).getCode());
+            Assertions.assertEquals(expectedCode, ((io.apicurio.studio.rest.client.models.Error)e).getErrorCode());
         }
     }
 

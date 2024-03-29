@@ -1,7 +1,6 @@
 export * from "./ArtifactTypes";
 export * from "./ContentTypes";
 export * from "./CreateDesign";
-export * from "./CreateDesignContent";
 export * from "./CreateDesignEvent";
 export * from "./Design";
 export * from "./DesignContent";

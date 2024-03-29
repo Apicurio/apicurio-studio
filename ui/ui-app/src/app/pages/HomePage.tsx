@@ -17,10 +17,9 @@ import {
     Title,
     TitleSizes
 } from "@patternfly/react-core";
-import { CreateDesign, CreateDesignContent, CreateDesignEvent, Design } from "@models/designs";
+import { CreateDesign, CreateDesignEvent, Design } from "@models/designs";
 import { DesignsService, useDesignsService } from "@services/useDesignsService.ts";
 import { Template } from "@models/templates";
-import { cloneObject, propertyReplace } from "@utils/object.utils.ts";
 import {
     CreateDesignModal,
     DesignDetailsPanel,
@@ -68,21 +67,13 @@ export const HomePage: FunctionComponent<HomePageProps> = () => {
     };
 
     const createDesign = async (info: CreateDesign, template: Template): Promise<void> => {
-        const dc: CreateDesignContent = {
-            contentType: template.content.contentType,
-            data: cloneObject(template.content.data)
-        };
-        if (typeof dc.data === "string") {
-            dc.data = dc.data.replace("$NAME", info.name).replace("$SUMMARY", info.description||"");
-        } else {
-            propertyReplace(dc.data, "$NAME", info.name);
-            propertyReplace(dc.data, "$SUMMARY", info.description||"");
-        }
+        info.content = template.content.replace("$NAME", info.name).replace("$SUMMARY", info.description || "");
+        info.contentType = template.contentType;
         setCreating(true);
-        return designsSvc.createDesign(info, dc).then((design: Design) => {
+        return designsSvc.createDesign(info).then((design: Design) => {
             setCreating(false);
             setCreateModalOpen(false);
-            nav.navigateTo(`/designs/${design.id}/editor`);
+            nav.navigateTo(`/designs/${design.designId}/editor`);
         }).catch((error: any) => {
             console.error(error);
             setCreateModalOpen(false);
@@ -91,13 +82,13 @@ export const HomePage: FunctionComponent<HomePageProps> = () => {
         });
     };
 
-    const importDesign = async (cd: CreateDesign, content: CreateDesignContent, cde?: CreateDesignEvent): Promise<void> => {
+    const importDesign = async (cd: CreateDesign, cde?: CreateDesignEvent): Promise<void> => {
         console.info("[HomePage] Importing design: ", cd, cde);
         setImporting(true);
-        return designsSvc.createDesign(cd, content, cde).then((design) => {
+        return designsSvc.createDesign(cd, cde).then((design) => {
             setImporting(false);
             setImportModalOpen(false);
-            nav.navigateTo(`/designs/${design.id}/editor`);
+            nav.navigateTo(`/designs/${design.designId}/editor`);
         }).catch((error: any) => {
             console.error(error);
             setImporting(false);

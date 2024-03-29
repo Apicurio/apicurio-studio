@@ -11,7 +11,7 @@ import {
     TextArea,
     TextInput
 } from "@patternfly/react-core";
-import { ArtifactTypes, CreateDesign } from "@models/designs";
+import { ArtifactTypes, CreateDesign, DesignType } from "@models/designs";
 import { Template } from "@models/templates";
 import { TemplatesService, useTemplatesService } from "@services/useTemplatesService.ts";
 import { OPENAPI_VERSIONS, TemplateItem, TYPE_ITEMS, TypeItem } from "@app/pages";
@@ -30,7 +30,7 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({ i
     const [description, setDescription] = useState("");
 
     const [typeSelection, setTypeSelection] = useState<TypeItem>(TYPE_ITEMS[0]);
-    const [type, setType] = useState(ArtifactTypes.OPENAPI);
+    const [type, setType] = useState<DesignType>(ArtifactTypes.OPENAPI);
     const [version, setVersion] = useState("");
 
     const [templates, setTemplates] = useState<Template[]>();
@@ -44,7 +44,9 @@ export const CreateDesignModal: FunctionComponent<CreateDesignModalProps> = ({ i
             type,
             name,
             description,
-            origin: "create"
+            origin: "create",
+            content: "",
+            contentType: ""
         };
         onCreate(cd, template as Template);
     };

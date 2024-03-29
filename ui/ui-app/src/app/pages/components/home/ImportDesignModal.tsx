@@ -14,9 +14,8 @@ import {
     ArtifactTypes,
     ContentTypes,
     CreateDesign,
-    CreateDesignContent,
     CreateDesignEvent,
-    DesignOriginType
+    DesignOriginType, DesignType
 } from "@models/designs";
 import { isJson, isProto, isYaml, parseJson, parseYaml } from "@utils/content.utils.ts";
 import {
@@ -35,7 +34,7 @@ export type ImportDesignModalProps = {
     importType: ImportFrom;
     isOpen: boolean | undefined;
     isImporting: boolean|undefined;
-    onImport: (design: CreateDesign, content: CreateDesignContent, event?: CreateDesignEvent) => void;
+    onImport: (design: CreateDesign, event?: CreateDesignEvent) => void;
     onCancel: () => void;
 }
 
@@ -51,7 +50,7 @@ type DetectionInfo = {
 export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({ importType, isOpen, isImporting, onImport, onCancel }: ImportDesignModalProps) => {
     const [isValid, setValid] = useState(false);
 
-    const [designContent, setDesignContent] = useState<string>();
+    const [designContent, setDesignContent] = useState<string>("");
     const [fileName, setFileName] = useState<string>();
     const [url, setUrl] = useState<string>();
 
@@ -59,7 +58,7 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({ i
     const [description, setDescription] = useState("");
 
     const [typeSelection, setTypeSelection] = useState<TypeItem>();
-    const [type, setType] = useState<string>();
+    const [type, setType] = useState<DesignType>("OPENAPI");
 
     const [version, setVersion] = useState("");
 
@@ -75,11 +74,11 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({ i
 
     const onFileClear = (): void => {
         setFileName(undefined);
-        setDesignContent(undefined);
+        setDesignContent("");
     };
 
     const onUrlChange = (value: string|undefined, url: string|undefined): void => {
-        setDesignContent(value);
+        setDesignContent(value as string);
         setUrl(url);
     };
 
@@ -87,14 +86,12 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({ i
     const doImport = (): void => {
         const origin: DesignOriginType = importType === ImportFrom.FILE ? "file" : "url";
         const cd: CreateDesign = {
-            type: type as string,
+            type,
             name,
             description,
-            origin
-        };
-        const cdc: CreateDesignContent = {
+            origin,
             contentType: contentType as string,
-            data: designContent
+            content: designContent
         };
         const cde: CreateDesignEvent = {
             type: "IMPORT",
@@ -109,7 +106,7 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({ i
         console.debug("[ImportDesignModal] Importing design: ", cd);
         console.debug("[ImportDesignModal] Importing content-type: ", contentType);
         console.debug("[ImportDesignModal] Importing event: ", cde);
-        onImport(cd, cdc, cde);
+        onImport(cd, cde);
     };
 
     const hasDesignContent = (): boolean => {
@@ -224,17 +221,17 @@ export const ImportDesignModal: FunctionComponent<ImportDesignModalProps> = ({ i
 
     // Whenever the modal is opened, set default values for the form.
     useEffect(() => {
-        setDesignContent(undefined);
+        setDesignContent("");
         setName("");
         setDescription("");
         setFileName(undefined);
-        setType(undefined);
+        setType("OPENAPI");
         setTypeSelection(undefined);
     }, [isOpen]);
 
     // The type selection was changed - set the type
     useEffect(() => {
-        setType(typeSelection?.value);
+        setType(typeSelection?.value as DesignType);
     }, [typeSelection]);
 
     // Whenever the content changes (e.g. loaded from file) try to detect the

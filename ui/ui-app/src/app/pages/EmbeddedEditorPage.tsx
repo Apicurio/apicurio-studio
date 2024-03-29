@@ -8,7 +8,7 @@ import {
     ToolbarContent,
     ToolbarItem
 } from "@patternfly/react-core";
-import { ArtifactTypes, ContentTypes, DesignContent } from "@models/designs";
+import { ArtifactTypes, ContentTypes, DesignContent, DesignType } from "@models/designs";
 import { TextEditor } from "@editors/TextEditor.tsx";
 import { ProtoEditor } from "@editors/ProtoEditor.tsx";
 import { OpenApiEditor } from "@editors/OpenApiEditor.tsx";
@@ -46,7 +46,7 @@ export const EmbeddedEditorPage: FunctionComponent<EmbeddedEditorPageProps> = ()
     const [content, setContent] = useState("{}");
     const [contentType, setContentType] = useState("application/json");
     const [editorDesignContent, setEditorDesignContent] = useState<DesignContent>({
-        id: "embedded",
+        designId: "embedded",
         contentType: "application/json",
         data: "{}"
     });
@@ -65,7 +65,7 @@ export const EmbeddedEditorPage: FunctionComponent<EmbeddedEditorPageProps> = ()
         setOriginalContent(content);
         setCurrentContent(content);
         setEditorDesignContent({
-            id: "embedded",
+            designId: "embedded",
             data: content,
             contentType: contentType
         });
@@ -79,7 +79,7 @@ export const EmbeddedEditorPage: FunctionComponent<EmbeddedEditorPageProps> = ()
     useEffect(() => {
         const eventListener: any = (event: any) => {
             if (event.data && event.data.type === "apicurio_onLoad") {
-                const newType: string = event.data.artifactType;
+                const newType: DesignType = event.data.artifactType;
                 const newCorrelationId: string = event.data.correlationId;
                 let newContent: any = event.data.data.content;
                 const newContentType: string = event.data.data.contentType;
@@ -132,7 +132,7 @@ export const EmbeddedEditorPage: FunctionComponent<EmbeddedEditorPageProps> = ()
         const formattedContent: string = formatContent(currentContent, editorDesignContent.contentType);
         console.info("[EditorPage] New content is: ", formattedContent);
         setEditorDesignContent({
-            id: "embedded",
+            designId: "embedded",
             contentType: editorDesignContent.contentType,
             data: formattedContent
         });

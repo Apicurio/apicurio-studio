@@ -6,9 +6,7 @@ export const AVRO_TEMPLATES: Template[] = [
     {
         id: "avro_blank",
         name: "Blank Avro Schema",
-        content: {
-            contentType: ContentTypes.APPLICATION_JSON,
-            data: AVRO_BLANK
-        }
+        contentType: ContentTypes.APPLICATION_JSON,
+        content: JSON.stringify(AVRO_BLANK, null, 4)
     }
 ];

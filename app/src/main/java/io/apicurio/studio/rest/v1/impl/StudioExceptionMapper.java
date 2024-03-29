@@ -1,23 +1,32 @@
 package io.apicurio.studio.rest.v1.impl;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import io.apicurio.studio.rest.v1.beans.Error;
-import io.apicurio.studio.rest.v1.impl.ex.BadRequestException;
-import io.apicurio.studio.spi.storage.StudioStorageException;
-import io.apicurio.studio.spi.storage.ResourceAlreadyExistsStorageException;
-import io.apicurio.studio.spi.storage.ResourceNotFoundStorageException;
-import io.quarkus.runtime.configuration.ConfigUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_CONFLICT;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonParseException;
+
+import io.apicurio.common.apps.config.Info;
+import io.apicurio.studio.rest.v1.beans.Error;
+import io.apicurio.studio.rest.v1.impl.ex.BadRequestException;
+import io.apicurio.studio.spi.storage.ResourceAlreadyExistsStorageException;
+import io.apicurio.studio.spi.storage.ResourceNotFoundStorageException;
+import io.apicurio.studio.spi.storage.StudioStorageException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.validation.ValidationException;
 import jakarta.ws.rs.WebApplicationException;
@@ -25,11 +34,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-
-import static java.net.HttpURLConnection.*;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.UUID.randomUUID;
 
 /**
  * @author Jakub Senko <em>m@jsenko.net</em>
@@ -44,12 +48,9 @@ public class StudioExceptionMapper implements ExceptionMapper<Throwable> {
 
     private static final Map<Class<? extends Exception>, Integer> CODE_MAP;
 
-    private final Set<String> quarkusProfiles;
-
-    {
-        quarkusProfiles = new HashSet<>();
-        quarkusProfiles.addAll(ConfigUtils.getProfiles());
-    }
+    @ConfigProperty(name = "apicurio.api.errors.include-stack-in-response", defaultValue = "false")
+    @Info(category = "api", description = "Include stack trace in errors responses", availableSince = "1.0.0")
+    boolean includeStackTrace;
 
     static {
         // NOTE: Subclasses of the entry will be matched as well.
@@ -99,11 +100,11 @@ public class StudioExceptionMapper implements ExceptionMapper<Throwable> {
         }
 
         var errorBuilder = Error.builder()
-                .id(randomUUID().toString())// TODO: Replace with Operation ID so it can be paired with the logs
-                .kind("Error")
-                .code(String.valueOf(httpCode));
+                .errorCode(httpCode)
+                .message(exception.getLocalizedMessage())
+                .name(exception.getClass().getSimpleName());
 
-        if (!quarkusProfiles.contains("prod")) {
+        if (includeStackTrace) {
             var extendedReason = exception.getMessage();
             extendedReason += ". Details:\n";
             extendedReason += exception.getClass().getCanonicalName() + ": " + exception.getMessage() + "\n";
@@ -113,13 +114,17 @@ public class StudioExceptionMapper implements ExceptionMapper<Throwable> {
             exception.printStackTrace(pw);
             extendedReason += "Stack Trace:\n" + sw;
 
-            errorBuilder.reason(extendedReason);
+            errorBuilder.detail(extendedReason);
         } else {
-            errorBuilder.reason(exception.getMessage());
+            errorBuilder.detail(getRootMessage(exception));
         }
 
         return responseBuilder.type(MediaType.APPLICATION_JSON)
                 .entity(errorBuilder.build())
                 .build();
+    }
+
+    private static String getRootMessage(Throwable t) {
+        return ExceptionUtils.getRootCauseMessage(t);
     }
 }

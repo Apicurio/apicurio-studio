@@ -75,12 +75,7 @@ public class DesignEventService {
 
             var type = DesignEventType.fromValue(eventDto.getType());
 
-            builder.kind("DesignEvent")
-                    .id(eventDto.getId())
-                    .href("/apis/studio/v1/designs/{designId}/events/{eventId}"
-                            .replace("{designId}", eventDto.getDesignId())
-                            .replace("{eventId}", eventDto.getId()))
-                    .designId(eventDto.getDesignId())
+            builder.designId(eventDto.getDesignId())
                     .on(Date.from(eventDto.getCreatedOn()))
                     .type(type);
 

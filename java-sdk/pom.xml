@@ -28,7 +28,7 @@
     <properties>
         <kiota.libs.version>1.1.2</kiota.libs.version>
 	<kiota.community.version>0.0.15</kiota.community.version>
-	<kiota.base.url>https://github.com/microsoft/kiota/releases/download1</kiota.base.url>
+	<kiota.base.url>https://github.com/microsoft/kiota/releases/download</kiota.base.url>
     </properties>
     <dependencies>
         <dependency>

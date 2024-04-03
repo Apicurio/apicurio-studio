@@ -19,8 +19,8 @@ import {NgModule} from "@angular/core";
 
 import {CommonModule} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {BsDropdownModule} from 'ngx-bootstrap/dropdown';
-import {ModalModule} from 'ngx-bootstrap/modal';
+import {BsDropdownModule} from "ngx-bootstrap/dropdown";
+import {ModalModule, BsModalService} from "ngx-bootstrap/modal";
 
 import {ValidationIconComponent} from "./editor/_components/title-bar/validation-icon.component";
 import {ServerUrlComponent} from "./editor/_components/common/server-url.component";
@@ -166,14 +166,14 @@ import {ExtensionRowComponent} from "./editor/_components/forms/shared/extension
 import {JsonSummaryComponent} from "./editor/_components/common/json-summary.component";
 import {InlineJsonEditorComponent} from "./editor/_components/common/inline-json-editor.component";
 import {AddExtensionDialogComponent} from "./editor/_components/dialogs/add-extension.component";
-import {DropDownComponent} from './editor/_components/common/drop-down.component';
+import {DropDownComponent} from "./editor/_components/common/drop-down.component";
 import {FormErrorMessageComponent} from "./editor/_components/common/form-error-message.component";
 import {CodeEditorComponent} from "./editor/_components/common/code-editor.component";
 import {AceEditorComponent} from "./editor/_components/common/ace-editor.component";
 import {DivAutoHeight, TextAreaAutosize, TextBoxAutosize} from "./editor/_directives/autosize.directive";
 import {MarkdownComponent} from "./editor/_components/common/markdown.component";
 import {MarkdownSummaryComponent} from "./editor/_components/common/markdown-summary.component";
-import {MarkdownEditorComponent} from './editor/_components/common/markdown-editor.component';
+import {MarkdownEditorComponent} from "./editor/_components/common/markdown-editor.component";
 
 @NgModule({
     imports: [
@@ -219,6 +219,7 @@ import {MarkdownEditorComponent} from './editor/_components/common/markdown-edit
         OaiEditorComponent
     ],
     providers: [
+        BsModalService,
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,
         RestResourceService, FeaturesService, CollaboratorService, ApiCatalogService
     ],

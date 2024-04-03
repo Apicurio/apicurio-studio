@@ -1,0 +1,28 @@
+[id="proc-testing-schema-api-design"]
+= Testing a schema or API design
+
+[role="_abstract"]
+You can test that your schema or API design content is valid and compatible with existing content by applying the rules of an existing {registry-long} instance.
+You can test the design while working in the {studio-long} editor, without exporting the design to {registry-long}.
+
+.Prerequisites
+* You're logged in to the {studio-long} web console.
+* You've created or imported a design in {studio-long}.
+* You can access a running {registry-long} instance in your organization.
+Within that instance, you know the artifact ID of an artifact with the required rules configured.
+For more information, see {registry-introduction}.
+
+.Procedure
+. On the *API and Schema Designs* page of the {studio-long} web console, select the design that you want to test.
+. Click the options icon (three vertical dots), and click *Edit design content* to open the design editor.
+. From the *Actions* menu, click *Run {registry} check*.
+. From the *Registry instance* list, select a {registry} instance.
+. In the *Group* and *ID* fields, specify the artifact details.
+. Click *Test*.
+
+A new pane in the design editor window shows the registration issues found by the test:
+
+* If the design content obeys the specified rules, the registration issues pane contains the following text:
+`Registry Test completed with no issues`
+
+* If the registration issues pane provides details of any issues, resolve the issues and click *Retry* to retest the content using the same artifact rules.

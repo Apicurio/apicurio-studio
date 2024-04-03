@@ -1,0 +1,13 @@
+// Upstream
+
+// Downstream
+
+// Common
+
+:studio-introduction: xref::assembly-introduction.adoc#introduction[Introduction to {studio}]
+:registry-introduction: https://www.apicur.io/registry/docs/apicurio-registry/2.5.x/getting-started/assembly-intro-to-the-registry.html[Introduction to {registry-long}]
+
+:studio-rest-api: link:{attachments-dir}/studio-rest-api.htm[{studio} REST API documentation]
+
+:studio-examples: link:https://github.com/Apicurio/apicurio-studio/examples[]
+:studio-build-from-source: For details on building from source, see https://github.com/Apicurio/apicurio-studio[].

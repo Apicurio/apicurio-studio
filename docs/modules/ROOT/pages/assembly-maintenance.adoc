@@ -1,0 +1,17 @@
+include::partial$shared/all-attributes.adoc[]
+
+[id="managing-studio"]
+= Configuring and managing {studio} deployment
+
+This chapter explains how to configure and manage your {studio} deployment:
+
+* xref:studio-security-keycloak[]
+* xref:manage-studio-environment-variables[]
+* xref:studio-sql-backup[]
+* xref:studio-sql-restore[]
+
+// INCLUDES
+include::partial$proc-configuring-studio-security-keycloak.adoc[leveloffset=+1]
+include::partial$proc-manage-environment-variables.adoc[leveloffset=+1]
+include::partial$proc-studio-sql-backup.adoc[leveloffset=+1]
+include::partial$proc-studio-sql-restore.adoc[leveloffset=+1]

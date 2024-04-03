@@ -1,0 +1,28 @@
+include::partial$shared/all-attributes.adoc[]
+
+[id="apicurio-studio"]
+
+= {studio} documentation
+
+Welcome to the {studio} version {studio-version} documentation. Navigate using the left menu.
+
+{studio-long} enables you to design schemas and API definitions. It provides a web console to make it easy for API owners and developers to manage the content of event schemas and API definitions.
+
+ifndef::apicurio-studio-downstream[]
+IMPORTANT: This is a project in early stages of development. It will replace the legacy version of Apicurio Studio with a code-base built from scratch on top of a newer technology stack. As a result, some features that are available in the previous versions are not yet implemented in the new version. For more details, see the https://www.apicur.io/blog/2024/03/22/studio-1.0[Apicurio Studio 1.0: The Awakening] blog post.
+endif::[]
+ifdef::apicurio-studio-downstream[]
+IMPORTANT: This is a Developer Preview, which might evolve in future releases. Before using this product in production, make sure to test that your deployment works as expected. Review the Release Notes in future releases for updates on this product.
+endif::[]
+
+== About this documentation
+
+This document introduces {studio}, explains how to install with your chosen storage option, and how to manage event schemas and API designs using the {studio} web console and REST API.
+
+== Getting help with {studio}
+
+See the link:https://github.com/Apicurio/apicurio-studio[{studio}] project on GitHub. Any contributions, suggestions, and issue reports are welcome.
+
+ifndef::apicurio-studio-downstream[]
+link:https://github.com/Apicurio/apicurio-studio/issues/new[Create an issue] on GitHub if you find any problems.
+endif::[]

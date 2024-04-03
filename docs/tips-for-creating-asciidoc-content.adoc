@@ -1,0 +1,403 @@
+// Enable icons instead of text in admonitions (TIP, NOTE, and so on)
+:icons:
+:source-highlighter: pygments
+
+[[style]]
+= Tips for Creating AsciiDoc Content
+
+Contributors to Apicurio Registry user documentation follow these style conventions 
+
+* <<style-comments>>
+* <<style-blocks>> 
+* <<style-code>>
+* <<style-gui>> 
+* <<style-user-input>>
+* <<formatting-replaceables>>
+* <<troubleshooting>>
+* <<additional-resources>>
+
+[[style-comments]]
+== Inserting comments
+// This is a single line comment
+Single line comments start with a double forward slash, like this:
+....
+// This is a single line comment
+....
+
+Multi-line comments are enclosed in a group of four forward slashes, like this:
+....
+////
+This is a slightly longish
+multi-line
+comment.
+////
+....
+
+[[style-blocks]]
+== Inserting paragraphs and lists
+
+* <<style-blocks-paras>>
+* <<style-blocks-itemized-list>>
+* <<style-blocks-ordered-list>>
+* <<style-blocks-variable-list>>
+
+[[style-blocks-paras]]
+=== Inserting paragraphs
+To enter a paragraph, just enter the text. 
+
+Insert a blank line before a subsequent paragraph. 
+
+
+[[style-blocks-itemized-list]]
+=== Formatting unordered lists
+A simple unordered list (bulleted list) is signalled by putting an asterisk at the start of each line, like this:
+
+....
+* First bullet.
+* Second bullet.
+* Third bullet.
+....
+
+This renders as:
+
+====
+* First bullet.
+* Second bullet.
+* Third bullet.
+====
+
+One of the most useful things to know about unordered lists is how to add extra content to a bullet point without breaking out of the list?
+The answer is to join the content with a `+` character (on its own line).
+
+For example, consider the following unordered list:
+
+....
+* Launch the virtual machine with the following command:
++
+----
+$ vagrant up
+----
++
+NOTE: Make sure that you run this command in the same directory as the `Vagrantfile` file
+
+* Shut down the virtual machine with the following command:
++
+----
+$ vagrant halt
+----
+....
+
+Which renders as:
+
+====
+* Launch the virtual machine with the following command:
++
+----
+$ vagrant up
+----
++
+NOTE: Make sure that run this command in the same directory as the `Vagrantfile` file
+
+* Shut down the virtual machine with the following command:
++
+----
+$ vagrant halt
+----
+====
+
+[[style-blocks-ordered-list]]
+=== Formatting ordered lists
+An ordered list (numbered list) is signaled by putting a dot, `.`, at the start of each line. Once again, to join content and keep it in the same numbered point, use a the `+` character.
+
+For example, consider the following ordered list:
+
+....
+. Log in to OpenShift by entering the following command:
++
+----
+$ oc login -u admin -p admin
+----
++
+NOTE: The `admin` user account is created by default in the CDK.
+
+. Switch to the `test` project by entering the following command:
++
+----
+$ oc project test
+----
+....
+
+Which renders as:
+
+====
+. Log in to OpenShift by entering the following command:
++
+----
+$ oc login -u admin -p admin
+----
++
+NOTE: The `admin` user account is created by default in the CDK.
+
+. Switch to the `test` project by entering the following command:
++
+----
+$ oc project test
+----
+====
+
+[[style-blocks-variable-list]]
+=== Formatting variable lists
+The variable list is a great layout to use when you need to present a list of terms and associated descriptions (and is often a superior alternative to using a bulleted list).
+
+For example, consider the following variable list:
+
+....
+OpenShift client:: If you are using the CDK, the `oc` client tool can conveniently be installed as follows:
++
+----
+$ vagrant service-manager install-cli openshift
+----
+
+Docker client:: If you are using the CDK, the `docker` client tool can conveniently be installed as follows:
++
+----
+$ vagrant service-manager install-cli docker
+----
+....
+
+Which renders as:
+
+====
+OpenShift client:: If you are using the CDK, the `oc` client tool can conveniently be installed as follows:
++
+----
+$ vagrant service-manager install-cli openshift
+----
+
+Docker client:: If you are using the CDK, the `docker` client tool can conveniently be installed as follows:
++
+----
+$ vagrant service-manager install-cli docker
+----
+====
+
+[[style-code]]
+== Formatting code
+* <<style-code-inline>> 
+* <<style-code-listing-notitle>>
+* <<style-code-listing-title>> 
+* <<style-code-callouts>>
+* <<style-code-listing-attribute-sub>>
+
+[[style-code-inline]]
+=== Formatting inline code
+Use backticks to enclose inline code.
+
+For example, to start the fuse container, enter the `./bin/fuse` command.
+
+----
+For example, to start the fuse container, enter the `./bin/fuse` command.
+----
+
+You can use `_underscores inside backticks_` or `*asterisks inside backticks*`. But if you prefer the underscore or asterisk to be shown literally, `\_escape the first one with a backslash_`.
+
+----
+You can use `_underscores inside backticks_` or `*asterisks inside backticks*`. But if you prefer the underscore or asterisk to be shown literally, `\_escape the first one with a backslash_`.
+----
+
+
+[[style-code-listing-notitle]]
+=== Providing code blocks without titles
+You _could_ create a code listing by putting spaces at the start of 
+each line of code, but _this approach is deprecated._
+
+It is much better to delimit a code block by putting a line with four hyphens `----` at the beginning and end of the listing, like this:
+
+....
+----
+oc login -u admin -p admin
+----
+....
+
+Which renders as:
+====
+----
+oc login -u admin -p admin
+----
+====
+
+If you are presenting a snippet of XML code, it is strongly recommended to switch on syntax highlighting, like this:
+
+....
+[source,xml]
+----
+<repositories>
+  <repository>
+    <id>foo</id>
+  </repository>
+</repositories>
+----
+....
+
+Which renders as:
+
+====
+[source,xml]
+----
+<repositories>
+  <repository>
+    <id>foo</id>
+  </repository>
+</repositories>
+----
+====
+
+Likewise, for Java code snippets it is highly recommended to switch on syntax highlighting like this:
+
+....
+[source,java]
+----
+class FooBar {
+  int getNumberOfFoos();
+  void setNumberOfFoos();
+}
+----
+....
+
+Which renders as:
+
+====
+[source,java]
+----
+class FooBar {
+  int getNumberOfFoos();
+  void setNumberOfFoos();
+}
+----
+====
+
+[[style-code-listing-title]]
+=== Adding titles to code blocks
+To define a code listing with a title, precede it with a title line like `.This is a Code Example`.
+And if you are giving a code listing a title, it is generally a good idea to assign an anchor ID (between `[[` and `]]`) as well and to put it in a generic block (enclosed in `====` lines). For example:
+
+....
+[[style-code-xml-example]]
+.Code Caption
+====
+[source,xml]
+----
+<repositories>
+  <repository>
+    <id>foo</id>
+  </repository>
+</repositories>
+----
+====
+....
+
+Which renders as:
+
+[[style-code-xml-example]]
+.Code Caption
+====
+[source,xml]
+----
+<repositories>
+  <repository>
+    <id>foo</id>
+  </repository>
+</repositories>
+----
+====
+
+And because you have given the listing an anchor ID, you can easily cross-reference the <<style-code-xml-example>>.
+
+
+[[style-code-callouts]]
+=== Formatting code blocks that have callouts and replaceables
+Sometimes a code listing uses callouts and also italics for replaceables. 
+To be able to insert callouts and also preserve italics, 
+insert `[subs="+quotes"]` before the code listing. 
+
+[[style-code-listing-attribute-sub]]
+=== Substituting attributes in code blocks
+There are circumstances where it can be useful to substitutes attribute 
+values inside code listings.
+By default, this is not possible because the curly braces, `{}`, are 
+  interpreted literally inside a code listing.
+But if you specify `[subs="attributes"]` at the start of the listing, 
+attribute substitution _is_ performed. For example:
+
+....
+[subs="attributes"]
+----
+mvn archetype:generate \
+  -DarchetypeCatalog={archetype-catalog} \
+  -DarchetypeGroupId=org.jboss.fuse.fis.archetypes \
+  -DarchetypeArtifactId=spring-boot-camel-archetype \
+  -DarchetypeVersion={archetype-version}
+----
+....
+
+Which renders as:
+
+:archetype-version: 2.2.180.fuse-000003
+:archetype-catalog: https://repository.jboss.org/nexus/content/groups/ea/archetype-catalog.xml
+
+[subs="attributes"]
+----
+mvn archetype:generate \
+  -DarchetypeCatalog={archetype-catalog} \
+  -DarchetypeGroupId=org.jboss.fuse.fis.archetypes \
+  -DarchetypeArtifactId=spring-boot-camel-archetype \
+  -DarchetypeVersion={archetype-version}
+----
+
+[[style-gui]]
+== Formatting GUI items
+
+Enclose GUI items in asterisks. This includes menu selections, 
+dialog titles, button labels, popup selections and any other text that 
+appears in a GUI. The asterisks make the item appear in bold font. 
+
+To format a sequence of selections, separate the items with a hyphen
+followed by a greater than symbol. For example:
+
+----
+Select *File* -> *Open* -> *New*
+----
+
+This renders as:
+
+Select *File* -> *Open* -> *New*
+
+[[style-user-input]]
+== Formatting user input
+
+Indicate user input with bold and monospace. For example, enter this:
+
+----
+In the *Name* field, enter `*Twitter*`.
+----
+
+To render this:
+
+In the *Name* field, enter `*Twitter*`.
+
+[[formatting-replaceables]]
+== Formatting replaceables
+
+A replaceable is a variable or placeholder in text, a 
+file path, a command or a code listing. The user must replace the 
+replaceable with a valid value. For example:
+----
+INSTALL-DIR/run.sh.
+----
+
+[[additional-resources]]
+== Additional resources
+
+* link:https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/[AsciiDoc Syntax Quick Reference]
+* link:https://asciidoc.org/userguide.html[AsciiDoc User Guide]
+* link:https://github.com/redhat-documentation/modular-docs#modular-documentation-reference-guide[Modular Documentation Reference Guide].

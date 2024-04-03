@@ -87,6 +87,8 @@
         <module>app</module>
         <module>dist</module>
         <module>dist/docker</module>
+        <module>docs</module>
+        <module>examples</module>
     </modules>
 
     <properties>

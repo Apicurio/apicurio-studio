@@ -1,0 +1,37 @@
+[id="proc-exporting-schema-api-design"]
+= Exporting a schema or API design
+
+[role="_abstract"]
+When you're happy with the changes to your {studio-long} event schema or API definition, and you want to use the design in your application, you can export the content to an existing {registry-long} instance.
+
+.Prerequisites
+* You're logged in to the {studio-long} web console.
+* You've created or imported a design in {studio-long}.
+* You can access a running {registry-long} instance in your organization.
+For more information, see {registry-introduction}.
+
+.Procedure
+. On the *API and Schema Designs* page of the {studio-long} web console, select the design that you want to export.
+. Click the options icon (three vertical dots), and click *Export design to {registry}*.
++
+NOTE: You can also select *Export design to {registry}* from the *Actions* menu in the design editor.
++
+. Complete the form to specify where to save the new design. Provide the following details:
++
+NOTE: If the design was originally imported from {registry-long}, the fields are prepopulated with the details of the original {registry-long} instance, and the *Version* field is blank.
++
+* *Registry Instance*: Select the required instance from the list.
+* *Group* _(Optional)_: Enter a unique group name such as `my-org` to organize the artifact in a named collection.
+Each group contains a logically related set of schemas or API designs, typically managed by a single entity, belonging to a particular application or organization.
++
+NOTE:  Specifying a group is optional when using the web console. If no group is specified, {registry} uses the `default` group.
++
+* *ID* _(Optional)_: Enter a unique ID for this artifact, such as `my-ID`.
+If you don't specify a unique artifact ID, {registry} generates one automatically as a UUID.
+* *Version* _(Optional)_: Specify the version number.
+If you don't specify a version number, {registry} sets the version to 1 for the first version, or increments the latest version by 1 for subsequent versions.
+. Click *Export*.
+The exported design is listed on the artifacts page of the specified {registry} instance.
+
+You can use {registry-long} to manage the versions of a design from {studio-long}.
+You can also download a design from {studio-long} to a file, either for local client code generation or to import the design into {api-management-long}.

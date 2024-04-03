@@ -1,0 +1,25 @@
+[id="studio-sql-restore"]
+= Restoring {studio} PostgreSQL storage
+
+You can restore SQL Dump files created by `pg_dump` using the `psql` utility.
+
+.Prerequisites
+* You must have already backed up your PostgreSQL database using `pg_dump`. See xref:studio-sql-backup[].
+* All users who own objects or have permissions on objects in the dumped database must already exist.
+
+.Procedure
+. Enter the following command to create the database:
++
+[source,bash]
+----
+ $ createdb -T template0 dbname
+----
+
+. Enter the following command to restore the SQL dump
++
+[source,bash]
+----
+ $ psql dbname < dumpfile
+----
+
+. Run https://www.postgresql.org/docs/12/sql-analyze.html[ANALYZE] on each database so the query optimizer has useful statistics.

@@ -16,6 +16,7 @@
 
 package io.apicurio.studio.auth;
 
+import io.apicurio.common.apps.config.Info;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 
@@ -44,6 +45,7 @@ public class AuthorizedInterceptor {
     SecurityIdentity securityIdentity;
 
     @ConfigProperty(name = "quarkus.oidc.tenant-enabled")
+    @Info(category = "auth", description = "OIDC tenant enabled", availableSince = "1.0.0")
     boolean authenticationEnabled;
 
     @AroundInvoke

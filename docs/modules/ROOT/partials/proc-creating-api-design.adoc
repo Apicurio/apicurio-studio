@@ -1,0 +1,42 @@
+[id="proc-creating-api-design"]
+= Creating an API design
+
+[role="_abstract"]
+Use the {studio-long} web console to create an OpenAPI or AsyncAPI definition.
+
+.Prerequisites
+* You're logged in to the {studio} web console.
+
+.Procedure
+. In the {studio} web console, click *Create design*.
+. Complete the form to provide the following details for the new design:
+* *Name*: Enter a unique design name, such as `My API Design`.
+* *Description* _(Optional)_: Enter a short description of the design.
+* *Type*: Accept the default value *OpenAPI*, or select another API type from the list.
+* *Version* _(OpenAPI only)_: Accept the default value *3.0.2*, or select another version from the list.
+* *Template*: Select the *Pet Store Example* template, or select another template from the list.
+. Click *Create*. The new API design opens in the design editor.
+. Select the design title and click the pen icon. Change the design title to *Orders* and click the *Save changes* icon.
++
+NOTE: Editing the design _title_ does not change the design _name_. To rename a design, click *Actions > Edit design metadata*, edit the design name, and click *Save*.
++
+. Click the *Design* tab, and optionally edit the design as follows:
+* Provide a version number and a description.
+* _(AsyncAPI only)_ Define terms of service.
+* Add your contact information: name, email address, and URL.
+* Select a license.
+* _(OpenAPI only)_ Define tags.
+* Define one or more servers.
+* Configure a security scheme.
+* _(OpenAPI only)_ Specify security requirements.
+* _(OpenAPI only)_ Configure vendor extensions.
+. Click the *Source* tab, and review the live preview of the design.
+The content of the *Source* tab automatically updates when you edit values on the editor page.
+. _(Optional)_ To see the changes that you made since the last save, click *Actions > Show design changes*.
+. _(Optional)_ In the left pane of the design editor, you can add the following items:
+* _(OpenAPI only)_ Resource paths, data types, and responses
+* _(AsyncAPI only)_ Channels, data types, messages, operation traits, and message traits
+. Click *Save*.
++
+The new design is listed on the *API and Schema Designs* page.
+You can use the options icon (three vertical dots) to view or edit the design details, edit the design content, export the design to {registry-long}, download the design to a file, or delete the design.

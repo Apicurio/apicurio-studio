@@ -1,0 +1,29 @@
+[id="proc-importing-schema-api-design"]
+= Importing a schema or API design
+
+[role="_abstract"]
+You can import an event schema or API definition into {studio-long} from a URL, from a file, or from a running {registry-long} instance.
+
+.Prerequisites
+
+* You're logged in to the {studio} web console.
+
+* You can access a running {registry-long} instance in your organization, if you want to import from {registry}.
+For more information, see {registry-introduction}.
+
+.Procedure
+
+. In the {studio} web console, click *Import design*, and then click one of the following options:
+
+* *Import from URL*: Enter a valid and accessible URL, and click *Fetch*.
+
+* *Import from file*: Click *Browse* and select a file, or drag and drop a file.
+
+. When prompted, provide additional information such as version (_OpenAPI only_), name, type, and description in the import dialog. You can overwrite any autopopulated values.
+
+. Click *Import*.
+The design editor opens automatically.
+
+When you finish editing, you can export the updated design to {registry} as a new artifact or as a new version of the existing artifact.
+You can export the design from the design editor or from the *API and Schema Designs* page.
+You can also save your changes locally, or download the content to a file.

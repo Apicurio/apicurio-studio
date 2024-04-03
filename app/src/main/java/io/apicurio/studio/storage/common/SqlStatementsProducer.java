@@ -1,5 +1,6 @@
 package io.apicurio.studio.storage.common;
 
+import io.apicurio.common.apps.config.Info;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 
@@ -19,6 +20,7 @@ public class SqlStatementsProducer {
     Logger log;
 
     @ConfigProperty(name = "apicurio.storage.db-kind", defaultValue = "h2")
+    @Info(category = "storage", description = "Application datasource database type", availableSince = "1.0.0")
     String databaseType;
 
     /**

@@ -1,0 +1,77 @@
+// Standard document attributes to be used in the documentation.
+
+// High-level Parameters:
+
+//:apicurio-studio-downstream:
+// ^ If set, downstream documentation is generated.
+
+// Upstream
+
+ifndef::apicurio-studio-downstream[]
+
+:org-name: Apicurio
+
+:studio: Apicurio Studio
+:studio-long: {studio}
+
+:studio-version: 1.0.0
+:studio-legacy-version: 0.2.x
+
+:registry: Apicurio Registry
+:registry-long: Apicurio Registry
+
+:container-platform: Kubernetes
+:a-container-platform: a {container-platform}
+:container-platform-long: {container-platform}
+:container-platform-client: kubectl
+
+:keycloak: Keycloak
+
+endif::[]
+
+// Downstream
+
+ifdef::apicurio-studio-downstream[]
+
+:org-name: Red Hat
+
+:studio: Apicurio Studio
+:studio-long: {org-name} build of {studio}
+// Connectivity Link: API Controller: API Designer
+
+:studio-version: 1.0.0
+:studio-legacy-version: 0.2.x
+
+:registry: Apicurio Registry
+:registry-long: {org-name} build of {registry}
+
+:container-platform: OpenShift
+:a-container-platform: an {container-platform}
+:container-platform-long: {container-platform} Container Platform
+:container-platform-client: oc
+
+:keycloak: {org-name} Single Sign-On
+
+endif::[]
+
+// Common
+
+:studio-docker-version: latest-snapshot
+:registry-docker-version: 2.5.10.Final
+
+:api-management-long: {org-name} 3scale API Management
+
+:attachments-dir: files
+
+// Characters
+
+:copy: ©
+:infin: ∞
+:mdash: —
+:nbsp:  
+:ndash: –
+:reg: ®
+:trade: ™
+:star: *
+:curlyleft: {
+:curlyright: }

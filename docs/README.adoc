@@ -1,0 +1,17 @@
+== Apicurio Studio Documentation
+
+The Apicurio Studio documentation is created using https://asciidoc.org/[AsciiDoc] and https://antora.org/[Antora] site generator.
+
+You can perform a local build of the documentation for test purposes using the `antora` tool (https://antora.org/):
+
+. Install the `antora` tool using the following steps: https://docs.antora.org/antora/2.3/install-and-run-quickstart/
+. In the `apicurio-stdio/docs` directory, enter the following command:
++
+----
+$ antora local-test-playbook.yml
+----
++
+. Change to the `./target/dist/apicurio-studio` directory.
+. Open the generated `index.html` file in your browser.
+
+NOTE: See `docs/modules/ROOT/partials/shared/attributes.adoc` for configurable parameters.

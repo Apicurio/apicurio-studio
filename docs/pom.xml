@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.apicurio</groupId>
+		<artifactId>apicurio-studio</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>apicurio-studio-docs</artifactId>
+	<packaging>pom</packaging>
+	<name>apicurio-registry-docs</name>
+
+	<url>https://www.apicur.io/studio</url>
+	<description>Open Source web-based API design suite for contract-first API development.</description>
+
+	<organization>
+		<name>Red Hat</name>
+		<url>https://www.redhat.com</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>Apache License Version 2.0</name>
+			<url>https://repository.jboss.org/licenses/apache-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/apicurio/apicurio-studio/issues</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:git:git@github.com:apicurio/apicurio-studio.git</connection>
+		<developerConnection>scm:git:git@github.com:apicurio/apicurio-studio.git</developerConnection>
+		<url>scm:git:git@github.com:apicurio/apicurio-studio.git</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<name>Eric Wittmann</name>
+			<id>EricWittmann</id>
+			<email>eric.wittmann@redhat.com</email>
+			<organization>Red Hat</organization>
+			<roles>
+				<role>Project Lead</role>
+				<role>Developer</role>
+			</roles>
+			<timezone>-5</timezone>
+		</developer>
+		<developer>
+			<name>Jakub Senko</name>
+			<id>jsenko</id>
+			<email>m@jsenko.net</email>
+			<organization>Red Hat</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<name>Carles Arnal</name>
+			<id>carlesarnal</id>
+			<email>carnalca@redhat.com</email>
+			<organization>Red Hat</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+
+	<modules>
+		<module>rest-api</module>
+	</modules>
+
+	<dependencies>
+		<!-- Fake dependency to ensure that the JAR is already available locally -->
+		<dependency>
+			<groupId>io.apicurio</groupId>
+			<artifactId>apicurio-studio-app</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>docs-generation</id>
+			<activation>
+				<property>
+						<name>!skipDocsGen</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>dev.jbang</groupId>
+						<artifactId>jbang-maven-plugin</artifactId>
+						<version>0.0.8</version>
+						<inherited>false</inherited>
+						<executions>
+							<execution>
+								<id>run</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+										<script>${project.basedir}/generateAllConfigPartial.java</script>
+										<args>
+											<arg>${project.version}</arg>
+											<arg>${project.basedir}</arg>
+											<arg>${apicurio-common-app-components.version}</arg>
+										</args>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

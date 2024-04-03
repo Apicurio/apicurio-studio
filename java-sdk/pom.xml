@@ -27,8 +27,10 @@
     <artifactId>apicurio-studio-java-sdk</artifactId>
     <properties>
         <kiota.libs.version>1.1.2</kiota.libs.version>
-	<kiota.community.version>0.0.15</kiota.community.version>
-	<kiota.base.url>https://github.com/microsoft/kiota/releases/download</kiota.base.url>
+        <kiota.binary.version>1.10.1</kiota.binary.version>
+        <kiota.binary.timeout>30</kiota.binary.timeout>
+	    <kiota.community.version>0.0.15</kiota.community.version>
+	    <kiota.base.url>https://github.com/microsoft/kiota/releases/download</kiota.base.url>
     </properties>
     <dependencies>
         <dependency>
@@ -84,7 +86,8 @@
                     </execution>
                 </executions>
                 <configuration>
-	            <kiotaVersion>1.10.1</kiotaVersion>
+	                <kiotaVersion>${kiota.binary.version}</kiotaVersion>
+                    <kiotaTimeout>${kiota.binary.timeout}</kiotaTimeout>
                     <baseURL>${kiota.base.url}</baseURL>
                     <file>../app/src/main/resources-unfiltered/META-INF/apis/studio/v1/studio-api-v1.json</file>
                     <namespace>io.apicurio.studio.rest.client</namespace>

@@ -18,12 +18,12 @@
             <markdown-summary [data]="example()" emptyText="No example."></markdown-summary>
         </div>
         <div class="actions">
-            <div class="dropdown dropdown-kebab-pf">
-                <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+            <div class="dropdown dropdown-kebab-pf" dropdown>
+                <button class="btn btn-link dropdown-toggle" dropdownToggle type="button" (click)="$event.preventDefault()"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <span class="fa fa-ellipsis-v"></span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
                     <li><a (click)="rename()"><span class="fa fa-fw fa-pencil-square-o"></span><span>Rename</span></a></li>
                     <li role="separator" class="divider"></li>
                     <li><a (click)="delete()"><span class="fa fa-fw fa-trash"></span><span>Delete</span></a></li>

@@ -34,9 +34,15 @@ export class MarkdownComponent implements OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.data) {
-            this.convertedData = marked.parse(this.data, {
-                sanitize: true
-            });
+            // TODO sanitize the result using e.g. DOMPurify
+            const mrval = marked.parse(this.data, {});
+            if (typeof mrval === "string") {
+                this.convertedData = mrval;
+            } else {
+                mrval.then(value => {
+                    this.convertedData = value;
+                });
+            }
         }
     }
 

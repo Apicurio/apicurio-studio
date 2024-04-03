@@ -5,11 +5,11 @@
         <span class="imported label label-info" *ngIf="isImported()">Imported</span>
     </div>
     <div class="detail-actions">
-        <div class="dropdown">
-            <button class="btn btn-link dropdown-toggle" type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <div class="dropdown" dropdown placement="bottom right">
+            <button class="btn btn-link dropdown-toggle" dropdownToggle type="button" id="dropdownKebab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <span class="fa fa-ellipsis-v"></span>
             </button>
-            <ul class="dropdown-menu " aria-labelledby="dropdownKebab">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownKebab" *dropdownMenu>
                 <li>
                     <a href="#" onclick="return false" (click)="collapseAllSections()">
                         <span class="fa fa-compress"></span>

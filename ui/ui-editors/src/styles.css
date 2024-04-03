@@ -1,1 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
+.fade.show {
+    opacity: 1;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5;
+}
+
+.dropdown.inline.show {
+    display: inline-block !important;
+}

@@ -35,22 +35,22 @@
             <div class="form-group">
                 <label class="control-label required">Security Type</label>
                 <div>
-                    <div class="dropdown" *ngIf="is2x()">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    <div class="dropdown" *ngIf="is2x()" dropdown>
+                        <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" data-toggle="dropdown">
                             <span *ngIf="!model.type"><i>Choose Type</i></span>
                             <span *ngIf="model.type === 'basic'">BASIC</span>
                             <span *ngIf="model.type === 'apiKey'">API Key</span>
                             <span *ngIf="model.type === 'oauth2'">OAuth 2</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                             <li role="presentation"><a role="menuitem" (click)="setType('basic')">BASIC</a></li>
                             <li role="presentation"><a role="menuitem" (click)="setType('apiKey')">API Key</a></li>
                             <li role="presentation"><a role="menuitem" (click)="setType('oauth2')">OAuth 2</a></li>
                         </ul>
                     </div>
-                    <div class="dropdown" *ngIf="is3x()">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    <div class="dropdown" *ngIf="is3x()" dropdown>
+                        <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" data-toggle="dropdown">
                             <span *ngIf="!model.type"><i>Choose Type</i></span>
                             <span *ngIf="model.type === 'http'">HTTP</span>
                             <span *ngIf="model.type === 'apiKey'">API Key</span>
@@ -58,15 +58,15 @@
                             <span *ngIf="model.type === 'openIdConnect'">OpenID Connect</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                             <li role="presentation"><a role="menuitem" (click)="setType('http')">HTTP</a></li>
                             <li role="presentation"><a role="menuitem" (click)="setType('apiKey')">API Key</a></li>
                             <li role="presentation"><a role="menuitem" (click)="setType('oauth2')">OAuth 2</a></li>
                             <li role="presentation"><a role="menuitem" (click)="setType('openIdConnect')">OpenID Connect</a></li>
                         </ul>
                     </div>
-                    <div class="dropdown" *ngIf="isAai2x()">
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                    <div class="dropdown" *ngIf="isAai2x()" dropdown>
+                        <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" data-toggle="dropdown">
                             <span *ngIf="!model.type"><i>Choose Type</i></span>
                             <span *ngIf="model.type === 'http'">HTTP</span>
                             <span *ngIf="model.type === 'httpApiKey'">HTTP API Key</span>
@@ -79,7 +79,7 @@
                             <span *ngIf="model.type === 'asymmetricEncryption'">Asymmetric Encryption</span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                             <li role="presentation"><a role="menuitem" (click)="setType('http')">HTTP</a></li>
                             <li role="presentation"><a role="menuitem" (click)="modelAai20().in = ''; setType('httpApiKey')">HTTP API Key</a></li>
                             <li role="presentation"><a role="menuitem" (click)="modelAai20().in = ''; setType('apiKey')">API Key</a></li>
@@ -130,14 +130,14 @@
                         <div class="form-group">
                             <label class="control-label" for="in20">Key Location</label>
                             <div>
-                                <div class="dropdown">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="in20" data-toggle="dropdown">
+                                <div class="dropdown" dropdown>
+                                    <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" id="in20" data-toggle="dropdown">
                                         <span *ngIf="!model20().in"><i>Choose Location</i></span>
                                         <span *ngIf="model20().in === 'header'">HTTP header</span>
                                         <span *ngIf="model20().in === 'query'">Query Parameter</span>
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                                         <li role="presentation"><a role="menuitem" (click)="model20().in = 'header'">HTTP header</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="model20().in = 'query'">Query Parameter</a></li>
                                     </ul>
@@ -157,8 +157,8 @@
                         <div class="form-group">
                             <label class="control-label" for="flow">OAuth Flow</label>
                             <div>
-                                <div class="dropdown">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="flow" data-toggle="dropdown">
+                                <div class="dropdown" dropdown>
+                                    <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" id="flow" data-toggle="dropdown">
                                         <span *ngIf="!model20().flow"><i>Choose Flow</i></span>
                                         <span *ngIf="model20().flow === 'implicit'">Implicit</span>
                                         <span *ngIf="model20().flow === 'password'">Password</span>
@@ -166,7 +166,7 @@
                                         <span *ngIf="model20().flow === 'accessCode'">Access Code</span>
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu">
+                                    <ul class="dropdown-menu" role="menu" *dropdownMenu>
                                         <li role="presentation"><a role="menuitem" (click)="setFlow('implicit')">Implicit</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="setFlow('password')">Password</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="setFlow('application')">Application</a></li>
@@ -201,15 +201,15 @@
                         <div class="form-group">
                             <label class="control-label" for="scheme">Scheme</label>
                             <div>
-                                <div class="dropdown">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="scheme" data-toggle="dropdown">
+                                <div class="dropdown" dropdown>
+                                    <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" id="scheme" data-toggle="dropdown">
                                         <span *ngIf="!model30().scheme"><i>Choose Scheme</i></span>
                                         <span *ngIf="model30().scheme === 'basic'">BASIC</span>
                                         <span *ngIf="model30().scheme === 'bearer'">Bearer</span>
                                         <span *ngIf="model30().scheme === 'digest'">Digest</span>
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                                         <li role="presentation"><a role="menuitem" (click)="model30().scheme = 'basic'">BASIC</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="model30().scheme = 'bearer'">Bearer</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="model30().scheme = 'digest'">Digest</a></li>
@@ -220,14 +220,14 @@
                         <div class="form-group" *ngIf="model30().scheme === 'bearer'">
                             <label class="control-label" for="bearerFormat">Format</label>
                             <div>
-                                <div class="dropdown">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="bearerFormat" data-toggle="dropdown">
+                                <div class="dropdown" dropdown>
+                                    <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" id="bearerFormat" data-toggle="dropdown">
                                         <span *ngIf="model30().bearerFormat === '' || !model30().bearerFormat"><i>Choose Format</i></span>
                                         <span *ngIf="model30().bearerFormat === 'jwt'">JWT</span>
                                         <span *ngIf="model30().bearerFormat === 'oauth'">OAuth</span>
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                                         <li role="presentation"><a role="menuitem" (click)="model30().bearerFormat = 'jwt'">JWT</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="model30().bearerFormat = 'oauth'">OAuth</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="model30().bearerFormat = null"><i>None</i></a></li>
@@ -252,15 +252,15 @@
                         <div class="form-group">
                             <label class="control-label" for="in">Key Location</label>
                             <div>
-                                <div class="dropdown">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="in" data-toggle="dropdown">
+                                <div class="dropdown" dropdown>
+                                    <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" id="in" data-toggle="dropdown">
                                         <span *ngIf="!model30().in"><i>Choose Location</i></span>
                                         <span *ngIf="model30().in === 'header'">HTTP header</span>
                                         <span *ngIf="model30().in === 'query'">Query Parameter</span>
                                         <span *ngIf="model30().in === 'cookie'">Cookie</span>
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                                         <li role="presentation"><a role="menuitem" (click)="model30().in = 'header'">HTTP header</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="model30().in = 'query'">Query Parameter</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="model30().in = 'cookie'">Cookie</a></li>
@@ -428,15 +428,15 @@
                         <div class="form-group">
                             <label class="control-label" for="schemeAai20">Scheme</label>
                             <div>
-                                <div class="dropdown">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="schemeAai20" data-toggle="dropdown">
+                                <div class="dropdown" dropdown>
+                                    <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" id="schemeAai20" data-toggle="dropdown">
                                         <span *ngIf="!modelAai20().scheme"><i>Choose Scheme</i></span>
                                         <span *ngIf="modelAai20().scheme === 'basic'">BASIC</span>
                                         <span *ngIf="modelAai20().scheme === 'bearer'">Bearer</span>
                                         <span *ngIf="modelAai20().scheme === 'digest'">Digest</span>
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().scheme = 'basic'">BASIC</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().scheme = 'bearer'">Bearer</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().scheme = 'digest'">Digest</a></li>
@@ -447,14 +447,14 @@
                         <div class="form-group" *ngIf="modelAai20().scheme === 'bearer'">
                             <label class="control-label" for="bearerFormatAai20">Format</label>
                             <div>
-                                <div class="dropdown">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="bearerFormatAai20" data-toggle="dropdown">
+                                <div class="dropdown" dropdown>
+                                    <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" id="bearerFormatAai20" data-toggle="dropdown">
                                         <span *ngIf="modelAai20().bearerFormat === '' || !modelAai20().bearerFormat"><i>Choose Format</i></span>
                                         <span *ngIf="modelAai20().bearerFormat === 'jwt'">JWT</span>
                                         <span *ngIf="modelAai20().bearerFormat === 'oauth'">OAuth</span>
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().bearerFormat = 'jwt'">JWT</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().bearerFormat = 'oauth'">OAuth</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().bearerFormat = null"><i>None</i></a></li>
@@ -479,14 +479,14 @@
                         <div class="form-group">
                             <label class="control-label" for="inApiKeyAai20">Key Location</label>
                             <div>
-                                <div class="dropdown">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="inApiKeyAai20" data-toggle="dropdown">
+                                <div class="dropdown" dropdown>
+                                    <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" id="inApiKeyAai20" data-toggle="dropdown">
                                         <span *ngIf="!modelAai20().in"><i>Choose Location</i></span>
                                         <span *ngIf="modelAai20().in === 'user'">User</span>
                                         <span *ngIf="modelAai20().in === 'password'">Password</span>
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().in = 'user'">User</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().in = 'password'">Password</a></li>
                                     </ul>
@@ -499,15 +499,15 @@
                         <div class="form-group">
                             <label class="control-label" for="inHttpApiKeyAai20">Key Location</label>
                             <div>
-                                <div class="dropdown">
-                                    <button class="btn btn-default dropdown-toggle" type="button" id="inHttpApiKeyAai20" data-toggle="dropdown">
+                                <div class="dropdown" dropdown>
+                                    <button class="btn btn-default dropdown-toggle" dropdownToggle type="button" id="inHttpApiKeyAai20" data-toggle="dropdown">
                                         <span *ngIf="!modelAai20().in"><i>Choose Location</i></span>
                                         <span *ngIf="modelAai20().in === 'header'">HTTP header</span>
                                         <span *ngIf="modelAai20().in === 'query'">Query Parameter</span>
                                         <span *ngIf="modelAai20().in === 'cookie'">Cookie</span>
                                         <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu">
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="statusCodeMenu" *dropdownMenu>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().in = 'header'">HTTP header</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().in = 'query'">Query Parameter</a></li>
                                         <li role="presentation"><a role="menuitem" (click)="modelAai20().in = 'cookie'">Cookie</a></li>

@@ -64,12 +64,12 @@
                 </div>
             </div>
             <div class="actions">
-                <div class="dropdown dropdown-kebab-pf">
-                    <button class="btn btn-link dropdown-toggle" type="button" (click)="$event.preventDefault()"
+                <div class="dropdown dropdown-kebab-pf" dropdown>
+                    <button class="btn btn-link dropdown-toggle" dropdownToggle type="button" (click)="$event.preventDefault()"
                             data-toggle="dropdown" aria-haspopup="true">
                         <span class="fa fa-ellipsis-v"></span>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-right">
+                    <ul class="dropdown-menu dropdown-menu-right" *dropdownMenu>
                         <li [class.disabled]="!operation()"><a (click)="deleteOperation(operation())"><span class="fa fa-fw fa-trash"></span><span>Delete Operation</span></a></li>
                         <li role="separator" class="divider"></li>
                         <li><a (click)="deleteAllOperations()"><span class="fa fa-fw fa-trash-o"></span><span>Delete All Operations</span></a></li>

@@ -39,10 +39,17 @@ export class MarkdownSummaryComponent implements OnChanges {
         if (this.isEmpty()) {
             this.convertedData = this.emptyText;
         } else {
-            let ptRenderer: marked.Renderer = new PlainTextRenderer();
-            this.convertedData = marked.parse(this.data, {
+            const ptRenderer: marked.Renderer = new PlainTextRenderer();
+            const mrval = marked.parse(this.data, {
                 renderer: ptRenderer
-            }).trim();
+            });
+            if (typeof mrval === "string") {
+                this.convertedData = mrval.trim();
+            } else {
+                mrval.then(value => {
+                    this.convertedData = value.trim();
+                });
+            }
         }
     }
 
@@ -62,7 +69,7 @@ class PlainTextRenderer extends marked.Renderer {
         return this.delimiter + "<code>...</code>" + this.delimiter;
     }
     public blockquote(quote): string {
-        return '\t' + quote + this.delimiter;
+        return "\t" + quote + this.delimiter;
     }
     public html(html): string {
         return escape(html);
@@ -77,7 +84,7 @@ class PlainTextRenderer extends marked.Renderer {
         return body;
     }
     public listitem(text): string {
-        return '\t' + text + this.delimiter;
+        return "\t" + text + this.delimiter;
     }
     public paragraph(text): string {
         return this.delimiter + text + this.delimiter;
@@ -89,7 +96,7 @@ class PlainTextRenderer extends marked.Renderer {
         return content + this.delimiter;
     }
     public tablecell(content, flags): string {
-        return content + '\t';
+        return content + "\t";
     }
     public strong(text): string {
         return text;
@@ -110,7 +117,7 @@ class PlainTextRenderer extends marked.Renderer {
         return text;
     }
     public image(href, title, text): string {
-        return this.showImageText ? text : '';
+        return this.showImageText ? text : "";
     }
     public text(text): string {
         return text;

@@ -2,6 +2,9 @@
 
 // Downstream
 
+:LinkOperatorHub: https://docs.openshift.com/container-platform/latest/operators/understanding/olm-understanding-operatorhub.html
+:NameOperatorHub: OperatorHub
+
 // Common
 
 :studio-introduction: xref::assembly-introduction.adoc#introduction[Introduction to {studio}]

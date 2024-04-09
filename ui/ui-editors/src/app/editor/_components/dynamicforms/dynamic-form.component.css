@@ -1,0 +1,16 @@
+
+.dynamic-form .mb-3 {
+    margin-bottom: 8px;
+}
+.dynamic-form .mb-3 > label {
+    margin-bottom: 0;
+}
+
+.dynamic-form .mb-3 .row {
+    margin: 0;
+    padding-left: 15px;
+}
+
+.dynamic-form label.form-check-label {
+    margin-left: 5px;
+}

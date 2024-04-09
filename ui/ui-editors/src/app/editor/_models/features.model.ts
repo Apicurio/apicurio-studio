@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 
+export class VendorExtension {
+    name: string;
+    schema: any;
+    model: any;
+}
+
 export class ApiEditorComponentFeatures {
     validationSettings: boolean = false;
     componentImports: boolean = false;
+    vendorExtensions: VendorExtension[];
 }

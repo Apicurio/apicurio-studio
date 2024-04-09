@@ -19,7 +19,156 @@ import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} fr
 import {ModalDirective} from "ngx-bootstrap/modal";
 import {ExtensibleNode} from "@apicurio/data-models";
 import {CodeEditorMode} from "../common/code-editor.component";
+import {LoggerService} from "../../../services/logger.service";
+import {DIVIDER, DropDownOption, DropDownOptionValue} from "../common/drop-down.component";
 
+
+
+const ADDRESS_SCHEMA: any = {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    title: "Address",
+    type: "object",
+    properties: {
+        street: {
+            type: "string",
+            title: "Street"
+        },
+        city: {
+            type: "string",
+            title: "City"
+        },
+        state: {
+            type: "string",
+            title: "State"
+        },
+        postalCode: {
+            type: "string",
+            title: "Zipcode"
+        },
+        country: {
+            type: "string",
+            title: "Country"
+        }
+    },
+    required: ["street", "city", "country"]
+};
+
+const ADDRESS_MODEL: any = {
+    street: null,
+    city: "",
+    state: "",
+    postalCode: "",
+    country: ""
+};
+
+const KUADRANT_SCHEMA: any = {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    type: "object",
+    title: "Route",
+    properties: {
+        route: {
+            type: "object",
+            properties: {
+                name: {
+                    type: "string",
+                    title: "Name"
+                },
+                namespace: {
+                    type: "string",
+                    title: "Namespace"
+                },
+                labels: {
+                    type: "object",
+                    title: "Labels",
+                    patternProperties: {
+                        ".{1,}": {
+                            type: "string",
+                            title: "Value"
+                        }
+                    }
+                },
+                hostnames: {
+                    type: "array",
+                    title: "Hostnames",
+                    items: {
+                        type: "string",
+                        title: "Hostname"
+                    }
+                },
+                parentRefs: {
+                    type: "array",
+                    title: "Parent Refs",
+                    items: {
+                        type: "object",
+                        properties: {
+                            name: {
+                                type: "string",
+                                title: "Name"
+                            },
+                            namespace: {
+                                type: "string",
+                                title: "Namespace"
+                            }
+                        },
+                        required: ["name", "namespace"]
+                    }
+                }
+            },
+            required: ["name", "namespace", "labels", "hostnames", "parentRefs"]
+        }
+    },
+    required: ["route"]
+};
+
+const KUADRANT_MODEL: any = {
+    route: {
+        name: "",
+        namespace: "",
+        labels: {
+        },
+        hostnames: [
+            "example.com"
+        ],
+        parentRefs: [
+        ]
+    }
+};
+
+const CODEGEN_SCHEMA: any = {
+    $schema: "http://json-schema.org/draft-07/schema#",
+    type: "object",
+    properties: {
+        "suppress-date-time-formatting": {
+            type: "boolean",
+            title: "Suppress Datetime Formatting"
+        },
+        "bean-annotations": {
+            type: "array",
+            title: "Bean Annotations",
+            items: {
+                type: "object",
+                properties: {
+                    annotation: {
+                        type: "string",
+                        title: "Annotation"
+                    },
+                    excludeEnums: {
+                        type: "boolean",
+                        title: "Exclude Enums"
+                    }
+                },
+                required: ["annotation"]
+            }
+        }
+    },
+    required: []
+};
+
+const CODEGEN_MODEL: any = {
+    "suppress-date-time-formatting": false,
+    "bean-annotations": [
+    ]
+};
 
 @Component({
     selector: "add-extension-dialog",
@@ -46,9 +195,39 @@ export class AddExtensionDialogComponent {
         return this._value;
     }
 
+    _extensionNameOptions: DropDownOption[];
+    extensionName: string = "custom";
+    extensionModel: any;
+    extensionSchema: any;
+    vendorExtensionMap: any;
+
     extensionExists: boolean = false;
     nameValid: boolean = false;
     valueValid: boolean = false;
+
+    constructor(private logger: LoggerService) {
+        this.vendorExtensionMap = {
+            "x-address": {
+                schema: ADDRESS_SCHEMA,
+                model: ADDRESS_MODEL
+            },
+            "x-codegen": {
+                schema: CODEGEN_SCHEMA,
+                model: CODEGEN_MODEL
+            },
+            "x-kuadrant": {
+                schema: KUADRANT_SCHEMA,
+                model: KUADRANT_MODEL
+            }
+        };
+        this._extensionNameOptions = [
+            new DropDownOptionValue("Custom property", "custom"),
+            DIVIDER
+        ];
+        Object.getOwnPropertyNames(this.vendorExtensionMap).forEach(name => {
+            this._extensionNameOptions.push(new DropDownOptionValue(name, name));
+        });
+    }
 
     /**
      * Called to open the dialog.
@@ -66,7 +245,6 @@ export class AddExtensionDialogComponent {
                 this.addExtensionModal.first.show();
             }
         });
-
         this.extensionExists = false;
     }
 
@@ -77,13 +255,14 @@ export class AddExtensionDialogComponent {
         this._isOpen = false;
         this.name = "";
         this.value = "";
+        this.extensionName = "custom";
     }
 
     /**
      * Called when the user clicks "add".
      */
     add(): void {
-        let extensionInfo: any = {
+        const extensionInfo: any = {
             name: this.name,
             value: JSON.parse(this._value)
         };
@@ -100,7 +279,6 @@ export class AddExtensionDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return
      */
     isOpen(): boolean {
         return this._isOpen;
@@ -110,7 +288,7 @@ export class AddExtensionDialogComponent {
      * Called to initialize the selection/focus to the addExtensionInput field.
      */
     doSelect(): void {
-        this.addExtensionInput.first.nativeElement.focus();
+        this.addExtensionInput.first?.nativeElement.focus();
     }
 
     validateName(name: string): void {
@@ -118,18 +296,43 @@ export class AddExtensionDialogComponent {
         this.nameValid = name && name.startsWith("x-");
     }
 
-    valueEditorMode() {
+    valueEditorMode(): CodeEditorMode {
         return CodeEditorMode.JSON;
     }
 
     validateValue(): void {
         try {
-            console.debug("Validating: ", this._value);
+            this.logger.debug("[AddExtensionDialogComponent] Validating: ", this._value);
             JSON.parse(this._value);
             this.valueValid = true;
         } catch (e) {
             this.valueValid = false;
         }
-        console.debug("valueValid is now: ", this.valueValid);
+        this.logger.debug("[AddExtensionDialogComponent] valueValid is now: ", this.valueValid);
+    }
+
+    selectExtension(name: string): void {
+        this.extensionName = name;
+        if (this.extensionName === "custom") {
+            this.name = "x-";
+            this.value = "";
+            this.valueValid = false;
+        } else {
+            this.name = name;
+            this.extensionModel = this.cloneModel(this.vendorExtensionMap[name].model);
+            this.extensionSchema = this.vendorExtensionMap[name].schema;
+        }
+    }
+
+    onDynamicFormModelChange(change: any): void {
+        this._value = JSON.stringify(change, null, 4);
+    }
+
+    onDynamicFormValid(valid: boolean): void {
+        this.valueValid = valid;
+    }
+
+    cloneModel(model: any): any {
+        return JSON.parse(JSON.stringify(model));
     }
 }

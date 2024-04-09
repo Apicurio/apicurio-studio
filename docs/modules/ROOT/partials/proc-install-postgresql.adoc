@@ -14,7 +14,7 @@ You can install your preferred PostgresQL Operator, but this section shows how t
 
 . In the OpenShift Container container-platform web console, log in using an account with cluster administrator privileges.
 
-. Change to the OpenShift project in which {registry} is installed. For example, from the *Project* drop-down, select `my-project`.
+. Change to the OpenShift project in which {studio} is installed. For example, from the *Project* drop-down, select `my-project`.
 
 . In the left navigation menu, click *Operators* > *OperatorHub*.
 
@@ -35,10 +35,10 @@ You can install your preferred PostgresQL Operator, but this section shows how t
 +
 IMPORTANT: You must read the documentation from your chosen *PostgreSQL* Operator for details on how to create and manage your database.
 
-. Create a PostgreSQL database for your {registry} storage. For example, click *Installed Operators* > *PostgreSQL Operator by Dev4Ddevs.com* > *Create database* > *YAML*.
+. Create a PostgreSQL database for your {studio} storage. For example, click *Installed Operators* > *PostgreSQL Operator by Dev4Ddevs.com* > *Create database* > *YAML*.
 
 . Edit the database settings as follows:
-** `name`: Change the value to `registry`
+** `name`: Change the value to `studio`
 ** `image`: Change the value to `centos/postgresql-10-centos7`
 
 . Edit any other database settings as needed depending on your environment, for example:
@@ -48,7 +48,7 @@ IMPORTANT: You must read the documentation from your chosen *PostgreSQL* Operato
 apiVersion: postgresql.dev4devs.com/v1alpha1
 kind: Database
 metadata:
-  name: registry
+  name: studio
   namespace: my-project
 spec:
   databaseCpu: 30m

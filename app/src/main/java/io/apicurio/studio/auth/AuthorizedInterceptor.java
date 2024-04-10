@@ -45,7 +45,7 @@ public class AuthorizedInterceptor {
     SecurityIdentity securityIdentity;
 
     @ConfigProperty(name = "quarkus.oidc.tenant-enabled")
-    @Info(category = "auth", description = "OIDC tenant enabled", availableSince = "1.0.0")
+    @Info(category = "auth", description = "OIDC authentication enabled", availableSince = "1.0.0")
     boolean authenticationEnabled;
 
     @AroundInvoke

@@ -37,7 +37,7 @@ public class UserInterfaceConfigProperties {
     
     
     @ConfigProperty(name = "quarkus.oidc.tenant-enabled", defaultValue = "false")
-    @Info(category = "auth", description = "OIDC tenant enabled", availableSince = "1.0.0")
+    @Info(category = "auth", description = "OIDC authentication enabled", availableSince = "1.0.0")
     public Boolean authOidcTenantEnabled;
 
     @ConfigProperty(name = "quarkus.oidc.enabled", defaultValue = "false")

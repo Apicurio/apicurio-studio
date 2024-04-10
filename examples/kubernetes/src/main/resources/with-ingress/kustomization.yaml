@@ -12,18 +12,18 @@ patches:
   - patch: |
       - op: replace
         path: '/spec/rules/0/host'
-        # TODO: Update this value with your clusters ingress router canonical hostname. For example:
+        # TODO: Update this value with your clusters ingress router apps hostname. For example:
         # value: apicurio-studio-app-apicurio-studio.apps.apicur.io
-        value: apicurio-studio-app-NAMESPACE.INGRESS_ROUTER_CANONICAL_HOSTNAME
+        value: apicurio-studio-app-NAMESPACE.INGRESS_ROUTER_APPS_HOSTNAME
     target:
       kind: Ingress
       name: apicurio-studio-app
   - patch: |
       - op: replace
         path: '/spec/rules/0/host'
-        # TODO: Update this value with your clusters ingress router canonical hostname. For example:
+        # TODO: Update this value with your clusters ingress router apps hostname. For example:
         # value: apicurio-studio-app-apicurio-studio.apps.apicur.io
-        value: apicurio-studio-ui-NAMESPACE.INGRESS_ROUTER_CANONICAL_HOSTNAME
+        value: apicurio-studio-ui-NAMESPACE.INGRESS_ROUTER_APPS_HOSTNAME
     target:
       kind: Ingress
       name: apicurio-studio-ui

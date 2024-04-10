@@ -1,42 +1,18 @@
-# This example template deploys Registry with an edge-terminated HTTPS route, with a custom domain
-# and Let's Encrypt certificate using cert-manager operator.
+# This example template deploys Apicurio Studio with an ephemeral PostgreSQL storage.
 #
 # Steps:
 #
 # 1. Create or select a namespace:
 #
-# oc new-project test
+# oc new-project apicurio-studio
 #
-# 2. Install the operator(s):
+# 2. Apply the template:
 #
-#  - Red Hat Integration - Service Registry Operator
-#  - cert-manager Operator for Red Hat OpenShift
+#  oc process -f template-simple-sql.yaml \
+#  -p NAMESPACE=apicurio-studio \
+#  -p INGRESS_ROUTER_APPS_HOSTNAME=apps.apicur.io \
+#  | oc apply -f -
 #
-# 3. Provision a custom domain, and add a CNAME DNS record referencing the ${INGRESS_ROUTER_CANONICAL_HOSTNAME}
-# (see the bottom of the file) of your cluster:
-#
-# Name      TTL      Type      Data
-# test      300      CNAME     router-default.apps.apicur.eastus.aroapp.io
-#
-# Wait for the DNS changes to propagate.
-#
-# 4. Apply the template:
-#
-# oc process -f registry-certmanager-letsencrypt-custom-domain-edge.yaml \
-#  -p NAMESPACE=test \
-#  -p INGRESS_ROUTER_CANONICAL_HOSTNAME=router-default.apps.apicur.eastus.aroapp.io \
-#  -p CUSTOM_DOMAIN=test.jsenko.net \
-#  | oc apply -f - && oc wait --for=condition=ready apicurioregistry registry-certmanager-letsencrypt-custom-domain-edge --timeout=120s
-#
-# It may take a few minutes until the certificate has been issued.
-#
-# IMPORTANT NOTES:
-#
-# 1. Before you apply the template, make sure the ingress/route hostname will be shorter than 64 characters, due to this limitation
-# https://community.letsencrypt.org/t/a-certificate-for-a-63-character-domain/78870 .
-#
-# 2. By default, this template uses the staging Let's Encrypt issuer, suitable for testing (see https://letsencrypt.org/docs/rate-limits/).
-# You can try the letsencrypt-production-cluster-issuer instead.
 apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
@@ -226,7 +202,7 @@ objects:
               image: quay.io/apicurio/apicurio-studio-ui:latest-snapshot
               env:
                 - name: APICURIO_STUDIO_API_URL
-                  value: http://apicurio-studio-app-${NAMESPACE}.${INGRESS_ROUTER_CANONICAL_HOSTNAME}/apis/studio/v1
+                  value: http://apicurio-studio-app-${NAMESPACE}.${INGRESS_ROUTER_APPS_HOSTNAME}/apis/studio/v1
               ports:
                 - name: http
                   containerPort: 8080
@@ -282,7 +258,7 @@ objects:
 parameters:
   - name: NAMESPACE
     required: true
-  - name: INGRESS_ROUTER_CANONICAL_HOSTNAME
-    # Update this value with your clusters ingress router canonical hostname. For example:
+  - name: INGRESS_ROUTER_APPS_HOSTNAME
+    # Update this value with your clusters ingress router apps hostname. For example:
     # apps.apicur.io
     required: true

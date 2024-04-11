@@ -19,6 +19,7 @@ export class VendorExtension {
     name: string;
     schema: any;
     model: any;
+    components: string[];
 }
 
 export class ApiEditorComponentFeatures {

@@ -45,6 +45,7 @@ import {DocumentService} from "../../_services/document.service";
 import {EditorsService} from "../../_services/editors.service";
 // import {SectionComponent} from "./shared/section.component";
 import {AbstractBaseComponent} from "../common/base-component";
+import {ComponentType} from "../../_models/component-type.model";
 
 
 @Component({
@@ -70,6 +71,8 @@ export class PathFormComponent extends SourceFormComponent<OasPathItem> {
     @ViewChild("clonePathDialog", { static: true }) clonePathDialog: ClonePathDialogComponent;
     @ViewChild("addPathDialog", { static: true }) addPathDialog: AddPathDialogComponent;
     @ViewChild("renamePathDialog", { static: true }) renamePathDialog: RenamePathDialogComponent;
+
+    readonly componentType: ComponentType = ComponentType.pathItem;
 
     public constructor(protected changeDetectorRef: ChangeDetectorRef,
                        protected selectionService: SelectionService,

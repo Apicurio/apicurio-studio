@@ -48,6 +48,7 @@ import {EditorsService} from "../../_services/editors.service";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../dialogs/rename-entity.component";
 import {ApiCatalogService} from "../../_services/api-catalog.service";
 import {DropDownOption, DropDownOptionValue} from "../common/drop-down.component";
+import {ComponentType} from "../../_models/component-type.model";
 
 const INHERITANCE_TYPES: DropDownOption[] = [
     new DropDownOptionValue("No inheritance", "none"),
@@ -86,6 +87,8 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
     @ViewChild("cloneDefinitionDialog", { static: true }) cloneDefinitionDialog: CloneDefinitionDialogComponent;
     @ViewChild("renameDefinitionDialog", { static: true }) renameDefinitionDialog: RenameEntityDialogComponent;
+
+    readonly componentType: ComponentType = ComponentType.schema;
 
     /**
      * C'tor.
@@ -276,5 +279,4 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         let hashIdx: number = this.definition.$ref.indexOf('#');
         return this.definition.$ref.substring(colonIdx + 1, hashIdx);
     }
-
 }

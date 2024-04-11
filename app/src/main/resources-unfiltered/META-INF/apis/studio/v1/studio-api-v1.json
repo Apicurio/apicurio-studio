@@ -1041,6 +1041,13 @@
                     "schema": {
                     },
                     "model": {
+                    },
+                    "components": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 },
                 "example": {
@@ -1083,7 +1090,11 @@
                         "state": "ST",
                         "postalCode": "05432",
                         "country": "USA"
-                    }
+                    },
+                    "components": [
+                        "schema",
+                        "operation"
+                    ]
                 }
             }
         },

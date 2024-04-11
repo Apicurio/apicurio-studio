@@ -101,7 +101,7 @@
                 <cookie-params-section [parent]="path" [path]="path" *ngIf="is3xDocument()"></cookie-params-section>
 
                 <!-- Vendor Extensions -->
-                <extensions-section [parent]="path"></extensions-section>
+                <extensions-section [parent]="path" [forComponent]="componentType"></extensions-section>
 
                 <!-- Operations Section -->
                 <operations-section [path]="path"></operations-section>

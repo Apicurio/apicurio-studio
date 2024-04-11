@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap/modal";
 import {ExtensibleNode} from "@apicurio/data-models";
 import {CodeEditorMode} from "../common/code-editor.component";
@@ -23,6 +23,7 @@ import {LoggerService} from "../../../services/logger.service";
 import {DIVIDER, DropDownOption, DropDownOptionValue} from "../common/drop-down.component";
 import {FeaturesService} from "../../_services/features.service";
 import {VendorExtension} from "../../_models/features.model";
+import {ComponentType} from "../../_models/component-type.model";
 
 
 @Component({
@@ -32,6 +33,7 @@ import {VendorExtension} from "../../_models/features.model";
 })
 export class AddExtensionDialogComponent {
 
+    @Input() forComponent: ComponentType;
     @Output() onAdd: EventEmitter<any> = new EventEmitter<any>();
 
     @ViewChildren("addExtensionModal") addExtensionModal: QueryList<ModalDirective>;
@@ -61,21 +63,6 @@ export class AddExtensionDialogComponent {
     valueValid: boolean = false;
 
     constructor(private logger: LoggerService, private features: FeaturesService) {
-        const vendorExtensions: VendorExtension[] = features.getFeatures().vendorExtensions || [];
-        this.vendorExtensionMap = {};
-        vendorExtensions.forEach(vext => {
-            this.vendorExtensionMap[vext.name] = {
-                schema: vext.schema,
-                model: vext.model
-            };
-        });
-        this._extensionNameOptions = [
-            new DropDownOptionValue("Custom property", "custom"),
-            DIVIDER
-        ];
-        Object.getOwnPropertyNames(this.vendorExtensionMap).forEach(name => {
-            this._extensionNameOptions.push(new DropDownOptionValue(name, name));
-        });
     }
 
     /**
@@ -95,6 +82,27 @@ export class AddExtensionDialogComponent {
             }
         });
         this.extensionExists = false;
+        this.configureVendorExtensions();
+    }
+
+    configureVendorExtensions(): void {
+        const vendorExtensions: VendorExtension[] = this.features.getFeatures().vendorExtensions || [];
+        this.vendorExtensionMap = {};
+        vendorExtensions.filter(vext => {
+            return !vext.components || vext.components.length === 0 || vext.components.indexOf(this.forComponent) !== -1;
+        }).forEach(vext => {
+            this.vendorExtensionMap[vext.name] = {
+                schema: vext.schema,
+                model: vext.model
+            };
+        });
+        this._extensionNameOptions = [
+            new DropDownOptionValue("Custom property", "custom"),
+            DIVIDER
+        ];
+        Object.getOwnPropertyNames(this.vendorExtensionMap).forEach(name => {
+            this._extensionNameOptions.push(new DropDownOptionValue(name, name));
+        });
     }
 
     /**

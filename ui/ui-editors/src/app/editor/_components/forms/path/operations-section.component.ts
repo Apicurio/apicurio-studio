@@ -38,6 +38,7 @@ import {ModelUtils} from "../../../_util/model.util";
 import {SelectionService} from "../../../_services/selection.service";
 import {AbstractBaseComponent} from "../../common/base-component";
 import {TopicSubscription} from "apicurio-ts-core";
+import {ComponentType} from "../../../_models/component-type.model";
 
 
 @Component({
@@ -58,6 +59,8 @@ export class OperationsSectionComponent extends AbstractBaseComponent {
     private _allOperations: OasOperation[] = [];
     private _collaborationPaths: string[] = [];
     private _selectionSubscription: TopicSubscription<string>;
+
+    readonly componentType: ComponentType = ComponentType.operation;
 
     /**
      * C'tor.

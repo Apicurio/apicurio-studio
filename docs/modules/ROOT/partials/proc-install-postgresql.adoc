@@ -1,0 +1,72 @@
+[id="install-postgresql-operatorhub"]
+= Installing PostgreSQL database storage using OpenShift OperatorHub
+
+One of the available storage options requires that you provide connection information to a PostgreSQL database.
+You can use any PostgreSQL database available on your OpenShift cluster, but it is recommended to use link:{LinkOperatorHub}[{NameOperatorHub}] to choose and install an Operator that can manage a PostgreSQL database for you.
+
+You can install your preferred PostgresQL Operator, but this section shows how to install the *PostgreSQL Operator by Dev4Ddevs.com* and create a new database for {registry}.
+
+.Prerequisites
+
+* You must have cluster administrator access to an OpenShift cluster.
+
+.Procedure
+
+. In the OpenShift Container container-platform web console, log in using an account with cluster administrator privileges.
+
+. Change to the OpenShift project in which {studio} is installed. For example, from the *Project* drop-down, select `my-project`.
+
+. In the left navigation menu, click *Operators* > *OperatorHub*.
+
+. In the *Filter by keyword* text box, enter `PostgreSQL` to find an Operator suitable for your environment, for example, *PostgreSQL Operator by Dev4Ddevs.com* or *Crunchy PostgreSQL for OpenShift*.
+
+. Read the information about the Operator, and click *Install*. This displays the *Create Operator Subscription* page.
+
+. Select your subscription settings, for example:
+** *Installation Mode*: Select one of the following: 
+*** *All namespaces on the cluster (default)*
+*** *A specific namespace on the cluster*  and then *my-project*
+** *Update Channel* > *stable*
+** *Approval Strategy*: Select *Automatic* or *Manual*
+
+. Click *Subscribe*. This displays the *Operators* > *Installed Operators* page.
+
+. Wait a few moments until the *Status* for the PostgreSQL Operator displays *Succeeded* and the subscription is *Up to Date*.
++
+IMPORTANT: You must read the documentation from your chosen *PostgreSQL* Operator for details on how to create and manage your database.
+
+. Create a PostgreSQL database for your {studio} storage. For example, click *Installed Operators* > *PostgreSQL Operator by Dev4Ddevs.com* > *Create database* > *YAML*.
+
+. Edit the database settings as follows:
+** `name`: Change the value to `studio`
+** `image`: Change the value to `centos/postgresql-10-centos7`
+
+. Edit any other database settings as needed depending on your environment, for example:
++
+[source,yaml]
+----
+apiVersion: postgresql.dev4devs.com/v1alpha1
+kind: Database
+metadata:
+  name: studio
+  namespace: my-project
+spec:
+  databaseCpu: 30m
+  databaseCpuLimit: 60m
+  databaseMemoryLimit: 512Mi
+  databaseMemoryRequest: 128Mi
+  databaseName: example
+  databaseNameKeyEnvVar: POSTGRESQL_DATABASE
+  databasePassword: postgres
+  databasePasswordKeyEnvVar: POSTGRESQL_PASSWORD
+  databaseStorageRequest: 1Gi
+  databaseUser: postgres
+  databaseUserKeyEnvVar: POSTGRESQL_USER
+  image: centos/postgresql-10-centos7
+  size: 1
+----
+
+. Click *Create Database*, and wait until the database is created.
+
+.Additional resources
+* link:https://access.crunchydata.com/documentation/postgres-operator/4.5.0/quickstart/[Crunchy PostgreSQL Operator QuickStart]

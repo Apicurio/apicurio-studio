@@ -1,0 +1,33 @@
+[id="registry-persistence-options"]
+= {studio} storage options
+
+The main decision to make when deploying {studio} is which storage backend to use.
+
+The following storage options are available:
+
+.{studio} data storage options
+[%header,cols="1,3"] 
+|===
+|Storage option
+|Description
+
+ifndef::apicurio-studio-downstream[]
+|In-memory
+|Data is stored in RAM on each {studio} node. This is the easiest deployment to use, but is not recommended for production environment. All data is lost when restarting {studio} with this storage option, which is suitable for a development environment only.
+endif::[]
+
+|SQL database  
+|Data is stored in a relational database, in this case PostgreSQL 12+. This is the recommended storage option in a production environment for performance, stability, and data management (backup/restore, and so on).
+|===
+
+ifdef::apicurio-studio-downstream[]
+.Storage requiring installation
+The following options require that the storage is already installed as a prerequisite:
+
+* SQL (PostgreSQL)
+* Apache Kafka
+endif::[]
+
+ifdef::apicurio-studio-downstream[]
+These options require that the storage is already installed as a prerequisite.
+endif::[]

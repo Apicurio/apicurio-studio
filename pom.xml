@@ -87,6 +87,8 @@
         <module>app</module>
         <module>dist</module>
         <module>dist/docker</module>
+        <module>docs</module>
+        <module>examples</module>
     </modules>
 
     <properties>
@@ -115,7 +117,7 @@
         <!-- Test Dependency Versions -->
         <version.org.testcontainers.postgresql>1.19.7</version.org.testcontainers.postgresql>
         <version.wiremock>2.35.2</version.wiremock>
-        <embedded-postgres.version>2.0.6</embedded-postgres.version>
+        <embedded-postgres.version>2.0.7</embedded-postgres.version>
 
         <!-- Plugin Versions -->
         <version.compiler.plugin>3.13.0</version.compiler.plugin>

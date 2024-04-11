@@ -1,0 +1,23 @@
+include::partial$shared/all-attributes.adoc[]
+
+[id="studio-storage"]
+= Configuring {studio} storage
+
+This chapter explains how to configure the available {studio} storage options:
+
+* xref:registry-persistence-options[]
+ifndef::apicurio-studio-downstream[]
+* xref:studio-persistence-mem[]
+endif::[]
+* xref:studio-persistence-sql[]
+
+* xref:install-postgresql-operatorhub[]
+
+include::partial$con-persistence-options.adoc[leveloffset=+1]
+
+ifndef::apicurio-studio-downstream[]
+include::partial$proc-persistence-mem.adoc[leveloffset=+1]
+endif::[]
+include::partial$proc-persistence-sql.adoc[leveloffset=+1]
+
+include::partial$proc-install-postgresql.adoc[leveloffset=+1]

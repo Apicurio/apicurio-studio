@@ -1,0 +1,24 @@
+[id="studio-persistence-sql"]
+= Configuring SQL (PostgreSQL) storage
+
+.Prerequisites
+* You must have {a-container-platform} cluster with cluster administrator access.
+* You have a PostgreSQL database reachable from your {container-platform} cluster.
+
+.Procedure
+
+. In the {container-platform-long} web console, log in with cluster administrator privileges.
+
+ifndef::apicurio-studio-downstream[]
+. Change to the Kubernetes namespace in which {studio} and your PostgreSQL Operator are installed.
+endif::[]
+
+ifdef::apicurio-studio-downstream[]
+. Change to the OpenShift project in which {studio} and your PostgreSQL Operator are installed.
+For example, from the *Project* drop-down, select `my-project`.
+endif::[]
+
+. *__TODO__*
+
+.Additional resources
+* link:https://access.crunchydata.com/documentation/postgres-operator/4.5.0/quickstart/[Crunchy PostgreSQL Operator QuickStart]

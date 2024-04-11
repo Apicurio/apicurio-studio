@@ -1,0 +1,15 @@
+[id="studio-content"]
+= Managing {studio-long} content
+
+You can manage {studio-long} content in the {studio-long} web console.
+
+[id="studio-web-console"]
+== {studio-long} web console
+
+You can use the {studio-long} web console to complete the following tasks:
+
+* Browse and search the schema and API designs that are stored in {studio-long}
+* Add new schema and API designs and versions
+* Import content from a file, from a URL, or from a {registry-long} instance
+* Show the changes that you’ve made in your current editing session
+* Save your content to a file

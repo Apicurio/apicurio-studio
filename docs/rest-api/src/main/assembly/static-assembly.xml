@@ -1,0 +1,25 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>static</id>
+    <formats>
+        <format>zip</format>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <files>
+        <file>
+            <source>${basedir}/../../app/src/main/resources-unfiltered/META-INF/apis/studio/v1/studio-api-v1.json</source>
+            <destName>openapi.json</destName>
+        </file>
+        <file>
+            <source>${basedir}/src/main/resources/index.html</source>
+            <destName>index.html</destName>
+        </file>
+        <file>
+            <source>${basedir}/src/main/resources/run.sh</source>
+            <destName>run.sh</destName>
+        </file>
+    </files>
+
+</assembly>

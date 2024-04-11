@@ -29,13 +29,11 @@ export class DynamicFormComponent implements OnChanges {
             this.form = new FormGroup({});
             this.fields = [this.formlyJsonschema.toFieldConfig(this.schema)];
             this.form.valueChanges.subscribe(changes => {
-                console.info("======> MODEL CHANGED: ", this.model, this.form.valid);
                 this.onModelChange.emit(this.model);
                 this.validate();
             });
         }
         setTimeout(() => {
-            console.info("======> updateValueAndValidity!");
             if (this.form) {
                 this.form.updateValueAndValidity();
             }
@@ -44,9 +42,7 @@ export class DynamicFormComponent implements OnChanges {
     }
 
     private validate(): void {
-        console.info("======> VALIDATING: ", this.isValid, " -> ", this.form.valid);
         if (this.isValid !== this.form.valid) {
-            console.info("======> VALIDATION CHANGED: ", this.form.valid);
             this.onValid.emit(this.form.valid);
         }
         this.isValid = this.form.valid;

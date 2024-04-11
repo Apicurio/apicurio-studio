@@ -21,154 +21,9 @@ import {ExtensibleNode} from "@apicurio/data-models";
 import {CodeEditorMode} from "../common/code-editor.component";
 import {LoggerService} from "../../../services/logger.service";
 import {DIVIDER, DropDownOption, DropDownOptionValue} from "../common/drop-down.component";
+import {FeaturesService} from "../../_services/features.service";
+import {VendorExtension} from "../../_models/features.model";
 
-
-
-const ADDRESS_SCHEMA: any = {
-    $schema: "http://json-schema.org/draft-07/schema#",
-    title: "Address",
-    type: "object",
-    properties: {
-        street: {
-            type: "string",
-            title: "Street"
-        },
-        city: {
-            type: "string",
-            title: "City"
-        },
-        state: {
-            type: "string",
-            title: "State"
-        },
-        postalCode: {
-            type: "string",
-            title: "Zipcode"
-        },
-        country: {
-            type: "string",
-            title: "Country"
-        }
-    },
-    required: ["street", "city", "country"]
-};
-
-const ADDRESS_MODEL: any = {
-    street: null,
-    city: "",
-    state: "",
-    postalCode: "",
-    country: ""
-};
-
-const KUADRANT_SCHEMA: any = {
-    $schema: "http://json-schema.org/draft-07/schema#",
-    type: "object",
-    title: "Route",
-    properties: {
-        route: {
-            type: "object",
-            properties: {
-                name: {
-                    type: "string",
-                    title: "Name"
-                },
-                namespace: {
-                    type: "string",
-                    title: "Namespace"
-                },
-                labels: {
-                    type: "object",
-                    title: "Labels",
-                    patternProperties: {
-                        ".{1,}": {
-                            type: "string",
-                            title: "Value"
-                        }
-                    }
-                },
-                hostnames: {
-                    type: "array",
-                    title: "Hostnames",
-                    items: {
-                        type: "string",
-                        title: "Hostname"
-                    }
-                },
-                parentRefs: {
-                    type: "array",
-                    title: "Parent Refs",
-                    items: {
-                        type: "object",
-                        properties: {
-                            name: {
-                                type: "string",
-                                title: "Name"
-                            },
-                            namespace: {
-                                type: "string",
-                                title: "Namespace"
-                            }
-                        },
-                        required: ["name", "namespace"]
-                    }
-                }
-            },
-            required: ["name", "namespace", "labels", "hostnames", "parentRefs"]
-        }
-    },
-    required: ["route"]
-};
-
-const KUADRANT_MODEL: any = {
-    route: {
-        name: "",
-        namespace: "",
-        labels: {
-        },
-        hostnames: [
-            "example.com"
-        ],
-        parentRefs: [
-        ]
-    }
-};
-
-const CODEGEN_SCHEMA: any = {
-    $schema: "http://json-schema.org/draft-07/schema#",
-    type: "object",
-    properties: {
-        "suppress-date-time-formatting": {
-            type: "boolean",
-            title: "Suppress Datetime Formatting"
-        },
-        "bean-annotations": {
-            type: "array",
-            title: "Bean Annotations",
-            items: {
-                type: "object",
-                properties: {
-                    annotation: {
-                        type: "string",
-                        title: "Annotation"
-                    },
-                    excludeEnums: {
-                        type: "boolean",
-                        title: "Exclude Enums"
-                    }
-                },
-                required: ["annotation"]
-            }
-        }
-    },
-    required: []
-};
-
-const CODEGEN_MODEL: any = {
-    "suppress-date-time-formatting": false,
-    "bean-annotations": [
-    ]
-};
 
 @Component({
     selector: "add-extension-dialog",
@@ -205,21 +60,15 @@ export class AddExtensionDialogComponent {
     nameValid: boolean = false;
     valueValid: boolean = false;
 
-    constructor(private logger: LoggerService) {
-        this.vendorExtensionMap = {
-            "x-address": {
-                schema: ADDRESS_SCHEMA,
-                model: ADDRESS_MODEL
-            },
-            "x-codegen": {
-                schema: CODEGEN_SCHEMA,
-                model: CODEGEN_MODEL
-            },
-            "x-kuadrant": {
-                schema: KUADRANT_SCHEMA,
-                model: KUADRANT_MODEL
-            }
-        };
+    constructor(private logger: LoggerService, private features: FeaturesService) {
+        const vendorExtensions: VendorExtension[] = features.getFeatures().vendorExtensions || [];
+        this.vendorExtensionMap = {};
+        vendorExtensions.forEach(vext => {
+            this.vendorExtensionMap[vext.name] = {
+                schema: vext.schema,
+                model: vext.model
+            };
+        });
         this._extensionNameOptions = [
             new DropDownOptionValue("Custom property", "custom"),
             DIVIDER
@@ -334,5 +183,9 @@ export class AddExtensionDialogComponent {
 
     cloneModel(model: any): any {
         return JSON.parse(JSON.stringify(model));
+    }
+
+    hasVendorExtensions(): boolean {
+        return Object.getOwnPropertyNames(this.vendorExtensionMap).length > 0;
     }
 }

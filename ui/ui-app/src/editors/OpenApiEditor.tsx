@@ -1,9 +1,12 @@
-import React, { RefObject, useEffect } from "react";
+import React, { RefObject, useEffect, useState } from "react";
 import { Editor as DesignEditor, EditorProps } from "./editor-types";
 import "./OpenApiEditor.css";
 import { ContentTypes } from "@models/designs";
 import { parseJson, parseYaml, toJsonString, toYamlString } from "@utils/content.utils.ts";
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
+import { VendorExtension } from "@models/system";
+import { SystemService, useSystemService } from "@services/useSystemService.ts";
+import { IfNotLoading } from "@apicurio/common-ui-components";
 
 
 export type OpenApiEditorProps = {
@@ -17,16 +20,33 @@ export type OpenApiEditorProps = {
  * bridges to the iframe.
  */
 export const OpenApiEditor: DesignEditor = ({ content, onChange, className }: OpenApiEditorProps) => {
+    const [openApiVendorExtensions, setOpenApiVendorExtensions] = useState<VendorExtension[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
     const ref: RefObject<any> = React.createRef();
     const config: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
 
     const editorsUrl: string = config.components.editors.url;
 
+    const systemSvc: SystemService = useSystemService();
+
+    useEffect(() => {
+        setIsLoading(true);
+        systemSvc.getOpenApiVendorExtensions().then(extensions => {
+            setOpenApiVendorExtensions(extensions);
+            setIsLoading(false);
+        }).catch(error => {
+            console.error("Error loading OpenAPI vendor extensions", error);
+            setOpenApiVendorExtensions([]);
+            setIsLoading(false);
+        });
+    }, []);
+
     useEffect(() => {
         console.info("[OpenApiEditor] URL location of editors: ", editorsUrl);
+
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-
         const eventListener: any = (event) => {
             if (event.data && event.data.type === "apicurio_onChange") {
                 let newContent: any = event.data.data.content;
@@ -79,6 +99,9 @@ export const OpenApiEditor: DesignEditor = ({ content, onChange, className }: Op
                 features: {
                     allowCustomValidations: false,
                     allowImports: false
+                },
+                openapi: {
+                    vendorExtensions: openApiVendorExtensions
                 }
             }
         };
@@ -86,10 +109,12 @@ export const OpenApiEditor: DesignEditor = ({ content, onChange, className }: Op
     };
 
     return (
-        <iframe id="openapi-editor-frame"
-            ref={ ref }
-            className={ className ? className : "editor-openapi-flex-container" }
-            onLoad={ onEditorLoaded }
-            src={ editorAppUrl() } />
+        <IfNotLoading isLoading={isLoading}>
+            <iframe id="openapi-editor-frame"
+                ref={ref}
+                className={className ? className : "editor-openapi-flex-container"}
+                onLoad={onEditorLoaded}
+                src={editorAppUrl()}/>
+        </IfNotLoading>
     );
 };

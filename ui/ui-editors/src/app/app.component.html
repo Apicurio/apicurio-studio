@@ -6,7 +6,7 @@
 </div>
 <div *ngIf="isShowEditor" class="studio-editor">
     <div class="content-editor">
-        <openapi-editor #openapiEditor *ngIf="config.content.type === 'OPENAPI'" [api]="api"></openapi-editor>
+        <openapi-editor #openapiEditor *ngIf="config.content.type === 'OPENAPI'" [api]="api" [config]="config"></openapi-editor>
         <asyncapi-editor #asyncapiEditor *ngIf="config.content.type === 'ASYNCAPI'" [api]="api"></asyncapi-editor>
     </div>
 </div>

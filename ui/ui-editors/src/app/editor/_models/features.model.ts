@@ -24,5 +24,5 @@ export class VendorExtension {
 export class ApiEditorComponentFeatures {
     validationSettings: boolean = false;
     componentImports: boolean = false;
-    vendorExtensions: VendorExtension[];
+    vendorExtensions?: VendorExtension[];
 }

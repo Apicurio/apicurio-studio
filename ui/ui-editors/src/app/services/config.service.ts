@@ -70,6 +70,7 @@ export class ConfigService {
     public get(): Promise<EditingInfo> {
         if (this.demoMode) {
             return new Promise((resolve, reject) => {
+                // TODO pass some vendor extensions for openapi editing
                 const info: EditingInfo = {
                     content: {
                         type: "OPENAPI",
@@ -78,6 +79,9 @@ export class ConfigService {
                     features: {
                         allowImports: false,
                         allowCustomValidations: false
+                    },
+                    openapi: {
+                        vendorExtensions: []
                     }
                 };
                 resolve(info);

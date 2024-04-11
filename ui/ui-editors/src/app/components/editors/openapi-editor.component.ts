@@ -21,6 +21,8 @@ import {EditorComponent} from "./editor.component";
 import {WindowRef} from "../../services/window-ref.service";
 import {ApiDefinition} from "../../editor/_models/api.model";
 import {OaiEditorComponent} from "../../editor/oaieditor.component";
+import {EditingInfo} from "../../models/editingInfo.model";
+import {ApiEditorComponentFeatures} from "../../editor/_models/features.model";
 
 
 @Component({
@@ -30,8 +32,8 @@ import {OaiEditorComponent} from "../../editor/oaieditor.component";
 })
 export class OpenApiEditorComponent implements EditorComponent {
 
-    // @ts-ignore
     @Input() api: ApiDefinition;
+    @Input() config: EditingInfo;
 
     @ViewChild("apiEditor") apiEditor: OaiEditorComponent | undefined;
 
@@ -63,6 +65,14 @@ export class OpenApiEditorComponent implements EditorComponent {
     public getValue(): string {
         const value: ApiDefinition = this.apiEditor.getValue();
         return JSON.stringify(value.spec, null, 4);
+    }
+
+    public editorFeatures(): ApiEditorComponentFeatures {
+        return {
+            componentImports: this.config.features.allowImports || false,
+            validationSettings: this.config.features.allowCustomValidations || false,
+            vendorExtensions: this.config.openapi.vendorExtensions || []
+        };
     }
 
 }

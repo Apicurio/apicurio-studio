@@ -16,10 +16,12 @@
  */
 import {EditingInfoContent} from "./editingInfoContent.model";
 import {EditingInfoFeatures} from "./editingInfoFeatures.model";
+import {EditingInfoOpenApi} from "./editingInfoOpenApi.model";
 
 export interface EditingInfo {
 
     content: EditingInfoContent;
     features: EditingInfoFeatures;
+    openapi: EditingInfoOpenApi;
 
 }

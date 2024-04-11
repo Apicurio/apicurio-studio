@@ -54,6 +54,27 @@ const DEFAULT_VERSION: VersionType = {
     url: "https://www.apicur.io/studio"
 };
 
+const DEFAULT_CONFIG: ApicurioStudioConfig = {
+    apis: {
+        studio: ""
+    },
+    auth: {
+        type: "none"
+    },
+    ui: {
+        contextPath: "/",
+        navPrefixPath: ""
+    },
+    components: {
+        masthead: {
+            show: true,
+            label: "APICURIO STUDIO"
+        },
+        editors: {
+            url: "http://localhost:9011"
+        }
+    }
+};
 
 function getApicurioStudioVersion(): VersionType {
     let version: VersionType | undefined;
@@ -173,39 +194,44 @@ export class ConfigServiceImpl implements ConfigService {
         console.info("[Config] Fetching UI configuration from: ", endpoint);
         return httpGet<ApicurioStudioConfig>(endpoint).then(remoteConfig => {
             console.info("[Config] UI configuration fetched successfully: ", remoteConfig);
-            // Always use the local config's "apis.studio" property (contains the REST API endpoint)
-            if (remoteConfig.apis === undefined) {
-                remoteConfig.apis = localConfig.apis;
-            } else {
-                remoteConfig.apis.studio = localConfig.apis.studio;
-            }
-            // Override the remote config with anything in the local config.  Then set the result
-            // as the new official app config.
-            studioConfig = overrideConfig(remoteConfig, localConfig);
-
-            // Make sure the EditorsUrl is absolute and based on the current window location.
-            const editorsUrl: string = studioConfig.components.editors.url.startsWith("/") ?
-                (window.location.origin + studioConfig.components.editors.url) :
-                studioConfig.components.editors.url;
-            studioConfig.components.editors.url = editorsUrl;
-
-            // Check for extra/unknown local config and warn about it.
-            const diff: any = difference(remoteConfig, localConfig);
-            if (Object.keys(diff).length > 0) {
-                console.warn("[Config] Local config contains unexpected properties: ", diff);
-            }
-
-            // Add the version to the config.
-            studioConfig.version = getApicurioStudioVersion();
-
-            console.debug("Full app UI config: ", studioConfig);
+            this.mergeConfigs(localConfig, remoteConfig);
         }).catch(error => {
             console.error("[Config] Error fetching UI configuration: ", error);
             console.error("------------------------------------------");
             console.error("[Config] Note: using local UI config only!");
             console.error("------------------------------------------");
+            this.mergeConfigs(localConfig, DEFAULT_CONFIG);
             return Promise.resolve();
         });
+    }
+
+    private mergeConfigs(localConfig: ApicurioStudioConfig, remoteConfig: ApicurioStudioConfig): void {
+        // Always use the local config's "apis.studio" property (contains the REST API endpoint)
+        if (remoteConfig.apis === undefined) {
+            remoteConfig.apis = localConfig.apis;
+        } else {
+            remoteConfig.apis.studio = localConfig.apis.studio;
+        }
+        // Override the remote config with anything in the local config.  Then set the result
+        // as the new official app config.
+        studioConfig = overrideConfig(remoteConfig, localConfig);
+
+        // Make sure the EditorsUrl is absolute and based on the current window location.
+        const editorsUrl: string = studioConfig.components.editors.url.startsWith("/") ?
+            (window.location.origin + studioConfig.components.editors.url) :
+            studioConfig.components.editors.url;
+        studioConfig.components.editors.url = editorsUrl;
+
+        // Check for extra/unknown local config and warn about it.
+        const diff: any = difference(remoteConfig, localConfig);
+        if (Object.keys(diff).length > 0) {
+            console.warn("[Config] Local config contains unexpected properties: ", diff);
+        }
+
+        // Add the version to the config.
+        studioConfig.version = getApicurioStudioVersion();
+
+        console.debug("Full app UI config: ", studioConfig);
     }
 
     public getApicurioStudioConfig(): ApicurioStudioConfig {

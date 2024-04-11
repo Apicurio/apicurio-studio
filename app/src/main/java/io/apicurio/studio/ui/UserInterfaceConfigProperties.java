@@ -16,6 +16,8 @@
 
 package io.apicurio.studio.ui;
 
+import java.util.Optional;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.apicurio.common.apps.config.Info;
@@ -59,5 +61,9 @@ public class UserInterfaceConfigProperties {
     @ConfigProperty(name = "apicurio.ui.editors.url", defaultValue = "/editors/")
     @Info(category = "ui", description = "URL to the 'editors' UI component", availableSince = "1.0.0")
     public String editorsUrl;
+
+    @ConfigProperty(name = "apicurio.ui.openapi.vendor-extensions.url")
+    @Info(category = "ui", description = "URL to a JSON file containing OpenAPI vendor extensions", availableSince = "1.0.0")
+    public Optional<String> openApiVendorExtensions;
 
 }

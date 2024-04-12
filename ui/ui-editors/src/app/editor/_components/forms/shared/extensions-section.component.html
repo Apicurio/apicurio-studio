@@ -25,7 +25,7 @@
         </div>
     </div>
 </section>
-<add-extension-dialog #addExtensionDialog (onAdd)="addExtension($event)"></add-extension-dialog>
+<add-extension-dialog #addExtensionDialog (onAdd)="addExtension($event)" [forComponent]="forComponent"></add-extension-dialog>
 <rename-entity-dialog #renameDialog
                       type="Extension"
                       title="Rename Vendor Extension"

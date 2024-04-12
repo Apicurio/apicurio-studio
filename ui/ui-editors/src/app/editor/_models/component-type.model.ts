@@ -15,35 +15,20 @@
  * limitations under the License.
  */
 
-export function componentTypeToString(type: ComponentType): string {
-    switch (type) {
-        case ComponentType.schema:
-            return "schema";
-        case ComponentType.response:
-            return "response";
-        case ComponentType.parameter:
-            return "parameter";
-        case ComponentType.header:
-            return "header";
-        case ComponentType.requestBody:
-            return "requestBody";
-        case ComponentType.callback:
-            return "callback";
-        case ComponentType.example:
-            return "example";
-        case ComponentType.securityScheme:
-            return "securityScheme";
-        case ComponentType.link:
-            return "link";
-        case ComponentType.messageTrait:
-            return "messageTrait";
-        case ComponentType.message:
-            return "message";
-    }
-    return "n/a";
-}
-
 export enum ComponentType {
-    schema, response, parameter, header, requestBody, callback, example, securityScheme, link, messageTrait,
-    message,
+    schema = "schema",
+    response = "response",
+    parameter = "parameter",
+    header = "header",
+    requestBody = "requestBody",
+    callback = "callback",
+    example = "example",
+    securityScheme = "securityScheme",
+    link = "link",
+    info = "info",
+    messageTrait = "messageTrait",
+    message = "message",
+    document = "document",
+    pathItem = "pathItem",
+    operation = "operation"
 }

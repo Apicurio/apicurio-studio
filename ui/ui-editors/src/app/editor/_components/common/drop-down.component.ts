@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, ViewEncapsulation} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@angular/core";
 
 export abstract class DropDownOption {
 
@@ -32,24 +32,28 @@ export class DropDownOptionValue extends DropDownOption {
     public value: any;
     public disabled: boolean = false;
 
-    public constructor(name: string, value: any, disabled: boolean = false) {
+    public constructor(name: string, value: any, disabled?: boolean) {
         super();
         this.name = name;
         this.value = value;
-        this.disabled = disabled;
+        if (disabled !== undefined) {
+            this.disabled = disabled;
+        } else {
+            this.disabled = false;
+        }
     }
 
     public isDivider(): boolean {
         return false;
     }
-    public getName() {
+    public getName(): string {
         return this.name;
     }
-    public getValue() {
+    public getValue(): any {
         return this.value;
     }
     public isDisabled(): boolean {
-        throw this.disabled;
+        return this.disabled;
     }
 }
 
@@ -61,25 +65,22 @@ export class DropDownOptionDivider extends DropDownOption {
         return true;
     }
 
-    public getName() {
-        throw new Error("DropDownOptionDivider does not contain a name. "
-            + "Use DropDownOption#isDivider() to prevent this error.");
+    public getName(): any {
+        return "";
     }
 
-    public getValue() {
-        throw new Error("DropDownOptionDivider does not contain a value. "
-            + "Use DropDownOption#isDivider() to prevent this error.");
+    public getValue(): any {
+        return undefined;
     }
 
     public isDisabled(): boolean {
-        throw new Error("DropDownOptionDivider cannot be disabled. "
-            + "Use DropDownOption#isDivider() to prevent this error.");
+        return false;
     }
 }
 
 /**
-  * Static instance for reusability
-  */
+ * Static instance for reusability
+ */
 export let DIVIDER: DropDownOption = new DropDownOptionDivider();
 
 @Component({
@@ -153,7 +154,7 @@ export class DropDownComponent {
     }
 
     public hasValue(): boolean {
-        for (let option of this.options) {
+        for (const option of this.options) {
             if (!option.isDivider() && option.getValue() === this.value) {
                 return true;
             }
@@ -162,7 +163,7 @@ export class DropDownComponent {
     }
 
     public displayValue(): string {
-        for (let option of this.options) {
+        for (const option of this.options) {
             if (!option.isDivider() && option.getValue() === this.value) {
                 return option.getName();
             }
@@ -201,6 +202,12 @@ export class DropDownComponent {
 
     public shouldShowFilter(): boolean {
         return this._options && this._options.length > this.filterItemCountThreshold;
+    }
+
+    public optionClicked(option: DropDownOption): void {
+        if (!option.isDisabled() && !option.isDivider()) {
+            this.setValue(option.getValue());
+        }
     }
 
 }

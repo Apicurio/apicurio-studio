@@ -23,6 +23,7 @@ import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
 import {ICommand} from "@apicurio/data-models";
 import {EditorsService} from "../../_services/editors.service";
+import {ComponentType} from "../../_models/component-type.model";
 
 
 @Component({
@@ -43,6 +44,8 @@ export class MainFormComponent extends SourceFormComponent<OasDocument> {
     get document(): OasDocument {
         return this._document;
     }
+
+    readonly componentType: ComponentType = ComponentType.document;
 
     public constructor(protected changeDetectorRef: ChangeDetectorRef,
                        protected selectionService: SelectionService,
@@ -71,5 +74,4 @@ export class MainFormComponent extends SourceFormComponent<OasDocument> {
         super.saveSource();
         this.sourceNode = this._document;
     }
-
 }

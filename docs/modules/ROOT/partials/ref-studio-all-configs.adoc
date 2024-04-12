@@ -166,5 +166,10 @@ The following {studio} configuration options are available for each component ca
 |`_`
 |`1.0.0`
 |Navigation prefix for all UI paths
+|`apicurio.ui.openapi.vendor-extensions.url`
+|`optional<string>`
+|
+|`1.0.0`
+|URL to a JSON file containing OpenAPI vendor extensions
 |===
 

@@ -32,6 +32,7 @@ import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rena
 import {ObjectUtils} from "apicurio-ts-core";
 import {ModelUtils} from "../../../_util/model.util";
 import {AddExtensionDialogComponent} from "../../dialogs/add-extension.component";
+import {ComponentType} from "../../../_models/component-type.model";
 
 
 @Component({
@@ -43,6 +44,7 @@ import {AddExtensionDialogComponent} from "../../dialogs/add-extension.component
 export class ExtensionsSectionComponent extends AbstractBaseComponent {
 
     @Input() parent: ExtensibleNode;
+    @Input() forComponent: ComponentType;
 
     @ViewChild("addExtensionDialog", { static: true }) addExtensionDialog: AddExtensionDialogComponent;
     @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;

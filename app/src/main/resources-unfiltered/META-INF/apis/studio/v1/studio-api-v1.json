@@ -451,6 +451,36 @@
                 }
             ]
         },
+        "/system/uiConfig/openapi/vendorExtensions": {
+            "summary": "Gets all configured vendor extensions for OpenAPI editing",
+            "description": "This endpoint returns a collection of vendor extensions that can be used by the\nOpenAPI editor when a user wants to add `x-vendor` style extension properties\nto their design.",
+            "get": {
+                "tags": [
+                    "System"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/OpenApiVendorExtension"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "A list of vendor extensions."
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                },
+                "operationId": "getOpenApiVendorExtensions",
+                "summary": "Get all OpenAPI vendor extensions",
+                "description": "Returns the UI configuration of vendor extensions for the OpenAPI editor.\n\nThis operation may fail for one of the following reasons:\n\n* A server error occurred (HTTP error `500`)\n"
+            }
+        },
         "x-codegen-contextRoot": "/apis/studio/v1"
     },
     "components": {
@@ -992,6 +1022,79 @@
                 "example": {
                     "error_code": 500,
                     "message": "An error occurred somewhere."
+                }
+            },
+            "OpenApiVendorExtension": {
+                "title": "Root Type for OpenApiVendorExtension",
+                "description": "",
+                "required": [
+                    "name",
+                    "schema",
+                    "model"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "pattern": "^x-.*$",
+                        "type": "string"
+                    },
+                    "schema": {
+                    },
+                    "model": {
+                    },
+                    "components": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "example": {
+                    "name": "x-apicurio-address",
+                    "schema": {
+                        "$schema": "http://json-schema.org/draft-07/schema#",
+                        "title": "Address",
+                        "type": "object",
+                        "properties": {
+                            "street": {
+                                "type": "string",
+                                "title": "Street"
+                            },
+                            "city": {
+                                "type": "string",
+                                "title": "City"
+                            },
+                            "state": {
+                                "type": "string",
+                                "title": "State"
+                            },
+                            "postalCode": {
+                                "type": "string",
+                                "title": "Zipcode"
+                            },
+                            "country": {
+                                "type": "string",
+                                "title": "Country"
+                            }
+                        },
+                        "required": [
+                            "street",
+                            "city",
+                            "country"
+                        ]
+                    },
+                    "model": {
+                        "street": "12345 Main St",
+                        "city": "Springfield",
+                        "state": "ST",
+                        "postalCode": "05432",
+                        "country": "USA"
+                    },
+                    "components": [
+                        "schema",
+                        "operation"
+                    ]
                 }
             }
         },

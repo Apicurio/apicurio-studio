@@ -11,8 +11,8 @@
                    [(ngModel)]="criteria" (ngModelChange)="filterOptions()" (keypress)="inputKeypress($event)">
         </li>
         <li class="divider" *ngIf="shouldShowFilter()"></li>
-        <li role="presentation" *ngFor="let option of filteredOptions" [class.divider]="option.divider" [class.disabled]="option.disabled">
-            <a *ngIf="!option.divider" role="menuitem" tabindex="-1" (click)="option.disabled ? false : setValue(option.value)">{{ option.name }}</a>
+        <li role="presentation" *ngFor="let option of filteredOptions" [class.divider]="option.isDivider()" [class.disabled]="option.isDisabled()">
+            <a *ngIf="!option.isDivider()" role="menuitem" tabindex="-1" (click)="optionClicked(option)">{{ option.getName() }}</a>
         </li>
         <li role="presentation" *ngIf="!hasOptions()">
             <span>{{ noOptionsLabel }}</span>

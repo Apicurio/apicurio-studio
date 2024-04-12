@@ -15,10 +15,15 @@
  * limitations under the License.
  */
 
-import {Component, ElementRef, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap/modal";
 import {ExtensibleNode} from "@apicurio/data-models";
 import {CodeEditorMode} from "../common/code-editor.component";
+import {LoggerService} from "../../../services/logger.service";
+import {DIVIDER, DropDownOption, DropDownOptionValue} from "../common/drop-down.component";
+import {FeaturesService} from "../../_services/features.service";
+import {VendorExtension} from "../../_models/features.model";
+import {ComponentType} from "../../_models/component-type.model";
 
 
 @Component({
@@ -28,6 +33,7 @@ import {CodeEditorMode} from "../common/code-editor.component";
 })
 export class AddExtensionDialogComponent {
 
+    @Input() forComponent: ComponentType;
     @Output() onAdd: EventEmitter<any> = new EventEmitter<any>();
 
     @ViewChildren("addExtensionModal") addExtensionModal: QueryList<ModalDirective>;
@@ -46,9 +52,18 @@ export class AddExtensionDialogComponent {
         return this._value;
     }
 
+    _extensionNameOptions: DropDownOption[];
+    extensionName: string = "custom";
+    extensionModel: any;
+    extensionSchema: any;
+    vendorExtensionMap: any;
+
     extensionExists: boolean = false;
     nameValid: boolean = false;
     valueValid: boolean = false;
+
+    constructor(private logger: LoggerService, private features: FeaturesService) {
+    }
 
     /**
      * Called to open the dialog.
@@ -66,8 +81,28 @@ export class AddExtensionDialogComponent {
                 this.addExtensionModal.first.show();
             }
         });
-
         this.extensionExists = false;
+        this.configureVendorExtensions();
+    }
+
+    configureVendorExtensions(): void {
+        const vendorExtensions: VendorExtension[] = this.features.getFeatures().vendorExtensions || [];
+        this.vendorExtensionMap = {};
+        vendorExtensions.filter(vext => {
+            return !vext.components || vext.components.length === 0 || vext.components.indexOf(this.forComponent) !== -1;
+        }).forEach(vext => {
+            this.vendorExtensionMap[vext.name] = {
+                schema: vext.schema,
+                model: vext.model
+            };
+        });
+        this._extensionNameOptions = [
+            new DropDownOptionValue("Custom property", "custom"),
+            DIVIDER
+        ];
+        Object.getOwnPropertyNames(this.vendorExtensionMap).forEach(name => {
+            this._extensionNameOptions.push(new DropDownOptionValue(name, name));
+        });
     }
 
     /**
@@ -77,13 +112,14 @@ export class AddExtensionDialogComponent {
         this._isOpen = false;
         this.name = "";
         this.value = "";
+        this.extensionName = "custom";
     }
 
     /**
      * Called when the user clicks "add".
      */
     add(): void {
-        let extensionInfo: any = {
+        const extensionInfo: any = {
             name: this.name,
             value: JSON.parse(this._value)
         };
@@ -100,7 +136,6 @@ export class AddExtensionDialogComponent {
 
     /**
      * Returns true if the dialog is open.
-     * @return
      */
     isOpen(): boolean {
         return this._isOpen;
@@ -110,7 +145,7 @@ export class AddExtensionDialogComponent {
      * Called to initialize the selection/focus to the addExtensionInput field.
      */
     doSelect(): void {
-        this.addExtensionInput.first.nativeElement.focus();
+        this.addExtensionInput.first?.nativeElement.focus();
     }
 
     validateName(name: string): void {
@@ -118,18 +153,47 @@ export class AddExtensionDialogComponent {
         this.nameValid = name && name.startsWith("x-");
     }
 
-    valueEditorMode() {
+    valueEditorMode(): CodeEditorMode {
         return CodeEditorMode.JSON;
     }
 
     validateValue(): void {
         try {
-            console.debug("Validating: ", this._value);
+            this.logger.debug("[AddExtensionDialogComponent] Validating: ", this._value);
             JSON.parse(this._value);
             this.valueValid = true;
         } catch (e) {
             this.valueValid = false;
         }
-        console.debug("valueValid is now: ", this.valueValid);
+        this.logger.debug("[AddExtensionDialogComponent] valueValid is now: ", this.valueValid);
+    }
+
+    selectExtension(name: string): void {
+        this.extensionName = name;
+        if (this.extensionName === "custom") {
+            this.name = "x-";
+            this.value = "";
+            this.valueValid = false;
+        } else {
+            this.name = name;
+            this.extensionModel = this.cloneModel(this.vendorExtensionMap[name].model);
+            this.extensionSchema = this.vendorExtensionMap[name].schema;
+        }
+    }
+
+    onDynamicFormModelChange(change: any): void {
+        this._value = JSON.stringify(change, null, 4);
+    }
+
+    onDynamicFormValid(valid: boolean): void {
+        this.valueValid = valid;
+    }
+
+    cloneModel(model: any): any {
+        return JSON.parse(JSON.stringify(model));
+    }
+
+    hasVendorExtensions(): boolean {
+        return Object.getOwnPropertyNames(this.vendorExtensionMap).length > 0;
     }
 }

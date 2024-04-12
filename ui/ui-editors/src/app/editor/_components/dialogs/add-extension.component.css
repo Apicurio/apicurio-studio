@@ -1,3 +1,7 @@
 #addExtensionModal .modal-dialog .modal-body form textarea {
   min-height: 60px;
 }
+
+.vendor-extension-form {
+    padding: 15px 25px 5px;
+}

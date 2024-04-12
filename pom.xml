@@ -135,7 +135,7 @@
         <version.clean.plugin>3.3.2</version.clean.plugin>
         <version.git-commit-id-maven-plugin>8.0.2</version.git-commit-id-maven-plugin>
         <version.apicurio-codegen-maven-plugin>1.1.1.Final</version.apicurio-codegen-maven-plugin>
-        <version.maven-gpg-plugin>3.2.2</version.maven-gpg-plugin>
+        <version.maven-gpg-plugin>3.2.3</version.maven-gpg-plugin>
 
     </properties>
 

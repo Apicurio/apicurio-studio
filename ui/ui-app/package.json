@@ -13,7 +13,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives"
   },
   "devDependencies": {
-    "@apicurio/eslint-config": "0.2.0",
+    "@apicurio/eslint-config": "0.3.0",
     "@monaco-editor/react": "4.6.0",
     "@types/react": "18.2.74",
     "@types/react-dom": "18.2.24",

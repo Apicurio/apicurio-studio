@@ -11,7 +11,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives"
   },
   "devDependencies": {
-    "@apicurio/eslint-config": "0.2.0",
+    "@apicurio/eslint-config": "0.3.0",
     "@playwright/test": "1.43.0",
     "@types/node": "20.12.4",
     "@typescript-eslint/eslint-plugin": "7.5.0",

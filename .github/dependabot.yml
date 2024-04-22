@@ -38,6 +38,14 @@ updates:
     ui-app-dependencies:
       patterns:
         - "*"
+      exclude-patterns:
+        - "eslint"
+    eslint:
+      patterns:
+        - "eslint"
+      update-types:
+        - "patch"
+        - "minor"
 
 - package-ecosystem: npm
   directory: "/ui/tests"
@@ -48,4 +56,12 @@ updates:
     ui-tests-dependencies:
       patterns:
         - "*"
+      exclude-patterns:
+        - "eslint"
+    eslint:
+      patterns:
+        - "eslint"
+      update-types:
+        - "patch"
+        - "minor"
   

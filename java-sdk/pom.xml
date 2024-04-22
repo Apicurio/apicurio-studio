@@ -26,10 +26,10 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>apicurio-studio-java-sdk</artifactId>
     <properties>
-        <kiota.libs.version>1.1.4</kiota.libs.version>
+        <kiota.libs.version>1.1.6</kiota.libs.version>
         <kiota.binary.version>1.10.1</kiota.binary.version>
         <kiota.binary.timeout>30</kiota.binary.timeout>
-        <kiota.community.version>0.0.15</kiota.community.version>
+        <kiota.community.version>0.0.16</kiota.community.version>
         <kiota.base.url>https://github.com/microsoft/kiota/releases/download</kiota.base.url>
     </properties>
     <dependencies>

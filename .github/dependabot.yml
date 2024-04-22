@@ -48,6 +48,16 @@ updates:
         - "minor"
 
 - package-ecosystem: npm
+  directory: "/ui/ui-editors"
+  schedule:
+    interval: daily
+  versioning-strategy: increase
+  groups:
+    ui-editors-dependencies:
+      patterns:
+        - "*"
+
+- package-ecosystem: npm
   directory: "/ui/tests"
   schedule:
     interval: daily

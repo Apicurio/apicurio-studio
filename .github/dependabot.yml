@@ -56,6 +56,9 @@ updates:
     ui-editors-dependencies:
       patterns:
         - "*"
+      update-types:
+        - "patch"
+        - "minor"
 
 - package-ecosystem: npm
   directory: "/ui/tests"

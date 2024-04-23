@@ -42,7 +42,7 @@
     "protobufjs": "7.2.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-router-dom": "6.22.3",
+    "react-router-dom": "6.23.0",
     "use-resize-observer": "9.1.0",
     "uuid": "9.0.1",
     "yaml": "2.4.1"

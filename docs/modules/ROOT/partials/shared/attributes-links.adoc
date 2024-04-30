@@ -12,5 +12,5 @@
 
 :studio-rest-api: link:{attachments-dir}/studio-rest-api.htm[{studio} REST API documentation]
 
-:studio-examples: link:https://github.com/Apicurio/apicurio-studio/examples[]
+:studio-examples: link:https://github.com/Apicurio/apicurio-studio/tree/main/examples[]
 :studio-build-from-source: For details on building from source, see https://github.com/Apicurio/apicurio-studio[].

@@ -37,13 +37,5 @@ The exported design is listed on the artifacts page of the specified {registry} 
 You can use {product-long-registry} to manage the versions of a design from {product-long-api-designer}.
 You can also download a design from {product-api-designer} to a file, either for local client code generation or to import the design into {product-long-api-management}.
 
-.Verification
-ifdef::qs[]
-* Is the design listed as an artifact in {product-long-registry}?
-* Are the artifact details correct?
-endif::[]
-ifndef::qs[]
-* Verify that the design is listed as an artifact in {product-long-registry}.
-* Verify that the artifact details are correct.
-endif::[]
+
 

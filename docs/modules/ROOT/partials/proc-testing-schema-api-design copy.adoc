@@ -28,12 +28,4 @@ A new pane in the design editor window shows the registration issues found by th
 
 * If the registration issues pane provides details of any issues, resolve the issues and click *Retry* to retest the content using the same artifact rules.
 
-.Verification
-ifdef::qs[]
-* Is the registration issues pane shown in the design editor?
-* Are the test results correct?
-endif::[]
-ifndef::qs[]
-. Verify that the registration issues pane is shown in the design editor.
-. Verify that the test results are correct.
-endif::[]
+

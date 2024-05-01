@@ -17,7 +17,7 @@
 
 import {ICommand, Library, Node} from "@apicurio/data-models";
 
-import * as YAML from 'js-yaml';
+import * as YAML from "js-yaml";
 import {SelectionService} from "../../_services/selection.service";
 import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
@@ -65,7 +65,7 @@ export abstract class SourceFormComponent<T extends Node> extends AbstractBaseCo
     get source() {
         if (this._sourceText === null || this._sourceText === undefined) {
             if (this._sourceFormat === CodeEditorMode.YAML) {
-                this._sourceText = YAML.safeDump(this.sourceJs(), {
+                this._sourceText = YAML.dump(this.sourceJs(), {
                     indent: 4,
                     lineWidth: 110,
                     noRefs: true
@@ -137,7 +137,7 @@ export abstract class SourceFormComponent<T extends Node> extends AbstractBaseCo
     public revertSource(): void {
         let originalSource: string;
         if (this._sourceFormat === CodeEditorMode.YAML) {
-            originalSource = YAML.safeDump(this.sourceJs(), {
+            originalSource = YAML.dump(this.sourceJs(), {
                 indent: 4,
                 lineWidth: 110,
                 noRefs: true
@@ -185,7 +185,7 @@ export abstract class SourceFormComponent<T extends Node> extends AbstractBaseCo
             if (this.isSourceFormatJson()) {
                 newSource = JSON.stringify(parsedSource, null, 4);
             } else {
-                newSource = YAML.safeDump(this.sourceJs(), {
+                newSource = YAML.dump(this.sourceJs(), {
                     indent: 4,
                     lineWidth: 110,
                     noRefs: true
@@ -214,7 +214,7 @@ export abstract class SourceFormComponent<T extends Node> extends AbstractBaseCo
             if (this.isSourceFormatJson()) {
                 newSource = JSON.stringify(parsedSource, null, 4);
             } else {
-                newSource = YAML.safeDump(this.sourceJs(), {
+                newSource = YAML.dump(this.sourceJs(), {
                     indent: 4,
                     lineWidth: 110,
                     noRefs: true

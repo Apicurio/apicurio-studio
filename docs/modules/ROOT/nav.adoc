@@ -5,7 +5,7 @@ include::partial$shared/all-attributes.adoc[]
 * xref:ROOT:assembly-introduction.adoc[]
 
 // Migration
-* xref:ROOT:assembly-migrating-studio-v0-v1.adoc[]
+//* xref:ROOT:assembly-migrating-studio-v0-v1.adoc[]
 
 * Installation
 ** xref:ROOT:assembly-installing-studio-docker.adoc[]

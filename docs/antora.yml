@@ -1,6 +1,6 @@
 name: apicurio-studio
 title: Apicurio Studio
-version: '1.0.0'
+version: '1.0.x'
 start_ROOT: ROOT:index.adoc
 nav:
   - modules/ROOT/nav.adoc

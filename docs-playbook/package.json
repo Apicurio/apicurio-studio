@@ -1,0 +1,25 @@
+{
+  "name": "apicurio-studio-docs-playbook",
+  "version": "1.0.0",
+  "description": "This folder contains the configuration and scripts used when building the Apicurio Studio documentation for publishing to the Apicurio project web site.  We are using a tool called Antora to build the asciidoc based documentation into a publishable site.  However, due to some issues with building on various platforms (I'm looking at you, Windows) and also some conflicts between what Antora builds and what our GitHub Pages (jekyll) project site expects, we have created a non-trivial (but automated) process for building the docs.",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf node_modules target"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apicurio/apicurio-studio.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Apicurio/apicurio-studio/issues"
+  },
+  "homepage": "https://github.com/Apicurio/apicurio-studio/tree/main/docs-playbook/README.md",
+  "dependencies": {
+    "@antora/cli": "2.3.4",
+    "@antora/site-generator-default": "2.3.4",
+    "antora-site-generator-lunr": "0.5.0",
+    "antora-lunr": "0.8.0"
+  }
+}

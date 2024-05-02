@@ -1,0 +1,30 @@
+site:
+  title: Apicurio Studio
+  # the 404 page and sitemap files only get generated when the url property is set
+  url: https://www.apicur.io/studio/docs
+  start_page: apicurio-studio::index.adoc
+content:
+  sources:
+  - url: https://github.com/Apicurio/apicurio-studio.git
+    branches: main
+    start_path: docs
+    edit_url: '{web_url}'
+
+ui:
+  bundle:
+    url: https://raw.githubusercontent.com/Apicurio/apicurio-docs-ui/main/dist/ui-bundle.zip
+    snapshot: true
+  output_dir: assets
+  supplemental_files: ./supplemental_ui
+
+runtime:
+  cache_dir: ./target/antora-cache
+
+output:
+  dir: ./target/dist
+
+asciidoc:
+  attributes:
+    plantuml-server-url: 'http://www.plantuml.com/plantuml'
+    plantuml-fetch-diagram: true
+    mod-loc: partial$

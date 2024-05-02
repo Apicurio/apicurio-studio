@@ -77,4 +77,15 @@ updates:
       update-types:
         - "patch"
         - "minor"
-  
+
+- package-ecosystem: npm
+  directory: "/docs-playbook"
+  schedule:
+    interval: weekly
+  versioning-strategy: increase
+  groups:
+    docs-playbook-dependencies:
+      patterns:
+        - "*"
+      update-types:
+        - "patch"

@@ -1,0 +1,72 @@
+name: Publish Documentation
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - 'docs/**'
+    branches: [main]
+
+jobs:
+  publish-docs:
+    if: github.repository_owner == 'Apicurio'
+    runs-on: ubuntu-20.04
+    steps:
+
+      - name: Apicurio Website Checkout
+        run: |
+          mkdir website
+          cd website
+          git init
+          git config --global user.name "apicurio-ci"
+          git config --global user.email "apicurio.ci@gmail.com"
+          git remote add origin "https://apicurio-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apicurio/apicurio.github.io.git"
+          git fetch
+          git checkout main
+          git branch --set-upstream-to=origin/main
+          git pull
+
+      - name: Apicurio Studio Checkout
+        run: |
+          mkdir studio
+          cd studio
+          git init
+          git config --global user.name "apicurio-ci"
+          git config --global user.email "apicurio.ci@gmail.com"
+          git remote add origin "https://apicurio-ci:${{ secrets.ACCESS_TOKEN }}@github.com/Apicurio/apicurio-studio.git"
+          git fetch
+          git checkout main
+          git branch --set-upstream-to=origin/main
+          git pull
+
+      - name: Generate Documentation
+        run: |
+          cd studio/docs-playbook
+          ./_build-all.sh
+
+      - name: Copy Documentation to Website
+        run: |
+          rm -rf website/studio/docs
+          cp -rf studio/docs-playbook/target/dist website/studio/docs
+
+      - name: Commit Documentation to Website
+        run: |
+          cd website
+          git add .
+          git commit -m "Automated Publishing of Documentation for Apicurio Studio"
+          git push
+
+      - name: Google Chat Notification
+        if: ${{ failure() }}
+        uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
+        with:
+          name: ${{ github.job }}
+          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+          status: ${{ job.status }}
+
+      - name: Google Chat Notification (Error)
+        if: failure()
+        uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
+        with:
+          name: ${{ github.job }}
+          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK_ERRORS }}
+          status: ${{ job.status }}

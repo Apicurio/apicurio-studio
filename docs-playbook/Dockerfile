@@ -3,11 +3,11 @@
 # winpty docker run '-v=C:\Users\ewittman\git\apicurio\apicurio.github.io\registry\docs:/antora-dist' --env GIT_REPO=https://github.com/EricWittmann/apicurio-registry.git --env GIT_BRANCH=antora -it apicurio/apicurio-docs-builder
 FROM ubuntu:latest
 
-ENV BASE_DIR=/apicurio-docs-playbook
+ENV BASE_DIR=/repository/docs-playbook
 ENV PLAYBOOK docs-playbook.yml
 ENV SEARCH_PLAYBOOK search-playbook.yml
 
-VOLUME /apicurio-docs-playbook
+VOLUME /repository
 
 RUN apt-get update
 RUN apt-get install -y git-all

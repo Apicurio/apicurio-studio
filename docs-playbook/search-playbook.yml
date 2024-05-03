@@ -5,8 +5,8 @@ site:
   start_page: apicurio-studio::index.adoc
 content:
   sources:
-  - url: https://github.com/Apicurio/apicurio-studio.git
-    branches: main
+  - url: ../
+    branches: HEAD
     start_path: docs
     edit_url: '{web_url}'
 

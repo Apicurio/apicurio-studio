@@ -55,12 +55,13 @@ jobs:
         run: |
           cd studio
           mvn versions:set -DnewVersion=${{ github.event.inputs.release-version }} -DgenerateBackupPoms=false -DprocessAllModules=true
+          UI_VERSION=$(echo ${{ github.event.inputs.release-version }} | sed 's/.Beta[0-9]//' | sed 's/.Alpha[0-9]//'| sed 's/.RC[0-9]//')
           cd ui
-          npm version ${{ github.event.inputs.release-version }}
+          npm version $UI_VERSION --allow-same-version
           cd ui-app
-          npm version ${{ github.event.inputs.release-version }}
+          npm version $UI_VERSION --allow-same-version
           cd ../ui-editors
-          npm version ${{ github.event.inputs.release-version }}
+          npm version $UI_VERSION --allow-same-version
 
       - name: Build Apicurio Studio
         run: |
@@ -103,12 +104,13 @@ jobs:
         run: |
           cd studio
           mvn versions:set -DnewVersion=${{ github.event.inputs.snapshot-version }} -DgenerateBackupPoms=false -DprocessAllModules=true
+          UI_VERSION=$(echo ${{ github.event.inputs.snapshot-version }} | sed 's/-SNAPSHOT//')
           cd ui
-          npm version ${{ github.event.inputs.snapshot-version }}
+          npm version $UI_VERSION --allow-same-version
           cd ui-app
-          npm version ${{ github.event.inputs.snapshot-version }}
+          npm version $UI_VERSION --allow-same-version
           cd ../ui-editors
-          npm version ${{ github.event.inputs.snapshot-version }}
+          npm version $UI_VERSION --allow-same-version
 
       - name: Push Changes for Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
         run: |

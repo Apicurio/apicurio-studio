@@ -77,11 +77,9 @@ jobs:
           fi      
 
       - name: Build Apicurio Studio
-        env:
-          SKIP_TESTS: "true"
         run: |
           cd studio
-          mvn install -DskipTests=true -Dmaven.javadoc.skip=true --no-transfer-progress -DtrimStackTrace=false
+          mvn install -Pprod -DskipTests=true -Dmaven.javadoc.skip=true --no-transfer-progress -DtrimStackTrace=false
           cd ui
           npm install
           npm run build

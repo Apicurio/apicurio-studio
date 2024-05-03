@@ -69,7 +69,7 @@ export class AddAsyncApiExampleDialogComponent {
         } else {
             this.model.format = CodeEditorMode.YAML;
             try {
-                YAML.safeLoad(value);
+                YAML.load(value);
                 this.model.valid = true;
             } catch (e) {
             }
@@ -89,7 +89,7 @@ export class AddAsyncApiExampleDialogComponent {
         } else {
             this.model.format = CodeEditorMode.YAML;
             try {
-                YAML.safeLoad(value);
+                YAML.load(value);
                 this.model.valid = true;
             } catch (e) {
             }

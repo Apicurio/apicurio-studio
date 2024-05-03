@@ -86,7 +86,7 @@ export abstract class SourceFormComponent<T extends Node> extends AbstractBaseCo
         try {
             let newJsObject: any;
             if (this._sourceFormat === CodeEditorMode.YAML) {
-                newJsObject = YAML.safeLoad(newSource);
+                newJsObject = YAML.load(newSource);
             } else {
                 newJsObject = JSON.parse(newSource);
             }
@@ -99,6 +99,7 @@ export abstract class SourceFormComponent<T extends Node> extends AbstractBaseCo
             this._source.valid = true;
         } catch (e) {
             // OK to suppress this - it's likely the case that the text isn't valid/parseable.
+            console.error(e);
         }
     }
 
@@ -177,7 +178,7 @@ export abstract class SourceFormComponent<T extends Node> extends AbstractBaseCo
             parsedSource = JSON.parse(this._sourceText);
             this.setSourceFormat(CodeEditorMode.YAML);
         } else {
-            parsedSource = YAML.safeLoad(this._sourceText);
+            parsedSource = YAML.load(this._sourceText);
             this.setSourceFormat(CodeEditorMode.JSON);
         }
         if (parsedSource) {
@@ -207,7 +208,7 @@ export abstract class SourceFormComponent<T extends Node> extends AbstractBaseCo
         if (this.isSourceFormatJson()) {
             parsedSource = JSON.parse(this._sourceText);
         } else {
-            parsedSource = YAML.safeLoad(this._sourceText);
+            parsedSource = YAML.load(this._sourceText);
         }
         if (parsedSource) {
             let newSource: string;

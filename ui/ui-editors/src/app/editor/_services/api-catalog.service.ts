@@ -172,7 +172,7 @@ export class ApiCatalogService {
             return body;
         }
         try { return JSON.parse(body); } catch (e) {}
-        try { return YAML.safeLoad(body); } catch (e) {}
+        try { return YAML.load(body); } catch (e) {}
         // TODO debug or warning here
         return null;
     }

@@ -63,7 +63,7 @@ export class AddExampleDialogComponent {
         } else {
             this.model.format = CodeEditorMode.YAML;
             try {
-                YAML.safeLoad(value);
+                YAML.load(value);
                 this.model.valid = true;
             } catch (e) {
             }

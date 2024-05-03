@@ -581,7 +581,7 @@ export class AaiEditorComponent extends AbstractApiEditorComponent implements On
         console.info("[AsyncApiEditorComponent] Saving source code changes");
         try {
             let doc: AaiDocument = this.document();
-            let newJs: any = YAML.safeLoad(this.sourceValue);
+            let newJs: any = YAML.load(this.sourceValue);
             let newDoc: AaiDocument = Library.readDocument(newJs) as AaiDocument;
             let command: ICommand = CommandFactory.createReplaceDocumentCommand(doc, newDoc);
             this.commandService.emit(command);
@@ -603,7 +603,7 @@ export class AaiEditorComponent extends AbstractApiEditorComponent implements On
      */
     public validate(): void {
         try {
-            YAML.safeLoad(this.sourceValue);
+            YAML.load(this.sourceValue);
             this.sourceIsValid = true;
         } catch (e) {
             this.sourceIsValid = false;

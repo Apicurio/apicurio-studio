@@ -34,11 +34,11 @@ that becomes the main entrypoint/cmd for the docker image.
 
 To build the docker image, do this:
 
-```docker build -t="apicurio/apicurio-studio-docs-builder" --rm .```
+```docker build -t="apicurio/apicurio-docs-builder" --rm .```
 
 Then you can push the new image like this (maintainers only):
 
-```docker push apicurio/apicurio-studio-docs-builder:latest```
+```docker push apicurio/apicurio-docs-builder:latest```
 
 Only do this if you need to change the build script or some other aspect of the Antora build
 process.  See the `build.sh` file for details about how Antora is used to build the docs.

@@ -1,0 +1,40 @@
+[
+    {
+        "name": "x-address",
+        "schema": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object",
+            "properties": {
+                "street": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{2}$"
+                },
+                "zip": {
+                    "type": "string",
+                    "pattern": "^[0-9]{5}$"
+                }
+            },
+            "required": [
+                "street",
+                "city",
+                "state",
+                "zip"
+            ]
+        },
+        "model": {
+           "street": "",
+           "city": "",
+           "state": "",
+           "zip": ""
+        },
+        "components": [
+            "document"
+        ]
+    }
+]

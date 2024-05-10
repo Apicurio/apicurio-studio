@@ -4,18 +4,23 @@
         "schema": {
             "$schema": "http://json-schema.org/draft-07/schema#",
             "type": "object",
+            "title": "Enter address",
             "properties": {
                 "street": {
+                    "title": "Street",
                     "type": "string"
                 },
                 "city": {
+                    "title": "City",
                     "type": "string"
                 },
                 "state": {
+                    "title": "State",
                     "type": "string",
                     "pattern": "^[A-Z]{2}$"
                 },
                 "zip": {
+                    "title": "Zip",
                     "type": "string",
                     "pattern": "^[0-9]{5}$"
                 }

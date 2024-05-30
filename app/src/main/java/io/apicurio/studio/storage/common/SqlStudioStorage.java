@@ -8,15 +8,18 @@ import io.apicurio.common.apps.storage.exceptions.StorageException;
 import io.apicurio.common.apps.storage.exceptions.StorageExceptionMapper;
 import io.apicurio.common.apps.storage.sql.SqlStorageComponent;
 import io.apicurio.common.apps.storage.sql.jdbi.HandleFactory;
+import io.apicurio.studio.spi.storage.SearchQuerySpecification.SearchQuery;
 import io.apicurio.studio.spi.storage.StudioSqlStatements;
 import io.apicurio.studio.spi.storage.StudioStorage;
 import io.apicurio.studio.spi.storage.StudioStorageException;
-import io.apicurio.studio.spi.storage.SearchQuerySpecification.SearchQuery;
+import io.apicurio.studio.spi.storage.model.DesignCreatedEvent;
 import io.apicurio.studio.spi.storage.model.DesignDto;
 import io.apicurio.studio.spi.storage.model.DesignEventDto;
 import io.apicurio.studio.spi.storage.model.DesignMetadataDto;
+import io.apicurio.studio.spi.storage.model.OutboxEvent;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
@@ -57,6 +60,9 @@ public class SqlStudioStorage extends SqlStorageComponent implements StudioStora
 
     @Inject
     Logger log;
+
+    @Inject
+    Event<OutboxEvent> storageEvent;
 
     @PostConstruct
     @Transactional
@@ -126,6 +132,9 @@ public class SqlStudioStorage extends SqlStorageComponent implements StudioStora
                         .bind(8, metadata.getOrigin())
                         .execute()
         );
+
+        //Once done, fire the appropriate event
+        storageEvent.fire(DesignCreatedEvent.of(metadata));
 
         return metadata;
     }
@@ -328,5 +337,39 @@ public class SqlStudioStorage extends SqlStorageComponent implements StudioStora
                         .mapTo(DesignEventDto.class)
                         .list()
         );
+    }
+
+    @Override
+    public OutboxEvent createEvent(OutboxEvent event) {
+        // Create Design
+        handles.withHandleNoExceptionMapped(handle ->
+                handle.createUpdate(sqlStatements.createOutboxEvent())
+                        .setContext(RESOURCE_CONTEXT_KEY, "outbox")
+                        .setContext(RESOURCE_IDENTIFIER_CONTEXT_KEY, event.getAggregateId())
+                        .bind(0, event.getId())
+                        .bind(1, event.getAggregateType())
+                        .bind(2, event.getAggregateId())
+                        .bind(3, event.getType())
+                        .bind(4, event.getPayload().toString())
+                        .execute()
+        );
+
+        return event;
+    }
+
+    @Override
+    public void deleteEvent(String eventId) {
+        try {
+            handles.withHandle(handle ->
+                    handle.createUpdate(sqlStatements.deleteOutboxEvent())
+                            .setContext(RESOURCE_CONTEXT_KEY, "outbox")
+                            .setContext(RESOURCE_IDENTIFIER_CONTEXT_KEY, eventId)
+                            .bind(0, eventId)
+                            .execute()
+            );
+        }
+        catch (StorageException ex) {
+            throw new StudioStorageException("Could not delete outbox event with ID " + eventId + ".", ex);
+        }
     }
 }

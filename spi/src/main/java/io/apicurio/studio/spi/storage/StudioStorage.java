@@ -5,6 +5,7 @@ import io.apicurio.common.apps.content.handle.ContentHandle;
 import io.apicurio.studio.spi.storage.SearchQuerySpecification.SearchQuery;
 import io.apicurio.studio.spi.storage.model.DesignEventDto;
 import io.apicurio.studio.spi.storage.model.DesignMetadataDto;
+import io.apicurio.studio.spi.storage.model.OutboxEvent;
 
 import java.util.List;
 
@@ -32,4 +33,8 @@ public interface StudioStorage extends DynamicConfigStorage {
     DesignEventDto createDesignEvent(DesignEventDto event);
 
     List<DesignEventDto> getDesignEvents(String designId);
+
+    OutboxEvent createEvent(OutboxEvent event);
+
+    void deleteEvent(String designId);
 }

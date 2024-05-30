@@ -215,4 +215,21 @@ public abstract class AbstractStudioSqlStatements implements StudioSqlStatements
     public String selectTenantIdsByConfigModifiedOn() {
         return null;
     }
+
+    @Override
+    public String createOutboxEvent() {
+        return """
+                INSERT INTO outbox (id, aggregatetype, aggregateid, type, payload) \
+                VALUES (?, ?, ?, ?, (?::json))\
+                """;
+    }
+
+    @Override
+    public String deleteOutboxEvent() {
+        return """
+                DELETE FROM outbox o \
+                WHERE o.id= ?\
+                """;
+    }
+
 }

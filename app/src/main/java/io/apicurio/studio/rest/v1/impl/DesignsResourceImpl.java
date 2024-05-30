@@ -89,8 +89,8 @@ public class DesignsResourceImpl implements DesignsResource {
         var metadata = DesignMetadataDto.builder()
                 .name(data.getName())
                 .description(data.getDescription())
-                .type(data.getType().name())
-                .origin(data.getOrigin().name())
+                .type(data.getType().value())
+                .origin(data.getOrigin().value())
                 .build();
         return convert(designService.createDesign(metadata, ContentHandle.create(data.getContent())));
     }

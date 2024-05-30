@@ -4,7 +4,7 @@
 
 CREATE TABLE apicurio (prop_key VARCHAR(255) NOT NULL, prop_value VARCHAR(255));
 ALTER TABLE apicurio ADD PRIMARY KEY (prop_key);
-INSERT INTO apicurio (prop_key, prop_value) VALUES ('db_version', 1);
+INSERT INTO apicurio (prop_key, prop_value) VALUES ('db_version', 3);
 
 CREATE TABLE sequences (seq_key VARCHAR(32) NOT NULL, seq_value BIGINT NOT NULL);
 ALTER TABLE sequences ADD PRIMARY KEY (seq_key);
@@ -24,3 +24,6 @@ ALTER TABLE design_events ADD PRIMARY KEY (eventId);
 CREATE TABLE config (pname VARCHAR(255) NOT NULL, pvalue VARCHAR(1024) NOT NULL, modifiedOn BIGINT NOT NULL);
 ALTER TABLE config ADD PRIMARY KEY (pname);
 CREATE INDEX IDX_config_1 ON config(modifiedOn);
+
+CREATE TABLE outbox (id VARCHAR(128) NOT NULL, aggregatetype VARCHAR(255) NOT NULL, aggregateid VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, payload JSONB NOT NULL);
+ALTER TABLE outbox ADD PRIMARY KEY (id);

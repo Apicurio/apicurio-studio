@@ -35,7 +35,7 @@
       "@microsoft/kiota-authentication-azure": "1.0.0-preview.48",
       "@microsoft/kiota-serialization-text": "1.0.0-preview.50",
       "@microsoft/kiota-serialization-multipart": "1.0.0-preview.31",
-      "@types/node": "20.12.13",
+      "@types/node": "20.12.14",
       "@types/react": "18.3.3",
       "@types/react-dom": "18.3.0",
       "@typescript-eslint/eslint-plugin": "7.11.0",

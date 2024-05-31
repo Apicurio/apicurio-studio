@@ -22,7 +22,7 @@ export const AvatarDropdown: FunctionComponent<AvatarDropdownProps> = () => {
     };
 
     useEffect(() => {
-        if (auth.isAuthEnabled()) {
+        if (auth.isOidcAuthEnabled() || auth.isBasicAuthEnabled()) {
             auth.getUsername()?.then(username => setUsername(username as string));
         }
     }, []);

@@ -118,6 +118,7 @@
         <version.org.testcontainers.postgresql>1.19.7</version.org.testcontainers.postgresql>
         <version.wiremock>2.35.2</version.wiremock>
         <embedded-postgres.version>2.0.7</embedded-postgres.version>
+        <debezium.version>2.6.2.Final</debezium.version>
 
         <!-- Plugin Versions -->
         <version.compiler.plugin>3.13.0</version.compiler.plugin>
@@ -277,6 +278,13 @@
                 <groupId>io.zonky.test</groupId>
                 <artifactId>embedded-postgres</artifactId>
                 <version>${embedded-postgres.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.debezium</groupId>
+                <artifactId>debezium-testing-testcontainers</artifactId>
+                <version>${debezium.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>

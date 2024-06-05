@@ -19,6 +19,11 @@ public interface Constants {
     String SMOKE = "smoke";
 
     /**
+     * Tag for eventing tests, which are testing basic functionality
+     */
+    String EVENTS = "events";
+
+    /**
      * Tag for auth tests, the suite will deploy apicurio studio with keycloak and verify the api is secured
      */
     String AUTH = "auth";

@@ -133,7 +133,7 @@
         <version.assembly.plugin>3.7.1</version.assembly.plugin>
         <version.resources.plugin>3.3.1</version.resources.plugin>
         <version.clean.plugin>3.3.2</version.clean.plugin>
-        <version.git-commit-id-maven-plugin>8.0.2</version.git-commit-id-maven-plugin>
+        <version.git-commit-id-maven-plugin>9.0.0</version.git-commit-id-maven-plugin>
         <version.apicurio-codegen-maven-plugin>1.1.1.Final</version.apicurio-codegen-maven-plugin>
         <version.maven-gpg-plugin>3.2.4</version.maven-gpg-plugin>
 

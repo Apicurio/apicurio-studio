@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>apicurio-studio-java-sdk</artifactId>
     <properties>
-        <kiota.libs.version>1.1.13</kiota.libs.version>
+        <kiota.libs.version>1.1.14</kiota.libs.version>
         <kiota.binary.version>1.10.1</kiota.binary.version>
         <kiota.binary.timeout>30</kiota.binary.timeout>
         <kiota.community.version>0.0.17</kiota.community.version>

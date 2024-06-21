@@ -124,16 +124,16 @@
         <version.deploy.plugin>3.1.2</version.deploy.plugin>
         <version.javadoc.plugin>3.7.0</version.javadoc.plugin>
         <version.source.plugin>3.3.1</version.source.plugin>
-        <version.surefire.plugin>3.2.5</version.surefire.plugin>
-        <version.failsafe.plugin>3.2.5</version.failsafe.plugin>
-        <version.jar.plugin>3.4.1</version.jar.plugin>
+        <version.surefire.plugin>3.3.0</version.surefire.plugin>
+        <version.failsafe.plugin>3.3.0</version.failsafe.plugin>
+        <version.jar.plugin>3.4.2</version.jar.plugin>
         <version.checkstyle.plugin>3.4.0</version.checkstyle.plugin>
         <version.properties.plugin>1.2.1</version.properties.plugin>
-        <version.dependency.plugin>3.6.1</version.dependency.plugin>
+        <version.dependency.plugin>3.7.1</version.dependency.plugin>
         <version.assembly.plugin>3.7.1</version.assembly.plugin>
         <version.resources.plugin>3.3.1</version.resources.plugin>
-        <version.clean.plugin>3.3.2</version.clean.plugin>
-        <version.git-commit-id-maven-plugin>8.0.2</version.git-commit-id-maven-plugin>
+        <version.clean.plugin>3.4.0</version.clean.plugin>
+        <version.git-commit-id-maven-plugin>9.0.0</version.git-commit-id-maven-plugin>
         <version.apicurio-codegen-maven-plugin>1.1.1.Final</version.apicurio-codegen-maven-plugin>
         <version.maven-gpg-plugin>3.2.4</version.maven-gpg-plugin>
 

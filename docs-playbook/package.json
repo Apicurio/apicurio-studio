@@ -19,7 +19,7 @@
   "dependencies": {
     "@antora/cli": "2.3.4",
     "@antora/site-generator-default": "2.3.4",
-    "antora-site-generator-lunr": "0.5.0",
+    "antora-site-generator-lunr": "0.6.1",
     "antora-lunr": "0.8.0"
   }
 }

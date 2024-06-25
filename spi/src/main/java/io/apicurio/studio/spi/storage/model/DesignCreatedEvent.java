@@ -6,19 +6,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.UUID;
 
-public class DesignCreatedEvent implements OutboxEvent {
+public class DesignCreatedEvent extends OutboxEvent {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private final String id;
-    private final String aggregateId;
+    private final JsonNode designPayload;
 
-    private final JsonNode order;
-
-    private DesignCreatedEvent(String id, String aggregateId, JsonNode order) {
-        this.id = id;
-        this.aggregateId = aggregateId;
-        this.order = order;
+    private DesignCreatedEvent(String id, String aggregateId, JsonNode designPayload) {
+        super(id, aggregateId);
+        this.designPayload = designPayload;
     }
 
     public static DesignCreatedEvent of(DesignMetadataDto designMetadataDto) {
@@ -34,27 +30,12 @@ public class DesignCreatedEvent implements OutboxEvent {
     }
 
     @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public String getAggregateId() {
-        return aggregateId;
-    }
-
-    @Override
-    public String getAggregateType() {
-        return "DESIGN";
-    }
-
-    @Override
     public String getType() {
         return "DESIGN_CREATED";
     }
 
     @Override
     public JsonNode getPayload() {
-        return order;
+        return designPayload;
     }
 }

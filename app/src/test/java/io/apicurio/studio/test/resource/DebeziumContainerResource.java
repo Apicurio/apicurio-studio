@@ -14,9 +14,9 @@ import java.util.stream.Stream;
 
 public class DebeziumContainerResource implements QuarkusTestResourceLifecycleManager {
 
-    private static Network network = Network.newNetwork();
+    private static final Network network = Network.newNetwork();
 
-    private static KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka")
+    private static final KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka")
             .withTag("7.5.4.amd64"))
             .withNetwork(network);
 

@@ -34,7 +34,7 @@ class DesignsEventsTest {
     @BeforeAll
     public void init() {
         consumer = getConsumer(System.getProperty("bootstrap.servers"));
-        consumer.subscribe(List.of("outbox.event.DESIGN"));
+        consumer.subscribe(List.of("outbox.event.STUDIO"));
     }
 
     @Test

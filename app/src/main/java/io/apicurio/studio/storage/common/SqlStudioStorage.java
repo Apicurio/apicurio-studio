@@ -133,10 +133,7 @@ public class SqlStudioStorage extends SqlStorageComponent implements StudioStora
                         .execute()
         );
 
-        //Once done, fire the appropriate event
-        OutboxEvent createdEvent = createEvent(DesignCreatedEvent.of(metadata));
-        //Since log-based CDC is expected to be used, the events in the table can be immediately removed.
-        deleteEvent(createdEvent.getId());
+        storageEvent.fire(DesignCreatedEvent.of(metadata));
 
         return metadata;
     }

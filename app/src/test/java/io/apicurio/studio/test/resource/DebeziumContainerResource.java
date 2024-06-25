@@ -17,7 +17,7 @@ public class DebeziumContainerResource implements QuarkusTestResourceLifecycleMa
     private static Network network = Network.newNetwork();
 
     private static KafkaContainer kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka")
-            .withTag("7.5.4.arm64"))
+            .withTag("7.5.4.amd64"))
             .withNetwork(network);
 
     public static PostgreSQLContainer<?> postgresContainer =
@@ -49,7 +49,8 @@ public class DebeziumContainerResource implements QuarkusTestResourceLifecycleMa
                 .with("topic.prefix", "studio")
                 .with("schema.include.list", "public")
                 .with("table.include.list", "public.outbox")
-                .with("tombstones.on.delete", "false");
+                .with("transforms", "outbox")
+                .with("transforms.outbox.type", "io.debezium.transforms.outbox.EventRouter");
 
         debeziumContainer.registerConnector("my-connector",
                 connector);

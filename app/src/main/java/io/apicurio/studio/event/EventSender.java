@@ -14,7 +14,6 @@ public class EventSender {
 
     public void onExportedEvent(@Observes OutboxEvent event) {
         OutboxEvent createdEvent = storage.createEvent(event);
-
         //Since log-based CDC is expected to be used, the events in the table can be immediately removed.
         storage.deleteEvent(createdEvent.getId());
     }

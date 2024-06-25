@@ -34,7 +34,7 @@ class DesignsEventsTest {
     @BeforeAll
     public void init() {
         consumer = getConsumer(System.getProperty("bootstrap.servers"));
-        consumer.subscribe(List.of("studio.public.outbox"));
+        consumer.subscribe(List.of("outbox.event.DESIGN"));
     }
 
     @Test
@@ -42,7 +42,6 @@ class DesignsEventsTest {
         //Create a new design
         drts.runCreateDesign();
 
-        //FIXME: only one event is expected. Since inserting the event and removing it are not being done within the same transaction, we're getting two messages. This test will fail until this is fixed
         List<ConsumerRecord<String, String>> changeEvents =
                 drain(consumer, 1);
     }

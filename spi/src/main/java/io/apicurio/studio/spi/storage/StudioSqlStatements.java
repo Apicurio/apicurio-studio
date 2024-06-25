@@ -56,4 +56,9 @@ public interface StudioSqlStatements extends SqlStatements, DynamicConfigSqlStor
     String searchDesignMetadata(SearchQuerySpecification spec);
 
     SearchQuerySpecification searchDesignMetadataSpecification();
+
+    String createOutboxEvent();
+
+    String deleteOutboxEvent();
+
 }

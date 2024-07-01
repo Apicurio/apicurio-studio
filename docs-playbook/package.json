@@ -18,7 +18,7 @@
   "homepage": "https://github.com/Apicurio/apicurio-studio/tree/main/docs-playbook/README.md",
   "dependencies": {
     "@antora/cli": "2.3.4",
-    "@antora/site-generator-default": "2.3.4",
+    "@antora/site-generator-default": "3.1.8",
     "antora-site-generator-lunr": "0.5.0",
     "antora-lunr": "0.8.0"
   }

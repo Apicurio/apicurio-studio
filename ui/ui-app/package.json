@@ -26,7 +26,7 @@
     "eslint-plugin-react-refresh": "0.4.8",
     "rimraf": "6.0.1",
     "typescript": "5.5.3",
-    "vite": "5.3.3",
+    "vite": "5.3.4",
     "vite-tsconfig-paths": "4.3.2"
   },
   "dependencies": {
@@ -42,7 +42,7 @@
     "protobufjs": "7.3.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-router-dom": "6.24.1",
+    "react-router-dom": "6.25.0",
     "use-resize-observer": "9.1.0",
     "uuid": "10.0.0",
     "yaml": "2.4.5"

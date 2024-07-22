@@ -14,9 +14,8 @@ In this quick start, you'll learn how to create an API definition or event schem
 include::partial$proc-creating-api-design.adoc[leveloffset=+1]
 include::partial$proc-creating-schema-design.adoc[leveloffset=+1]
 include::partial$proc-importing-schema-api-design.adoc[leveloffset=+1]
-// TODO: These procedures have been available in Red Hat OpenShift API Designer, but are not currently available in Apicurio Studio:
-//include::partial$proc-testing-schema-api-design.adoc[leveloffset=+1]
-//include::partial$proc-exporting-schema-api-design.adoc[leveloffset=+1]
+include::partial$proc-testing-schema-api-design.adoc[leveloffset=+1]
+include::partial$proc-exporting-schema-api-design.adoc[leveloffset=+1]
 
 [role="_additional-resources"]
 == Additional resources

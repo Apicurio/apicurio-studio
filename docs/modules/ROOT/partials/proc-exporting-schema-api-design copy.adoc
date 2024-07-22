@@ -1,0 +1,41 @@
+[id='proc-exporting-schema-api-design_{context}']
+= Exporting a schema or API design
+:imagesdir: ../_images
+
+[role="_abstract"]
+When you're happy with the changes to your {product-long-api-designer} event schema or API definition, and you want to use the design in your application, you can export the content to an existing {product-long-registry} instance.
+
+.Prerequisites
+* You're logged in to the {product-long-api-designer} web console at {service-url-api-designer}[^].
+* You've created or imported a design in {product-api-designer}.
+* You can access a running {product-registry} instance in your organization.
+For more information, see {base-url}{getting-started-url-registry}[Getting started with {product-long-registry}^].
+
+.Procedure
+. On the *API and Schema Designs* page of the {service-url-api-designer}[{product-long-api-designer} web console^], select the design that you want to export.
+. Click the options icon (three vertical dots), and click *Export design to {registry}*.
++
+NOTE: You can also select *Export design to {registry}* from the *Actions* menu in the design editor.
++
+. Complete the form to specify where to save the new design. Provide the following details:
++
+NOTE: If the design was originally imported from {product-long-registry}, the fields are prepopulated with the details of the original {product-registry} instance, and the *Version* field is blank.
++
+* *Registry Instance*: Select the required instance from the list.
+* *Group* _(Optional)_: Enter a unique group name such as `my-org` to organize the artifact in a named collection.
+Each group contains a logically related set of schemas or API designs, typically managed by a single entity, belonging to a particular application or organization.
++
+NOTE:  Specifying a group is optional when using the web console. If no group is specified, {registry} uses the `default` group.
++
+* *ID* _(Optional)_: Enter a unique ID for this artifact, such as `my-ID`.
+If you don't specify a unique artifact ID, {registry} generates one automatically as a UUID.
+* *Version* _(Optional)_: Specify the version number.
+If you don't specify a version number, {registry} sets the version to 1 for the first version, or increments the latest version by 1 for subsequent versions.
+. Click *Export*.
+The exported design is listed on the artifacts page of the specified {registry} instance.
+
+You can use {product-long-registry} to manage the versions of a design from {product-long-api-designer}.
+You can also download a design from {product-api-designer} to a file, either for local client code generation or to import the design into {product-long-api-management}.
+
+
+

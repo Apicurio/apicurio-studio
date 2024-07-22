@@ -115,14 +115,14 @@
         <version.puppycrawl>10.17.0</version.puppycrawl>
 
         <!-- Test Dependency Versions -->
-        <version.org.testcontainers.postgresql>1.19.8</version.org.testcontainers.postgresql>
+        <version.org.testcontainers.postgresql>1.20.0</version.org.testcontainers.postgresql>
         <version.wiremock>2.35.2</version.wiremock>
         <embedded-postgres.version>2.0.7</embedded-postgres.version>
 
         <!-- Plugin Versions -->
         <version.compiler.plugin>3.13.0</version.compiler.plugin>
         <version.deploy.plugin>3.1.2</version.deploy.plugin>
-        <version.javadoc.plugin>3.7.0</version.javadoc.plugin>
+        <version.javadoc.plugin>3.8.0</version.javadoc.plugin>
         <version.source.plugin>3.3.1</version.source.plugin>
         <version.surefire.plugin>3.3.1</version.surefire.plugin>
         <version.failsafe.plugin>3.3.1</version.failsafe.plugin>

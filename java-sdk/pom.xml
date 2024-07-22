@@ -29,7 +29,7 @@
         <kiota.libs.version>1.1.14</kiota.libs.version>
         <kiota.binary.version>1.10.1</kiota.binary.version>
         <kiota.binary.timeout>30</kiota.binary.timeout>
-        <kiota.community.version>0.0.17</kiota.community.version>
+        <kiota.community.version>0.0.18</kiota.community.version>
         <kiota.base.url>https://github.com/microsoft/kiota/releases/download</kiota.base.url>
     </properties>
     <dependencies>

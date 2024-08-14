@@ -25,7 +25,6 @@ import {
 import { 
     AaiDocument,
     AaiMessage, 
-    AaiOperation,
     CommandFactory,
     ICommand,
     SimplifiedType
@@ -99,7 +98,7 @@ export class HeadersTabComponent extends AbstractBaseComponent {
         nt.of = newType.of;
         nt.as = newType.as;
         
-        let command: ICommand = CommandFactory.createChangeHeadersRefCommand_Aai20(nt.type, this.message.parent() as AaiOperation);
+        let command: ICommand = CommandFactory.createChangeHeadersRefCommand_Aai20$java_lang_String$io_apicurio_datamodels_asyncapi_models_AaiMessage(nt.type, this.message);
         this.commandService.emit(command);
         this._model = nt;
     }

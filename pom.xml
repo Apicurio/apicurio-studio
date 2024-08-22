@@ -129,7 +129,7 @@
         <version.jar.plugin>3.4.2</version.jar.plugin>
         <version.checkstyle.plugin>3.4.0</version.checkstyle.plugin>
         <version.properties.plugin>1.2.1</version.properties.plugin>
-        <version.dependency.plugin>3.7.1</version.dependency.plugin>
+        <version.dependency.plugin>3.8.0</version.dependency.plugin>
         <version.assembly.plugin>3.7.1</version.assembly.plugin>
         <version.resources.plugin>3.3.1</version.resources.plugin>
         <version.clean.plugin>3.4.0</version.clean.plugin>

@@ -127,7 +127,7 @@
         <version.surefire.plugin>3.4.0</version.surefire.plugin>
         <version.failsafe.plugin>3.4.0</version.failsafe.plugin>
         <version.jar.plugin>3.4.2</version.jar.plugin>
-        <version.checkstyle.plugin>3.4.0</version.checkstyle.plugin>
+        <version.checkstyle.plugin>3.5.0</version.checkstyle.plugin>
         <version.properties.plugin>1.2.1</version.properties.plugin>
         <version.dependency.plugin>3.8.0</version.dependency.plugin>
         <version.assembly.plugin>3.7.1</version.assembly.plugin>

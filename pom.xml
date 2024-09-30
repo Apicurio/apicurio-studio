@@ -112,7 +112,7 @@
         <apicurio-common-app-components.version>1.2.3</apicurio-common-app-components.version>
         <apicurio-common-rest-client.version>0.1.18.Final</apicurio-common-rest-client.version>
         <annotation-api.version>1.3.5</annotation-api.version>
-        <version.puppycrawl>10.18.1</version.puppycrawl>
+        <version.puppycrawl>10.18.2</version.puppycrawl>
 
         <!-- Test Dependency Versions -->
         <version.org.testcontainers.postgresql>1.20.1</version.org.testcontainers.postgresql>
@@ -135,7 +135,7 @@
         <version.clean.plugin>3.4.0</version.clean.plugin>
         <version.git-commit-id-maven-plugin>9.0.1</version.git-commit-id-maven-plugin>
         <version.apicurio-codegen-maven-plugin>1.1.1.Final</version.apicurio-codegen-maven-plugin>
-        <version.maven-gpg-plugin>3.2.5</version.maven-gpg-plugin>
+        <version.maven-gpg-plugin>3.2.7</version.maven-gpg-plugin>
 
     </properties>
 

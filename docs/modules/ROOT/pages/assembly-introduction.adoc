@@ -7,11 +7,5 @@ include::partial$shared/all-attributes.adoc[]
 Discover the features and functions available in the {studio-long}.
 
 * xref:studio-overview[]
-* xref:studio-integration[]
-* xref:studio-design-types[]
-* xref:studio-content[]
 
 include::partial$con-studio-overview.adoc[leveloffset=+1]
-include::partial$con-studio-integration.adoc[leveloffset=+1]
-include::partial$con-studio-design-types.adoc[leveloffset=+1]
-include::partial$con-studio-content.adoc[leveloffset=+1]

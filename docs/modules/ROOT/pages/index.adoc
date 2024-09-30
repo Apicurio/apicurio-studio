@@ -17,7 +17,7 @@ endif::[]
 
 == About this documentation
 
-This document introduces {studio}, explains how to install with your chosen storage option, and how to manage event schemas and API designs using the {studio} web console and REST API.
+This document introduces {studio}, explains how to install it for use with Apicurio Registry, and how to manage event schemas and API designs using the {studio} web console.
 
 == Getting help with {studio}
 

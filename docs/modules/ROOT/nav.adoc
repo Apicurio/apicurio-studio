@@ -4,19 +4,6 @@ include::partial$shared/all-attributes.adoc[]
 // Introduction
 * xref:ROOT:assembly-introduction.adoc[]
 
-// Migration
-* xref:ROOT:assembly-migrating-studio-v0-v1.adoc[]
-
 * Installation
 ** xref:ROOT:assembly-installing-studio-docker.adoc[]
-** xref:ROOT:assembly-installing-studio-kubernetes.adoc[]
-** xref:ROOT:assembly-studio-storage.adoc[]
 
-// Getting Started
-* xref:ROOT:assembly-getting-started.adoc[]
-
-// Maintenance
-* xref:ROOT:assembly-maintenance.adoc[]
-
-// Reference
-* xref:ROOT:assembly-config-reference.adoc[]

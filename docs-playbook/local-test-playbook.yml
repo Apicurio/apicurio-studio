@@ -1,5 +1,5 @@
 site:
-  title: Apicurio Studio
+  title: Apicurio Studio PREVIEW
   # the 404 page and sitemap files only get generated when the url property is set
   url: https://www.apicur.io/studio/docs
   start_page: apicurio-studio::index.adoc
@@ -8,14 +8,11 @@ content:
   - url: ../
     branches: HEAD
     start_path: docs
-    edit_url: '{web_url}'
 
 ui:
   bundle:
     url: https://raw.githubusercontent.com/Apicurio/apicurio-docs-ui/main/dist/ui-bundle.zip
     snapshot: true
-  output_dir: assets
-  supplemental_files: ./supplemental_ui
 
 runtime:
   cache_dir: ./target/antora-cache
@@ -30,4 +27,3 @@ asciidoc:
     mod-loc: partial$
     studio-overview: link:assembly-intro-to-studio.html[Introduction to Apicurio Studio]
     installing-studio-docker: link:assembly-installing-studio-docker.html[Installing Apicurio Studio using Docker]
-

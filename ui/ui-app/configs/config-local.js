@@ -1,10 +1,17 @@
 const ApicurioStudioConfig = {
     apis: {
-        studio: "http://localhost:8080/apis/studio/v1"
+        registry: "http://localhost:8080/apis/registry/v3"
     },
     components: {
         editors: {
             url: "http://localhost:9011"
+        },
+        masthead: {
+            show: true
         }
+    },
+    ui: {
+        navPrefixPath: "",
+        contextPath: "/"
     }
 };

@@ -39,12 +39,6 @@ jobs:
           ref: ${{ github.event.inputs.branch }}
           token: ${{ secrets.ACCESS_TOKEN }}
           path: studio
-          
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -54,7 +48,6 @@ jobs:
       - name: Update Release Version ${{ github.event.inputs.release-version }} in pom.xml
         run: |
           cd studio
-          mvn versions:set -DnewVersion=${{ github.event.inputs.release-version }} -DgenerateBackupPoms=false -DprocessAllModules=true
           UI_VERSION=$(echo ${{ github.event.inputs.release-version }} | sed 's/.Beta[0-9]//' | sed 's/.Alpha[0-9]//'| sed 's/.RC[0-9]//')
           cd ui
           npm version $UI_VERSION --allow-same-version
@@ -65,9 +58,7 @@ jobs:
 
       - name: Build Apicurio Studio
         run: |
-          cd studio
-          mvn install -Dmaven.javadoc.skip=false --no-transfer-progress -DtrimStackTrace=false -Pprod
-          cd ui
+          cd studio/ui
           npm install
           npm run build
           npm run package
@@ -103,7 +94,6 @@ jobs:
       - name: Update Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
         run: |
           cd studio
-          mvn versions:set -DnewVersion=${{ github.event.inputs.snapshot-version }} -DgenerateBackupPoms=false -DprocessAllModules=true
           UI_VERSION=$(echo ${{ github.event.inputs.snapshot-version }} | sed 's/-SNAPSHOT//')
           cd ui
           npm version $UI_VERSION --allow-same-version

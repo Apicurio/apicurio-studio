@@ -4,15 +4,14 @@ include::partial$shared/all-attributes.adoc[]
 = Installing {studio} using Docker
 
 [role="_abstract"]
-This chapter explains how to install and run {studio} using Docker with the following storage options:
-
-* xref:installing-studio-in-memory-storage-docker[]
-* xref:installing-studio-sql-storage-docker[]
+This chapter explains how to install and run {studio} using Docker:
 
 .Prerequisites
 * {studio-introduction}
 
-NOTE: You can install more than one instance of {studio} depending on your environment. The number of instances depends on your storage option, and on the number and type of designs stored in {studio}.
+
+TBD
+
 
 ifndef::apicurio-studio-downstream[]
 [role="_additional-resources"]
@@ -26,6 +25,3 @@ ifdef::apicurio-studio-downstream[]
 .Additional resources
 * For installation examples, including Docker Compose files, Kubernetes resources, and OpenShift templates, see {studio-examples}.
 endif::[]
-
-include::partial$proc-installing-studio-in-memory-storage-docker.adoc[leveloffset=+1]
-include::partial$proc-installing-studio-sql-storage-docker.adoc[leveloffset=+1]

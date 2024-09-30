@@ -9,8 +9,8 @@
 
 This is the official Git repository for the Apicurio Studio project:  http://www.apicur.io/studio
 
-The Apicurio Studio project is a standalone API design studio that can be used to create
-new or edit existing API designs (using the OpenAPI or AsyncAPI specifications).
+The Apicurio Studio project is an API design studio that can be used to create
+new or edit existing API designs (using specifications like OpenAPI or AsyncAPI).
 
 ## Get the code
 
@@ -32,10 +32,17 @@ The general idea is to keep your 'main' branch in-sync with the 'upstream/main'.
 ## Building apicurio-studio
 
 ### Requirements
-- Maven 3.x
-- Java 11 or 17 (recommended)
 - Node.js and NPM
 
+### Building
+Use standard NPM based UI tooling to build the project:
+
+```bash
+cd ui
+npm install
+npm run build
+npm run package
+```
 
 ## Contribute fixes and features
 
@@ -83,18 +90,10 @@ This makes reverting changes easier, and avoids needlessly polluting the reposit
 ## Code Formatting
 
 When you are hacking on some apicurio-studio code, we'd really appreciate it if you followed the
-apicurio-studio coding standards.  If you're using Eclipse, you can find a code formatter config
-file here:
+apicurio-studio coding standards.  The project uses `eslint` to ensure these standards.  You can
+check your code using:
 
-```
-.config/eclipse/apicurio-eclipse-formatter.xml
-```
-
-You should be able to import that guy straight into Eclipse by going to
-*Window->Preferences :: Java/Code Style/Formatter*
-
-If you're using Intellij, you can find a code formatter config file here:
-
-```
-.config/intellij/apicurio-intellij-formatter.xml
+```bash
+cd ui
+npm run lint
 ```

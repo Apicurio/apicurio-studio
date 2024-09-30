@@ -1,4 +1,3 @@
-export * from "./DesignEventType";
 export * from "./DesignsEmptyStateFiltered";
 export * from "./DesignsToolbar";
 export * from "./ImportDropdown";
@@ -6,9 +5,7 @@ export * from "./TemplateItem";
 export * from "./DesignList";
 export * from "./DesignsPanel";
 export * from "./DesignsEmptyState";
-export * from "./DesignEvents";
 export * from "./DesignOriginLabel";
-export * from "./DesignHistory";
 export * from "./DeleteDesignModal";
 export * from "./CreateDesignModal";
 export * from "./DesignDetailsPanel";

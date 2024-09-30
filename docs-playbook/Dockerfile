@@ -4,8 +4,8 @@
 FROM ubuntu:latest
 
 ENV BASE_DIR=/repository/docs-playbook
-ENV PLAYBOOK docs-playbook.yml
-ENV SEARCH_PLAYBOOK search-playbook.yml
+ENV PLAYBOOK=docs-playbook.yml
+ENV SEARCH_PLAYBOOK=search-playbook.yml
 
 VOLUME /repository
 

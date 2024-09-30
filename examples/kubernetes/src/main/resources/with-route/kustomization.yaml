@@ -1,9 +1,0 @@
-# You might need to provide some additional configuration.
-# Please see other kustomize.yaml files.
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-resources:
-  - ../base
-  - route-app.yaml
-  - route-ui.yaml

@@ -1,31 +1,22 @@
 import { AuthService, useAuth } from "@apicurio/common-ui-components";
-import { SystemInfo } from "@models/system/SystemInfo.ts";
-import { createEndpoint, createOptions, httpGet } from "@utils/rest.utils.ts";
+import { getRegistryClient } from "@utils/rest.utils.ts";
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 import { VendorExtension } from "@models/system";
+import { ApicurioRegistryClient } from "@apicurio/apicurio-registry-sdk";
+import { SystemInfo } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
 
 const getInfo = async (appConfig: ApicurioStudioConfig, auth: AuthService): Promise<SystemInfo> => {
     console.debug("[SystemService] Getting system info.");
-    const token: string | undefined = await auth.getToken();
-
-    const endpoint: string = createEndpoint(appConfig.apis.studio, "/system/info");
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
-    return httpGet<SystemInfo>(endpoint, createOptions(headers));
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+    return client.system.info.get().then(v => v!);
 };
 
-const getOpenApiVendorExtensions = async (appConfig: ApicurioStudioConfig, auth: AuthService): Promise<VendorExtension[]> => {
+const getOpenApiVendorExtensions = async (/*appConfig: ApicurioStudioConfig, auth: AuthService*/): Promise<VendorExtension[]> => {
     // TODO cache the vendor extensions?
     console.debug("[SystemService] Getting openapi vendor extensions.");
-    const token: string | undefined = await auth.getToken();
-
-    const endpoint: string = createEndpoint(appConfig.apis.studio, "/system/uiConfig/openapi/vendorExtensions");
-    const headers: any = {
-        "Authorization": `Bearer ${token}`
-    };
-    return httpGet<VendorExtension[]>(endpoint, createOptions(headers));
+    // TODO implement this in some way
+    return Promise.resolve([]);
 };
 
 export interface SystemService {
@@ -43,7 +34,7 @@ export const useSystemService: () => SystemService = (): SystemService => {
             return getInfo(appConfig, auth);
         },
         getOpenApiVendorExtensions(): Promise<VendorExtension[]> {
-            return getOpenApiVendorExtensions(appConfig, auth);
+            return getOpenApiVendorExtensions(/*appConfig, auth*/);
         }
     };
 };

@@ -21,7 +21,7 @@ export const App: React.FunctionComponent = () => {
             </>
         ),
         {
-            basename: appConfig.ui.contextPath
+            basename: appConfig.ui?.contextPath || "/"
         }
     );
 

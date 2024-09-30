@@ -28,3 +28,6 @@ asciidoc:
     plantuml-server-url: 'http://www.plantuml.com/plantuml'
     plantuml-fetch-diagram: true
     mod-loc: partial$
+    studio-overview: link:assembly-intro-to-studio.html[Introduction to Apicurio Studio]
+    installing-studio-docker: link:assembly-installing-studio-docker.html[Installing Apicurio Studio using Docker]
+

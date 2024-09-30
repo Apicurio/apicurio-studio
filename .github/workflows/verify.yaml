@@ -40,14 +40,6 @@ jobs:
       - name: Checkout Code with Ref '${{ github.ref }}'
         uses: actions/checkout@v3
 
-      # Set up the JDK
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-          cache: 'maven'
-
       # Open-Source Machine emulator that allows you to emulate multiple CPU architectures on your machine
       - name: Set up QEMU
         if: github.event_name == 'push'
@@ -67,9 +59,6 @@ jobs:
           echo "Status:    ${{ steps.buildx.outputs.status }}"
           echo "Flags:     ${{ steps.buildx.outputs.flags }}"
           echo "Platforms: ${{ steps.buildx.outputs.platforms }}"
-
-      - name: Build Apicurio Studio back-end
-        run: mvn install -Dmaven.javadoc.skip=true --no-transfer-progress -DtrimStackTrace=false
 
       # Set up node.js
       - name: Set up Node.js
@@ -94,19 +83,6 @@ jobs:
       - name: Login to DockerHub Registry
         if: github.event_name == 'push'
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-
-      - name: Build and Publish Docker Image
-        if: github.event_name == 'push'
-        uses: docker/build-push-action@v2
-        with:
-          context: ./dist/docker/target/docker
-          file: ./dist/docker/target/docker/Dockerfile.jvm
-          platforms: ${{env.PLATFORMS}}
-          push: true
-          tags: |
-            docker.io/${{env.IMAGE_ORG}}/apicurio-studio:${{env.IMAGE_TAG}}
-            quay.io/${{env.IMAGE_ORG}}/apicurio-studio:${{env.IMAGE_TAG}}
-
 
       - name: Build and Publish Docker Image (UI)
         if: github.event_name == 'push'

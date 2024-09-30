@@ -1,24 +1,5 @@
 version: 2
 updates:
-- package-ecosystem: maven
-  directory: "/"
-  schedule:
-    interval: daily
-  groups:
-    app-dependencies:
-      patterns:
-        - "*"
-
-- package-ecosystem: npm
-  directory: "/typescript-sdk"
-  schedule:
-    interval: daily
-  versioning-strategy: increase
-  groups:
-    typescript-sdk-dependencies:
-      patterns:
-        - "*"
-
 - package-ecosystem: npm
   directory: "/ui"
   schedule:

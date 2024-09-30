@@ -1,11 +1,10 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { FunctionComponent, useState } from "react";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core";
-import { Design, DesignEvent } from "@models/designs";
+import { Design } from "@models/designs";
 import { ArtifactTypeIcon } from "@app/components";
-import { DesignsService, useDesignsService } from "@services/useDesignsService.ts";
-import "./DesignDetailsPanel.css";
 import { DateTime, IfNotLoading } from "@apicurio/common-ui-components";
-import { DesignDescription, DesignEvents, DesignHistory, DesignOriginLabel } from "@app/pages";
+import { DesignDescription, DesignOriginLabel } from "@app/pages";
+import "./DesignDetailsPanel.css";
 
 /**
  * Properties
@@ -18,23 +17,8 @@ export type DesignDetailsPanelProps = {
  * Details panel with metadata and history about a single selected design.
  */
 export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({ design }: DesignDetailsPanelProps) => {
-    const [isLoading, setLoading] = useState<boolean>(false);
-    const [events, setEvents] = useState<DesignEvent[]>();
+    const [isLoading, /*setLoading*/] = useState<boolean>(false);
     const [activeTabKey, setActiveTabKey] = useState<string>("details");
-
-    const designsService: DesignsService = useDesignsService();
-
-    useEffect(() => {
-        if (design) {
-            designsService.getEvents(design.designId).then((events: DesignEvent[]) => {
-                setEvents(events);
-                setLoading(false);
-            }).catch((error: any) => {
-                // TODO error handling!
-                console.error(error);
-            });
-        }
-    }, [design]);
 
     return (
         <IfNotLoading isLoading={isLoading}>
@@ -66,12 +50,6 @@ export const DesignDetailsPanel: FunctionComponent<DesignDetailsPanelProps> = ({
                             <DesignOriginLabel design={design} />
                         </div>
                     </div>
-                </Tab>
-                <Tab eventKey="events" title={<TabTitleText>Events</TabTitleText>}>
-                    <DesignEvents design={design} events={events} />
-                </Tab>
-                <Tab eventKey="history" title={<TabTitleText>History</TabTitleText>}>
-                    <DesignHistory events={events} />
                 </Tab>
             </Tabs>
         </IfNotLoading>

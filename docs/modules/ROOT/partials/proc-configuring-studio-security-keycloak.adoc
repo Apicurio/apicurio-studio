@@ -1,8 +1,0 @@
-[id="studio-security-keycloak"]
-
-= Configuring {studio} authentication and authorization with {keycloak}
-
-[role="_abstract"]
-This section explains how to manually configure authentication and authorization options for {studio} and {keycloak}.
-
-*__TODO__*

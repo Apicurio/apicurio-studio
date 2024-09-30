@@ -34,7 +34,7 @@ jobs:
           rm latestRelease.json
           touch latestRelease.json && curl https://api.github.com/repos/apicurio/apicurio-studio/releases/latest > latestRelease.json
 
-          echo "********** Saving a copy in the archieve **********"
+          echo "********** Saving a copy in the archive **********"
           cp latestRelease.json releases/${RELEASE_VERSION}.json
 
       - name: Commit Project Website Changes

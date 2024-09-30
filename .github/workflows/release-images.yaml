@@ -78,9 +78,7 @@ jobs:
 
       - name: Build Apicurio Studio
         run: |
-          cd studio
-          mvn install -Pprod -DskipTests=true -Dmaven.javadoc.skip=true --no-transfer-progress -DtrimStackTrace=false
-          cd ui
+          cd studio/ui
           npm install
           npm run build
           npm run package
@@ -90,19 +88,6 @@ jobs:
 
       - name: Login to DockerHub Registry
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-
-      - name: Build and Publish Docker Image (Backend)
-        uses: docker/build-push-action@v2
-        with:
-          context: ./studio/dist/docker/target/docker
-          file: ./studio/dist/docker/target/docker/Dockerfile.jvm
-          platforms: ${{env.PLATFORMS}}
-          push: true
-          tags: |
-            docker.io/${{env.IMAGE_ORG}}/apicurio-studio:${{env.RELEASE_VERSION}}
-            docker.io/${{env.IMAGE_ORG}}/apicurio-studio:latest
-            quay.io/${{env.IMAGE_ORG}}/apicurio-studio:${{env.RELEASE_VERSION}}
-            quay.io/${{env.IMAGE_ORG}}/apicurio-studio:latest
 
       - name: Build and Publish Docker Image (UI)
         uses: docker/build-push-action@v2

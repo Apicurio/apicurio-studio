@@ -38,7 +38,7 @@ export const AppHeaderToolbar: FunctionComponent<AppHeaderToolbarProps> = () => 
             <AppAboutModal
                 frontendInfo={frontendInfo}
                 backendInfo={fetchBackendInfo}
-                backendLabel="Apicurio Studio API info"
+                backendLabel="Apicurio Registry API info"
                 brandImageSrc="/apicurio_studio_logo_reverse.svg"
                 brandImageAlt={version.name}
                 isOpen={isAboutModalOpen}

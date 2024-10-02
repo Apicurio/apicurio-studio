@@ -5,7 +5,7 @@ import {
     DesignContent,
     DesignsSearchCriteria,
     DesignsSearchResults,
-    DesignsSort,
+    DesignsSort, DesignType,
     Paging,
 } from "@models/designs";
 import { AuthService, useAuth } from "@apicurio/common-ui-components";
@@ -24,7 +24,39 @@ async function searchDesigns(appConfig: ApicurioStudioConfig, auth: AuthService,
     console.debug("[DesignsService] Searching for designs: ", criteria, paging, sort);
     const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
 
-    throw Error("Not yet implemented.");
+    const start: number = (paging.page - 1) * paging.pageSize;
+    const end: number = start + paging.pageSize;
+    const queryParams: any = {
+        limit: end,
+        offset: start,
+        order: sort.direction,
+        orderby: sort.by
+    };
+
+    return client.search.artifacts.get({
+        queryParameters: queryParams
+    }).then(results => {
+        const rval: DesignsSearchResults = {
+            count: results?.count as number,
+            page: paging.page,
+            pageSize: paging.pageSize,
+            designs: results?.artifacts?.map(artifact => {
+                const design: Design = {
+                    designId: `${artifact.groupId}/${artifact.artifactId}`,
+                    type: artifact.artifactType as DesignType,
+                    name: artifact.name || (artifact.artifactId || ""),
+                    description: artifact.description || "",
+                    createdBy: artifact.owner as string,
+                    createdOn: artifact.createdOn as Date,
+                    modifiedBy: artifact.modifiedBy as string,
+                    modifiedOn: artifact.modifiedOn as Date,
+                    origin: "create",
+                };
+                return design;
+            }) as Design[]
+        };
+        return rval;
+    });
 }
 
 

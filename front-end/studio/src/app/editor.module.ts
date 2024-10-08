@@ -168,6 +168,8 @@ import {JsonSummaryComponent} from "./components/common/json-summary.component";
 import {InlineJsonEditorComponent} from "./pages/apis/{apiId}/editor/_components/common/inline-json-editor.component";
 import {AddExtensionDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/add-extension.component";
 import {ReferencePropertiesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/reference-properties-section.component";
+import {AaitagsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel/operation/aaitags-section.component";
+import {AaiAddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/aaiadd-tag.component";
 
 @NgModule({
     imports: [
@@ -202,7 +204,7 @@ import {ReferencePropertiesSectionComponent} from "./pages/apis/{apiId}/editor/_
         ResponseEditorComponent, MessageTraitEditorComponent, MessageEditorComponent, OneOfInMessageEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
         AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
         SchemaRowComponent, AddSchemaDialogComponent, CloneChannelDialogComponent, ExtensionsSectionComponent,
-        ExtensionRowComponent, JsonSummaryComponent, InlineJsonEditorComponent, AddExtensionDialogComponent
+        ExtensionRowComponent, JsonSummaryComponent, InlineJsonEditorComponent, AddExtensionDialogComponent, AaitagsSectionComponent, AaiAddTagDialogComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

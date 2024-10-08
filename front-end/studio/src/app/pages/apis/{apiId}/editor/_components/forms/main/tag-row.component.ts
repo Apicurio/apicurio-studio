@@ -20,6 +20,7 @@ import {
     ChangeDetectorRef,
     Component,
     EventEmitter,
+    Input,
     Output,
     ViewEncapsulation
 } from "@angular/core";
@@ -41,6 +42,7 @@ export class TagRowComponent extends AbstractRowComponent<OasTag, string> {
 
     @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
     @Output() onRename: EventEmitter<void> = new EventEmitter<void>();
+    @Input() enableRename: boolean = true
 
     /**
      * C'tor.

@@ -1,0 +1,26 @@
+<section type="tags" label="TAG DEFINITIONS" [counterItems]="tags()"
+         contextHelp="Configure tags for your API in this section.  Once defined, tags can be used to organize your API's operations by arbitrary criteria."
+         collaborationNodePath="/tags"
+         [validationModels]="tags()">
+    <span actions>
+        <icon-button (onClick)="addTagDialog.open(node)" [pullRight]="true" type="add"
+                     title="Add a tag to the API."></icon-button>
+        <icon-button (onClick)="deleteAllTags()" [disabled]="!hasTags()"
+                     [pullRight]="true" type="delete"
+                     title="Delete all tag definitions."></icon-button>
+    </span>
+    <div body>
+        <signpost *ngIf="tags().length === 0">
+            <span>No tags have been configured.</span>
+            <a (click)="addTagDialog.open(node)">Add a tag</a>
+        </signpost>
+
+        <!-- The list of tags -->
+        <div class="tags" *ngIf="tags().length > 0">
+            <tag-row *ngFor="let tag of tags()" [item]="tag"
+                     (onDelete)="deleteTag(tag)" [enableRename]="false"></tag-row>
+        </div>
+    </div>
+</section>
+<aaiadd-tag-dialog #addTagDialog (onAdd)="addTag($event)"></aaiadd-tag-dialog>
+

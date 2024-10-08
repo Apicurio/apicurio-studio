@@ -1,0 +1,17 @@
+.drafts-toolbar {
+    padding-left: 8px;
+    padding-right: 24px;
+}
+
+.drafts-toolbar > div {
+    width: 100%;
+}
+
+.drafts-toolbar .filter-types-toggle span.pf-v5-c-menu-toggle__text {
+    width: 125px;
+    text-align: left;
+}
+
+#drafts-toolbar-1 .tbi-filter-type {
+    margin-right: 0;
+}

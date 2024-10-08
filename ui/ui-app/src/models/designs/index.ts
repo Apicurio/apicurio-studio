@@ -13,6 +13,5 @@ export * from "./DesignsSearchCriteria";
 export * from "./DesignsSearchResults";
 export * from "./DesignsSort";
 export * from "./ExportDesign";
-export * from "./Paging";
 export * from "./RenameDesign";
 

@@ -5,15 +5,15 @@ export enum DraftType {
 export interface Draft {
 
     groupId: string;
-    artifactId: string;
+    draftId: string;
     version: string;
     type: string;
     name: string;
     description: string|undefined;
     createdBy: string;
     createdOn: Date;
-    modifiedBy: string;
-    modifiedOn: Date;
-    labels: object;
+    modifiedBy?: string;
+    modifiedOn?: Date;
+    labels?: object;
 
 }

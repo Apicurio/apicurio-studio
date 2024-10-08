@@ -42,7 +42,7 @@ export const DraftsTable: FunctionComponent<DraftsTableProps> = (props: DraftsTa
         // Name.
         if (colIndex === 0) {
             const groupId: string = encodeURIComponent(column.groupId || "default");
-            const artifactId: string = encodeURIComponent(column.artifactId!);
+            const artifactId: string = encodeURIComponent(column.draftId!);
             const version: string = encodeURIComponent(column.version!);
 
             return (
@@ -52,9 +52,9 @@ export const DraftsTable: FunctionComponent<DraftsTableProps> = (props: DraftsTa
                         to={appNavigation.createLink(`/drafts/${groupId}/${artifactId}/${version}`)}
                     >
                         <span>{ column.groupId || "default" }</span>
-                        <span> / </span>
-                        <span>{ column.artifactId }</span>
-                        <span> / </span>
+                        <span style={{ color: "#666" }}> / </span>
+                        <span>{ column.draftId }</span>
+                        <span style={{ color: "#666" }}> / </span>
                         <span>{ column.version }</span>
                         <If condition={column.name != "" && column.name !== undefined && column.name !== null}>
                             <span style={{ marginLeft: "10px" }}>({column.name})</span>
@@ -87,7 +87,7 @@ export const DraftsTable: FunctionComponent<DraftsTableProps> = (props: DraftsTa
     };
 
     const actionsFor = (draft: Draft): (DraftAction | DraftActionSeparator)[] => {
-        const vhash = shash(draft.groupId! + draft.artifactId! + draft.version!);
+        const vhash = shash(draft.groupId! + draft.draftId! + draft.version!);
         const actions: (DraftAction | DraftActionSeparator)[] = [
             { label: "View version", onClick: () => props.onView(draft), testId: `view-version-${vhash}` },
         ];
@@ -148,7 +148,7 @@ export const DraftsTable: FunctionComponent<DraftsTableProps> = (props: DraftsTa
                         modifier="truncate">{column.label}</Th>
                 )}
                 renderCell={({ row, colIndex, Td }) => (
-                    <Td className="drafts-table-cell" key={`cell-${colIndex}-${shash(row.groupId! + row.artifactId! + row.version!)}`}
+                    <Td className="drafts-table-cell" key={`cell-${colIndex}-${shash(row.groupId! + row.draftId! + row.version!)}`}
                         style={{ maxWidth: "0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
                         children={renderColumnData(row as Draft, colIndex) as any} />
                 )}

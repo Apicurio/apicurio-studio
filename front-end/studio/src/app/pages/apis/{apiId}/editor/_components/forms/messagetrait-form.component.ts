@@ -113,22 +113,4 @@ export class MessageTraitFormComponent extends SourceFormComponent<AaiMessageTra
                 "description", newDescription);
         this.commandService.emit(command);
     }
-
-    public changeTags(newTags: string[]): void {
-        console.info("[MessageTraitFormComponent] User changed the tags.");
-        let command: ICommand = CommandFactory.createChangePropertyCommand(this.messageTrait, "tags", newTags);
-        this.commandService.emit(command);
-    }
-
-    public tagDefs(): ()=>string[] {
-        return ()=> {
-            if (this.messageTrait.ownerDocument().tags && this.messageTrait.ownerDocument().tags.length > 0) {
-                let tagDefs: string[] = this.messageTrait.ownerDocument().tags.map(tagDef => tagDef.name);
-                tagDefs.sort();
-                return tagDefs;
-            } else {
-                return [];
-            }
-        }
-    }
 }

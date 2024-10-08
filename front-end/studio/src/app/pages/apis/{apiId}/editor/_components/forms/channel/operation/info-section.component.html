@@ -54,9 +54,7 @@
             <span>Tags</span>
         </div>
         <div class="section-field tags">
-            <inline-array-editor noValueMessage="No tags configured." [value]="operation.tags" [items]="tagDefs()"
-                                 [baseNode]="operation" nodepath="tags"
-                                 (onChange)="changeTags($event)"></inline-array-editor>
+            <aaitags-section [node]="operation"></aaitags-section>
         </div>
     </div>
 </section>

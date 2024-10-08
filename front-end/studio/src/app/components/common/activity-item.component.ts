@@ -220,6 +220,7 @@ export class ActivityItemComponent {
             case "DeleteTagCommand":
             case "DeleteTagCommand_20":
             case "DeleteTagCommand_30":
+            case "DeleteTagCommand_Aai20":
             case "DeleteRequestBodyCommand_30":
             case "DeleteAllResponsesCommand":
             case "DeleteAllResponsesCommand_20":
@@ -294,6 +295,7 @@ export class ActivityItemComponent {
             case "NewTagCommand":
             case "NewTagCommand_20":
             case "NewTagCommand_30":
+            case "NewTagCommand_Aai20":
                 rval = "tag";
                 break;
             case "ReplaceOperationCommand":
@@ -591,6 +593,9 @@ export class ActivityItemComponent {
             case "DeleteTagCommand_30":
                 rval = "deleted the global Tag definition with name '" + this.command()["_tagName"] + "'.";
                 break;
+            case "DeleteTagCommand_Aai20":
+                rval = "deleted Tag definition with name '" + this.command()["_tagName"] + "' at location '" + this.command()["_nodePath"] + "'.";
+                break;
             case "DeleteRequestBodyCommand_30":
                 rval = "deleted the global Tag definition with name '" + this.command()["_tagName"] + "'.";
                 break;
@@ -679,6 +684,9 @@ export class ActivityItemComponent {
             case "NewTagCommand_20":
             case "NewTagCommand_30":
                 rval = "added a new Tag named '" + this.command()["_tagName"] + "'.";
+                break;
+            case "NewTagCommand_Aai20":
+                rval = "added a new Tag named '" + this.command()["_tagName"] + "' at location '" + this.command()["_nodePath"] + "'.";
                 break;
             case "ReplaceOperationCommand":
             case "ReplaceOperationCommand_20":

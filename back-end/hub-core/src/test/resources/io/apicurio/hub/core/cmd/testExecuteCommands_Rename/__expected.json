@@ -195,21 +195,6 @@
     },
     "components": {
         "schemas": {
-            "AddressList": {
-                "properties": {
-                    "address": {
-                        "$ref": "#/components/schemas/Subtractress"
-                    }
-                }
-            },
-            "User": {
-                "properties": {
-                    "address": {
-                        "$ref": "#/components/schemas/Subtractress",
-                        "description": "Foo foo foo."
-                    }
-                }
-            },
             "Subtractress": {
                 "properties": {
                     "name": {
@@ -226,6 +211,21 @@
                     },
                     "zip": {
 
+                    }
+                }
+            },
+            "AddressList": {
+                "properties": {
+                    "address": {
+                        "$ref": "#/components/schemas/Subtractress"
+                    }
+                }
+            },
+            "User": {
+                "properties": {
+                    "address": {
+                        "$ref": "#/components/schemas/Subtractress",
+                        "description": "Foo foo foo."
                     }
                 }
             }

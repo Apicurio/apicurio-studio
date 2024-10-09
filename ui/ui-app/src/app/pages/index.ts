@@ -1,5 +1,6 @@
 export * from "./404";
 export * from "./drafts";
+export * from "./draft";
 export * from "./editor";
 export * from "./root";
 export * from "./PageDataLoader";

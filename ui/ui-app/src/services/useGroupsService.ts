@@ -9,6 +9,7 @@ import {
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import {SortOrder} from "@models/SortOrder.ts";
 import {ArtifactsSortBy} from "@models/artifacts";
+import {VersionsSortBy} from "@models/versions";
 
 const arrayDecoder: TextDecoder = new TextDecoder("utf-8");
 
@@ -91,7 +92,7 @@ const getArtifactVersionContent = async (config: ConfigService, auth: AuthServic
         });
 };
 
-const getArtifactVersions = async (config: ConfigService, auth: AuthService, groupId: string|null, artifactId: string, sortBy: VersionSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults> => {
+const getArtifactVersions = async (config: ConfigService, auth: AuthService, groupId: string|null, artifactId: string, sortBy: VersionsSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults> => {
     groupId = normalizeGroupId(groupId);
     const start: number = (paging.page - 1) * paging.pageSize;
     const end: number = start + paging.pageSize;
@@ -184,7 +185,7 @@ export interface GroupsService {
 
     getArtifactRule(groupId: string|null, artifactId: string, ruleType: string): Promise<Rule>;
 
-    getArtifactVersions(groupId: string|null, artifactId: string, sortBy: VersionSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults>;
+    getArtifactVersions(groupId: string|null, artifactId: string, sortBy: VersionsSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults>;
     getArtifactVersionMetaData(groupId: string|null, artifactId: string, version: string): Promise<VersionMetaData>;
     getArtifactVersionContent(groupId: string|null, artifactId: string, version: string): Promise<string>;
 
@@ -222,7 +223,7 @@ export const useGroupsService: () => GroupsService = (): GroupsService => {
         getArtifactRules(groupId: string|null, artifactId: string): Promise<Rule[]> {
             return getArtifactRules(config, auth, groupId, artifactId);
         },
-        getArtifactVersions(groupId: string|null, artifactId: string, sortBy: VersionSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults> {
+        getArtifactVersions(groupId: string|null, artifactId: string, sortBy: VersionsSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults> {
             return getArtifactVersions(config, auth, groupId, artifactId, sortBy, sortOrder, paging);
         },
         getLatestArtifact(groupId: string|null, artifactId: string): Promise<string> {

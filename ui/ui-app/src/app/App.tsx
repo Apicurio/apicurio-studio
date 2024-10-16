@@ -4,7 +4,16 @@ import "@patternfly/patternfly/patternfly-addons.css";
 
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { DraftPage, DraftsPage, GroupPage, EditorPage, EmbeddedEditorPage, RootRedirectPage, ExplorePage } from "@app/pages";
+import {
+    DraftPage,
+    DraftsPage,
+    GroupPage,
+    EditorPage,
+    EmbeddedEditorPage,
+    RootRedirectPage,
+    ExplorePage,
+    ArtifactPage
+} from "@app/pages";
 import { ApplicationAuth, AuthConfig, AuthConfigContext } from "@apicurio/common-ui-components";
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 import { Page } from "@patternfly/react-core";
@@ -46,11 +55,41 @@ export const App: React.FunctionComponent = () => {
 
                             <Route
                                 path="/explore/:groupId/:artifactId"
-                                /*element={ <ArtifactPage /> }*/
+                                element={ <ArtifactPage /> }
                             />
                             <Route
                                 path="/explore/:groupId/:artifactId/versions"
-                                /*element={ <ArtifactPage /> }*/
+                                element={ <ArtifactPage /> }
+                            />
+                            <Route
+                                path="/explore/:groupId/:artifactId/branches"
+                                element={ <ArtifactPage /> }
+                            />
+
+                            <Route
+                                path="/explore/:groupId/:artifactId/versions/:version"
+                               /* element={ <VersionPage /> }*/
+                            />
+                            <Route
+                                path="/explore/:groupId/:artifactId/versions/:version/content"
+                               /* element={ <VersionPage /> }*/
+                            />
+                            <Route
+                                path="/explore/:groupId/:artifactId/versions/:version/documentation"
+                               /* element={ <VersionPage /> }*/
+                            />
+                            <Route
+                                path="/explore/:groupId/:artifactId/versions/:version/references"
+                                /*element={ <VersionPage /> }*/
+                            />
+
+                            <Route
+                                path="/explore/:groupId/:artifactId/branches/:branchId"
+                                /*element={ <BranchPage /> }*/
+                            />
+                            <Route
+                                path="/explore/:groupId/:artifactId/branches/:branchId/versions"
+                                /*element={ <BranchPage /> }*/
                             />
                             <Route path="/designs/:designId/editor" element={<EditorPage />}/>,
                             <Route path="/editor-embedded" element={<EmbeddedEditorPage />}/>,

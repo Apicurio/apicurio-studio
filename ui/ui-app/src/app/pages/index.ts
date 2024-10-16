@@ -1,4 +1,5 @@
 export * from "./404";
+export * from "./artifact"
 export * from "./drafts";
 export * from "./draft";
 export * from "./explore";

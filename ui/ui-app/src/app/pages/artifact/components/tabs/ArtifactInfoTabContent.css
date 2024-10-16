@@ -1,0 +1,53 @@
+.artifact-tab-content {
+    padding: 22px;
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(240,240,240);
+}
+
+.artifact-tab-content .artifact-basics {
+    flex-grow: 1;
+    flex-basis: 40%;
+    margin-right: 15px;
+}
+
+.artifact-tab-content .artifact-basics .title-and-type {
+}
+
+.artifact-tab-content .artifact-basics .title-and-type .type {
+}
+
+.artifact-tab-content .artifact-basics .title-and-type .title {
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 24px;
+    display: inline-block;
+}
+
+.artifact-tab-content .artifact-basics .metaData {
+    margin-bottom: 20px;
+}
+
+.artifact-tab-content .artifact-basics .actions {
+}
+
+
+.artifact-tab-content .artifact-rules {
+    flex-grow: 1;
+    flex-basis: 60%;
+}
+
+.artifact-tab-content .artifact-rules .rules-label {
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 29px;
+    padding-bottom: 7px;
+}
+
+.label-truncate, .label-truncate, .label-truncate > span, .label-truncate > span {
+    min-width: unset;
+}
+
+#generate-client-action {
+    margin-left: 10px;
+}

@@ -4,7 +4,7 @@ import "@patternfly/patternfly/patternfly-addons.css";
 
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { DraftPage, DraftsPage, EditorPage, EmbeddedEditorPage, RootRedirectPage } from "@app/pages";
+import { DraftPage, DraftsPage, GroupPage, EditorPage, EmbeddedEditorPage, RootRedirectPage, ExplorePage } from "@app/pages";
 import { ApplicationAuth, AuthConfig, AuthConfigContext } from "@apicurio/common-ui-components";
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 import { Page } from "@patternfly/react-core";
@@ -34,7 +34,24 @@ export const App: React.FunctionComponent = () => {
                                 element={ <DraftPage /> }
                             />
 
-                            {/*<Route path="/explore" element={ <ExplorePage /> } />*/}
+                            <Route path="/explore" element={ <ExplorePage />}/>,
+                            <Route
+                                path="/explore/:groupId"
+                                element={ <GroupPage /> }
+                            />
+                            <Route
+                                path="/explore/:groupId/artifacts"
+                                element={ <GroupPage /> }
+                            />
+
+                            <Route
+                                path="/explore/:groupId/:artifactId"
+                                /*element={ <ArtifactPage /> }*/
+                            />
+                            <Route
+                                path="/explore/:groupId/:artifactId/versions"
+                                /*element={ <ArtifactPage /> }*/
+                            />
                             <Route path="/designs/:designId/editor" element={<EditorPage />}/>,
                             <Route path="/editor-embedded" element={<EmbeddedEditorPage />}/>,
 

@@ -1,0 +1,36 @@
+div.artifact-page-tabs > ul > li.pf-c-tabs__item.pf-m-current > button.pf-c-tabs__button::before {
+    border-bottom-color: transparent;
+}
+
+.artifact-details-main {
+    display: flex;
+    flex-direction: column;
+}
+
+.artifact-details-main .pf-c-tab-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#artifact-page-tabs > ul > li:first-child {
+    margin-left: 20px;
+}
+
+.ps_header-breadcrumbs {
+    padding: 12px 24px 0;
+}
+
+.pf-v5-c-breadcrumb__item-divider {
+    color: #666;
+}
+
+#pf-tab-section-content-artifact-page-tabs {
+    display: flex;
+    flex-grow: 1;
+    position: relative;
+}
+
+.documentation-tab {
+    flex-grow: 1;
+}

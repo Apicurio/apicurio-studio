@@ -27,7 +27,8 @@
       "@editors/*": [ "./src/editors/*" ],
       "@services/*": [ "./src/services/*" ],
       "@utils/*": [ "./src/utils/*" ]
-    }
+    },
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src"

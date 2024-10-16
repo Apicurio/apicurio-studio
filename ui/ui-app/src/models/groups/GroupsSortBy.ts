@@ -1,4 +1,4 @@
 
-export enum DraftsSortBy {
-    version = "version", name = "name", modifiedOn = "modifiedOn",
+export enum GroupsSortBy {
+    groupId = "groupId", name = "name", modifiedOn = "modifiedOn",
 }

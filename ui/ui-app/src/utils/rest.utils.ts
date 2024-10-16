@@ -2,6 +2,7 @@ import { AuthenticationProvider, Headers, RequestInformation } from "@microsoft/
 import { AuthService } from "@apicurio/common-ui-components";
 import { ApicurioRegistryClient, RegistryClientFactory } from "@apicurio/apicurio-registry-sdk";
 import { ApicurioStudioConfig } from "@services/useConfigService.ts";
+import {Labels} from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
 /**
  * An authentication provider for Kiota - used in the generated SDK client to provide
@@ -60,6 +61,15 @@ export const getRegistryClient = (config: ApicurioStudioConfig, auth: AuthServic
         client = createRegistryClient(config, auth);
     }
     return client;
+};
+
+export const labelsToAny = (labels: Labels | undefined | null): any => {
+    const rval: any = {
+        ...(labels||{}),
+        ...(labels?.additionalData||{})
+    };
+    delete rval["additionalData"];
+    return rval;
 };
 
 //

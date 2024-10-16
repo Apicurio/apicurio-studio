@@ -1,0 +1,53 @@
+.group-tab-content {
+    padding: 22px;
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(240,240,240);
+}
+
+.group-tab-content .group-basics {
+    flex-grow: 1;
+    flex-basis: 40%;
+    margin-right: 15px;
+}
+
+.group-tab-content .group-basics .title-and-type {
+}
+
+.group-tab-content .group-basics .title-and-type .type {
+}
+
+.group-tab-content .group-basics .title-and-type .title {
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 24px;
+    display: inline-block;
+}
+
+.group-tab-content .group-basics .metaData {
+    margin-bottom: 20px;
+}
+
+.group-tab-content .group-basics .actions {
+}
+
+
+.group-tab-content .group-rules {
+    flex-grow: 1;
+    flex-basis: 60%;
+}
+
+.group-tab-content .group-rules .rules-label {
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 29px;
+    padding-bottom: 7px;
+}
+
+.label-truncate, .label-truncate, .label-truncate > span, .label-truncate > span {
+    min-width: unset;
+}
+
+#generate-client-action {
+    margin-left: 10px;
+}

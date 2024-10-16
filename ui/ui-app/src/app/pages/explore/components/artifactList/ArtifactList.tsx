@@ -3,7 +3,7 @@ import "./ArtifactList.css";
 import { DataList, DataListCell, DataListItemCells, DataListItemRow } from "@patternfly/react-core";
 import { ArtifactTypeIcon } from "@app/components";
 import { ArtifactGroup, ArtifactName } from "@app/pages";
-import { SearchedArtifact } from "@sdk/lib/generated-client/models";
+import { SearchedArtifact } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
 /**
  * Properties

@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import { Link } from "react-router-dom";
-import { AppNavigation, useAppNavigation } from "@services/useAppNavigation.ts";
+import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 
 let testIdCounter: number = 1;
 
@@ -12,7 +12,7 @@ export type ArtifactNameProps = {
 
 
 export const ArtifactName: FunctionComponent<ArtifactNameProps> = (props: ArtifactNameProps) => {
-    const appNav: AppNavigation = useAppNavigation();
+    const appNav: AppNavigationService = useAppNavigation();
 
     const artifactLink = (): string => {
         const groupId: string = props.groupId == null ? "default" : props.groupId;

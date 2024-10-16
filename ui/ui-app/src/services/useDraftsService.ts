@@ -6,8 +6,8 @@ import { CreateDraft, Draft, DraftsSearchFilter, DraftsSearchResults, DraftsSort
 import { SortOrder } from "@models/SortOrder.ts";
 import { Paging } from "@models/Paging.ts";
 import {
-    ArtifactMetaData,
-    CreateArtifact,
+    Comment,
+    CreateArtifact, NewComment, SearchedVersion,
     VersionMetaData
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import {
@@ -15,6 +15,32 @@ import {
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/search/versions";
 
 
+const normalizeGroupId = (groupId: string|null): string => {
+    return groupId || "default";
+};
+
+const toDraft = (vmd: VersionMetaData | SearchedVersion | undefined): Draft => {
+    const draft: Draft = {
+        groupId: vmd!.groupId || "default",
+        draftId: vmd!.artifactId!,
+        version: vmd!.version!,
+        type: vmd!.artifactType!,
+        name: vmd!.name!,
+        description: vmd!.description!,
+        createdBy: vmd!.owner as string,
+        createdOn: vmd!.createdOn!,
+        // TODO restore this once the modified info is returned here
+        // modifiedBy: vmd.modifiedBy!,
+        // modifiedOn: vmd.modifiedOn!,
+        // TODO implement handling of labels in Studio
+        // labels: vmd.labels!,
+    };
+    return draft;
+};
+
+/**
+ * Search for drafts.
+ */
 async function searchDrafts(appConfig: ApicurioStudioConfig, auth: AuthService, filters: DraftsSearchFilter[],
                             sortBy: DraftsSortBy, sortOrder: SortOrder, paging: Paging): Promise<DraftsSearchResults> {
     console.debug("[DraftsService] Searching for drafts: ", filters, paging, sortBy, sortOrder);
@@ -41,31 +67,15 @@ async function searchDrafts(appConfig: ApicurioStudioConfig, auth: AuthService, 
     }).then(results => {
         const rval: DraftsSearchResults = {
             count: results?.count as number,
-            drafts: results?.versions?.map(version => {
-                const draft: Draft = {
-                    groupId: version.groupId || "default",
-                    draftId: version.artifactId!,
-                    version: version.version!,
-                    type: version.artifactType!,
-                    name: version.name!,
-                    description: version.description!,
-                    createdBy: version.owner!,
-                    createdOn: version.createdOn as Date,
-
-                    // TODO populate the next three - needs SDK update
-                    labels: {},
-                    modifiedBy: "user",
-                    modifiedOn: new Date()
-                    // modifiedBy: version.modifiedBy as string,
-                    // modifiedOn: version.modifiedOn as Date,
-                };
-                return draft;
-            }) as Draft[]
+            drafts: results?.versions?.map(toDraft) as Draft[]
         };
         return rval;
     });
 }
 
+/**
+ * Create a draft.
+ */
 async function createDraft(appConfig: ApicurioStudioConfig, auth: AuthService, data: CreateDraft): Promise<Draft> {
     console.debug("[DraftsService] Creating a new draft: ", data);
     const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
@@ -97,35 +107,88 @@ async function createDraft(appConfig: ApicurioStudioConfig, auth: AuthService, d
     }
 
     // TODO set "isDraft" to true - replace this once Registry 3.0.2 is released and the new SDK is available
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    createArtifact.firstVersion.isDraft = true;
+    if (createArtifact.firstVersion) {
+        createArtifact.firstVersion.additionalData = {
+            "isDraft": true
+        };
+    }
 
     return client.groups.byGroupId(data.groupId || "default").artifacts.post(createArtifact, {
         queryParameters: {
             ifExists: "CREATE_VERSION"
         }
-    }).then(result => {
-        const amd: ArtifactMetaData = result?.artifact as ArtifactMetaData;
-        const vmd: VersionMetaData = result?.version as VersionMetaData;
-        const draft: Draft = {
-            groupId: amd.groupId || "default",
-            draftId: amd.artifactId!,
-            version: vmd.version!,
-            type: amd.artifactType!,
-            name: vmd.name!,
-            description: vmd.description!,
-            createdBy: vmd.owner as string,
-            createdOn: vmd.createdOn!,
-            // TODO restore this once the modified info is returned here
-            // modifiedBy: vmd.modifiedBy!,
-            // modifiedOn: vmd.modifiedOn!,
-            // TODO implement handling of labels in Studio
-            // labels: vmd.labels!,
-        };
-        return draft;
-    });
+    }).then(result => toDraft(result!.version!));
 }
+
+/**
+ * Get a draft.
+ */
+async function getDraft(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string): Promise<Draft> {
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+
+    groupId = normalizeGroupId(groupId);
+    console.info("[DraftsService] Getting a draft: ", groupId, draftId, version);
+
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions
+        .byVersionExpression(version).get().then(toDraft);
+}
+
+/**
+ * Get draft comments.
+ */
+async function getDraftComments(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string): Promise<Comment[]> {
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+
+    groupId = normalizeGroupId(groupId);
+    console.info("[DraftsService] Getting the list of comments for draft: ", groupId, draftId, version);
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions
+        .byVersionExpression(version).comments.get();
+}
+
+/**
+ * Create a draft comment.
+ */
+async function createDraftComment(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string, data: NewComment): Promise<Comment> {
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+
+    groupId = normalizeGroupId(groupId);
+    console.info("[DraftsService] Creating a new comment for draft: ", groupId, draftId, version);
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions
+        .byVersionExpression(version).comments.post(data);
+}
+
+/**
+ * Update a draft comment.
+ */
+async function updateDraftComment(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string, commentId: string, data: NewComment): Promise<void> {
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+
+    groupId = normalizeGroupId(groupId);
+    console.info("[DraftsService] Updating a comment for draft: ", groupId, draftId, version);
+
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions
+        .byVersionExpression(version).comments.byCommentId(commentId).put(data);
+}
+
+/**
+ * Delete a draft comment.
+ */
+async function deleteDraftComment(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string, commentId: string): Promise<void> {
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+
+    groupId = normalizeGroupId(groupId);
+    console.info("[DraftsService] Deleting a comment for draft: ", groupId, draftId, version);
+
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions
+        .byVersionExpression(version).comments.byCommentId(commentId).delete();
+}
+
 
 /**
  * The Drafts Service interface.
@@ -133,6 +196,12 @@ async function createDraft(appConfig: ApicurioStudioConfig, auth: AuthService, d
 export interface DraftsService {
     searchDrafts(filters: DraftsSearchFilter[], sortBy: DraftsSortBy, sortOrder: SortOrder, paging: Paging): Promise<DraftsSearchResults>;
     createDraft(data: CreateDraft): Promise<Draft>;
+    getDraft(groupId: string, draftId: string, version: string): Promise<Draft>;
+
+    getDraftComments(groupId: string|null, draftId: string, version: string): Promise<Comment[]>;
+    createDraftComment(groupId: string|null, draftId: string, version: string, data: NewComment): Promise<Comment>;
+    updateDraftComment(groupId: string|null, draftId: string, version: string, commentId: string, data: NewComment): Promise<void>;
+    deleteDraftComment(groupId: string|null, draftId: string, version: string, commentId: string): Promise<void>;
 }
 
 
@@ -144,7 +213,20 @@ export const useDraftsService: () => DraftsService = (): DraftsService => {
     const auth: AuthService = useAuth();
 
     return {
-        searchDrafts: (filters: DraftsSearchFilter[], sortBy: DraftsSortBy, sortOrder: SortOrder, paging: Paging) => searchDrafts(appConfig, auth, filters, sortBy, sortOrder, paging),
-        createDraft: (data: CreateDraft) => createDraft(appConfig, auth, data)
+        searchDrafts: (filters: DraftsSearchFilter[], sortBy: DraftsSortBy, sortOrder: SortOrder, paging: Paging) =>
+            searchDrafts(appConfig, auth, filters, sortBy, sortOrder, paging),
+        createDraft: (data: CreateDraft) =>
+            createDraft(appConfig, auth, data),
+        getDraft: (groupId: string, draftId: string, version: string) =>
+            getDraft(appConfig, auth, groupId, draftId, version),
+
+        getDraftComments: (groupId: string|null, draftId: string, version: string) =>
+            getDraftComments(appConfig, auth, groupId, draftId, version),
+        createDraftComment: (groupId: string|null, draftId: string, version: string, data: NewComment) =>
+            createDraftComment(appConfig, auth, groupId, draftId, version, data),
+        updateDraftComment: (groupId: string|null, draftId: string, version: string, commentId: string, data: NewComment) =>
+            updateDraftComment(appConfig, auth, groupId, draftId, version, commentId, data),
+        deleteDraftComment: (groupId: string|null, draftId: string, version: string, commentId: string) =>
+            deleteDraftComment(appConfig, auth, groupId, draftId, version, commentId),
     };
 };

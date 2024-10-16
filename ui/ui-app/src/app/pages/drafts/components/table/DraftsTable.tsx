@@ -137,9 +137,7 @@ export const DraftsTable: FunctionComponent<DraftsTableProps> = (props: DraftsTa
                 data={props.drafts}
                 expectedLength={props.drafts.length}
                 minimumColumnWidth={350}
-                onRowClick={(row) => {
-                    console.log(row);
-                }}
+                onRowClick={() => {}}
                 renderHeader={({ column, Th }) => (
                     <Th sort={sortParams(column)}
                         className="drafts-table-header"

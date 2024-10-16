@@ -1,1 +1,2 @@
-export * from "./DraftPage.tsx";
+export * from "./DraftPage";
+export * from "./components";

@@ -1,3 +1,57 @@
 .ps_header-breadcrumbs {
     padding: 12px 24px 0;
 }
+
+.draft-content {
+    padding: 22px;
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(240,240,240);
+}
+
+.draft-content .draft-basics {
+    flex-grow: 1;
+    flex-basis: 40%;
+    margin-right: 15px;
+}
+
+.draft-content .draft-basics .title-and-type {
+}
+
+.draft-content .draft-basics .title-and-type .type {
+}
+
+.draft-content .draft-basics .title-and-type .title {
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 24px;
+    display: inline-block;
+}
+
+.draft-content .draft-basics .metaData {
+    margin-bottom: 20px;
+}
+
+.draft-content .draft-basics .actions {
+}
+
+.draft-content .draft-comments {
+    flex-grow: 1;
+    flex-basis: 60%;
+}
+
+.draft-content .draft-comments .comments-label {
+    font-size: 17px;
+    font-weight: bold;
+    line-height: 29px;
+    padding-bottom: 7px;
+}
+
+
+.label-truncate, .label-truncate, .label-truncate > span, .label-truncate > span {
+    min-width: unset;
+}
+
+#generate-client-action {
+    margin-left: 10px;
+}

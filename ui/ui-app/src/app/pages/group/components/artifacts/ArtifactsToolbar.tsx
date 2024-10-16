@@ -1,5 +1,5 @@
 import { FunctionComponent } from "react";
-import "./ArtifactsTabToolbar.css";
+import "./ArtifactsToolbar.css";
 import { Pagination, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
 import { Paging } from "@models/Paging.ts";
 import { ArtifactSearchResults } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
@@ -18,7 +18,7 @@ export type ArtifactsToolbarProps = {
 /**
  * Models the toolbar for the Artifacts tab on the Group page.
  */
-export const ArtifactsTabToolbar: FunctionComponent<ArtifactsToolbarProps> = (props: ArtifactsToolbarProps) => {
+export const ArtifactsToolbar: FunctionComponent<ArtifactsToolbarProps> = (props: ArtifactsToolbarProps) => {
 
     const onSetPage = (_event: any, newPage: number, perPage?: number): void => {
         const newPaging: Paging = {

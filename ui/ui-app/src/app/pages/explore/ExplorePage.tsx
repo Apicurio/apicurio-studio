@@ -1,6 +1,6 @@
-import {FunctionComponent, useEffect, useState} from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import "./ExplorePage.css";
-import {PageSection, PageSectionVariants, TextContent} from "@patternfly/react-core";
+import { PageSection, PageSectionVariants, TextContent } from "@patternfly/react-core";
 import {
     ExplorePageEmptyState,
     ExplorePageToolbar,
@@ -11,14 +11,14 @@ import {
     PageErrorHandler,
     toPageError
 } from "@app/pages";
-import {RootPageHeader} from "@app/components";
-import {If, ListWithToolbar} from "@apicurio/common-ui-components";
-import {ExploreType} from "@app/pages/explore/ExploreType.ts";
-import {Paging} from "@models/Paging.ts";
-import {FilterBy, SearchFilter, useSearchService} from "@services/useSearchService.ts";
-import {GroupSearchResults} from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
-import {SortOrder} from "@models/SortOrder.ts";
-import {GroupsSortBy} from "@models/groups";
+import { RootPageHeader } from "@app/components";
+import { If, ListWithToolbar } from "@apicurio/common-ui-components";
+import { ExploreType } from "@app/pages/explore/ExploreType.ts";
+import { Paging } from "@models/Paging.ts";
+import { FilterBy, SearchFilter, useSearchService } from "@services/useSearchService.ts";
+import { GroupSearchResults } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import { SortOrder } from "@models/SortOrder.ts";
+import { GroupsSortBy } from "@models/groups";
 
 /**
  * Properties
@@ -83,8 +83,8 @@ export const ExplorePage: FunctionComponent<ExplorePageProps> = () => {
             }
         ];
 
-        const sortOrder: SortOrder = SortOrder.asc
-         if (exploreType === ExploreType.GROUP) {
+        const sortOrder: SortOrder = SortOrder.asc;
+        if (exploreType === ExploreType.GROUP) {
             return searchSvc.searchGroups(filters, GroupsSortBy.groupId, sortOrder, paging).then(results => {
                 onResultsLoaded(results);
             }).catch(error => {
@@ -152,7 +152,7 @@ export const ExplorePage: FunctionComponent<ExplorePageProps> = () => {
         <PageErrorHandler error={pageError}>
             <PageDataLoader loaders={loaders}>
                 <PageSection className="ps_explore-header" variant={PageSectionVariants.light} padding={{ default: "noPadding" }}>
-                    <RootPageHeader tabKey={0} />
+                    <RootPageHeader tabKey={1} />
                 </PageSection>
                 <PageSection className="ps_explore-description" variant={PageSectionVariants.light}>
                     <TextContent>

@@ -9,7 +9,6 @@ import { Flex, FlexItem, Text, TextContent, TextVariants } from "@patternfly/rea
 export type GroupPageHeaderProps = {
     title: string;
     groupId: string;
-    onDeleteGroup: () => void;
 };
 
 /**

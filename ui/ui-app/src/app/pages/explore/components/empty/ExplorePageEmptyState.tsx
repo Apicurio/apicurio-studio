@@ -18,7 +18,6 @@ import { ExploreType } from "@app/pages/explore/ExploreType.ts";
 export type ExplorePageEmptyStateProps = {
     exploreType: ExploreType;
     isFiltered: boolean;
-    onImport: () => void;
 };
 
 

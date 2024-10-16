@@ -1,8 +1,8 @@
-import {FunctionComponent, useEffect, useState} from "react";
-import "./ArtifactsTabContent.css";
-import {ListWithToolbar} from "@apicurio/common-ui-components";
-import {ArtifactsTabToolbar} from "@app/pages/group/components/tabs/ArtifactsTabToolbar.tsx";
-import {Paging} from "@models/Paging.ts";
+import { FunctionComponent, useEffect, useState } from "react";
+import "./ArtifactsTableWithToolbar.css";
+import { ListWithToolbar } from "@apicurio/common-ui-components";
+import { ArtifactsToolbar } from "@app/pages/group/components/artifacts/ArtifactsToolbar.tsx";
+import { Paging } from "@models/Paging.ts";
 import {
     EmptyState,
     EmptyStateActions,
@@ -12,21 +12,21 @@ import {
     EmptyStateVariant,
     Title
 } from "@patternfly/react-core";
-import {PlusCircleIcon} from "@patternfly/react-icons";
-import {ArtifactsTable} from "@app/pages/group/components/tabs/ArtifactsTable.tsx";
-import {GroupsService, useGroupsService} from "@services/useGroupsService.ts";
+import { PlusCircleIcon } from "@patternfly/react-icons";
+import { ArtifactsTable } from "@app/pages/group/components/artifacts/ArtifactsTable.tsx";
+import { GroupsService, useGroupsService } from "@services/useGroupsService.ts";
 import {
     ArtifactSearchResults,
     GroupMetaData,
     SearchedArtifact
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
-import {SortOrder} from "@models/SortOrder.ts";
-import {ArtifactsSortBy} from "@models/artifacts";
+import { SortOrder } from "@models/SortOrder.ts";
+import { ArtifactsSortBy } from "@models/artifacts";
 
 /**
  * Properties
  */
-export type ArtifactsTabContentProps = {
+export type ArtifactsTableWithToolbarProps = {
     group: GroupMetaData;
     onViewArtifact: (artifact: SearchedArtifact) => void;
 };
@@ -34,7 +34,7 @@ export type ArtifactsTabContentProps = {
 /**
  * Models the content of the Artifact Info tab.
  */
-export const ArtifactsTabContent: FunctionComponent<ArtifactsTabContentProps> = (props: ArtifactsTabContentProps) => {
+export const ArtifactsTableWithToolbar: FunctionComponent<ArtifactsTableWithToolbarProps> = (props: ArtifactsTableWithToolbarProps) => {
     const [isLoading, setLoading] = useState<boolean>(true);
     const [isError, setError] = useState<boolean>(false);
     const [paging, setPaging] = useState<Paging>({
@@ -56,7 +56,7 @@ export const ArtifactsTabContent: FunctionComponent<ArtifactsTabContentProps> = 
         groups.getGroupArtifacts(props.group.groupId!, sortBy, sortOrder, paging).then(sr => {
             setResults(sr);
             setLoading(false);
-        }).catch(error => {
+        }).catch(() => {
             setLoading(false);
             setError(true);
         });
@@ -72,7 +72,7 @@ export const ArtifactsTabContent: FunctionComponent<ArtifactsTabContentProps> = 
     };
 
     const toolbar = (
-        <ArtifactsTabToolbar results={results} paging={paging} onPageChange={setPaging}/>
+        <ArtifactsToolbar results={results} paging={paging} onPageChange={setPaging}/>
     );
 
     const emptyState = (
@@ -90,26 +90,22 @@ export const ArtifactsTabContent: FunctionComponent<ArtifactsTabContentProps> = 
     );
 
     return (
-        <div className="artifacts-tab-content">
-            <div className="artifacts-toolbar-and-table">
-                <ListWithToolbar toolbar={toolbar}
-                    emptyState={emptyState}
-                    filteredEmptyState={emptyState}
-                    isLoading={isLoading}
-                    isError={isError}
-                    isFiltered={false}
-                    isEmpty={results.count === 0}
-                >
-                    <ArtifactsTable
-                        artifacts={results.artifacts!}
-                        onSort={onSort}
-                        sortBy={sortBy}
-                        sortOrder={sortOrder}
-                        onView={props.onViewArtifact}
-                    />
-                </ListWithToolbar>
-            </div>
-        </div>
+        <ListWithToolbar toolbar={toolbar}
+            emptyState={emptyState}
+            filteredEmptyState={emptyState}
+            isLoading={isLoading}
+            isError={isError}
+            isFiltered={false}
+            isEmpty={results.count === 0}
+        >
+            <ArtifactsTable
+                artifacts={results.artifacts!}
+                onSort={onSort}
+                sortBy={sortBy}
+                sortOrder={sortOrder}
+                onView={props.onViewArtifact}
+            />
+        </ListWithToolbar>
     );
 
 };

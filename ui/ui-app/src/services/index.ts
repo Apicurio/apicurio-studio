@@ -9,3 +9,6 @@ export * from "./useSystemService";
 export * from "./useTemplatesService";
 export * from "./useUrlService";
 export * from "./useUserService";
+export * from "./useGroupsService.ts";
+export * from "./useSearchService.ts";
+export * from "./useAdminService.ts";

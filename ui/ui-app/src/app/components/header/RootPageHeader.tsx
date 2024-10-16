@@ -21,7 +21,7 @@ export const RootPageHeader: FunctionComponent<RootPageHeaderProps> = (props: Ro
                 appNavigation.navigateTo("/drafts");
             }
             if (eventKey === 1) {
-                // navigate to global rules
+                // navigate to explore tab
                 appNavigation.navigateTo("/explore");
             }
         }

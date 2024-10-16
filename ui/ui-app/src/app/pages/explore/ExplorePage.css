@@ -1,0 +1,4 @@
+.upload-artifact-modal .pf-c-modal-box__body {
+    overflow-x: initial;
+    overflow-y: visible;
+}

@@ -22,7 +22,7 @@ env:
 jobs:
   release-images:
     if: github.repository_owner == 'Apicurio'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Set up JDK 17
         uses: actions/setup-java@v3

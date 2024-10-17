@@ -7,7 +7,7 @@ on:
 jobs:
   update-website:
     if: github.repository_owner == 'Apicurio'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
 
       - name: Apicurio Website Checkout

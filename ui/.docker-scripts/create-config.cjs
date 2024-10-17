@@ -6,7 +6,7 @@ const CONFIG_OUTPUT_PATH=process.env["APICURIO_CONFIG_OUTPUT_PATH"] || "/opt/app
 
 console.info("Generating application config at:", CONFIG_OUTPUT_PATH);
 
-const APICURIO_STUDIO_API_URL=process.env["APICURIO_STUDIO_API_URL"] || "http://localhost:8080/apis/studio/v1";
+const APICURIO_REGISTRY_API_URL=process.env["APICURIO_REGISTRY_API_URL"] || "http://localhost:8080/apis/registry/v3";
 
 const CONTEXT_PATH=process.env["APICURIO_CONTEXT_PATH"];
 const NAV_PREFIX_PATH=process.env["APICURIO_NAV_PREFIX_PATH"];
@@ -23,13 +23,19 @@ const AUTH_REDIRECT_URL=process.env["APICURIO_AUTH_REDIRECT_URL"];
 // Create the config to output.
 const CONFIG = {
     apis: {
-        studio: APICURIO_STUDIO_API_URL
+        registry: APICURIO_REGISTRY_API_URL
     },
-    ui: {},
+    ui: {
+        navPrefixPath: "",
+        contextPath: "/"
+    },
     components: {
-        masthead: {},
-        editors: {},
-        nav: {}
+        masthead: {
+            show: true
+        },
+        editors: {
+            url: "/editors"
+        }
     },
     auth: {}
 };

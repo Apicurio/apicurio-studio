@@ -1,17 +1,14 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
-import {Link} from "react-router-dom";
-import {SortByDirection, ThProps} from "@patternfly/react-table";
-import {FromNow, ObjectDropdown, ResponsiveTable} from "@apicurio/common-ui-components";
-import {AppNavigationService, useAppNavigation} from "@services/useAppNavigation.ts";
-import {ArtifactDescription, ArtifactTypeIcon} from "@app/components";
-import {shash} from "@utils/string.utils.ts";
-import {Truncate} from "@patternfly/react-core";
-import {
-    SearchedArtifact,
-} from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
-import {ConfigService, useConfigService} from "@services/useConfigService.ts";
-import {SortOrder} from "@models/SortOrder.ts";
-import {ArtifactsSortBy} from "@models/artifacts";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { SortByDirection, ThProps } from "@patternfly/react-table";
+import { FromNow, ObjectDropdown, ResponsiveTable } from "@apicurio/common-ui-components";
+import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
+import { ArtifactDescription, ArtifactTypeIcon } from "@app/components";
+import { shash } from "@utils/string.utils.ts";
+import { Truncate } from "@patternfly/react-core";
+import { SearchedArtifact, } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import { SortOrder } from "@models/SortOrder.ts";
+import { ArtifactsSortBy } from "@models/artifacts";
 
 export type ArtifactsTableProps = {
     artifacts: SearchedArtifact[];
@@ -44,7 +41,14 @@ export const ArtifactsTable: FunctionComponent<ArtifactsTableProps> = (props: Ar
             sortable: true,
             sortBy: ArtifactsSortBy.artifactId
         },
-        {index: 1, id: "type", label: "Type", width: 15, sortable: true, sortBy: ArtifactsSortBy.artifactType},
+        {
+            index: 1,
+            id: "type",
+            label: "Type",
+            width: 15,
+            sortable: true,
+            sortBy: ArtifactsSortBy.artifactType
+        },
         {
             index: 2,
             id: "createdOn",
@@ -73,8 +77,8 @@ export const ArtifactsTable: FunctionComponent<ArtifactsTableProps> = (props: Ar
             return (
                 <div>
                     <Link className="artifact-title"
-                          style={{overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
-                          to={appNavigation.createLink(`/explore/${encodeURIComponent(column.groupId as string)}/${encodeURIComponent(column.artifactId!)}`)}
+                        style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                        to={appNavigation.createLink(`/explore/${encodeURIComponent(column.groupId as string)}/${encodeURIComponent(column.artifactId!)}`)}
                     >
                         <Truncate content={idAndName(column)}/>
                     </Link>
@@ -84,15 +88,15 @@ export const ArtifactsTable: FunctionComponent<ArtifactsTableProps> = (props: Ar
                         whiteSpace: "nowrap",
                         fontSize: "14px"
                     }}
-                                         description={column.description}
-                                         truncate={true}/>
+                    description={column.description}
+                    truncate={true}/>
                 </div>
             );
         }
         // Type.
         if (colIndex === 1) {
             return (
-                <ArtifactTypeIcon artifactType={column.artifactType!}/>
+                <ArtifactTypeIcon type={column.artifactType!} isShowIcon={true} isShowLabel={true} />
             );
         }
         // Created on.
@@ -112,7 +116,7 @@ export const ArtifactsTable: FunctionComponent<ArtifactsTableProps> = (props: Ar
     const actionsFor = (artifact: SearchedArtifact): (ArtifactAction | ArtifactActionSeparator)[] => {
         const ahash: number = shash(artifact.artifactId!);
 
-        return [{label: "View artifact", onClick: () => props.onView(artifact), testId: `view-artifact-${ahash}`}];
+        return [{ label: "View artifact", onClick: () => props.onView(artifact), testId: `view-artifact-${ahash}` }];
     };
 
     const sortParams = (column: any): ThProps["sort"] | undefined => {
@@ -154,19 +158,19 @@ export const ArtifactsTable: FunctionComponent<ArtifactsTableProps> = (props: Ar
                 onRowClick={(row) => {
                     console.log(row);
                 }}
-                renderHeader={({column, Th}) => (
+                renderHeader={({ column, Th }) => (
                     <Th sort={sortParams(column)}
                         className="artifacts-table-header"
                         key={`header-${column.id}`}
                         width={column.width}
                         modifier="truncate">{column.label}</Th>
                 )}
-                renderCell={({row, colIndex, Td}) => (
+                renderCell={({ row, colIndex, Td }) => (
                     <Td className="artifacts-table-cell" key={`cell-${colIndex}-${shash(row.artifactId!)}`}
-                        style={{maxWidth: "0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap"}}
+                        style={{ maxWidth: "0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
                         children={renderColumnData(row as SearchedArtifact, colIndex) as any}/>
                 )}
-                renderActions={({row}) => (
+                renderActions={({ row }) => (
                     <ObjectDropdown
                         items={actionsFor(row)}
                         isKebab={true}

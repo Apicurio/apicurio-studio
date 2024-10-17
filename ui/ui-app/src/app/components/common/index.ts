@@ -1,3 +1,5 @@
+export * from "./ArtifactGroup";
+export * from "./ArtifactName";
 export * from "./ArtifactTypeIcon";
 export * from "./ArtifactDescription";
 export * from "./Description";

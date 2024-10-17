@@ -1,5 +1,5 @@
 import { FunctionComponent, useEffect, useState } from "react";
-import "./VersionsTabContent.css";
+import "./VersionsTableWithToolbar.css";
 import { ListWithToolbar } from "@apicurio/common-ui-components";
 import { Paging } from "@models/Paging.ts";
 import {
@@ -13,7 +13,7 @@ import {
 } from "@patternfly/react-core";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { GroupsService, useGroupsService } from "@services/useGroupsService.ts";
-import { VersionsTable, VersionsTabToolbar } from "@app/pages/artifact";
+import { VersionsTable, VersionsToolbar } from "@app/pages/artifact";
 import {
     ArtifactMetaData,
     SearchedVersion,
@@ -25,15 +25,15 @@ import { SortOrder } from "@models/SortOrder.ts";
 /**
  * Properties
  */
-export type VersionsTabContentProps = {
+export type VersionsTableWithToolbarProps = {
     artifact: ArtifactMetaData;
-    onViewVersion: (version: SearchedVersion) => void;
+    onCreateNewDraft: (version: SearchedVersion) => void;
 };
 
 /**
  * Models the content of the Version Info tab.
  */
-export const VersionsTabContent: FunctionComponent<VersionsTabContentProps> = (props: VersionsTabContentProps) => {
+export const VersionsTableWithToolbar: FunctionComponent<VersionsTableWithToolbarProps> = (props: VersionsTableWithToolbarProps) => {
     const [isLoading, setLoading] = useState<boolean>(true);
     const [isError, setError] = useState<boolean>(false);
     const [paging, setPaging] = useState<Paging>({
@@ -55,7 +55,7 @@ export const VersionsTabContent: FunctionComponent<VersionsTabContentProps> = (p
         groups.getArtifactVersions(props.artifact.groupId!, props.artifact.artifactId!, sortBy, sortOrder, paging).then(sr => {
             setResults(sr);
             setLoading(false);
-        }).catch(error => {
+        }).catch(() => {
             setLoading(false);
             setError(true);
         });
@@ -71,7 +71,7 @@ export const VersionsTabContent: FunctionComponent<VersionsTabContentProps> = (p
     }, [props.artifact, paging, sortBy, sortOrder]);
 
     const toolbar = (
-        <VersionsTabToolbar results={results} paging={paging} onPageChange={setPaging} />
+        <VersionsToolbar results={results} paging={paging} onPageChange={setPaging} />
     );
 
     const emptyState = (
@@ -89,27 +89,23 @@ export const VersionsTabContent: FunctionComponent<VersionsTabContentProps> = (p
     );
 
     return (
-        <div className="artifacts-tab-content">
-            <div className="artifacts-toolbar-and-table">
-                <ListWithToolbar toolbar={toolbar}
-                    emptyState={emptyState}
-                    filteredEmptyState={emptyState}
-                    isLoading={isLoading}
-                    isError={isError}
-                    isFiltered={false}
-                    isEmpty={results.count === 0}
-                >
-                    <VersionsTable
-                        artifact={props.artifact}
-                        versions={results.versions!}
-                        onSort={onSort}
-                        sortBy={sortBy}
-                        sortOrder={sortOrder}
-                        onView={props.onViewVersion}
-                    />
-                </ListWithToolbar>
-            </div>
-        </div>
+        <ListWithToolbar toolbar={toolbar}
+            emptyState={emptyState}
+            filteredEmptyState={emptyState}
+            isLoading={isLoading}
+            isError={isError}
+            isFiltered={false}
+            isEmpty={results.count === 0}
+        >
+            <VersionsTable
+                artifact={props.artifact}
+                versions={results.versions!}
+                onSort={onSort}
+                sortBy={sortBy}
+                sortOrder={sortOrder}
+                onCreateNewDraft={props.onCreateNewDraft}
+            />
+        </ListWithToolbar>
     );
 
 };

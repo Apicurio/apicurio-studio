@@ -2,8 +2,8 @@ import { FunctionComponent } from "react";
 import "./GroupList.css";
 import { DataList, DataListCell, DataListItemCells, DataListItemRow, Icon } from "@patternfly/react-core";
 import { OutlinedFolderIcon } from "@patternfly/react-icons";
-import { ArtifactGroup } from "@app/pages";
 import { SearchedGroup } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import { ArtifactGroup } from "@app/components";
 
 /**
  * Properties

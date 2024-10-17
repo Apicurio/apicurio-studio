@@ -1,24 +1,24 @@
 import { FunctionComponent } from "react";
-import "./BranchesTabToolbar.css";
-import { Button, Pagination, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
+import "./VersionsToolbar.css";
+import { Pagination, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
 import { Paging } from "@models/Paging.ts";
-import { BranchSearchResults } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import { VersionSearchResults } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
 
 /**
  * Properties
  */
-export type BranchesToolbarProps = {
-    results: BranchSearchResults;
+export type VersionsToolbarProps = {
+    results: VersionSearchResults;
     paging: Paging;
     onPageChange: (paging: Paging) => void;
 };
 
 
 /**
- * Models the toolbar for the Branches tab on the Artifact page.
+ * Models the toolbar for the Versions tab on the Artifact page.
  */
-export const BranchesTabToolbar: FunctionComponent<BranchesToolbarProps> = (props: BranchesToolbarProps) => {
+export const VersionsToolbar: FunctionComponent<VersionsToolbarProps> = (props: VersionsToolbarProps) => {
 
     const onSetPage = (_event: any, newPage: number, perPage?: number): void => {
         const newPaging: Paging = {
@@ -37,9 +37,8 @@ export const BranchesTabToolbar: FunctionComponent<BranchesToolbarProps> = (prop
     };
 
     return (
-        <Toolbar id="branches-toolbar-1" className="branches-toolbar">
+        <Toolbar id="versions-toolbar-1" className="versions-toolbar">
             <ToolbarContent>
-
                 <ToolbarItem className="paging-item" align={{ default: "alignRight" }}>
                     <Pagination
                         variant="top"
@@ -49,8 +48,8 @@ export const BranchesTabToolbar: FunctionComponent<BranchesToolbarProps> = (prop
                         page={ props.paging.page }
                         onSetPage={ onSetPage }
                         onPerPageSelect={ onPerPageSelect }
-                        widgetId="reference-list-pagination"
-                        className="reference-list-pagination"
+                        widgetId="version-list-pagination"
+                        className="version-list-pagination"
                     />
                 </ToolbarItem>
             </ToolbarContent>

@@ -1,8 +1,6 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { SortByDirection, ThProps } from "@patternfly/react-table";
 import { FromNow, If, ObjectDropdown, ResponsiveTable } from "@apicurio/common-ui-components";
-import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 import { shash } from "@utils/string.utils.ts";
 import { ArtifactDescription } from "@app/components";
 import { ArtifactMetaData, SearchedVersion } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
@@ -15,7 +13,7 @@ export type VersionsTableProps = {
     sortBy: VersionsSortBy;
     sortOrder: SortOrder;
     onSort: (by: VersionsSortBy, order: SortOrder) => void;
-    onView: (version: SearchedVersion) => void;
+    onCreateNewDraft: (fromVersion: SearchedVersion) => void;
 }
 type VersionAction = {
     label: string;
@@ -30,8 +28,6 @@ type VersionActionSeparator = {
 export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: VersionsTableProps) => {
     const [sortByIndex, setSortByIndex] = useState<number>();
 
-    const appNavigation: AppNavigationService = useAppNavigation();
-
     const columns: any[] = [
         { index: 0, id: "version", label: "Version", width: 40, sortable: true, sortBy: VersionsSortBy.version },
         { index: 1, id: "globalId", label: "Global Id", width: 10, sortable: true, sortBy: VersionsSortBy.globalId },
@@ -42,20 +38,14 @@ export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: Vers
     const renderColumnData = (column: SearchedVersion, colIndex: number): React.ReactNode => {
         // Name.
         if (colIndex === 0) {
-            const groupId: string = encodeURIComponent(props.artifact.groupId || "default");
-            const artifactId: string = encodeURIComponent(props.artifact.artifactId!);
-            const version: string = encodeURIComponent(column.version!);
             return (
                 <div>
-                    <Link className="version-title"
-                        style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: "none" }}
-                        to={appNavigation.createLink(`/explore/${groupId}/${artifactId}/versions/${version}`)}
-                    >
+                    <div>
                         <span>{ column.version }</span>
                         <If condition={column.name != "" && column.name !== undefined && column.name !== null}>
                             <span style={{ marginLeft: "10px" }}>({column.name})</span>
                         </If>
-                    </Link>
+                    </div>
                     <ArtifactDescription className="version-description" style={{ overflow: "hidden", textOverflow: "hidden", whiteSpace: "nowrap", fontSize: "14px" }}
                         description={column.description}
                         truncate={true} />
@@ -85,7 +75,7 @@ export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: Vers
     const actionsFor = (version: SearchedVersion): (VersionAction | VersionActionSeparator)[] => {
         const vhash: number = shash(version.version!);
         return [
-            { label: "View version", onClick: () => props.onView(version), testId: `view-version-${vhash}` },
+            { label: "Create new draft", onClick: () => props.onCreateNewDraft(version), testId: `create-new-version-${vhash}` },
         ];
     };
 

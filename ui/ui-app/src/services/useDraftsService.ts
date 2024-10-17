@@ -256,6 +256,9 @@ function updateDraftContent(appConfig: ApicurioStudioConfig, auth: AuthService, 
     groupId = normalizeGroupId(groupId);
     console.info("[DraftsService] Deleting a draft: ", groupId, draftId, version);
 
+    console.info(client);
+    console.info(data);
+
     // TODO implement updating the content once the SDK is available for this
     // return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).content.put
     return Promise.resolve();

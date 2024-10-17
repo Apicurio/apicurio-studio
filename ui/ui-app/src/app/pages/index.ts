@@ -4,7 +4,6 @@ export * from "./drafts";
 export * from "./draft";
 export * from "./explore";
 export * from "./group";
-export * from "./rules";
 export * from "./editor";
 export * from "./root";
 export * from "./PageDataLoader";

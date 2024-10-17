@@ -1,4 +1,4 @@
-import {FunctionComponent, useEffect, useState} from "react";
+import { FunctionComponent, useState } from "react";
 import "./ExplorePageToolbar.css";
 import {
     Button,
@@ -11,13 +11,13 @@ import {
     ToolbarContent,
     ToolbarItem
 } from "@patternfly/react-core";
-import {SearchIcon, SortAlphaDownAltIcon, SortAlphaDownIcon} from "@patternfly/react-icons";
-import {OnPerPageSelect, OnSetPage} from "@patternfly/react-core/dist/js/components/Pagination/Pagination";
-import {If, ObjectSelect} from "@apicurio/common-ui-components";
-import {ExploreType} from "@app/pages/explore/ExploreType.ts";
+import { SearchIcon, SortAlphaDownAltIcon, SortAlphaDownIcon } from "@patternfly/react-icons";
+import { OnPerPageSelect, OnSetPage } from "@patternfly/react-core/dist/js/components/Pagination/Pagination";
+import { If, ObjectSelect } from "@apicurio/common-ui-components";
+import { ExploreType } from "@app/pages/explore/ExploreType.ts";
 import { Paging } from "@models/Paging.ts";
-import {FilterBy} from "@services/useSearchService.ts";
-import {GroupSearchResults} from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import { FilterBy } from "@services/useSearchService.ts";
+import { GroupSearchResults } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
 export type ExplorePageToolbarFilterCriteria = {
     filterBy: FilterBy;
@@ -42,9 +42,9 @@ type FilterType = {
     testId: string;
 };
 const GROUP_FILTER_TYPES: FilterType[] = [
-    {value: FilterBy.groupId, label: "Group", testId: "group-filter-typegroup"},
-    {value: FilterBy.description, label: "Description", testId: "group-filter-typedescription"},
-    {value: FilterBy.labels, label: "Labels", testId: "group-filter-typelabels"},
+    { value: FilterBy.groupId, label: "Group", testId: "group-filter-typegroup" },
+    { value: FilterBy.description, label: "Description", testId: "group-filter-typedescription" },
+    { value: FilterBy.labels, label: "Labels", testId: "group-filter-typelabels" },
 ];
 
 /**
@@ -126,14 +126,14 @@ export const ExplorePageToolbar: FunctionComponent<ExplorePageToolbarProps> = (p
                                     itemToString={(item) => item.label}/>
                             </If>
                             <TextInput name="filterValue" id="filterValue" type="search"
-                                       value={filterValue}
-                                       onChange={(_evt, value) => setFilterValue(value)}
-                                       data-testid="artifact-filter-value"
-                                       aria-label="search input example"/>
+                                value={filterValue}
+                                onChange={(_evt, value) => setFilterValue(value)}
+                                data-testid="artifact-filter-value"
+                                aria-label="search input example"/>
                             <Button variant={ButtonVariant.control}
-                                    onClick={onFilterSubmit}
-                                    data-testid="artifact-filter-search"
-                                    aria-label="search button for search input">
+                                onClick={onFilterSubmit}
+                                data-testid="artifact-filter-search"
+                                aria-label="search button for search input">
                                 <SearchIcon/>
                             </Button>
                         </InputGroup>
@@ -141,7 +141,7 @@ export const ExplorePageToolbar: FunctionComponent<ExplorePageToolbarProps> = (p
                 </ToolbarItem>
                 <ToolbarItem className="sort-icon-item">
                     <Button variant="plain" aria-label="edit" data-testid="artifact-filter-sort"
-                            onClick={onToggleAscending}>
+                        onClick={onToggleAscending}>
                         {
                             filterAscending ? <SortAlphaDownIcon/> : <SortAlphaDownAltIcon/>
                         }

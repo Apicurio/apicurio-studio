@@ -1,7 +1,7 @@
 {
   "name": "@apicurio/apicurio-studio-ui",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "license": "Apache-2.0",
   "repository": "https://github.com/Apicurio/apicurio-studio.git",

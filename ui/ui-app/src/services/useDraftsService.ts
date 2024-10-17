@@ -2,7 +2,15 @@ import { AuthService, useAuth } from "@apicurio/common-ui-components";
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 import { getRegistryClient } from "@utils/rest.utils.ts";
 import { ApicurioRegistryClient } from "@apicurio/apicurio-registry-sdk";
-import { CreateDraft, Draft, DraftInfo, DraftsSearchFilter, DraftsSearchResults, DraftsSortBy } from "@models/drafts";
+import {
+    CreateDraft,
+    Draft,
+    DraftContent,
+    DraftInfo,
+    DraftsSearchFilter,
+    DraftsSearchResults,
+    DraftsSortBy
+} from "@models/drafts";
 import { SortOrder } from "@models/SortOrder.ts";
 import { Paging } from "@models/Paging.ts";
 import {
@@ -14,6 +22,7 @@ import {
     VersionsRequestBuilderGetQueryParameters
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/search/versions";
 
+const arrayDecoder: TextDecoder = new TextDecoder("utf-8");
 
 const normalizeGroupId = (groupId: string|null): string => {
     return groupId || "default";
@@ -37,6 +46,7 @@ const toDraft = (vmd: VersionMetaData | SearchedVersion | undefined): Draft => {
     };
     return draft;
 };
+
 
 /**
  * Search for drafts.
@@ -214,6 +224,43 @@ function deleteDraft(appConfig: ApicurioStudioConfig, auth: AuthService, groupId
     return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).delete();
 }
 
+/**
+ * Get draft content.
+ */
+function getDraftContent(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string): Promise<DraftContent> {
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+
+    groupId = normalizeGroupId(groupId);
+    console.info("[DraftsService] Deleting a draft: ", groupId, draftId, version);
+
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).content.get({
+        headers: {
+            Accept: "*"
+        }
+    }).then(value => {
+        // TODO return the contentType by getting it from the response http headers
+        const textContent: string = arrayDecoder.decode(value!);
+        return {
+            content: textContent,
+            contentType: "application/json"
+        };
+    });
+}
+
+/**
+ * Update content of a draft.
+ */
+function updateDraftContent(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string, data: DraftContent): Promise<void> {
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+
+    groupId = normalizeGroupId(groupId);
+    console.info("[DraftsService] Deleting a draft: ", groupId, draftId, version);
+
+    // TODO implement updating the content once the SDK is available for this
+    // return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).content.put
+    return Promise.resolve();
+}
+
 
 /**
  * The Drafts Service interface.
@@ -224,6 +271,8 @@ export interface DraftsService {
     getDraft(groupId: string, draftId: string, version: string): Promise<Draft>;
     updateDraftInfo(groupId: string|null, draftId: string, version: string, draftInfo: DraftInfo): Promise<void>;
     deleteDraft(groupId: string|null, draftId: string, version: string): Promise<void>;
+    getDraftContent(groupId: string|null, draftId: string, version: string): Promise<DraftContent>;
+    updateDraftContent(groupId: string|null, draftId: string, version: string, data: DraftContent): Promise<void>;
 
     getDraftComments(groupId: string|null, draftId: string, version: string): Promise<Comment[]>;
     createDraftComment(groupId: string|null, draftId: string, version: string, data: NewComment): Promise<Comment>;
@@ -251,7 +300,10 @@ export const useDraftsService: () => DraftsService = (): DraftsService => {
             updateDraftInfo(appConfig, auth, groupId, draftId, version, draftInfo),
         deleteDraft: (groupId: string|null, draftId: string, version: string) =>
             deleteDraft(appConfig, auth, groupId, draftId, version),
-
+        getDraftContent: (groupId: string|null, draftId: string, version: string) =>
+            getDraftContent(appConfig, auth, groupId, draftId, version),
+        updateDraftContent: (groupId: string|null, draftId: string, version: string, data: DraftContent) =>
+            updateDraftContent(appConfig, auth, groupId, draftId, version, data),
 
         getDraftComments: (groupId: string|null, draftId: string, version: string) =>
             getDraftComments(appConfig, auth, groupId, draftId, version),

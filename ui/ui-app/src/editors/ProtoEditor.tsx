@@ -3,7 +3,7 @@ import { Editor as DesignEditor, EditorProps } from "./editor-types";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
-import { designContentToString } from "@utils/content.utils.ts";
+import { draftContentToString } from "@utils/content.utils.ts";
 
 const protoBufThemeData = {
     base: "vs",
@@ -23,13 +23,13 @@ const protoBufThemeData = {
  * Protobuf text editor with support for syntax hint and highlight.
  */
 export const ProtoEditor: DesignEditor = ({ content, onChange }: EditorProps) => {
-    const defaultValue: string = designContentToString(content);
+    const defaultValue: string = draftContentToString(content);
     const [value, setValue] = useState<string>(defaultValue);
 
     const editorRef: MutableRefObject<IStandaloneCodeEditor|undefined> = useRef<IStandaloneCodeEditor>();
 
     useEffect(() => {
-        const contentString: string = designContentToString(content);
+        const contentString: string = draftContentToString(content);
         setValue(contentString);
 
         if (editorRef.current) {

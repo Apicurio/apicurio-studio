@@ -1,8 +1,8 @@
 import React from "react";
-import { DesignContent } from "@models/designs";
+import { DraftContent } from "@models/drafts";
 
 export type EditorProps = {
-    content: DesignContent;
+    content: DraftContent;
     onChange: (value: any) => void;
 };
 

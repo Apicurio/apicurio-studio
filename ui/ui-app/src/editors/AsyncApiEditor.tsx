@@ -57,15 +57,15 @@ export const AsyncApiEditor: DesignEditor = ({ content, onChange, className }: A
     const onEditorLoaded = (): void => {
         // Now it's OK to post a message to iframe with the content to edit.
         let value: string;
-        if (typeof content.data === "object") {
+        if (typeof content.content === "object") {
             console.info("[AsyncApiEditor] Loading editor data from 'object' - converting to JSON string.");
-            value = toJsonString(content.data);
-        } else if (typeof content.data === "string" && content.contentType === ContentTypes.APPLICATION_YAML) {
+            value = toJsonString(content.content);
+        } else if (typeof content.content === "string" && content.contentType === ContentTypes.APPLICATION_YAML) {
             console.info("[AsyncApiEditor] Loading editor data from 'string' - converting from YAML to JSON.");
-            value = toJsonString(parseYaml(content.data as string));
+            value = toJsonString(parseYaml(content.content as string));
         } else {
             console.info("[AsyncApiEditor] Loading editor data from 'string' without content conversion.");
-            value = content.data as string;
+            value = content.content as string;
         }
         const message: any = {
             type: "apicurio-editingInfo",

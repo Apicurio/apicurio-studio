@@ -103,7 +103,11 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
     };
 
     const navigateToEditor = (): void => {
-        // TODO implement this
+        const groupId: string = encodeURIComponent(draft.groupId || "default");
+        const draftId: string = encodeURIComponent(draft.draftId!);
+        const version: string = encodeURIComponent(draft.version!);
+
+        appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}/editor`);
     };
 
 

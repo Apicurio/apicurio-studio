@@ -1,24 +1,24 @@
 import React, { CSSProperties, FunctionComponent, useEffect, useState } from "react";
-import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core";
-import { ArtifactTypes, ContentTypes, Design, DesignContent } from "@models/designs";
-import { DesignsService, useDesignsService } from "@services/useDesignsService.ts";
+import { Breadcrumb, BreadcrumbItem, PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { ArtifactTypes, ContentTypes } from "@models/designs";
 import { DownloadService, useDownloadService } from "@services/useDownloadService.ts";
-import { AlertsService, useAlertsService } from "@services/useAlertsService.tsx";
 import {
-    contentTypeForDesign,
-    convertToValidFilename,
-    fileExtensionForDesign,
+    contentTypeForDraft,
+    convertToValidFilename, fileExtensionForDraft,
     formatContent
 } from "@utils/content.utils.ts";
 import { TextEditor } from "@editors/TextEditor.tsx";
 import { ProtoEditor } from "@editors/ProtoEditor.tsx";
 import { OpenApiEditor } from "@editors/OpenApiEditor.tsx";
 import { AsyncApiEditor } from "@editors/AsyncApiEditor.tsx";
-import { unstable_usePrompt, useParams } from "react-router-dom";
-import { IfNotLoading } from "@apicurio/common-ui-components";
-import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
-import { AppHeader, DeleteDesignModal, RenameData, RenameModal } from "@app/components";
+import { Link, useParams } from "react-router-dom";
 import { CompareModal, EditorContext } from "@app/pages/editor/components";
+import { Draft, DraftContent } from "@models/drafts";
+import { PageDataLoader, PageError, PageErrorHandler, toPageError } from "@app/pages";
+import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
+import { PleaseWaitModal } from "@apicurio/common-ui-components";
+import { RootPageHeader } from "@app/components";
+import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 
 const sectionContextStyle: CSSProperties = {
     borderBottom: "1px solid #ccc",
@@ -51,56 +51,60 @@ const onBeforeUnload = (e: Event): void => {
 };
 
 export const EditorPage: FunctionComponent<EditorPageProps> = () => {
-    const [isLoading, setLoading] = useState(true);
-    const [design, setDesign] = useState<Design>();
-    const [editorDesignContent, setEditorDesignContent] = useState<DesignContent>({
-        designId: "",
+    const [pageError, setPageError] = useState<PageError>();
+    const [loaders, setLoaders] = useState<Promise<any> | Promise<any>[] | undefined>();
+    const [draft, setDraft] = useState<Draft>({
+        createdBy: "",
+        createdOn: new Date(),
+        description: undefined,
+        draftId: "",
+        groupId: "",
+        labels: {},
+        modifiedBy: "",
+        modifiedOn: new Date(),
+        name: "",
+        type: "",
+        version: ""
+    });
+    const [draftContent, setDraftContent] = useState<DraftContent>({
+        content: "",
         contentType: ContentTypes.APPLICATION_JSON,
-        data: ""
     });
     const [originalContent, setOriginalContent] = useState<any>();
     const [currentContent, setCurrentContent] = useState<any>();
     const [isDirty, setDirty] = useState(false);
-    const [isRenameModalOpen, setRenameModalOpen] = useState(false);
     const [isCompareModalOpen, setCompareModalOpen] = useState(false);
-    const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
+    const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
 
-    const params = useParams();
+    const { groupId, draftId, version } = useParams();
 
-    const designsService: DesignsService = useDesignsService();
+    const drafts: DraftsService = useDraftsService();
     const downloadSvc: DownloadService = useDownloadService();
-    const navigation: AppNavigationService = useAppNavigation();
-    const alerts: AlertsService = useAlertsService();
+    const appNavigation: AppNavigationService = useAppNavigation();
+
+    const createLoaders = (): Promise<any>[] => {
+        return [
+            drafts.getDraft(groupId as string, draftId as string, version as string)
+                .then(setDraft)
+                .catch(error => {
+                    setPageError(toPageError(error, "Error loading page data."));
+                }),
+            drafts.getDraftContent(groupId as string, draftId as string, version as string).then(content => {
+                setOriginalContent(content.content);
+                setCurrentContent(content.content);
+                setDraftContent(content);
+            })
+        ];
+    };
 
     useEffect(() => {
+        setLoaders(createLoaders());
         // Cleanup any possible event listener we might still have registered
         return () => {
             window.removeEventListener("beforeunload", onBeforeUnload);
         };
     }, []);
-
-    // Load the design based on the design ID (from the path param).
-    useEffect(() => {
-        setLoading(true);
-        const designId: string | undefined = params["designId"];
-
-        Promise.all([
-            designsService.getDesign(designId as string).then(design => {
-                setDesign(design);
-            }),
-            designsService.getDesignContent(designId as string).then(content => {
-                setOriginalContent(content.data);
-                setCurrentContent(content.data);
-                setEditorDesignContent(content);
-            })
-        ]).then(() => {
-            setLoading(false);
-            setDirty(false);
-        }).catch(error => {
-            // TODO better error handling needed!
-            console.error(`[EditorPage] Failed to get design content with id ${designId}: `, error);
-        });
-    }, [params]);
 
     // Add browser hook to prevent navigation and tab closing when the editor is dirty
     useEffect(() => {
@@ -112,10 +116,10 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     }, [isDirty]);
 
     // Add a react router prompt that will be used when *navigating* but the editor is dirty
-    unstable_usePrompt({
-        message: "You have unsaved changes.  Do you really want to navigate away and lose them?",
-        when: () => isDirty
-    });
+    // unstable_usePrompt({
+    //     message: "You have unsaved changes.  Do you really want to navigate away and lose them?",
+    //     when: () => isDirty
+    // });
 
     // Called when the user makes an edit in the editor.
     const onEditorChange = (value: any): void => {
@@ -126,97 +130,73 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
         setDirty(originalContent != currentContent);
     }, [currentContent]);
 
+    const pleaseWait = (message: string = ""): void => {
+        setPleaseWaitModalOpen(true);
+        setPleaseWaitMessage(message);
+    };
+
     // Called when the user makes an edit in the editor.
     const onSave = (): void => {
-        designsService.updateDesignContent({
-            contentType: editorDesignContent.contentType,
-            designId: design?.designId as string,
-            data: currentContent
-        }).then(() => {
-            if (design) {
-                design.modifiedOn = new Date();
-                setOriginalContent(currentContent);
-                setDirty(false);
-            }
-            alerts.designSaved(design as Design);
-        }).catch(error => {
-            // TODO handle error
-            console.error("[EditorPage] Failed to save design content: ", error);
-        });
+        pleaseWait("Saving the draft, please wait...");
+        // designsService.updateDesignContent({
+        //     contentType: editorDesignContent.contentType,
+        //     designId: design?.designId as string,
+        //     data: currentContent
+        // }).then(() => {
+        //     if (design) {
+        //         design.modifiedOn = new Date();
+        //         setOriginalContent(currentContent);
+        //         setDirty(false);
+        //     }
+        //     alerts.designSaved(design as Design);
+        // }).catch(error => {
+        //     // TODO handle error
+        //     console.error("[EditorPage] Failed to save design content: ", error);
+        // });
     };
 
     const onFormat = (): void => {
         console.info("[EditorPage] Formatting content.");
-        const formattedContent: string = formatContent(currentContent, editorDesignContent.contentType);
+        const formattedContent: string = formatContent(currentContent, draftContent.contentType);
         console.info("[EditorPage] New content is: ", formattedContent);
-        setEditorDesignContent({
-            designId: design?.designId as string,
-            contentType: editorDesignContent.contentType,
-            data: formattedContent
+        setDraftContent({
+            contentType: draftContent.contentType,
+            content: formattedContent
         });
         setCurrentContent(formattedContent);
     };
 
-    const onDelete = (): void => {
-        setDeleteModalOpen(true);
-    };
-
-    const onDeleteDesignConfirmed = (design: Design): void => {
-        designsService.deleteDesign(design.designId).then(() => {
-            alerts.designDeleted(design as Design);
-            navigation.navigateTo("/");
-        }).catch(error => {
-            console.error("[Editor] Design delete failed: ", error);
-            alerts.designDeleteFailed(design as Design, error);
-        });
-        setDeleteModalOpen(false);
-    };
-
     const onDownload = (): void => {
-        if (design) {
-            const filename: string = `${convertToValidFilename(design.name)}.${fileExtensionForDesign(design, editorDesignContent)}`;
-            const contentType: string = contentTypeForDesign(design, editorDesignContent);
+        if (draft) {
+            const filename: string = `${convertToValidFilename(draft.name)}.${fileExtensionForDraft(draft, draftContent)}`;
+            const contentType: string = contentTypeForDraft(draft, draftContent);
             const theContent: string = typeof currentContent === "object" ? JSON.stringify(currentContent, null, 4) : currentContent as string;
             downloadSvc.downloadToFS(theContent, contentType, filename);
         }
     };
 
-    const doRenameDesign = (event: RenameData): void => {
-        designsService.renameDesign(design?.designId as string, event.name, event.description).then(() => {
-            if (design) {
-                design.name = event.name;
-                design.description = event.description;
-            }
-            setRenameModalOpen(false);
-            alerts.designRenamed(event);
-        }).catch(error => {
-            // TODO error handling
-            console.error(error);
-        });
-    };
-
     const textEditor: React.ReactElement = (
-        <TextEditor content={editorDesignContent} onChange={onEditorChange}/>
+        <TextEditor content={draftContent} onChange={onEditorChange}/>
     );
 
     const protoEditor: React.ReactElement = (
-        <ProtoEditor content={editorDesignContent} onChange={onEditorChange}/>
+        <ProtoEditor content={draftContent} onChange={onEditorChange}/>
     );
 
     const openapiEditor: React.ReactElement = (
-        <OpenApiEditor content={editorDesignContent} onChange={onEditorChange}/>
+        <OpenApiEditor content={draftContent} onChange={onEditorChange}/>
     );
 
     const asyncapiEditor: React.ReactElement = (
-        <AsyncApiEditor content={editorDesignContent} onChange={onEditorChange}/>
+        <AsyncApiEditor content={draftContent} onChange={onEditorChange}/>
     );
 
     const editor = (): React.ReactElement => {
-        if (design?.type === ArtifactTypes.OPENAPI) {
+        if (draft?.type === ArtifactTypes.OPENAPI) {
             return openapiEditor;
-        } else if (design?.type === ArtifactTypes.ASYNCAPI) {
+        } else if (draft?.type === ArtifactTypes.ASYNCAPI) {
             return asyncapiEditor;
-        } else if (design?.type === ArtifactTypes.PROTOBUF) {
+        } else if (draft?.type === ArtifactTypes.PROTOBUF) {
             return protoEditor;
         }
 
@@ -234,17 +214,18 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     };
 
     return (
-        <Page className="pf-m-redhat-font" isManagedSidebar={false} header={<AppHeader />}>
-            <IfNotLoading isLoading={isLoading}>
+        <PageErrorHandler error={pageError}>
+            <PageDataLoader loaders={loaders}>
+                <PageSection className="ps_draft-header" variant={PageSectionVariants.light} padding={{ default: "noPadding" }}>
+                    <RootPageHeader tabKey={0} />
+                </PageSection>
                 <PageSection variant={PageSectionVariants.light} id="section-context" style={sectionContextStyle}>
                     <EditorContext
-                        design={design as Design}
+                        draft={draft}
                         dirty={isDirty}
                         onSave={onSave}
                         onFormat={onFormat}
-                        onDelete={onDelete}
                         onDownload={onDownload}
-                        onRename={() => setRenameModalOpen(true)}
                         onCompareContent={onCompareContent}
                         artifactContent={currentContent}
                     />
@@ -255,20 +236,14 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
                 <CompareModal isOpen={isCompareModalOpen}
                     onClose={closeCompareEditor}
                     before={originalContent}
-                    beforeName={design?.name || ""}
+                    beforeName={draft?.name || ""}
                     after={currentContent}
-                    afterName={design?.name || ""}/>
-                <RenameModal design={design}
-                    isOpen={isRenameModalOpen}
-                    onRename={doRenameDesign}
-                    onCancel={() => setRenameModalOpen(false)}/>
-                <DeleteDesignModal design={design}
-                    isOpen={isDeleteModalOpen}
-                    onDelete={onDeleteDesignConfirmed}
-                    onDownload={onDownload}
-                    onCancel={() => setDeleteModalOpen(false)}/>
+                    afterName={draft?.name || ""}/>
+                <PleaseWaitModal
+                    message={pleaseWaitMessage}
+                    isOpen={isPleaseWaitModalOpen} />
                 {/*<Prompt when={isDirty} message={ "You have unsaved changes.  Do you really want to leave?" }/>*/}
-            </IfNotLoading>
-        </Page>
+            </PageDataLoader>
+        </PageErrorHandler>
     );
 };

@@ -1,7 +1,8 @@
 import YAML from "yaml";
 import { parse } from "protobufjs";
-import { ArtifactTypes, ContentTypes, Design, DesignContent } from "@models/designs";
+import { ArtifactTypes, ContentTypes } from "@models/designs";
 import { isStringEmptyOrUndefined } from "@utils/string.utils.ts";
+import { Draft, DraftContent } from "@models/drafts";
 
 /**
  * Returns true if the given content is JSON formatted.
@@ -94,7 +95,7 @@ export function isProto(content: string): boolean {
 }
 
 
-export function fileExtensionForDesign(design: Design, content: DesignContent): string {
+export function fileExtensionForDraft(draft: Draft, content: DraftContent): string {
     // If the design was originally imported from a file, let's just use the extension
     // from that file.
     // FIXME we now need to get this information from the first event
@@ -106,7 +107,7 @@ export function fileExtensionForDesign(design: Design, content: DesignContent): 
     //     }
     // }
 
-    if (design.type === ArtifactTypes.PROTOBUF) {
+    if (draft.type === ArtifactTypes.PROTOBUF) {
         return "proto";
     }
 
@@ -120,12 +121,12 @@ export function fileExtensionForDesign(design: Design, content: DesignContent): 
     return "txt";
 }
 
-export function contentTypeForDesign(design: Design, content: DesignContent): string {
+export function contentTypeForDraft(draft: Draft, content: DraftContent): string {
     if (content.contentType) {
         return content.contentType;
     }
 
-    if (design.type === ArtifactTypes.PROTOBUF) {
+    if (draft.type === ArtifactTypes.PROTOBUF) {
         return ContentTypes.APPLICATION_PROTOBUF;
     }
 
@@ -172,12 +173,12 @@ export function contentToString(content: any): string {
     }
 }
 
-export const designContentToString = (content: DesignContent): string => {
-    return contentToString(content.data);
+export const draftContentToString = (content: DraftContent): string => {
+    return contentToString(content.content);
 };
 
 
-export const designContentToLanguage = (content: DesignContent): string => {
+export const draftContentToLanguage = (content: DraftContent): string => {
     if (content.contentType === ContentTypes.APPLICATION_YAML) {
         return "yaml";
     } else if (content.contentType === ContentTypes.APPLICATION_XML) {

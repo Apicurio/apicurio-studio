@@ -42,6 +42,10 @@ export const App: React.FunctionComponent = () => {
                                 path="/drafts/:groupId/:draftId/:version"
                                 element={ <DraftPage /> }
                             />
+                            <Route
+                                path="/drafts/:groupId/:draftId/:version/editor"
+                                element={ <EditorPage /> }
+                            />
 
                             <Route path="/explore" element={ <ExplorePage />}/>,
                             <Route
@@ -91,7 +95,7 @@ export const App: React.FunctionComponent = () => {
                                 path="/explore/:groupId/:artifactId/branches/:branchId/versions"
                                 /*element={ <BranchPage /> }*/
                             />
-                            <Route path="/designs/:designId/editor" element={<EditorPage />}/>,
+
                             <Route path="/editor-embedded" element={<EmbeddedEditorPage />}/>,
 
                             <Route element={ <NotFoundPage /> } />

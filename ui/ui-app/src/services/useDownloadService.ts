@@ -7,7 +7,7 @@
  * @param filename
  */
 async function downloadToFS(content: string, contentType: string, filename: string): Promise<void> {
-    console.info("[DownloadService] Downloading a design.");
+    console.info("[DownloadService] Downloading content.");
     const _w: any = window;
 
     if (_w.chrome !== undefined) {

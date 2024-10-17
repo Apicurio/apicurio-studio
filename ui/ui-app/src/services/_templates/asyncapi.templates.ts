@@ -1,7 +1,7 @@
-import { ContentTypes } from "@models/designs";
 import { Template } from "@models/templates";
 import ASYNCAPI_2_BLANK from "./asyncapi/asyncapi-2-blank.json";
 import ASYNCAPI_2_STREETLIGHTS from "./asyncapi/asyncapi-2-streetlights.json";
+import { ContentTypes } from "@models/common";
 
 export const ASYNCAPI_2_TEMPLATES: Template[] = [
     {

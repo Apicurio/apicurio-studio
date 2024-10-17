@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import "./ArtifactTypeIcon.css";
-import { ArtifactTypes } from "@models/designs";
+import { ArtifactTypes } from "@models/common";
 
 
 const icon = (type: string | undefined): string => {

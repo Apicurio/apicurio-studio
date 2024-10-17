@@ -1,6 +1,6 @@
 import YAML from "yaml";
 import { parse } from "protobufjs";
-import { ArtifactTypes, ContentTypes } from "@models/designs";
+import { ArtifactTypes, ContentTypes } from "@models/common";
 import { isStringEmptyOrUndefined } from "@utils/string.utils.ts";
 import { Draft, DraftContent } from "@models/drafts";
 
@@ -96,17 +96,6 @@ export function isProto(content: string): boolean {
 
 
 export function fileExtensionForDraft(draft: Draft, content: DraftContent): string {
-    // If the design was originally imported from a file, let's just use the extension
-    // from that file.
-    // FIXME we now need to get this information from the first event
-    // if (design.origin && design.origin.type === "file") {
-    //     const filename: string = design.origin.file?.fileName as string;
-    //     if (filename.indexOf(".") > 0) {
-    //         const split: string[] = filename.split(".");
-    //         return split[split.length - 1];
-    //     }
-    // }
-
     if (draft.type === ArtifactTypes.PROTOBUF) {
         return "proto";
     }

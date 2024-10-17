@@ -2,7 +2,7 @@ import React, { FunctionComponent } from "react";
 import "./EditorContext.css";
 import { Breadcrumb, BreadcrumbItem, Button } from "@patternfly/react-core";
 import { FromNow, If, ObjectDropdown } from "@apicurio/common-ui-components";
-import { ArtifactTypes } from "@models/designs";
+import { ArtifactTypes } from "@models/common";
 import { Draft } from "@models/drafts";
 import { Link } from "react-router-dom";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";

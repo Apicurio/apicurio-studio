@@ -1,24 +1,24 @@
 import React, { CSSProperties, FunctionComponent, useEffect, useState } from "react";
-import { Breadcrumb, BreadcrumbItem, PageSection, PageSectionVariants } from "@patternfly/react-core";
-import { ArtifactTypes, ContentTypes } from "@models/designs";
+import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { ArtifactTypes, ContentTypes } from "@models/common";
 import { DownloadService, useDownloadService } from "@services/useDownloadService.ts";
 import {
     contentTypeForDraft,
-    convertToValidFilename, fileExtensionForDraft,
+    convertToValidFilename,
+    fileExtensionForDraft,
     formatContent
 } from "@utils/content.utils.ts";
 import { TextEditor } from "@editors/TextEditor.tsx";
 import { ProtoEditor } from "@editors/ProtoEditor.tsx";
 import { OpenApiEditor } from "@editors/OpenApiEditor.tsx";
 import { AsyncApiEditor } from "@editors/AsyncApiEditor.tsx";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { CompareModal, EditorContext } from "@app/pages/editor/components";
 import { Draft, DraftContent } from "@models/drafts";
 import { PageDataLoader, PageError, PageErrorHandler, toPageError } from "@app/pages";
 import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
 import { PleaseWaitModal } from "@apicurio/common-ui-components";
 import { RootPageHeader } from "@app/components";
-import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 
 const sectionContextStyle: CSSProperties = {
     borderBottom: "1px solid #ccc",
@@ -81,7 +81,6 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
 
     const drafts: DraftsService = useDraftsService();
     const downloadSvc: DownloadService = useDownloadService();
-    const appNavigation: AppNavigationService = useAppNavigation();
 
     const createLoaders = (): Promise<any>[] => {
         return [

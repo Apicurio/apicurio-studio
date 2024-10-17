@@ -3,7 +3,6 @@ import "./VersionsTabContent.css";
 import { ListWithToolbar } from "@apicurio/common-ui-components";
 import { Paging } from "@models/Paging.ts";
 import {
-    Button,
     EmptyState,
     EmptyStateActions,
     EmptyStateBody,
@@ -20,18 +19,15 @@ import {
     SearchedVersion,
     VersionSearchResults,
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
-import {VersionsSortBy} from "@models/versions";
-import {SortOrder} from "@models/SortOrder.ts";
+import { VersionsSortBy } from "@models/versions";
+import { SortOrder } from "@models/SortOrder.ts";
 
 /**
  * Properties
  */
 export type VersionsTabContentProps = {
     artifact: ArtifactMetaData;
-    onCreateVersion: () => void;
     onViewVersion: (version: SearchedVersion) => void;
-    onDeleteVersion: (version: SearchedVersion, deleteSuccessCallback: () => void) => void;
-    onAddVersionToBranch: (version: SearchedVersion) => void;
 };
 
 /**
@@ -70,18 +66,12 @@ export const VersionsTabContent: FunctionComponent<VersionsTabContentProps> = (p
         setSortOrder(order);
     };
 
-    const onDeleteVersion = (version: SearchedVersion): void => {
-        props.onDeleteVersion(version, () => {
-            setTimeout(refresh, 100);
-        });
-    };
-
     useEffect(() => {
         refresh();
     }, [props.artifact, paging, sortBy, sortOrder]);
 
     const toolbar = (
-        <VersionsTabToolbar results={results} paging={paging} onPageChange={setPaging} onCreateVersion={props.onCreateVersion} />
+        <VersionsTabToolbar results={results} paging={paging} onPageChange={setPaging} />
     );
 
     const emptyState = (
@@ -115,9 +105,7 @@ export const VersionsTabContent: FunctionComponent<VersionsTabContentProps> = (p
                         onSort={onSort}
                         sortBy={sortBy}
                         sortOrder={sortOrder}
-                        onDelete={onDeleteVersion}
                         onView={props.onViewVersion}
-                        onAddToBranch={props.onAddVersionToBranch}
                     />
                 </ListWithToolbar>
             </div>

@@ -1,7 +1,7 @@
 import React, { RefObject, useEffect, useState } from "react";
-import { Editor as DesignEditor, EditorProps } from "./editor-types";
+import { Editor as DraftEditor, EditorProps } from "./editor-types";
 import "./OpenApiEditor.css";
-import { ContentTypes } from "@models/designs";
+import { ContentTypes } from "@models/common";
 import { parseJson, parseYaml, toJsonString, toYamlString } from "@utils/content.utils.ts";
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 import { VendorExtension } from "@models/system";
@@ -19,7 +19,7 @@ export type OpenApiEditorProps = {
  * and loaded via an iframe.  This component is a bridge - it acts as a React component that
  * bridges to the iframe.
  */
-export const OpenApiEditor: DesignEditor = ({ content, onChange, className }: OpenApiEditorProps) => {
+export const OpenApiEditor: DraftEditor = ({ content, onChange, className }: OpenApiEditorProps) => {
     const [openApiVendorExtensions, setOpenApiVendorExtensions] = useState<VendorExtension[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 

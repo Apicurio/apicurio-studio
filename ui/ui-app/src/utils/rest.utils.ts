@@ -2,7 +2,7 @@ import { AuthenticationProvider, Headers, RequestInformation } from "@microsoft/
 import { AuthService } from "@apicurio/common-ui-components";
 import { ApicurioRegistryClient, RegistryClientFactory } from "@apicurio/apicurio-registry-sdk";
 import { ApicurioStudioConfig } from "@services/useConfigService.ts";
-import {Labels} from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import { Labels } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
 /**
  * An authentication provider for Kiota - used in the generated SDK client to provide

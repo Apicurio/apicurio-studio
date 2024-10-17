@@ -1,4 +1,4 @@
-import { ContentTypes } from "@models/designs";
+import { ContentTypes } from "@models/common";
 import { Template } from "@models/templates";
 import OPENAPI_3_BLANK from "./openapi/openapi-3-blank.json";
 import OPENAPI_3_PETSTORE from "./openapi/openapi-3-petstore.json";

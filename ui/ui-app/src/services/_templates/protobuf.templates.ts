@@ -1,4 +1,4 @@
-import { ContentTypes } from "@models/designs";
+import { ContentTypes } from "@models/common";
 import { Template } from "@models/templates";
 import PROTOBUF_BLANK from "./protobuf/protobuf-blank.json";
 

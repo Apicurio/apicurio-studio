@@ -1,7 +1,7 @@
 import React, { RefObject, useEffect } from "react";
 import "./AsyncApiEditor.css";
-import { Editor as DesignEditor, EditorProps } from "./editor-types";
-import { ContentTypes } from "@models/designs";
+import { Editor as DraftEditor, EditorProps } from "./editor-types";
+import { ContentTypes } from "@models/common";
 import { parseJson, parseYaml, toJsonString, toYamlString } from "@utils/content.utils.ts";
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 
@@ -16,7 +16,7 @@ export type AsyncApiEditorProps = {
  * and loaded via an iframe.  This component is a bridge - it acts as a React component that
  * bridges to the iframe.
  */
-export const AsyncApiEditor: DesignEditor = ({ content, onChange, className }: AsyncApiEditorProps) => {
+export const AsyncApiEditor: DraftEditor = ({ content, onChange, className }: AsyncApiEditorProps) => {
     const ref: RefObject<any> = React.createRef();
     const config: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
 

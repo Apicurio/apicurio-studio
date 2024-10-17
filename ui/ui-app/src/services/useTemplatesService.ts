@@ -7,7 +7,7 @@ import {
     OPENAPI_3_TEMPLATES,
     PROTOBUF_TEMPLATES
 } from "./_templates";
-import { ArtifactTypes } from "@models/designs";
+import { ArtifactTypes } from "@models/common";
 
 
 async function getTemplatesFor(type: string, version?: string): Promise<Template[]> {

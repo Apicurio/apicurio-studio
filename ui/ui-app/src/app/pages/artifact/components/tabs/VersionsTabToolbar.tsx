@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import "./VersionsTabToolbar.css";
-import { Button, Pagination, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
+import { Pagination, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
 import { Paging } from "@models/Paging.ts";
 import { VersionSearchResults } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
@@ -12,7 +12,6 @@ export type VersionsToolbarProps = {
     results: VersionSearchResults;
     paging: Paging;
     onPageChange: (paging: Paging) => void;
-    onCreateVersion: () => void;
 };
 
 

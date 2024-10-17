@@ -10,7 +10,6 @@ import { ArtifactMetaData } from "@apicurio/apicurio-registry-sdk/dist/generated
  */
 export type ArtifactPageHeaderProps = {
     artifact: ArtifactMetaData;
-    onDeleteArtifact: () => void;
 };
 
 /**

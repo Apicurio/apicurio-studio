@@ -22,9 +22,7 @@ import { BranchesTable, BranchesTabToolbar } from "@app/pages/artifact";
  */
 export type BranchesTabContentProps = {
     artifact: ArtifactMetaData;
-    onCreateBranch: () => void;
     onViewBranch: (version: SearchedBranch) => void;
-    onDeleteBranch: (version: SearchedBranch, deleteSuccessCallback: () => void) => void;
 };
 
 /**

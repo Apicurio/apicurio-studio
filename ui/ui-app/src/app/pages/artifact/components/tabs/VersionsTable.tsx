@@ -1,14 +1,13 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
-import {Link} from "react-router-dom";
-import {SortByDirection, ThProps} from "@patternfly/react-table";
-import {FromNow, If, ObjectDropdown, ResponsiveTable} from "@apicurio/common-ui-components";
-import {AppNavigationService, useAppNavigation} from "@services/useAppNavigation.ts";
-import {shash} from "@utils/string.utils.ts";
-import {ArtifactDescription} from "@app/components";
-import {ArtifactMetaData, SearchedVersion} from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
-import {ConfigService, useConfigService} from "@services/useConfigService.ts";
-import {VersionsSortBy} from "@models/versions";
-import {SortOrder} from "@models/SortOrder.ts";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { SortByDirection, ThProps } from "@patternfly/react-table";
+import { FromNow, If, ObjectDropdown, ResponsiveTable } from "@apicurio/common-ui-components";
+import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
+import { shash } from "@utils/string.utils.ts";
+import { ArtifactDescription } from "@app/components";
+import { ArtifactMetaData, SearchedVersion } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import { VersionsSortBy } from "@models/versions";
+import { SortOrder } from "@models/SortOrder.ts";
 
 export type VersionsTableProps = {
     artifact: ArtifactMetaData;
@@ -32,7 +31,6 @@ export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: Vers
     const [sortByIndex, setSortByIndex] = useState<number>();
 
     const appNavigation: AppNavigationService = useAppNavigation();
-    const config: ConfigService = useConfigService();
 
     const columns: any[] = [
         { index: 0, id: "version", label: "Version", width: 40, sortable: true, sortBy: VersionsSortBy.version },
@@ -87,7 +85,7 @@ export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: Vers
     const actionsFor = (version: SearchedVersion): (VersionAction | VersionActionSeparator)[] => {
         const vhash: number = shash(version.version!);
         return [
-            {label: "View version", onClick: () => props.onView(version), testId: `view-version-${vhash}`},
+            { label: "View version", onClick: () => props.onView(version), testId: `view-version-${vhash}` },
         ];
     };
 

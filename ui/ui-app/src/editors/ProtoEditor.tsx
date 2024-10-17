@@ -1,5 +1,5 @@
 import { MutableRefObject, useEffect, useRef, useState } from "react";
-import { Editor as DesignEditor, EditorProps } from "./editor-types";
+import { Editor as DraftEditor, EditorProps } from "./editor-types";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
@@ -22,7 +22,7 @@ const protoBufThemeData = {
 /**
  * Protobuf text editor with support for syntax hint and highlight.
  */
-export const ProtoEditor: DesignEditor = ({ content, onChange }: EditorProps) => {
+export const ProtoEditor: DraftEditor = ({ content, onChange }: EditorProps) => {
     const defaultValue: string = draftContentToString(content);
     const [value, setValue] = useState<string>(defaultValue);
 

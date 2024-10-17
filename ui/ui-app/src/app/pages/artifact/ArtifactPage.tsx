@@ -1,7 +1,7 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import "./ArtifactPage.css";
-import { Breadcrumb, BreadcrumbItem, PageSection, PageSectionVariants, Tab, Tabs } from "@patternfly/react-core";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { PageSection, PageSectionVariants, Tab, Tabs } from "@patternfly/react-core";
+import { useLocation, useParams } from "react-router-dom";
 import { PageDataLoader, PageError, PageErrorHandler, toPageError } from "@app/pages";
 
 import { GroupsService, useGroupsService } from "@services/useGroupsService.ts";
@@ -17,7 +17,7 @@ import {
     SearchedBranch,
     SearchedVersion
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
-import {AppNavigationService, useAppNavigation} from "@services/useAppNavigation.ts";
+import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 
 
 export type ArtifactPageProps = {
@@ -31,7 +31,6 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
     const [pageError, setPageError] = useState<PageError>();
     const [loaders, setLoaders] = useState<Promise<any> | Promise<any>[] | undefined>();
     const [artifact, setArtifact] = useState<ArtifactMetaData>();
-    const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
     const [rules, setRules] = useState<Rule[]>([]);
 
     const appNavigation: AppNavigationService = useAppNavigation();
@@ -113,24 +112,24 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
         </Tab>,
     ];
 
-    const gid: string = groupId || "default";
-    const hasGroup: boolean = gid != "default";
-    let breadcrumbs = (
-        <Breadcrumb>
-            <BreadcrumbItem><Link to={appNavigation.createLink("/explore")} data-testid="breadcrumb-lnk-explore">Explore</Link></BreadcrumbItem>
-            <BreadcrumbItem><Link to={appNavigation.createLink(`/explore/${ encodeURIComponent(gid) }/artifacts`)}
-                data-testid="breadcrumb-lnk-group">{ gid }</Link></BreadcrumbItem>
-            <BreadcrumbItem isActive={true}>{ artifactId as string }</BreadcrumbItem>
-        </Breadcrumb>
-    );
-    if (!hasGroup) {
-        breadcrumbs = (
-            <Breadcrumb>
-                <BreadcrumbItem><Link to="/explore" data-testid="breadcrumb-lnk-explore">Explore</Link></BreadcrumbItem>
-                <BreadcrumbItem isActive={true}>{ artifactId as string }</BreadcrumbItem>
-            </Breadcrumb>
-        );
-    }
+    // const gid: string = groupId || "default";
+    // const hasGroup: boolean = gid != "default";
+    // let breadcrumbs = (
+    //     <Breadcrumb>
+    //         <BreadcrumbItem><Link to={appNavigation.createLink("/explore")} data-testid="breadcrumb-lnk-explore">Explore</Link></BreadcrumbItem>
+    //         <BreadcrumbItem><Link to={appNavigation.createLink(`/explore/${ encodeURIComponent(gid) }/artifacts`)}
+    //             data-testid="breadcrumb-lnk-group">{ gid }</Link></BreadcrumbItem>
+    //         <BreadcrumbItem isActive={true}>{ artifactId as string }</BreadcrumbItem>
+    //     </Breadcrumb>
+    // );
+    // if (!hasGroup) {
+    //     breadcrumbs = (
+    //         <Breadcrumb>
+    //             <BreadcrumbItem><Link to="/explore" data-testid="breadcrumb-lnk-explore">Explore</Link></BreadcrumbItem>
+    //             <BreadcrumbItem isActive={true}>{ artifactId as string }</BreadcrumbItem>
+    //         </Breadcrumb>
+    //     );
+    // }
 
     return (
         <PageErrorHandler error={pageError}>

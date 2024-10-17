@@ -3,13 +3,20 @@ import { getRegistryClient } from "@utils/rest.utils.ts";
 import { AuthService, useAuth } from "@apicurio/common-ui-components";
 import { Paging } from "@models/Paging.ts";
 import {
-    ArtifactMetaData, ArtifactReference, ArtifactSearchResults, BranchMetaData, BranchSearchResults,
-    GroupMetaData, ReferenceType,
-    Rule, VersionMetaData, VersionSearchResults, VersionSortBy
+    ArtifactMetaData,
+    ArtifactReference,
+    ArtifactSearchResults,
+    BranchMetaData,
+    BranchSearchResults,
+    GroupMetaData,
+    ReferenceType,
+    Rule,
+    VersionMetaData,
+    VersionSearchResults
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
-import {SortOrder} from "@models/SortOrder.ts";
-import {ArtifactsSortBy} from "@models/artifacts";
-import {VersionsSortBy} from "@models/versions";
+import { SortOrder } from "@models/SortOrder.ts";
+import { ArtifactsSortBy } from "@models/artifacts";
+import { VersionsSortBy } from "@models/versions";
 
 const arrayDecoder: TextDecoder = new TextDecoder("utf-8");
 

@@ -1,4 +1,4 @@
-import { ContentTypes } from "@models/designs";
+import { ContentTypes } from "@models/common";
 import { Template } from "@models/templates";
 import JSON_BLANK from "./json/json-blank.json";
 

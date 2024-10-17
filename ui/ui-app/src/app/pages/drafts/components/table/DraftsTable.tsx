@@ -5,7 +5,7 @@ import { FromNow, If, ObjectDropdown, ResponsiveTable } from "@apicurio/common-u
 import { Draft, DraftsSortBy } from "@models/drafts";
 import { SortOrder } from "@models/SortOrder.ts";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
-import { ArtifactDescription } from "@app/components";
+import { ArtifactDescription, ArtifactTypeIcon } from "@app/components";
 import { shash } from "@utils/string.utils.ts";
 
 export type DraftsTableProps = {
@@ -51,7 +51,8 @@ export const DraftsTable: FunctionComponent<DraftsTableProps> = (props: DraftsTa
                         style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", textDecoration: "none" }}
                         to={appNavigation.createLink(`/drafts/${groupId}/${artifactId}/${version}`)}
                     >
-                        <span>{ column.groupId || "default" }</span>
+                        <ArtifactTypeIcon type={column.type} isShowIcon={true} isShowLabel={false} />
+                        <span style={{ marginLeft: "5px" }}>{ column.groupId || "default" }</span>
                         <span style={{ color: "#666" }}> / </span>
                         <span>{ column.draftId }</span>
                         <span style={{ color: "#666" }}> / </span>
@@ -89,7 +90,7 @@ export const DraftsTable: FunctionComponent<DraftsTableProps> = (props: DraftsTa
     const actionsFor = (draft: Draft): (DraftAction | DraftActionSeparator)[] => {
         const vhash = shash(draft.groupId! + draft.draftId! + draft.version!);
         const actions: (DraftAction | DraftActionSeparator)[] = [
-            { label: "View version", onClick: () => props.onView(draft), testId: `view-version-${vhash}` },
+            { label: "View draft", onClick: () => props.onView(draft), testId: `view-version-${vhash}` },
         ];
 
         // if (config.featureDeleteVersion()) {

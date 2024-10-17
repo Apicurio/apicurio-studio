@@ -2,12 +2,12 @@ import { AuthService, useAuth } from "@apicurio/common-ui-components";
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 import { getRegistryClient } from "@utils/rest.utils.ts";
 import { ApicurioRegistryClient } from "@apicurio/apicurio-registry-sdk";
-import { CreateDraft, Draft, DraftsSearchFilter, DraftsSearchResults, DraftsSortBy } from "@models/drafts";
+import { CreateDraft, Draft, DraftInfo, DraftsSearchFilter, DraftsSearchResults, DraftsSortBy } from "@models/drafts";
 import { SortOrder } from "@models/SortOrder.ts";
 import { Paging } from "@models/Paging.ts";
 import {
     Comment,
-    CreateArtifact, NewComment, SearchedVersion,
+    CreateArtifact, EditableVersionMetaData, NewComment, SearchedVersion,
     VersionMetaData
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import {
@@ -189,6 +189,31 @@ async function deleteDraftComment(appConfig: ApicurioStudioConfig, auth: AuthSer
         .byVersionExpression(version).comments.byCommentId(commentId).delete();
 }
 
+/**
+ * Update the info (metadata) for a draft.
+ */
+function updateDraftInfo(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string, draftInfo: DraftInfo): Promise<void> {
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+
+    groupId = normalizeGroupId(groupId);
+    console.info("[DraftsService] Updating info for draft: ", groupId, draftId, version);
+
+    const metaData: EditableVersionMetaData = draftInfo as EditableVersionMetaData;
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).put(metaData);
+}
+
+/**
+ * Delete a draft.
+ */
+function deleteDraft(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string): Promise<void> {
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+
+    groupId = normalizeGroupId(groupId);
+    console.info("[DraftsService] Deleting a draft: ", groupId, draftId, version);
+
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).delete();
+}
+
 
 /**
  * The Drafts Service interface.
@@ -197,11 +222,14 @@ export interface DraftsService {
     searchDrafts(filters: DraftsSearchFilter[], sortBy: DraftsSortBy, sortOrder: SortOrder, paging: Paging): Promise<DraftsSearchResults>;
     createDraft(data: CreateDraft): Promise<Draft>;
     getDraft(groupId: string, draftId: string, version: string): Promise<Draft>;
+    updateDraftInfo(groupId: string|null, draftId: string, version: string, draftInfo: DraftInfo): Promise<void>;
+    deleteDraft(groupId: string|null, draftId: string, version: string): Promise<void>;
 
     getDraftComments(groupId: string|null, draftId: string, version: string): Promise<Comment[]>;
     createDraftComment(groupId: string|null, draftId: string, version: string, data: NewComment): Promise<Comment>;
     updateDraftComment(groupId: string|null, draftId: string, version: string, commentId: string, data: NewComment): Promise<void>;
     deleteDraftComment(groupId: string|null, draftId: string, version: string, commentId: string): Promise<void>;
+
 }
 
 
@@ -219,6 +247,11 @@ export const useDraftsService: () => DraftsService = (): DraftsService => {
             createDraft(appConfig, auth, data),
         getDraft: (groupId: string, draftId: string, version: string) =>
             getDraft(appConfig, auth, groupId, draftId, version),
+        updateDraftInfo: (groupId: string|null, draftId: string, version: string, draftInfo: DraftInfo) =>
+            updateDraftInfo(appConfig, auth, groupId, draftId, version, draftInfo),
+        deleteDraft: (groupId: string|null, draftId: string, version: string) =>
+            deleteDraft(appConfig, auth, groupId, draftId, version),
+
 
         getDraftComments: (groupId: string|null, draftId: string, version: string) =>
             getDraftComments(appConfig, auth, groupId, draftId, version),

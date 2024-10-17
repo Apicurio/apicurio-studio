@@ -10,12 +10,8 @@ import {
     TextArea,
     TextInput
 } from "@patternfly/react-core";
+import { DraftInfo } from "@models/drafts";
 
-
-export type DraftInfo = {
-    name?: string;
-    description?: string;
-}
 
 
 /**

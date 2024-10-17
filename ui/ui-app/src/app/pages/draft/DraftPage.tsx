@@ -20,11 +20,11 @@ import {
 } from "@patternfly/react-core";
 import { DraftComments, PageDataLoader, PageError, PageErrorHandler, toPageError } from "@app/pages";
 import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
-import { ArtifactTypeIcon, ConfirmDeleteModal, DraftInfo, EditDraftInfoModal, RootPageHeader } from "@app/components";
+import { ArtifactTypeIcon, ConfirmDeleteModal, EditDraftInfoModal, RootPageHeader } from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 import { Link, useParams } from "react-router-dom";
-import { Draft } from "@models/drafts";
-import { FromNow, If } from "@apicurio/common-ui-components";
+import { Draft, DraftInfo } from "@models/drafts";
+import { FromNow, If, PleaseWaitModal } from "@apicurio/common-ui-components";
 import { PencilAltIcon, TrashIcon } from "@patternfly/react-icons";
 
 
@@ -48,6 +48,8 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
     });
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [isEditDraftInfoModalOpen, setIsEditDraftInfoModalOpen] = useState(false);
+    const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
+    const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
 
     const { groupId, draftId, version } = useParams();
 
@@ -68,14 +70,36 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
         setLoaders(createLoaders());
     }, []);
 
+    const pleaseWait = (message: string = ""): void => {
+        setPleaseWaitModalOpen(true);
+        setPleaseWaitMessage(message);
+    };
+
     const doDeleteDraft = (): void => {
-        // TODO delete the draft
         setIsConfirmDeleteModalOpen(false);
+        pleaseWait("Deleting draft, please wait.");
+        drafts.deleteDraft(groupId as string, draftId as string, version as string).then( () => {
+            setPleaseWaitModalOpen(false);
+            appNavigation.navigateTo("/drafts");
+        }).catch( error => {
+            setPageError(toPageError(error, "Error deleting a draft."));
+            setPleaseWaitModalOpen(false);
+        });
     };
 
     const doEditDraftInfo = (draftInfo: DraftInfo): void => {
-        // TODO edit the draft info
         setIsEditDraftInfoModalOpen(false);
+        pleaseWait("Updating draft information...");
+        drafts.updateDraftInfo(groupId as string, draftId as string, version as string, draftInfo).then( () => {
+            setPleaseWaitModalOpen(false);
+            setDraft({
+                ...draft,
+                ...draftInfo
+            });
+        }).catch( error => {
+            setPleaseWaitModalOpen(false);
+            setPageError(toPageError(error, "Error editing draft info."));
+        });
     };
 
     const navigateToEditor = (): void => {
@@ -238,6 +262,9 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                         description={draft.description || ""}
                         onClose={() => setIsEditDraftInfoModalOpen(false)}
                         onEdit={doEditDraftInfo} />
+                    <PleaseWaitModal
+                        message={pleaseWaitMessage}
+                        isOpen={isPleaseWaitModalOpen} />
                 </PageSection>
             </PageDataLoader>
         </PageErrorHandler>

@@ -19,6 +19,7 @@ import { PageDataLoader, PageError, PageErrorHandler, toPageError } from "@app/p
 import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
 import { PleaseWaitModal } from "@apicurio/common-ui-components";
 import { RootPageHeader } from "@app/components";
+import { isStringEmptyOrUndefined } from "@utils/string.utils.ts";
 
 const sectionContextStyle: CSSProperties = {
     borderBottom: "1px solid #ccc",
@@ -137,21 +138,21 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     // Called when the user makes an edit in the editor.
     const onSave = (): void => {
         pleaseWait("Saving the draft, please wait...");
-        // designsService.updateDesignContent({
-        //     contentType: editorDesignContent.contentType,
-        //     designId: design?.designId as string,
-        //     data: currentContent
-        // }).then(() => {
-        //     if (design) {
-        //         design.modifiedOn = new Date();
-        //         setOriginalContent(currentContent);
-        //         setDirty(false);
-        //     }
-        //     alerts.designSaved(design as Design);
-        // }).catch(error => {
-        //     // TODO handle error
-        //     console.error("[EditorPage] Failed to save design content: ", error);
-        // });
+        const content: DraftContent = {
+            content: currentContent,
+            contentType: draftContent.contentType
+        };
+        drafts.updateDraftContent(groupId as string, draftId as string, version as string, content).then(() => {
+            setPleaseWaitModalOpen(false);
+            if (draft) {
+                draft.modifiedOn = new Date();
+                setOriginalContent(currentContent);
+                setDirty(false);
+            }
+        }).catch(error => {
+            // TODO handle error
+            console.error("[EditorPage] Failed to save design content: ", error);
+        });
     };
 
     const onFormat = (): void => {
@@ -167,7 +168,9 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
 
     const onDownload = (): void => {
         if (draft) {
-            const filename: string = `${convertToValidFilename(draft.name)}.${fileExtensionForDraft(draft, draftContent)}`;
+            const fname: string = isStringEmptyOrUndefined(draft.name) ? draft.draftId : draft.name;
+            console.info("===> fname: ", fname);
+            const filename: string = `${convertToValidFilename(fname)}.${fileExtensionForDraft(draft, draftContent)}`;
             const contentType: string = contentTypeForDraft(draft, draftContent);
             const theContent: string = typeof currentContent === "object" ? JSON.stringify(currentContent, null, 4) : currentContent as string;
             downloadSvc.downloadToFS(theContent, contentType, filename);

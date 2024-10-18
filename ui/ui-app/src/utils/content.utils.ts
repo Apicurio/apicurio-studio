@@ -106,6 +106,15 @@ export function fileExtensionForDraft(draft: Draft, content: DraftContent): stri
     if (content.contentType && content.contentType === ContentTypes.APPLICATION_YAML) {
         return "yaml";
     }
+    if (content.contentType && content.contentType === ContentTypes.APPLICATION_XML) {
+        return "xml";
+    }
+    if (content.contentType && content.contentType === ContentTypes.APPLICATION_WSDL) {
+        return "wsdl";
+    }
+    if (content.contentType && content.contentType === ContentTypes.APPLICATION_GRAPHQL) {
+        return "graphql";
+    }
 
     return "txt";
 }

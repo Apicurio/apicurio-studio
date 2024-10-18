@@ -15,7 +15,7 @@ import { SortOrder } from "@models/SortOrder.ts";
 import { Paging } from "@models/Paging.ts";
 import {
     Comment,
-    CreateArtifact, EditableVersionMetaData, NewComment, SearchedVersion,
+    CreateArtifact, EditableVersionMetaData, NewComment, SearchedVersion, VersionContent,
     VersionMetaData
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import {
@@ -59,13 +59,12 @@ async function searchDrafts(appConfig: ApicurioStudioConfig, auth: AuthService, 
     const start: number = (paging.page - 1) * paging.pageSize;
     const end: number = start + paging.pageSize;
     const queryParams: VersionsRequestBuilderGetQueryParameters = {
+        state: "DRAFT",
         limit: end,
         offset: start,
         order: sortOrder,
         orderby: sortBy as any
     };
-    // TODO update this to VersionStateObject.DRAFT once the SDK is updated
-    (queryParams as any)["state"] = "DRAFT";
 
     // Apply filters
     filters.forEach(filter => {
@@ -97,6 +96,7 @@ async function createDraft(appConfig: ApicurioStudioConfig, auth: AuthService, d
             name: data.name,
             description: data.description,
             version: data.version,
+            isDraft: true,
             content: {
                 content: data.content,
                 contentType: data.contentType
@@ -114,13 +114,6 @@ async function createDraft(appConfig: ApicurioStudioConfig, auth: AuthService, d
     }
     if (data.description === "") {
         delete createArtifact.firstVersion?.description;
-    }
-
-    // TODO set "isDraft" to true - replace this once Registry 3.0.2 is released and the new SDK is available
-    if (createArtifact.firstVersion) {
-        createArtifact.firstVersion.additionalData = {
-            "isDraft": true
-        };
     }
 
     return client.groups.byGroupId(data.groupId || "default").artifacts.post(createArtifact, {
@@ -259,9 +252,11 @@ function updateDraftContent(appConfig: ApicurioStudioConfig, auth: AuthService, 
     console.info(client);
     console.info(data);
 
-    // TODO implement updating the content once the SDK is available for this
-    // return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).content.put
-    return Promise.resolve();
+    const versionContent: VersionContent = {
+        content: data.content,
+        contentType: data.contentType
+    };
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).content.put(versionContent);
 }
 
 

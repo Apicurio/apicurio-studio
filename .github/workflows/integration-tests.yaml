@@ -8,7 +8,7 @@ on:
       - 'README*'
       - 'docs/**'
       - '.github/workflows/**'
-    branches: [main, '[1-9].[1-9].x']
+    branches: [main]
   pull_request:
     paths-ignore:
       - '.gitignore'
@@ -84,7 +84,7 @@ jobs:
 
       - name: Run UI tests
         run: |
-          echo "Starting Registry App (In Memory)"
+          echo "Starting Registry API (In Memory)"
           docker run -it -p 8080:8080 -d quay.io/apicurio/apicurio-registry:latest-release
           echo "Starting Studio UI"
           docker run -it -p 8888:8080 -d ttl.sh/${{ github.sha }}/apicurio/apicurio-studio-ui:1d

@@ -77,7 +77,7 @@ if (AUTH_TYPE === "oidc") {
         CONFIG.auth.options.redirectUri = AUTH_REDIRECT_URL;
     }
     if (AUTH_CLIENT_ID) {
-        CONFIG.auth.options.clientId = AUTH_CLIENT_ID_URL;
+        CONFIG.auth.options.clientId = AUTH_CLIENT_ID;
     }
     if (AUTH_CLIENT_SCOPES) {
         CONFIG.auth.options.scope = AUTH_CLIENT_SCOPES;

@@ -15,7 +15,7 @@ import {
 } from "@app/pages";
 import { ApplicationAuth, AuthConfig, AuthConfigContext } from "@apicurio/common-ui-components";
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
-import { Page } from "@patternfly/react-core";
+import { Banner, Page, PageSection, PageSectionVariants } from "@patternfly/react-core";
 import { AppHeader } from "@app/components";
 import { NotFoundPage } from "@app/pages/404";
 
@@ -34,6 +34,13 @@ export const App: React.FunctionComponent = () => {
                         isManagedSidebar={false}
                         header={<AppHeader />}
                     >
+                        <PageSection className="ps_explore-header" variant={PageSectionVariants.light} padding={{ default: "noPadding" }}>
+                            <Banner variant="blue">
+                                <b>Note:</b>
+                                <span> </span>
+                                <span>This version of Apicurio Studio is beta/experimental. Expect bugs until the codebase can stabilize!</span>
+                            </Banner>
+                        </PageSection>
                         <Routes>
                             <Route
                                 path="/"

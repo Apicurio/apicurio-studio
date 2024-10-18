@@ -34,7 +34,7 @@ const CONFIG = {
             show: true
         },
         editors: {
-            url: "/editors"
+            url: "/editors/"
         }
     },
     auth: {}

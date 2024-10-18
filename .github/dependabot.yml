@@ -31,7 +31,7 @@ updates:
 - package-ecosystem: npm
   directory: "/ui/ui-editors"
   schedule:
-    interval: daily
+    interval: weekly
   versioning-strategy: increase
   groups:
     ui-editors-dependencies:

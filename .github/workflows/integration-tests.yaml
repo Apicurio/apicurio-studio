@@ -85,7 +85,7 @@ jobs:
       - name: Run UI tests
         run: |
           echo "Starting Registry API (In Memory)"
-          docker run -it -p 8080:8080 -d quay.io/apicurio/apicurio-registry:latest-release
+          docker run -it -p 8080:8080 --env apicurio.rest.deletion.artifact-version.enabled=true --env apicurio.rest.mutability.artifact-version-content.enabled=true -d quay.io/apicurio/apicurio-registry:latest-release
           echo "Starting Studio UI"
           docker run -it -p 8888:8080 -d ttl.sh/${{ github.sha }}/apicurio/apicurio-studio-ui:1d
 

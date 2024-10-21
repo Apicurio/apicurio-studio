@@ -17,9 +17,12 @@ import { PageDataLoader, PageError, PageErrorHandler, toPageError, VersionsTable
 
 import { GroupsService, useGroupsService } from "@services/useGroupsService.ts";
 import { ArtifactInfo, ArtifactPageHeader } from "@app/pages/artifact/components";
-import { ArtifactMetaData } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import { ArtifactMetaData, SearchedVersion } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
-import { ArtifactTypeIcon, RootPageHeader } from "@app/components";
+import { ArtifactTypeIcon, NewDraftFromModal, RootPageHeader } from "@app/components";
+import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
+import { CreateDraft, Draft } from "@models/drafts";
+import { PleaseWaitModal } from "@apicurio/common-ui-components";
 
 
 export type ArtifactPageProps = object
@@ -31,9 +34,14 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
     const [pageError, setPageError] = useState<PageError>();
     const [loaders, setLoaders] = useState<Promise<any> | Promise<any>[] | undefined>();
     const [artifact, setArtifact] = useState<ArtifactMetaData>();
+    const [fromVersion, setFromVersion] = useState<SearchedVersion>();
+    const [isCreateDraftFromModalOpen, setIsCreateDraftFromModalOpen] = useState(false);
+    const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
+    const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
 
     const appNavigation: AppNavigationService = useAppNavigation();
     const groups: GroupsService = useGroupsService();
+    const drafts: DraftsService = useDraftsService();
     const { groupId, artifactId } = useParams();
 
     const createLoaders = (): Promise<any>[] => {
@@ -50,6 +58,49 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
     useEffect(() => {
         setLoaders(createLoaders());
     }, [groupId, artifactId]);
+
+    const navigateToDraft = (draft: Draft): void => {
+        const groupId: string = encodeURIComponent(draft.groupId || "default");
+        const draftId: string = encodeURIComponent(draft.draftId!);
+        const version: string = encodeURIComponent(draft.version!);
+
+        appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}`);
+    };
+
+    const doCreateDraftFromVersion = (fromVersion: SearchedVersion, newVersionNumber: string): void => {
+        pleaseWait("Creating draft, please wait...");
+
+        drafts.getDraftContent(fromVersion.groupId || null, fromVersion.artifactId!, fromVersion.version!).then(draftContent => {
+            const createDraft: CreateDraft = {
+                groupId: fromVersion.groupId || "default",
+                draftId: fromVersion.artifactId!,
+                version: newVersionNumber,
+                type: fromVersion.artifactType!,
+                name: "",
+                description: "",
+                labels: {},
+                content: draftContent.content,
+                contentType: draftContent.contentType
+            };
+            drafts.createDraft(createDraft).then(draft => {
+                setPleaseWaitModalOpen(false);
+                console.info("[ArtifactPage] Draft successfully created.  Redirecting to details.");
+                navigateToDraft(draft);
+            }).catch(error => {
+                setPleaseWaitModalOpen(false);
+                setPageError(toPageError(error, "Error creating draft."));
+            });
+        }).catch(error => {
+            setPleaseWaitModalOpen(false);
+            setPageError(toPageError(error, "Error creating draft."));
+        });
+
+    };
+
+    const pleaseWait = (message: string = ""): void => {
+        setPleaseWaitModalOpen(true);
+        setPleaseWaitMessage(message);
+    };
 
     const gid: string = groupId || "default";
     const hasGroup: boolean = gid != "default";
@@ -112,12 +163,23 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
                                 <CardBody>
                                     <VersionsTableWithToolbar
                                         artifact={artifact!}
-                                        onCreateNewDraft={() => {}} />
+                                        onCreateNewDraft={(version: SearchedVersion) => {
+                                            setFromVersion(version);
+                                            setIsCreateDraftFromModalOpen(true);
+                                        }} />
                                 </CardBody>
                             </Card>
                         </div>
                     </div>
                 </PageSection>
+                <PleaseWaitModal
+                    message={pleaseWaitMessage}
+                    isOpen={isPleaseWaitModalOpen} />
+                <NewDraftFromModal
+                    isOpen={isCreateDraftFromModalOpen}
+                    onClose={() => setIsCreateDraftFromModalOpen(false)}
+                    onCreate={doCreateDraftFromVersion}
+                    fromVersion={fromVersion!} />
             </PageDataLoader>
         </PageErrorHandler>
     );

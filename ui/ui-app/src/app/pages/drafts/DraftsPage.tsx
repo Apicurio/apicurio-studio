@@ -67,23 +67,6 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
         setLoaders(createLoaders());
     }, []);
 
-    //
-    // const createDesign = async (info: CreateDesign, template: Template): Promise<void> => {
-    //     info.content = template.content.replace("$NAME", info.name).replace("$SUMMARY", info.description || "");
-    //     info.contentType = template.contentType;
-    //     setCreating(true);
-    //     return designsSvc.createDesign(info).then((design: Design) => {
-    //         setCreating(false);
-    //         setCreateModalOpen(false);
-    //         nav.navigateTo(`/designs/${design.designId}/editor`);
-    //     }).catch((error: any) => {
-    //         console.error(error);
-    //         setCreateModalOpen(false);
-    //         setCreating(false);
-    //         setError(error);
-    //     });
-    // };
-
     const onResultsLoaded = (results: DraftsSearchResults): void => {
         setSearching(false);
         setResults(results);

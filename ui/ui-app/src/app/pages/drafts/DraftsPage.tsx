@@ -22,7 +22,7 @@ import {
 import { Paging } from "@models/Paging.ts";
 import { SortOrder } from "@models/SortOrder.ts";
 import { ListWithToolbar, PleaseWaitModal } from "@apicurio/common-ui-components";
-import { CreateDraftModal, RootPageHeader } from "@app/components";
+import { ConfirmDeleteModal, CreateDraftModal, RootPageHeader } from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 
 
@@ -39,20 +39,22 @@ const DEFAULT_PAGING: Paging = {
 export type DraftsPageProps = object;
 
 export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
-    const [ pageError, setPageError ] = useState<PageError>();
-    const [ loaders, setLoaders ] = useState<Promise<any> | Promise<any>[] | undefined>();
-    const [ criteria, setCriteria ] = useState<DraftsPageToolbarFilterCriteria>({
+    const [pageError, setPageError] = useState<PageError>();
+    const [loaders, setLoaders] = useState<Promise<any> | Promise<any>[] | undefined>();
+    const [criteria, setCriteria] = useState<DraftsPageToolbarFilterCriteria>({
         filterBy: DraftsFilterBy.name,
         filterValue: ""
     });
-    const [ isSearching, setSearching ] = useState(false);
-    const [ paging, setPaging ] = useState<Paging>(DEFAULT_PAGING);
-    const [ sortBy, setSortBy ] = useState<DraftsSortBy>(DraftsSortBy.name);
-    const [ sortOrder, setSortOrder ] = useState<SortOrder>(SortOrder.asc);
-    const [ results, setResults ] = useState<DraftsSearchResults>(EMPTY_RESULTS);
-    const [ isPleaseWaitModalOpen, setPleaseWaitModalOpen ] = useState(false);
-    const [ pleaseWaitMessage, setPleaseWaitMessage ] = useState("");
-    const [ isCreateDraftModalOpen, setIsCreateDraftModalOpen ] = useState(false);
+    const [isSearching, setSearching] = useState(false);
+    const [paging, setPaging] = useState<Paging>(DEFAULT_PAGING);
+    const [sortBy, setSortBy] = useState<DraftsSortBy>(DraftsSortBy.name);
+    const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.asc);
+    const [results, setResults] = useState<DraftsSearchResults>(EMPTY_RESULTS);
+    const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
+    const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
+    const [draftToDelete, setDraftToDelete] = useState<Draft>();
+    const [isCreateDraftModalOpen, setIsCreateDraftModalOpen] = useState(false);
+    const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
 
     const draftsService: DraftsService = useDraftsService();
     // const nav: AppNavigationService = useAppNavigation();
@@ -67,6 +69,11 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
         setLoaders(createLoaders());
     }, []);
 
+    const pleaseWait = (message: string = ""): void => {
+        setPleaseWaitModalOpen(true);
+        setPleaseWaitMessage(message);
+    };
+
     const onResultsLoaded = (results: DraftsSearchResults): void => {
         setSearching(false);
         setResults(results);
@@ -80,9 +87,26 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
         appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}`);
     };
 
-    const pleaseWait = (isOpen: boolean, message: string = ""): void => {
-        setPleaseWaitModalOpen(isOpen);
-        setPleaseWaitMessage(message);
+    const onDeleteDraft = (draft: Draft): void => {
+        setDraftToDelete(draft);
+        setIsConfirmDeleteModalOpen(true);
+    };
+
+    const doDeleteDraft = (): void => {
+        setIsConfirmDeleteModalOpen(false);
+        pleaseWait("Deleting draft, please wait.");
+
+        const groupId: string = draftToDelete?.groupId || "default";
+        const draftId: string = draftToDelete?.draftId || "";
+        const version: string = draftToDelete?.version || "";
+
+        draftsService.deleteDraft(groupId, draftId, version).then( () => {
+            setPleaseWaitModalOpen(false);
+            createLoaders();
+        }).catch( error => {
+            setPleaseWaitModalOpen(false);
+            setPageError(toPageError(error, "Error deleting a draft."));
+        });
     };
 
     const isFiltered = (): boolean => {
@@ -91,14 +115,14 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
 
     const doCreateDraft = (data: CreateDraft): void => {
         setIsCreateDraftModalOpen(false);
-        pleaseWait(true);
+        pleaseWait("Creating draft, please wait...");
 
         draftsService.createDraft(data).then(draft => {
-            pleaseWait(false);
+            setPleaseWaitModalOpen(false);
             console.info("[DraftsPage] Draft successfully created.  Redirecting to details.");
             onViewDraft(draft);
         }).catch(error => {
-            pleaseWait(false);
+            setPleaseWaitModalOpen(false);
             setPageError(toPageError(error, "Error creating draft."));
         });
     };
@@ -166,6 +190,7 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                             sortBy={sortBy}
                             sortOrder={sortOrder}
                             onView={onViewDraft}
+                            onDelete={onDeleteDraft}
                             onSort={(by, order) => {
                                 setSortBy(by);
                                 setSortOrder(order);
@@ -178,6 +203,12 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                 isOpen={isCreateDraftModalOpen}
                 onClose={() => setIsCreateDraftModalOpen(false)}
                 onCreate={doCreateDraft} />
+            <ConfirmDeleteModal
+                title="Delete draft"
+                message="Do you want to delete this draft? This action cannot be undone."
+                isOpen={isConfirmDeleteModalOpen}
+                onDelete={doDeleteDraft}
+                onClose={() => setIsConfirmDeleteModalOpen(false)} />
             <PleaseWaitModal
                 message={pleaseWaitMessage}
                 isOpen={isPleaseWaitModalOpen} />

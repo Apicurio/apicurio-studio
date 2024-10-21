@@ -14,7 +14,7 @@ export type DraftsTableProps = {
     sortOrder: SortOrder;
     onSort: (by: DraftsSortBy, order: SortOrder) => void;
     onView: (version: Draft) => void;
-    // onDelete: (version: Draft) => void;
+    onDelete: (version: Draft) => void;
 }
 type DraftAction = {
     label: string;
@@ -93,14 +93,16 @@ export const DraftsTable: FunctionComponent<DraftsTableProps> = (props: DraftsTa
             { label: "View draft", onClick: () => props.onView(draft), testId: `view-version-${vhash}` },
         ];
 
-        // if (config.featureDeleteVersion()) {
-        //     actions.push(
-        //         { isSeparator: true },
-        //     );
-        //     actions.push(
-        //         { label: "Delete version", onClick: () => props.onDelete(version), testId: `delete-version-${vhash}` }
-        //     );
-        // }
+        const isDeleteEnabled: boolean = true;
+        // TODO : Implement features in config to check if delete is enabled.
+        if (isDeleteEnabled) {
+            actions.push(
+                { isSeparator: true },
+            );
+            actions.push(
+                { label: "Delete draft", onClick: () => props.onDelete(draft), testId: `delete-draft-${vhash}` }
+            );
+        }
 
         return actions;
     };

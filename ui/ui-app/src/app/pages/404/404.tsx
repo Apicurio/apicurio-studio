@@ -18,9 +18,7 @@ import { AppNavigationService, useAppNavigation } from "@services/useAppNavigati
 /**
  * Properties
  */
-export type NotFoundPageProps = {
-    // No page properties.
-};
+export type NotFoundPageProps = object;
 
 /**
  * The "not found" page.

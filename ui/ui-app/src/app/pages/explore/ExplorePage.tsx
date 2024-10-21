@@ -23,9 +23,7 @@ import { GroupsSortBy } from "@models/groups";
 /**
  * Properties
  */
-export type ExplorePageProps = {
-    // No properties.
-}
+export type ExplorePageProps = object;
 
 const EMPTY_RESULTS: GroupSearchResults = {
     groups: [],

@@ -38,9 +38,7 @@ const editorParentStyle: CSSProperties = {
 };
 
 
-export type EditorPageProps = {
-    // No props
-};
+export type EditorPageProps = object;
 
 
 // Event listener used to prevent navigation when the editor is dirty

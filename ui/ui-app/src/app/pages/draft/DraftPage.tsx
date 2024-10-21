@@ -28,7 +28,7 @@ import { FromNow, If, PleaseWaitModal } from "@apicurio/common-ui-components";
 import { PencilAltIcon, TrashIcon } from "@patternfly/react-icons";
 
 
-export type DraftPageProps = Record<string, never>;
+export type DraftPageProps = object;
 
 export const DraftPage: FunctionComponent<DraftPageProps> = () => {
     const [ pageError, setPageError ] = useState<PageError>();

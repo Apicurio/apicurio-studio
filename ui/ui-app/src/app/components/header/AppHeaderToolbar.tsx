@@ -7,9 +7,7 @@ import { SystemService, useSystemService } from "@services/useSystemService.ts";
 import { ApicurioStudioConfig, useConfigService, VersionType } from "@services/useConfigService.ts";
 
 
-export type AppHeaderToolbarProps = {
-    // No properties.
-};
+export type AppHeaderToolbarProps = object;
 
 
 export const AppHeaderToolbar: FunctionComponent<AppHeaderToolbarProps> = () => {

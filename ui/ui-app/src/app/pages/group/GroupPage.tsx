@@ -35,9 +35,7 @@ import { FromNow, If } from "@apicurio/common-ui-components";
 import { isStringEmptyOrUndefined } from "@utils/string.utils.ts";
 
 
-export type GroupPageProps = {
-    // No properties
-}
+export type GroupPageProps = object;
 
 /**
  * The group page.

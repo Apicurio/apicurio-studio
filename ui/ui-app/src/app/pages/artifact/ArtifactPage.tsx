@@ -22,9 +22,7 @@ import { AppNavigationService, useAppNavigation } from "@services/useAppNavigati
 import { ArtifactTypeIcon, RootPageHeader } from "@app/components";
 
 
-export type ArtifactPageProps = {
-    // No properties
-}
+export type ArtifactPageProps = object
 
 /**
  * The artifact details page.

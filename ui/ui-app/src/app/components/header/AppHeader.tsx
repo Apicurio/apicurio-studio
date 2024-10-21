@@ -6,9 +6,7 @@ import { AppNavigationService, useAppNavigation } from "@services/useAppNavigati
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
 
 
-export type AppHeaderProps = {
-    // No properties.
-};
+export type AppHeaderProps = object;
 
 
 export const AppHeader: FunctionComponent<AppHeaderProps> = () => {

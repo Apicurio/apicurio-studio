@@ -36,7 +36,7 @@ const DEFAULT_PAGING: Paging = {
     pageSize: 10
 };
 
-export type DraftsPageProps = Record<string, never>;
+export type DraftsPageProps = object;
 
 export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const [ pageError, setPageError ] = useState<PageError>();

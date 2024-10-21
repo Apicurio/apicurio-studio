@@ -3,9 +3,7 @@ import { Avatar, Dropdown, DropdownItem, DropdownList, MenuToggle, MenuToggleEle
 import { AuthService, useAuth } from "@apicurio/common-ui-components";
 
 
-export type AvatarDropdownProps = {
-    // No props
-};
+export type AvatarDropdownProps = object;
 
 
 export const AvatarDropdown: FunctionComponent<AvatarDropdownProps> = () => {

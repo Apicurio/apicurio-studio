@@ -55,8 +55,6 @@ export const DraftsTable: FunctionComponent<DraftsTableProps> = (props: DraftsTa
                         <span style={{ marginLeft: "5px" }}>{ column.groupId || "default" }</span>
                         <span style={{ color: "#666" }}> / </span>
                         <span>{ column.draftId }</span>
-                        <span style={{ color: "#666" }}> / </span>
-                        <span>{ column.version }</span>
                         <If condition={column.name != "" && column.name !== undefined && column.name !== null}>
                             <span style={{ marginLeft: "10px" }}>({column.name})</span>
                         </If>

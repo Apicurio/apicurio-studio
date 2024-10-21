@@ -3,7 +3,6 @@ import { PageSection, PageSectionVariants, TextContent } from "@patternfly/react
 import {
     DraftsPageEmptyState,
     DraftsPageToolbar,
-    DraftsPageToolbarFilterCriteria,
     DraftsTable,
     PageDataLoader,
     PageError,
@@ -14,7 +13,6 @@ import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
 import {
     CreateDraft,
     Draft,
-    DraftsFilterBy,
     DraftsSearchFilter,
     DraftsSearchResults,
     DraftsSortBy
@@ -41,10 +39,7 @@ export type DraftsPageProps = object;
 export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const [pageError, setPageError] = useState<PageError>();
     const [loaders, setLoaders] = useState<Promise<any> | Promise<any>[] | undefined>();
-    const [criteria, setCriteria] = useState<DraftsPageToolbarFilterCriteria>({
-        filterBy: DraftsFilterBy.name,
-        filterValue: ""
-    });
+    const [criteria, setCriteria] = useState<DraftsSearchFilter[]>([]);
     const [isSearching, setSearching] = useState(false);
     const [paging, setPaging] = useState<Paging>(DEFAULT_PAGING);
     const [sortBy, setSortBy] = useState<DraftsSortBy>(DraftsSortBy.name);
@@ -66,7 +61,7 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const appNavigation: AppNavigationService = useAppNavigation();
 
     useEffect(() => {
-        setLoaders(createLoaders());
+        setLoaders([]);
     }, []);
 
     const pleaseWait = (message: string = ""): void => {
@@ -110,7 +105,7 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     };
 
     const isFiltered = (): boolean => {
-        return !!criteria.filterValue;
+        return criteria.length > 0;
     };
 
     const doCreateDraft = (data: CreateDraft): void => {
@@ -127,16 +122,10 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
         });
     };
 
-    const search = async (criteria: DraftsPageToolbarFilterCriteria, sortBy: DraftsSortBy, sortOrder: SortOrder, paging: Paging): Promise<any> => {
+    const search = async (criteria: DraftsSearchFilter[], sortBy: DraftsSortBy, sortOrder: SortOrder, paging: Paging): Promise<any> => {
         setSearching(true);
-        const filters: DraftsSearchFilter[] = [
-            {
-                by: criteria.filterBy,
-                value: criteria.filterValue
-            }
-        ];
 
-        return draftsService.searchDrafts(filters, sortBy, sortOrder, paging).then(results => {
+        return draftsService.searchDrafts(criteria, sortBy, sortOrder, paging).then(results => {
             onResultsLoaded(results);
         }).catch(error => {
             setPageError(toPageError(error, "Error searching for artifacts."));
@@ -150,7 +139,6 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const toolbar = (
         <DraftsPageToolbar
             results={results}
-            criteria={criteria}
             paging={paging}
             onPageChange={setPaging}
             onCreateDraft={() => setIsCreateDraftModalOpen(true)}

@@ -26,7 +26,7 @@ test("End to End - Create draft", async ({ page }) => {
     await page.getByTestId("create-draft-modal-draft-metadata-description").fill("The test API for the end to end Playwright test.");
     await page.locator("#next-wizard-page").click();
 
-    // Make sure we redirected to the editor page.
+    // Make sure we redirected to the draft details page.
     const expectedPageUrlPattern: RegExp = /.+\/drafts\/e2e-test-group\/e2e-test-api\/1.0/;
     await expect(page).toHaveURL(expectedPageUrlPattern);
 });

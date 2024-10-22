@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "$NAME",
-    "description": "$SUMMARY",
+    "title": "Pet Store API",
+    "description": "This is a sample Pet Store Server based on the OpenAPI 2.0 specification.",
     "version": "1.0.6",
     "termsOfService": "http://swagger.io/terms/",
     "contact": {

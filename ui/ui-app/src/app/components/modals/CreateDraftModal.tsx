@@ -17,7 +17,7 @@ import {
     TextInput,
     Wizard,
     WizardStep,
-    WizardFooterProps
+    WizardFooterProps, TextContent, SimpleList, SimpleListItem
 } from "@patternfly/react-core";
 import { If, ObjectSelect, UrlUpload } from "@apicurio/common-ui-components";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
@@ -25,6 +25,8 @@ import { UrlService, useUrlService } from "@services/useUrlService.ts";
 import { detectContentType } from "@utils/content.utils.ts";
 import { CreateDraft, DraftType } from "@models/drafts";
 import { isStringEmptyOrUndefined } from "@utils/string.utils.ts";
+import { TemplatesService, useTemplatesService } from "@services/useTemplatesService.ts";
+import { Template } from "@models/templates";
 
 
 export type ValidType = "default" | "success" | "error";
@@ -81,7 +83,7 @@ const EMPTY_FORM_DATA: CreateDraft = {
     groupId: "",
     draftId: "",
     version: "",
-    type: "",
+    type: DraftType.OPENAPI,
     name: "",
     description: "",
     labels: { },
@@ -131,7 +133,10 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
     const [selectedType, setSelectedType] = useState<DraftTypeItem>(DEFAULT_DRAFT_TYPE);
     const [contentTabKey, setContentTabKey] = useState(0);
     const [contentIsLoading, setContentIsLoading] = useState(false);
+    const [templates, setTemplates] = useState<Template[]>([]);
+    const [selectedTemplate, setSelectedTemplate] = useState<Template>();
 
+    const templateService: TemplatesService = useTemplatesService();
     const urlService: UrlService = useUrlService();
 
     const setGroupId = (newGroupId: string): void => {
@@ -153,6 +158,12 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
             ...data,
             type: newDraftType
         });
+
+        // Load templates for the draft/artifact type.
+        console.info("[CreateDraftModal] Loading templates for type: ", newDraftType);
+        templateService.getTemplatesFor(newDraftType).then(templates => {
+            setTemplates(templates);
+        });
     };
 
     const onFileTextChange = (_event: any, value: string | undefined): void => {
@@ -161,6 +172,15 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
             ...data,
             content: value,
             contentType: detectContentType(data.type, value)
+        });
+    };
+
+    const onTemplateChange = (newTemplate: Template): void => {
+        setSelectedTemplate(newTemplate);
+        setData({
+            ...data,
+            content: newTemplate.content,
+            contentType: newTemplate.contentType
         });
     };
 
@@ -208,6 +228,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
     useEffect(() => {
         if (props.isOpen) {
             setData(EMPTY_FORM_DATA);
+            templateService.getTemplatesFor(DraftType.OPENAPI).then(setTemplates);
         }
     }, [props.isOpen]);
 
@@ -252,6 +273,9 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
         onNext: fireCreateEvent,
         onClose: props.onClose,
     };
+
+    console.info("TEMPLATES: ", templates);
+    console.info("TEMPLATE: ", selectedTemplate);
 
     return (
         <Modal
@@ -350,8 +374,9 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
                                 style={{ marginBottom: "8px" }}
                                 activeKey={contentTabKey}
                                 onSelect={(_event, eventKey) => {
+                                    setSelectedTemplate(undefined);
                                     setContentTabKey(eventKey as number);
-                                    onFileTextChange( null, undefined);
+                                    onFileTextChange(null, undefined);
                                     _event.preventDefault();
                                     _event.stopPropagation();
                                 }}
@@ -360,9 +385,46 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
                             >
                                 <Tab
                                     eventKey={0}
+                                    data-testid="create-draft-from-template"
+                                    title={<TabTitleText>From template</TabTitleText>}
+                                    aria-label="Create draft from template"
+                                >
+                                    <TextContent>
+                                        Select from the list of templates below to create a new Draft from scratch, or
+                                        from a common/example starter.
+                                    </TextContent>
+                                    <SimpleList
+                                        aria-label="List of templates"
+                                        isControlled={false}
+                                        style={{ border: "1px solid #ddd", marginTop: "10px", padding: "5px" }}
+                                    >
+                                        {
+                                            templates.map(template =>
+                                                <SimpleListItem
+                                                    key={template.id}
+                                                    isActive={selectedTemplate === template}
+                                                    onClick={() => onTemplateChange(template)}
+                                                >
+                                                    <div className="template-name" style={{ fontWeight: "bold" }}>
+                                                        {
+                                                            template.name
+                                                        }
+                                                    </div>
+                                                    <div className="template-description" style={{ color: "#444" }}>
+                                                        {
+                                                            template.description
+                                                        }
+                                                    </div>
+                                                </SimpleListItem>
+                                            )
+                                        }
+                                    </SimpleList>
+                                </Tab>
+                                <Tab
+                                    eventKey={1}
                                     data-testid="create-draft-from-file"
-                                    title={<TabTitleText>From file</TabTitleText>}
-                                    aria-label="Upload from file"
+                                    title={<TabTitleText>From local file</TabTitleText>}
+                                    aria-label="Create draft from file"
                                 >
                                     <FileUpload
                                         id="draft-content"
@@ -380,10 +442,10 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
                                     />
                                 </Tab>
                                 <Tab
-                                    eventKey={1}
+                                    eventKey={2}
                                     data-testid="create-draft-from-url"
                                     title={<TabTitleText>From URL</TabTitleText>}
-                                    aria-label="Upload from URL"
+                                    aria-label="Create draft from URL"
                                 >
                                     <UrlUpload
                                         id="draft-content-url"

@@ -39,8 +39,8 @@ const toDraft = (vmd: VersionMetaData | SearchedVersion | undefined): Draft => {
         createdBy: vmd!.owner as string,
         createdOn: vmd!.createdOn!,
         // TODO restore this once the modified info is returned here
-        // modifiedBy: vmd.modifiedBy!,
-        // modifiedOn: vmd.modifiedOn!,
+        // modifiedBy: vmd!.modifiedBy,
+        // modifiedOn: vmd!.modifiedOn,
         // TODO implement handling of labels in Studio
         // labels: vmd.labels!,
     };

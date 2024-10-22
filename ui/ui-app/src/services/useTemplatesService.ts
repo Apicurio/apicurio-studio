@@ -3,7 +3,6 @@ import {
     ASYNCAPI_2_TEMPLATES,
     AVRO_TEMPLATES,
     JSON_TEMPLATES,
-    OPENAPI_2_TEMPLATES,
     OPENAPI_3_TEMPLATES,
     PROTOBUF_TEMPLATES
 } from "./_templates";
@@ -24,11 +23,7 @@ async function getTemplatesFor(type: string, version?: string): Promise<Template
         return Promise.resolve(ASYNCAPI_2_TEMPLATES);
     }
     if (type === ArtifactTypes.OPENAPI) {
-        if (version && version.startsWith("3")) {
-            return Promise.resolve(OPENAPI_3_TEMPLATES);
-        } else {
-            return Promise.resolve(OPENAPI_2_TEMPLATES);
-        }
+        return Promise.resolve(OPENAPI_3_TEMPLATES);
     }
     return Promise.reject(`No templates found for type ${type} and version ${version}.`);
 }

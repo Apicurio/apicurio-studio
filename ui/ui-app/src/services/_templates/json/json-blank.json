@@ -1,8 +1,8 @@
 {
   "$id": "https://example.com/blank.schema.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "$NAME",
-  "description": "$SUMMARY",
+  "title": "Example",
+  "description": "A JSON schema type with no properties.",
   "type": "object",
   "properties": {
   }

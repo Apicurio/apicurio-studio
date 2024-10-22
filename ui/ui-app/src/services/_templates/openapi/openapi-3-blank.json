@@ -1,8 +1,8 @@
 {
-  "openapi": "3.0.2",
+  "openapi": "3.0.3",
   "info": {
-    "title": "$NAME",
-    "description": "$SUMMARY",
+    "title": "Blank API",
+    "description": "This is a simple API descriptor.",
     "version": "1.0.0"
   }
 }

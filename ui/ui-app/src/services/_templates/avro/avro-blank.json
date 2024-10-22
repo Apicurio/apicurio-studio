@@ -1,9 +1,9 @@
 {
   "type": "record",
-  "name": "$NAME",
+  "name": "Example",
   "fields": [
     {
-      "name": "something",
+      "name": "field-1",
       "type": "string"
     }
   ]

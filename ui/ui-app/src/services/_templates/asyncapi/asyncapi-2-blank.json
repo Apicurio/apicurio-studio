@@ -1,8 +1,7 @@
 {
-  "asyncapi": "2.0.0",
+  "asyncapi": "2.6.0",
   "info": {
-    "title": "$NAME",
-    "description": "$SUMMARY",
+    "title": "Blank API",
     "version": "1.0.0"
   }
 }

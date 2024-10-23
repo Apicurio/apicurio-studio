@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
-import { OPENAPI_DATA } from "./data/openapi-simple";
+// import { OPENAPI_DATA } from "./data/openapi-simple";
 
-const OPENAPI_DATA_STR: string = JSON.stringify(OPENAPI_DATA, null, 4);
+// const OPENAPI_DATA_STR: string = JSON.stringify(OPENAPI_DATA, null, 4);
 
 const STUDIO_UI_URL: string = process.env["STUDIO_UI_URL"] || "http://localhost:8888";
 
@@ -20,7 +20,7 @@ test("End to End - Create draft", async ({ page }) => {
     await page.getByTestId("create-draft-modal-id").fill("e2e-test-api");
     await page.getByTestId("create-draft-modal-version").fill("1.0");
     await page.getByText("Next").click();
-    await page.locator("#draft-content").fill(OPENAPI_DATA_STR);
+    await page.getByTestId("openapi_3_blank").click();
     await page.getByText("Next").click();
     await page.getByTestId("create-draft-modal-draft-metadata-name").fill("E2E Test API");
     await page.getByTestId("create-draft-modal-draft-metadata-description").fill("The test API for the end to end Playwright test.");

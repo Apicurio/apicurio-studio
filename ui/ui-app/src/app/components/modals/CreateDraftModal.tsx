@@ -229,6 +229,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
         if (props.isOpen) {
             setData(EMPTY_FORM_DATA);
             templateService.getTemplatesFor(DraftType.OPENAPI).then(setTemplates);
+            setSelectedTemplate(undefined);
         }
     }, [props.isOpen]);
 
@@ -402,6 +403,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
                                             templates.map(template =>
                                                 <SimpleListItem
                                                     key={template.id}
+                                                    componentProps={{ "data-testId": template.id }}
                                                     isActive={selectedTemplate === template}
                                                     onClick={() => onTemplateChange(template)}
                                                 >

@@ -9,7 +9,7 @@ import {
     GridItem,
     HelperText,
     HelperTextItem,
-    Modal, setTabIndex,
+    Modal,
     SimpleList,
     SimpleListItem,
     Tab,

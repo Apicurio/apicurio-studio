@@ -10,13 +10,16 @@ import {
     CardTitle,
     DescriptionList,
     DescriptionListDescription,
-    DescriptionListGroup, DescriptionListTerm,
+    DescriptionListGroup,
+    DescriptionListTerm,
     Divider,
     Flex,
     FlexItem,
+    Label,
     PageSection,
     PageSectionVariants,
-    TextContent
+    TextContent,
+    Truncate
 } from "@patternfly/react-core";
 import { DraftComments, PageDataLoader, PageError, PageErrorHandler, toPageError } from "@app/pages";
 import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
@@ -223,21 +226,21 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                                                 </DescriptionListDescription>
                                             </DescriptionListGroup>
                                         </If>
-                                        {/*<DescriptionListGroup>*/}
-                                        {/*    <DescriptionListTerm>Labels</DescriptionListTerm>*/}
-                                        {/*    {!labels || !Object.keys(labels).length ?*/}
-                                        {/*        <DescriptionListDescription data-testid="draft-details-labels"*/}
-                                        {/*            className="empty-state-text">No*/}
-                                        {/*            labels</DescriptionListDescription> :*/}
-                                        {/*        <DescriptionListDescription*/}
-                                        {/*            data-testid="draft-details-labels">{Object.entries(labels).map(([key, value]) =>*/}
-                                        {/*                <Label key={`label-${key}`} color="purple"*/}
-                                        {/*                    style={{ marginBottom: "2px", marginRight: "5px" }}>*/}
-                                        {/*                    <Truncate className="label-truncate" content={`${key}=${value}`}/>*/}
-                                        {/*                </Label>*/}
-                                        {/*            )}</DescriptionListDescription>*/}
-                                        {/*    }*/}
-                                        {/*</DescriptionListGroup>*/}
+                                        <DescriptionListGroup>
+                                            <DescriptionListTerm>Labels</DescriptionListTerm>
+                                            {!draft.labels || !Object.keys(draft.labels).length ?
+                                                <DescriptionListDescription data-testid="draft-details-labels"
+                                                    className="empty-state-text">No
+                                                    labels</DescriptionListDescription> :
+                                                <DescriptionListDescription
+                                                    data-testid="draft-details-labels">{Object.entries(draft.labels).map(([key, value]) =>
+                                                        <Label key={`label-${key}`} color="purple"
+                                                            style={{ marginBottom: "2px", marginRight: "5px" }}>
+                                                            <Truncate className="label-truncate" content={`${key}=${value}`}/>
+                                                        </Label>
+                                                    )}</DescriptionListDescription>
+                                            }
+                                        </DescriptionListGroup>
                                     </DescriptionList>
                                 </CardBody>
                             </Card>

@@ -1,6 +1,6 @@
 import { AuthService, useAuth } from "@apicurio/common-ui-components";
 import { ApicurioStudioConfig, useConfigService } from "@services/useConfigService.ts";
-import { getRegistryClient } from "@utils/rest.utils.ts";
+import { getRegistryClient, labelsToAny } from "@utils/rest.utils.ts";
 import { ApicurioRegistryClient } from "@apicurio/apicurio-registry-sdk";
 import {
     CreateDraft,
@@ -50,7 +50,7 @@ const toDraft = (vmd: VersionMetaData | SearchedVersion | undefined): Draft => {
         // modifiedBy: vmd!.modifiedBy,
         // modifiedOn: vmd!.modifiedOn,
         // TODO implement handling of labels in Studio
-        // labels: vmd.labels!,
+        labels: labelsToAny((vmd as any).labels),
     };
     return draft;
 };

@@ -64,6 +64,9 @@ export const getRegistryClient = (config: ApicurioStudioConfig, auth: AuthServic
 };
 
 export const labelsToAny = (labels: Labels | undefined | null): any => {
+    if (!labels) {
+        return {};
+    }
     const rval: any = {
         ...(labels||{}),
         ...(labels?.additionalData||{})

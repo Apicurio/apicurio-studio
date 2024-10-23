@@ -18,6 +18,7 @@
         <!-- The list of tags -->
         <div class="tags" *ngIf="tags().length > 0">
             <tag-row *ngFor="let tag of tags()" [item]="tag"
+                     [enableRename]="enableRename"
                      (onRename)="openRenameDialog(tag)"
                      (onDelete)="deleteTag(tag)"></tag-row>
         </div>

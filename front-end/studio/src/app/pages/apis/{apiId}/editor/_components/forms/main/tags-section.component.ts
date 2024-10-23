@@ -50,6 +50,7 @@ import {ObjectUtils} from "apicurio-ts-core";
 export class TagsSectionComponent extends AbstractBaseComponent {
 
     @Input() document: OasDocument;
+    @Input() enableRename: boolean = true;
 
     @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
 

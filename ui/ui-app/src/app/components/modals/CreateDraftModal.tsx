@@ -275,9 +275,6 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
         onClose: props.onClose,
     };
 
-    console.info("TEMPLATES: ", templates);
-    console.info("TEMPLATE: ", selectedTemplate);
-
     return (
         <Modal
             title="Create Draft"

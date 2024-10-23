@@ -19,7 +19,7 @@ export type OpenApiEditorProps = {
  * and loaded via an iframe.  This component is a bridge - it acts as a React component that
  * bridges to the iframe.
  */
-export const OpenApiEditor: DraftEditor = ({ content, onChange, className }: OpenApiEditorProps) => {
+export const OpenApiEditor: DraftEditor = (props: OpenApiEditorProps) => {
     const [openApiVendorExtensions, setOpenApiVendorExtensions] = useState<VendorExtension[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -51,18 +51,18 @@ export const OpenApiEditor: DraftEditor = ({ content, onChange, className }: Ope
             if (event.data && event.data.type === "apicurio_onChange") {
                 let newContent: any = event.data.data.content;
                 if (typeof newContent === "object") {
-                    if (content.contentType === ContentTypes.APPLICATION_YAML) {
+                    if (props.content.contentType === ContentTypes.APPLICATION_YAML) {
                         console.info("[OpenApiEditor] New content is 'object', converting to YAML string");
                         newContent = toYamlString(newContent);
                     } else {
                         console.info("[OpenApiEditor] New content is 'object', converting to JSON string");
                         newContent = toJsonString(newContent);
                     }
-                } else if (typeof newContent === "string" && content.contentType === ContentTypes.APPLICATION_YAML) {
+                } else if (typeof newContent === "string" && props.content.contentType === ContentTypes.APPLICATION_YAML) {
                     console.info("[OpenApiEditor] Converting from JSON string to YAML string.");
                     newContent = toYamlString(parseJson(newContent as string));
                 }
-                onChange(newContent);
+                props.onChange(newContent);
             }
         };
         window.addEventListener("message", eventListener, false);
@@ -78,15 +78,15 @@ export const OpenApiEditor: DraftEditor = ({ content, onChange, className }: Ope
     const onEditorLoaded = (): void => {
         // Now it's OK to post a message to iframe with the content to edit.
         let value: string;
-        if (typeof content.content === "object") {
+        if (typeof props.content.content === "object") {
             console.info("[OpenApiEditor] Loading editor data from 'object' - converting to JSON string.");
-            value = toJsonString(content.content);
-        } else if (typeof content.content === "string" && content.contentType === ContentTypes.APPLICATION_YAML) {
+            value = toJsonString(props.content.content);
+        } else if (typeof props.content.content === "string" && props.content.contentType === ContentTypes.APPLICATION_YAML) {
             console.info("[OpenApiEditor] Loading editor data from 'string' - converting from YAML to JSON.");
-            value = toJsonString(parseYaml(content.content as string));
+            value = toJsonString(parseYaml(props.content.content as string));
         } else {
             console.info("[OpenApiEditor] Loading editor data from 'string' without content conversion.");
-            value = content.content as string;
+            value = props.content.content as string;
         }
         const message: any = {
             type: "apicurio-editingInfo",
@@ -112,7 +112,7 @@ export const OpenApiEditor: DraftEditor = ({ content, onChange, className }: Ope
         <IfNotLoading isLoading={isLoading}>
             <iframe id="openapi-editor-frame"
                 ref={ref}
-                className={className ? className : "editor-openapi-flex-container"}
+                className={props.className ? props.className : "editor-openapi-flex-container"}
                 onLoad={onEditorLoaded}
                 src={editorAppUrl()}/>
         </IfNotLoading>

@@ -16,7 +16,7 @@ export type AsyncApiEditorProps = {
  * and loaded via an iframe.  This component is a bridge - it acts as a React component that
  * bridges to the iframe.
  */
-export const AsyncApiEditor: DraftEditor = ({ content, onChange, className }: AsyncApiEditorProps) => {
+export const AsyncApiEditor: DraftEditor = (props: AsyncApiEditorProps) => {
     const ref: RefObject<any> = React.createRef();
     const config: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
 
@@ -30,18 +30,18 @@ export const AsyncApiEditor: DraftEditor = ({ content, onChange, className }: As
             if (event.data && event.data.type === "apicurio_onChange") {
                 let newContent: any = event.data.data.content;
                 if (typeof newContent === "object") {
-                    if (content.contentType === ContentTypes.APPLICATION_YAML) {
+                    if (props.content.contentType === ContentTypes.APPLICATION_YAML) {
                         console.info("[AsyncApiEditor] New content is 'object', converting to YAML string");
                         newContent = toYamlString(newContent);
                     } else {
                         console.info("[AsyncApiEditor] New content is 'object', converting to JSON string");
                         newContent = toJsonString(newContent);
                     }
-                } else if (typeof newContent === "string" && content.contentType === ContentTypes.APPLICATION_YAML) {
+                } else if (typeof newContent === "string" && props.content.contentType === ContentTypes.APPLICATION_YAML) {
                     console.info("[AsyncApiEditor] Converting from JSON string to YAML string.");
                     newContent = toYamlString(parseJson(newContent as string));
                 }
-                onChange(newContent);
+                props.onChange(newContent);
             }
         };
         window.addEventListener("message", eventListener, false);
@@ -57,15 +57,15 @@ export const AsyncApiEditor: DraftEditor = ({ content, onChange, className }: As
     const onEditorLoaded = (): void => {
         // Now it's OK to post a message to iframe with the content to edit.
         let value: string;
-        if (typeof content.content === "object") {
+        if (typeof props.content.content === "object") {
             console.info("[AsyncApiEditor] Loading editor data from 'object' - converting to JSON string.");
-            value = toJsonString(content.content);
-        } else if (typeof content.content === "string" && content.contentType === ContentTypes.APPLICATION_YAML) {
+            value = toJsonString(props.content.content);
+        } else if (typeof props.content.content === "string" && props.content.contentType === ContentTypes.APPLICATION_YAML) {
             console.info("[AsyncApiEditor] Loading editor data from 'string' - converting from YAML to JSON.");
-            value = toJsonString(parseYaml(content.content as string));
+            value = toJsonString(parseYaml(props.content.content as string));
         } else {
             console.info("[AsyncApiEditor] Loading editor data from 'string' without content conversion.");
-            value = content.content as string;
+            value = props.content.content as string;
         }
         const message: any = {
             type: "apicurio-editingInfo",
@@ -87,7 +87,7 @@ export const AsyncApiEditor: DraftEditor = ({ content, onChange, className }: As
     return (
         <iframe id="asyncapi-editor-frame"
             ref={ ref }
-            className={ className ? className : "editor-asyncapi-flex-container" }
+            className={ props.className ? props.className : "editor-asyncapi-flex-container" }
             onLoad={ onEditorLoaded }
             src={ editorAppUrl() } />
     );

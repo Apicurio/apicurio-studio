@@ -13,7 +13,6 @@ import { AppNavigationService, useAppNavigation } from "@services/useAppNavigati
 export type EditorContextProps = {
     draft: Draft;
     dirty: boolean;
-    artifactContent: string;
     onSave: () => void;
     onFormat: () => void;
     onDownload: () => void;

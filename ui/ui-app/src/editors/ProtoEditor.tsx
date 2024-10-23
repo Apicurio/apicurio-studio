@@ -22,20 +22,20 @@ const protoBufThemeData = {
 /**
  * Protobuf text editor with support for syntax hint and highlight.
  */
-export const ProtoEditor: DraftEditor = ({ content, onChange }: EditorProps) => {
-    const defaultValue: string = draftContentToString(content);
+export const ProtoEditor: DraftEditor = (props: EditorProps) => {
+    const defaultValue: string = draftContentToString(props.content);
     const [value, setValue] = useState<string>(defaultValue);
 
     const editorRef: MutableRefObject<IStandaloneCodeEditor|undefined> = useRef<IStandaloneCodeEditor>();
 
     useEffect(() => {
-        const contentString: string = draftContentToString(content);
+        const contentString: string = draftContentToString(props.content);
         setValue(contentString);
 
         if (editorRef.current) {
             editorRef.current?.setValue(contentString);
         }
-    }, [content]);
+    }, [props.content]);
 
     const registerProto = (monaco: Monaco) => {
         monaco.languages.register({ id: "protobuf" });
@@ -122,7 +122,7 @@ export const ProtoEditor: DraftEditor = ({ content, onChange }: EditorProps) => 
             className="text-editor"
             defaultLanguage="protobuf"
             defaultValue={value}
-            onChange={onChange}
+            onChange={props.onChange}
             height="100%"
             options={{
                 automaticLayout: true

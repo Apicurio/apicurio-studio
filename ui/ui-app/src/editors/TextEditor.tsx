@@ -9,9 +9,9 @@ import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
  * Simple text editor.  This is a fallback editor for any text based content
  * we might want to edit.
  */
-export const TextEditor: DraftEditor = ({ content, onChange }: EditorProps) => {
-    const defaultValue: string = draftContentToString(content);
-    const defaultLanguage: string = draftContentToLanguage(content);
+export const TextEditor: DraftEditor = (props: EditorProps) => {
+    const defaultValue: string = draftContentToString(props.content);
+    const defaultLanguage: string = draftContentToLanguage(props.content);
 
     const [value, setValue] = useState<string>(defaultValue);
     const [language, setLanguage] = useState<string>(defaultLanguage);
@@ -19,8 +19,8 @@ export const TextEditor: DraftEditor = ({ content, onChange }: EditorProps) => {
     const editorRef: MutableRefObject<IStandaloneCodeEditor|undefined> = useRef<IStandaloneCodeEditor>();
 
     useEffect(() => {
-        const contentString: string = draftContentToString(content);
-        const lang: string = draftContentToLanguage(content);
+        const contentString: string = draftContentToString(props.content);
+        const lang: string = draftContentToLanguage(props.content);
 
         setValue(contentString);
         setLanguage(lang);
@@ -28,14 +28,14 @@ export const TextEditor: DraftEditor = ({ content, onChange }: EditorProps) => {
         if (editorRef.current) {
             editorRef.current?.setValue(contentString);
         }
-    }, [content]);
+    }, [props.content]);
 
     return (
         <Editor
             className="text-editor"
             language={language}
             value={value}
-            onChange={onChange}
+            onChange={props.onChange}
             options={{
                 automaticLayout: true,
                 wordWrap: "on"

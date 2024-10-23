@@ -21,6 +21,10 @@ import {
 import {
     VersionsRequestBuilderGetQueryParameters
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/search/versions";
+import {
+    HeadersInspectionOptions
+} from "@microsoft/kiota-http-fetchlibrary/dist/es/src/middlewares/options/headersInspectionOptions";
+import { ContentTypes } from "@models/common";
 
 const arrayDecoder: TextDecoder = new TextDecoder("utf-8");
 
@@ -224,18 +228,24 @@ function getDraftContent(appConfig: ApicurioStudioConfig, auth: AuthService, gro
     const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
 
     groupId = normalizeGroupId(groupId);
-    console.info("[DraftsService] Deleting a draft: ", groupId, draftId, version);
+    console.info("[DraftsService] Getting draft content: ", groupId, draftId, version);
+
+    // This allows us to fetch the Response headers, which we need to do because we
+    // need to know the Content-Type of the content.
+    const headerInspection: HeadersInspectionOptions = new HeadersInspectionOptions();
+    headerInspection.inspectResponseHeaders = true;
 
     return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).content.get({
         headers: {
             Accept: "*"
-        }
+        },
+        options: [headerInspection]
     }).then(value => {
-        // TODO return the contentType by getting it from the response http headers
         const textContent: string = arrayDecoder.decode(value!);
+        const contentType: string = headerInspection.getResponseHeaders().get("Content-Type")?.values().next().value || ContentTypes.APPLICATION_JSON;
         return {
             content: textContent,
-            contentType: "application/json"
+            contentType
         };
     });
 }

@@ -227,7 +227,6 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
                         onFormat={onFormat}
                         onDownload={onDownload}
                         onCompareContent={onCompareContent}
-                        artifactContent={currentContent}
                     />
                 </PageSection>
                 <PageSection variant={PageSectionVariants.light} id="section-editor" style={sectionEditorStyle}>

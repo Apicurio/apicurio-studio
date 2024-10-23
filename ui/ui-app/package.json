@@ -30,7 +30,7 @@
     "vite-tsconfig-paths": "5.0.1"
   },
   "dependencies": {
-    "@apicurio/common-ui-components": "2.0.4",
+    "@apicurio/common-ui-components": "2.0.5",
     "@apicurio/apicurio-registry-sdk": "3.0.2",
     "@microsoft/kiota-abstractions": "1.0.0-preview.68",
     "@microsoft/kiota-http-fetchlibrary": "1.0.0-preview.67",

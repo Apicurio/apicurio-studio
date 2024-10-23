@@ -1,10 +1,9 @@
 import { FunctionComponent, useState } from "react";
 import "./DraftsPageToolbar.css";
 import { Button, Pagination, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
-import { If } from "@apicurio/common-ui-components";
+import { ChipFilterCriteria, ChipFilterInput, ChipFilterType, FilterChips, If } from "@apicurio/common-ui-components";
 import { DraftsFilterBy, DraftsSearchFilter, DraftsSearchResults } from "@models/drafts";
 import { Paging } from "@models/Paging.ts";
-import { FilterChips, FilterCriteria, FilterInput, FilterType } from "@app/components";
 
 
 export type DraftsPageToolbarProps = {
@@ -16,7 +15,7 @@ export type DraftsPageToolbarProps = {
     onCreateDraft: () => void;
 };
 
-const FILTER_TYPES: FilterType[] = [
+const FILTER_TYPES: ChipFilterType[] = [
     { value: DraftsFilterBy.name, label: "Name", testId: "drafts-filter-type-name" },
     { value: DraftsFilterBy.groupId, label: "Group Id", testId: "drafts-filter-type-groupid" },
     { value: DraftsFilterBy.artifactId, label: "Artifact Id", testId: "drafts-filter-type-artifactid" },
@@ -29,7 +28,7 @@ const FILTER_TYPES: FilterType[] = [
  * Models the toolbar for the Drafts page.
  */
 export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (props: DraftsPageToolbarProps) => {
-    const [filterCriteria, setFilterCriteria] = useState<FilterCriteria[]>([]);
+    const [filterCriteria, setFilterCriteria] = useState<ChipFilterCriteria[]>([]);
 
     const totalDraftsCount = (): number => {
         return props.results.count!;
@@ -51,7 +50,7 @@ export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (pro
         props.onPageChange(newPaging);
     };
 
-    const fireCriteriaChange = (criteria: FilterCriteria[]): void => {
+    const fireCriteriaChange = (criteria: ChipFilterCriteria[]): void => {
         props.onCriteriaChange(criteria.map(fc => {
             return {
                 value: fc.filterValue,
@@ -60,12 +59,12 @@ export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (pro
         }));
     };
 
-    const onAddFilterCriteria = (criteria: FilterCriteria): void => {
+    const onAddFilterCriteria = (criteria: ChipFilterCriteria): void => {
         if (criteria.filterValue === "") {
             fireCriteriaChange(filterCriteria);
         } else {
             let updated: boolean = false;
-            const newCriteria: FilterCriteria[] = filterCriteria.map(fc => {
+            const newCriteria: ChipFilterCriteria[] = filterCriteria.map(fc => {
                 if (fc.filterBy === criteria.filterBy) {
                     updated = true;
                     return criteria;
@@ -82,14 +81,14 @@ export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (pro
         }
     };
 
-    const onRemoveFilterCriteria = (criteria: FilterCriteria): void => {
-        const newCriteria: FilterCriteria[] = filterCriteria.filter(fc => fc !== criteria);
+    const onRemoveFilterCriteria = (criteria: ChipFilterCriteria): void => {
+        const newCriteria: ChipFilterCriteria[] = filterCriteria.filter(fc => fc !== criteria);
         setFilterCriteria(newCriteria);
         fireCriteriaChange(newCriteria);
     };
 
     const onRemoveAllFilterCriteria = (): void => {
-        const newCriteria: FilterCriteria[] = [];
+        const newCriteria: ChipFilterCriteria[] = [];
         setFilterCriteria(newCriteria);
         fireCriteriaChange(newCriteria);
     };
@@ -99,7 +98,7 @@ export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (pro
             <Toolbar id="drafts-toolbar-1" className="drafts-toolbar">
                 <ToolbarContent>
                     <ToolbarItem className="filter-item">
-                        <FilterInput
+                        <ChipFilterInput
                             filterTypes={FILTER_TYPES}
                             onAddCriteria={onAddFilterCriteria} />
                     </ToolbarItem>

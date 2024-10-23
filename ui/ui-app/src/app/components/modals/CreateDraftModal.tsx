@@ -9,15 +9,18 @@ import {
     GridItem,
     HelperText,
     HelperTextItem,
-    Modal,
+    Modal, setTabIndex,
+    SimpleList,
+    SimpleListItem,
     Tab,
     Tabs,
     TabTitleText,
     TextArea,
+    TextContent,
     TextInput,
     Wizard,
-    WizardStep,
-    WizardFooterProps, TextContent, SimpleList, SimpleListItem
+    WizardFooterProps,
+    WizardStep
 } from "@patternfly/react-core";
 import { If, ObjectSelect, UrlUpload } from "@apicurio/common-ui-components";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
@@ -111,6 +114,14 @@ const DRAFT_TYPES: DraftTypeItem[] = [
         label: "Apache Avro",
         value: DraftType.AVRO
     },
+    {
+        label: "Protocol Buffers",
+        value: DraftType.PROTOBUF
+    },
+    {
+        label: "JSON Schema",
+        value: DraftType.JSON
+    },
 ];
 
 const DEFAULT_DRAFT_TYPE: DraftTypeItem = DRAFT_TYPES[0];
@@ -123,6 +134,7 @@ export type CreateDraftModalProps = {
     onClose: () => void;
     onCreate: (data: CreateDraft) => void;
 };
+
 
 /**
  * Models the Create Draft modal dialog.
@@ -166,26 +178,40 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
         });
     };
 
-    const onFileTextChange = (_event: any, value: string | undefined): void => {
-        // TODO probably want to detect content type only when firing the onCreate() event, not ever time the data changes
+    const setDraftContent = (content: string | undefined, contentType: string | undefined, labels: any | undefined): void => {
+        if (content === undefined) {
+            content = "";
+        }
+        if (contentType === undefined) {
+            contentType = detectContentType(data.type, content);
+        }
+        setData({
+            ...data, content, contentType, labels
+        });
+    };
+
+    const clearDraftContent = (): void => {
         setData({
             ...data,
-            content: value,
-            contentType: detectContentType(data.type, value)
+            content: "",
+            contentType: "",
+            labels: undefined
         });
+    };
+
+    const onFileTextChange = (_event: any, value: string | undefined): void => {
+        setDraftContent(value, undefined, undefined);
     };
 
     const onTemplateChange = (newTemplate: Template): void => {
         setSelectedTemplate(newTemplate);
-        setData({
-            ...data,
-            content: newTemplate.content,
-            contentType: newTemplate.contentType
+        setDraftContent(newTemplate.content, newTemplate.contentType, {
+            fromTemplate: newTemplate.name
         });
     };
 
     const onFileClear = (): void => {
-        onFileTextChange(null, undefined);
+        clearDraftContent();
     };
 
     const onFileReadStarted = (): void => {
@@ -228,8 +254,10 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
     useEffect(() => {
         if (props.isOpen) {
             setData(EMPTY_FORM_DATA);
+            setSelectedType(DEFAULT_DRAFT_TYPE);
             templateService.getTemplatesFor(DraftType.OPENAPI).then(setTemplates);
             setSelectedTemplate(undefined);
+            setContentTabKey(0);
         }
     }, [props.isOpen]);
 
@@ -374,7 +402,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
                                 onSelect={(_event, eventKey) => {
                                     setSelectedTemplate(undefined);
                                     setContentTabKey(eventKey as number);
-                                    onFileTextChange(null, undefined);
+                                    clearDraftContent();
                                     _event.preventDefault();
                                     _event.stopPropagation();
                                 }}
@@ -450,8 +478,10 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
                                         id="draft-content-url"
                                         urlPlaceholder="Enter a valid and accessible URL"
                                         testId="create-draft-modal-url-upload"
-                                        onChange={(value) => {
-                                            onFileTextChange(null, value);
+                                        onChange={(value, url) => {
+                                            setDraftContent(value, undefined, {
+                                                fromUrl: url
+                                            });
                                         }}
                                         onUrlFetch={(url) => urlService.fetchUrlContent(url)}
                                     />

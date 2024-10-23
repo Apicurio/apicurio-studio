@@ -78,7 +78,11 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
                 type: fromVersion.artifactType!,
                 name: "",
                 description: "",
-                labels: {},
+                labels: {
+                    basedOnGroupId: fromVersion.groupId,
+                    basedOnArtifactId: fromVersion.artifactId,
+                    basedOnVersion: fromVersion.version
+                },
                 content: draftContent.content,
                 contentType: draftContent.contentType
             };

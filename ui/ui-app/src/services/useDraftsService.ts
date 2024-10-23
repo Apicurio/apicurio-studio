@@ -15,7 +15,11 @@ import { SortOrder } from "@models/SortOrder.ts";
 import { Paging } from "@models/Paging.ts";
 import {
     Comment,
-    CreateArtifact, EditableVersionMetaData, NewComment, SearchedVersion, VersionContent,
+    CreateArtifact,
+    EditableVersionMetaData,
+    NewComment,
+    SearchedVersion,
+    VersionContent,
     VersionMetaData
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import {
@@ -101,6 +105,9 @@ async function createDraft(appConfig: ApicurioStudioConfig, auth: AuthService, d
             description: data.description,
             version: data.version,
             isDraft: true,
+            labels: {
+                additionalData: data.labels
+            },
             content: {
                 content: data.content,
                 contentType: data.contentType

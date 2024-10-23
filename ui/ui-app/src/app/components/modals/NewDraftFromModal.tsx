@@ -13,8 +13,21 @@ export type NewDraftFromModalProps = {
 };
 
 const deriveVersion = (fromVersion: string): string => {
-    // TODO implement this
-    return fromVersion;
+    // Regex patterns for different version formats
+    const numberRegex = /^\d+$/; // Single number: 42
+
+    if (fromVersion.indexOf(".") > 0) {
+        const idx: number = fromVersion.lastIndexOf(".");
+        const lastComponent: string = fromVersion.substring(idx + 1);
+        const prefix: string = fromVersion.substring(0, idx + 1);
+        return prefix + (parseInt(lastComponent, 10) + 1);
+    } else if (numberRegex.test(fromVersion)) {
+        // If the version is a single number, increment it
+        return (parseInt(fromVersion, 10) + 1).toString();
+    } else {
+        // If there is no numeric component, append "2" to the version string
+        return fromVersion + "2";
+    }
 };
 
 

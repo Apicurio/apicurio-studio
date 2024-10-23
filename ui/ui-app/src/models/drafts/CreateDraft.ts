@@ -7,7 +7,7 @@ export interface CreateDraft {
     type: string;
     name: string;
     description: string | undefined;
-    labels: object;
+    labels: any;
     content: string | undefined;
     contentType: string;
 

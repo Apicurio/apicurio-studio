@@ -29,9 +29,6 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
-      - name: Set up Gren
-        run: npm install github-release-notes -g
-
       - name: Set up NPM CLI Login
         run: npm install -g npm-cli-login
 
@@ -68,7 +65,7 @@ jobs:
           rm -rf dist*
           rm -rf node_modules
 
-      - name: Validating Apicurio Studio UI build 
+      - name: Validating Apicurio Studio UI build
         run: |
           cd studio/front-end/studio
           yarn install
@@ -100,12 +97,6 @@ jobs:
           mkdir -p releases
           cp distro/quickstart/target/apicurio-studio-${{ github.event.inputs.release-version }}-quickstart.zip releases/.
           echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --passphrase-fd 0 --armor --detach-sign releases/apicurio-studio-${{ github.event.inputs.release-version }}-quickstart.zip
-     
-      - name: Restoring 'latest-release' as the ImageStream version in the OpenShift template(s)"
-        run: |
-          cd studio/distro/openshift
-          sed -i "s/${{ github.event.inputs.release-version }}/latest-release/g" apicurio-deployment-configs-template.yml
-          sed -i "s/${{ github.event.inputs.release-version }}/latest-release/g" apicurio-image-streams-template.yml
      
       - name: Commit Changes for Release Version ${{ github.event.inputs.release-version }}
         run: |
@@ -148,10 +139,7 @@ jobs:
           asset_path: /home/runner/work/apicurio-studio/apicurio-studio/studio/releases/apicurio-studio-${{ github.event.inputs.release-version }}-quickstart.zip.asc
           asset_name: apicurio-studio-${{ github.event.inputs.release-version }}-quickstart.zip.asc
           asset_content_type: application/zip
-     
-      - name: Generate Release Notes
-        run: cd studio && gren release --token=${{ secrets.GITHUB_TOKEN }} --override --prefix=v  
-      
+
       - name: Update Next Snapshot Version ${{ github.event.inputs.snapshot-version }} in pom.xml
         run: cd studio && mvn versions:set -DnewVersion=${{ github.event.inputs.snapshot-version }} -DgenerateBackupPoms=false -DprocessAllModules=true
      

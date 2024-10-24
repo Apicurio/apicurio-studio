@@ -1,0 +1,29 @@
+#addTagModal .modal-dialog .modal-body form textarea {
+    min-height: 60px;
+}
+
+#addtag-form .apriori-items {
+    margin-top: 4px;
+}
+
+#addtag-form .apriori-items .apriori-item {
+    background-color: #9c9c9c;
+    color: white;
+    cursor: pointer;
+    margin-right: 5px;
+    padding: 3px 6px;
+    margin-bottom: 3px;
+    display: inline-block;
+}
+
+#addtag-form .apriori-items .apriori-item.selected {
+    background-color: #39a5dc;
+}
+
+#addtag-form .apriori-items .apriori-item:hover {
+    filter: brightness(90%);
+}
+
+#addtag-form .apriori-items .apriori-item > .fa {
+    margin-right: 3px;
+}

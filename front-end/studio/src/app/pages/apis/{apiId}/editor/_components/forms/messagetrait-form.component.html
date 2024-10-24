@@ -83,9 +83,7 @@
                     <span>Tags</span>
                 </div>
                 <div class="section-field tags">
-                    <inline-array-editor noValueMessage="No tags configured." [value]="messageTrait.tags" [items]="tagDefs()"
-                                        [baseNode]="messageTrait" nodepath="tags"
-                                        (onChange)="changeTags($event)"></inline-array-editor>
+                    <aaitags-section [node]="messageTrait"></aaitags-section>
                 </div>
             </div>
         </div>

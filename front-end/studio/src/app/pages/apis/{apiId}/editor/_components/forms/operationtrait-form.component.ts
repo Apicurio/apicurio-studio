@@ -106,22 +106,4 @@ export class OperationTraitFormComponent extends SourceFormComponent<AaiOperatio
                 "description", newDescription);
         this.commandService.emit(command);
     }
-
-    public changeTags(newTags: string[]): void {
-        console.info("[OperationTraitFormComponent] User changed the tags.");
-        let command: ICommand = CommandFactory.createChangePropertyCommand(this.operationTrait, "tags", newTags);
-        this.commandService.emit(command);
-    }
-
-    public tagDefs(): ()=>string[] {
-        return ()=> {
-            if (this.operationTrait.ownerDocument().tags && this.operationTrait.ownerDocument().tags.length > 0) {
-                let tagDefs: string[] = this.operationTrait.ownerDocument().tags.map(tagDef => tagDef.name);
-                tagDefs.sort();
-                return tagDefs;
-            } else {
-                return [];
-            }
-        }
-    }
 }

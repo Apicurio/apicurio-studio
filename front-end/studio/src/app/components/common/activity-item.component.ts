@@ -183,6 +183,7 @@ export class ActivityItemComponent {
             case "DeleteAllPropertiesCommand_20":
             case "DeleteAllPropertiesCommand_30":
             case "DeleteAllTagsCommand":
+            case "DeleteAllTagsCommand_Aai20":
             case "DeleteAllServersCommand":
             case "DeleteAllSecurityRequirementsCommand":
             case "DeleteAllSecuritySchemesCommand":
@@ -220,6 +221,7 @@ export class ActivityItemComponent {
             case "DeleteTagCommand":
             case "DeleteTagCommand_20":
             case "DeleteTagCommand_30":
+            case "DeleteTagCommand_Aai20":
             case "DeleteRequestBodyCommand_30":
             case "DeleteAllResponsesCommand":
             case "DeleteAllResponsesCommand_20":
@@ -294,6 +296,7 @@ export class ActivityItemComponent {
             case "NewTagCommand":
             case "NewTagCommand_20":
             case "NewTagCommand_30":
+            case "NewTagCommand_Aai20":
                 rval = "tag";
                 break;
             case "ReplaceOperationCommand":
@@ -497,6 +500,9 @@ export class ActivityItemComponent {
             case "DeleteAllTagsCommand":
                 rval = "deleted all of the tags from the API.";
                 break;
+            case "DeleteAllTagsCommand_Aai20":
+                rval = "deleted all of the tags at location " +  this.command()["_nodePath"] + ".";
+                break;
             case "DeleteAllServersCommand":
                 ppath = this.command()["_parentPath"];
                 if (ppath == "/") {
@@ -591,6 +597,9 @@ export class ActivityItemComponent {
             case "DeleteTagCommand_30":
                 rval = "deleted the global Tag definition with name '" + this.command()["_tagName"] + "'.";
                 break;
+            case "DeleteTagCommand_Aai20":
+                rval = "deleted Tag definition with name '" + this.command()["_tagName"] + "' at location " + this.command()["_nodePath"] + ".";
+                break;
             case "DeleteRequestBodyCommand_30":
                 rval = "deleted the global Tag definition with name '" + this.command()["_tagName"] + "'.";
                 break;
@@ -679,6 +688,9 @@ export class ActivityItemComponent {
             case "NewTagCommand_20":
             case "NewTagCommand_30":
                 rval = "added a new Tag named '" + this.command()["_tagName"] + "'.";
+                break;
+            case "NewTagCommand_Aai20":
+                rval = "added a new Tag named '" + this.command()["_tagName"] + "' at location " + this.command()["_nodePath"] + ".";
                 break;
             case "ReplaceOperationCommand":
             case "ReplaceOperationCommand_20":

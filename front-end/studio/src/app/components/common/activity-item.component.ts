@@ -183,6 +183,7 @@ export class ActivityItemComponent {
             case "DeleteAllPropertiesCommand_20":
             case "DeleteAllPropertiesCommand_30":
             case "DeleteAllTagsCommand":
+            case "DeleteAllTagsCommand_Aai20":
             case "DeleteAllServersCommand":
             case "DeleteAllSecurityRequirementsCommand":
             case "DeleteAllSecuritySchemesCommand":

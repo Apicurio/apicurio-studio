@@ -1,6 +1,7 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import "./CreateDraftModal.css";
 import {
+    Alert,
     FileUpload,
     Form,
     FormGroup,
@@ -11,7 +12,7 @@ import {
     HelperTextItem,
     Modal,
     SimpleList,
-    SimpleListItem,
+    SimpleListItem, Spinner,
     Tab,
     Tabs,
     TabTitleText,
@@ -30,6 +31,7 @@ import { CreateDraft, DraftType } from "@models/drafts";
 import { isStringEmptyOrUndefined } from "@utils/string.utils.ts";
 import { TemplatesService, useTemplatesService } from "@services/useTemplatesService.ts";
 import { Template } from "@models/templates";
+import { GroupsService, useGroupsService } from "@services/useGroupsService.ts";
 
 
 export type ValidType = "default" | "success" | "error";
@@ -147,9 +149,13 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
     const [contentIsLoading, setContentIsLoading] = useState(false);
     const [templates, setTemplates] = useState<Template[]>([]);
     const [selectedTemplate, setSelectedTemplate] = useState<Template>();
+    const [isValidatingCoordinates, setIsValidatingCoordinates] = useState(false);
+    const [isCoordinatesAvailable, setIsCoordinatesAvailable] = useState(true);
+    const [timeoutId, setTimeoutId] = useState<any>();
 
     const templateService: TemplatesService = useTemplatesService();
     const urlService: UrlService = useUrlService();
+    const groups: GroupsService = useGroupsService();
 
     const setGroupId = (newGroupId: string): void => {
         setData({
@@ -251,6 +257,17 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
         props.onCreate(data);
     };
 
+    const validateCoordinates = (): void => {
+        setIsValidatingCoordinates(true);
+        groups.getArtifactVersionMetaData(data.groupId, data.draftId, data.version).then(() => {
+            setIsCoordinatesAvailable(false);
+            setIsValidatingCoordinates(false);
+        }).catch(() => {
+            setIsCoordinatesAvailable(true);
+            setIsValidatingCoordinates(false);
+        });
+    };
+
     useEffect(() => {
         if (props.isOpen) {
             setData(EMPTY_FORM_DATA);
@@ -272,19 +289,31 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
             content: validateContent(data.content)
         });
     }, [data]);
+    
+    useEffect(() => {
+        if (data.draftId && data.draftId.length > 0 && data.version && data.version.length > 0) {
+            setIsCoordinatesAvailable(false);
+            setIsValidatingCoordinates(true);
+            // Debounce the validation logic because it hits the REST API each time.
+            clearTimeout(timeoutId);
+            setTimeoutId(setTimeout(validateCoordinates, 1000));
+        } else {
+            setIsCoordinatesAvailable(true);
+        }
+    }, [data.draftId, data.version]);
 
     const isGroupIdValid: boolean = validities.groupId !== "error";
     const isDraftIdValid: boolean = validities.draftId !== "error";
     const isCoordinatesValid: boolean = isGroupIdValid && isDraftIdValid;
     const isContentValid: boolean = validities.content === "success";
-    const isValid: boolean = isCoordinatesValid && isContentValid;
+    const isValid: boolean = isCoordinatesValid && isContentValid && isCoordinatesAvailable;
 
     const coordinatesStepFooter: Partial<WizardFooterProps> = {
         nextButtonProps: {
             id: "next-wizard-page"
         },
         onClose: props.onClose,
-        isNextDisabled: !isCoordinatesValid
+        isNextDisabled: !isCoordinatesValid || !isCoordinatesAvailable
     };
     const draftContentStepFooter: Partial<WizardFooterProps> = {
         nextButtonProps: {
@@ -358,7 +387,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
                                 </FormHelperText>
                             </If>
                         </FormGroup>
-                        <FormGroup label="Version Number" fieldId="version-number">
+                        <FormGroup label="Version number" fieldId="version-number">
                             <TextInput
                                 className="version"
                                 isRequired={false}
@@ -373,6 +402,21 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
                                 // validated={groupValidated()}
                             />
                         </FormGroup>
+                        <If condition={isValidatingCoordinates}>
+                            <FormGroup>
+                                <Alert customIcon={<Spinner size="sm" />} title="Validating draft coordinates..." />
+                            </FormGroup>
+                        </If>
+                        <If condition={!isValidatingCoordinates && isCoordinatesAvailable}>
+                            <FormGroup>
+                                <Alert variant="success" title="Draft coordinates available, draft should be created successfully." ouiaId="SuccessAlert" />
+                            </FormGroup>
+                        </If>
+                        <If condition={!isValidatingCoordinates && !isCoordinatesAvailable}>
+                            <FormGroup>
+                                <Alert variant="danger" title="Draft coordinates unavailable." ouiaId="DangerAlert" />
+                            </FormGroup>
+                        </If>
                         <FormGroup label="Type" fieldId="form-draft-type" isRequired={true}>
                             <ObjectSelect
                                 value={selectedType}

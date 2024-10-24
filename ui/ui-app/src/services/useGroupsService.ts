@@ -14,21 +14,14 @@ import { ArtifactsSortBy } from "@models/artifacts";
 import { VersionsSortBy } from "@models/versions";
 
 
-export interface ClientGeneration {
-    clientClassName: string;
-    namespaceName: string;
-    includePatterns: string,
-    excludePatterns: string,
-    language: string;
-    content: string;
-}
-
 const getGroupMetaData = async (config: ConfigService, auth: AuthService, groupId: string): Promise<GroupMetaData> => {
+    console.info("[GroupsService] Getting group metadata: ", groupId);
     groupId = normalizeGroupId(groupId);
     return getRegistryClient(config.getApicurioStudioConfig(), auth).groups.byGroupId(groupId).get().then(v => v!);
 };
 
 const getGroupArtifacts = async (config: ConfigService, auth: AuthService, groupId: string, sortBy: ArtifactsSortBy, sortOrder: SortOrder, paging: Paging): Promise<ArtifactSearchResults> => {
+    console.info("[GroupsService] Getting artifacts in group: ", groupId);
     groupId = normalizeGroupId(groupId);
     const start: number = (paging.page - 1) * paging.pageSize;
     const end: number = start + paging.pageSize;
@@ -45,11 +38,13 @@ const getGroupArtifacts = async (config: ConfigService, auth: AuthService, group
 };
 
 const getArtifactMetaData = async (config: ConfigService, auth: AuthService, groupId: string|null, artifactId: string): Promise<ArtifactMetaData> => {
+    console.info("[GroupsService] Getting artifact metadata: ", groupId, artifactId);
     groupId = normalizeGroupId(groupId);
     return getRegistryClient(config.getApicurioStudioConfig(), auth).groups.byGroupId(groupId).artifacts.byArtifactId(artifactId).get().then(v => v!);
 };
 
 const getArtifactVersionMetaData = async (config: ConfigService, auth: AuthService, groupId: string|null, artifactId: string, version: string): Promise<VersionMetaData> => {
+    console.info("[GroupsService] Getting artifact version metadata: ", groupId, artifactId, version);
     groupId = normalizeGroupId(groupId);
     const versionExpression: string = (version == "latest") ? "branch=latest" : version;
     return getRegistryClient(config.getApicurioStudioConfig(), auth).groups.byGroupId(groupId).artifacts.byArtifactId(artifactId).versions

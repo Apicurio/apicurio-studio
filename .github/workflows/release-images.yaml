@@ -75,11 +75,9 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/apicurio/apicurio-studio-api:latest
-           docker.io/apicurio/apicurio-studio-api:latest-release
+           docker.io/apicurio/apicurio-studio-api:0.2.x
            docker.io/apicurio/apicurio-studio-api:${{env.RELEASE_VERSION}}
-           quay.io/apicurio/apicurio-studio-api:latest
-           quay.io/apicurio/apicurio-studio-api:latest-release
+           quay.io/apicurio/apicurio-studio-api:0.2.x
            quay.io/apicurio/apicurio-studio-api:${{env.RELEASE_VERSION}}
 
       - name: Build and Publish Studio WS
@@ -90,11 +88,9 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/apicurio/apicurio-studio-ws:latest
-           docker.io/apicurio/apicurio-studio-ws:latest-release
+           docker.io/apicurio/apicurio-studio-ws:0.2.x
            docker.io/apicurio/apicurio-studio-ws:${{env.RELEASE_VERSION}}
-           quay.io/apicurio/apicurio-studio-ws:latest
-           quay.io/apicurio/apicurio-studio-ws:latest-release
+           quay.io/apicurio/apicurio-studio-ws:0.2.x
            quay.io/apicurio/apicurio-studio-ws:${{env.RELEASE_VERSION}}
 
       - name: Build and Publish Studio UI
@@ -105,11 +101,9 @@ jobs:
          platforms: ${{env.PLATFORMS}}
          push: true
          tags: |
-           docker.io/apicurio/apicurio-studio-ui:latest
-           docker.io/apicurio/apicurio-studio-ui:latest-release
+           docker.io/apicurio/apicurio-studio-ui:0.2.x
            docker.io/apicurio/apicurio-studio-ui:${{env.RELEASE_VERSION}}
-           quay.io/apicurio/apicurio-studio-ui:latest
-           quay.io/apicurio/apicurio-studio-ui:latest-release
+           quay.io/apicurio/apicurio-studio-ui:0.2.x
            quay.io/apicurio/apicurio-studio-ui:${{env.RELEASE_VERSION}}
 
       # Once the regular images are published, build and publish the MySQL ones.
@@ -124,11 +118,9 @@ jobs:
           platforms: ${{env.PLATFORMS}}
           push: true
           tags: |
-            docker.io/apicurio/apicurio-studio-api-mysql:latest
-            docker.io/apicurio/apicurio-studio-api-mysql:latest-release
+            docker.io/apicurio/apicurio-studio-api-mysql:0.2.x
             docker.io/apicurio/apicurio-studio-api-mysql:${{env.RELEASE_VERSION}}
-            quay.io/apicurio/apicurio-studio-api-mysql:latest
-            quay.io/apicurio/apicurio-studio-api-mysql:latest-release
+            quay.io/apicurio/apicurio-studio-api-mysql:0.2.x
             quay.io/apicurio/apicurio-studio-api-mysql:${{env.RELEASE_VERSION}}
 
       - name: Build and Publish Studio WS
@@ -139,11 +131,9 @@ jobs:
           platforms: ${{env.PLATFORMS}}
           push: true
           tags: |
-            docker.io/apicurio/apicurio-studio-ws-mysql:latest
-            docker.io/apicurio/apicurio-studio-ws-mysql:latest-release
+            docker.io/apicurio/apicurio-studio-ws-mysql:0.2.x
             docker.io/apicurio/apicurio-studio-ws-mysql:${{env.RELEASE_VERSION}}
-            quay.io/apicurio/apicurio-studio-ws-mysql:latest
-            quay.io/apicurio/apicurio-studio-ws-mysql:latest-release
+            quay.io/apicurio/apicurio-studio-ws-mysql:0.2.x
             quay.io/apicurio/apicurio-studio-ws-mysql:${{env.RELEASE_VERSION}}
 
       - name: Google Chat Notification

@@ -133,6 +133,7 @@ export class ActivityItemComponent {
             case "ChangeLicenseCommand_30":
                 rval = "copyright";
                 break;
+            case "ChangeHeadersRefCommand_Aai20":
             case "ChangeMediaTypeTypeCommand":
             case "ChangeParameterDefinitionTypeCommand":
             case "ChangeParameterDefinitionTypeCommand_20":
@@ -430,6 +431,9 @@ export class ActivityItemComponent {
             case "ChangeDescriptionCommand_20":
             case "ChangeDescriptionCommand_30":
                 rval = "altered the API's description.";
+                break;
+            case "ChangeHeadersRefCommand_Aai20":
+                rval = "changed the header of message at location " + this.command()["_messagePath"] + " to " + this.command()["_headersRef"] + ".";
                 break;
             case "ChangeLicenseCommand":
             case "ChangeLicenseCommand_20":

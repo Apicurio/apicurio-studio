@@ -499,6 +499,9 @@ export class ActivityItemComponent {
             case "DeleteAllTagsCommand":
                 rval = "deleted all of the tags from the API.";
                 break;
+            case "DeleteAllTagsCommand_Aai20":
+                rval = "deleted all of the tags at location " +  this.command()["_nodePath"] + ".";
+                break;
             case "DeleteAllServersCommand":
                 ppath = this.command()["_parentPath"];
                 if (ppath == "/") {
@@ -594,7 +597,7 @@ export class ActivityItemComponent {
                 rval = "deleted the global Tag definition with name '" + this.command()["_tagName"] + "'.";
                 break;
             case "DeleteTagCommand_Aai20":
-                rval = "deleted Tag definition with name '" + this.command()["_tagName"] + "' at location '" + this.command()["_nodePath"] + "'.";
+                rval = "deleted Tag definition with name '" + this.command()["_tagName"] + "' at location " + this.command()["_nodePath"] + ".";
                 break;
             case "DeleteRequestBodyCommand_30":
                 rval = "deleted the global Tag definition with name '" + this.command()["_tagName"] + "'.";
@@ -686,7 +689,7 @@ export class ActivityItemComponent {
                 rval = "added a new Tag named '" + this.command()["_tagName"] + "'.";
                 break;
             case "NewTagCommand_Aai20":
-                rval = "added a new Tag named '" + this.command()["_tagName"] + "' at location '" + this.command()["_nodePath"] + "'.";
+                rval = "added a new Tag named '" + this.command()["_tagName"] + "' at location " + this.command()["_nodePath"] + ".";
                 break;
             case "ReplaceOperationCommand":
             case "ReplaceOperationCommand_20":

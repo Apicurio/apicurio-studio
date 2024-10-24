@@ -46,11 +46,9 @@ const toDraft = (vmd: VersionMetaData | SearchedVersion | undefined): Draft => {
         description: vmd!.description!,
         createdBy: vmd!.owner as string,
         createdOn: vmd!.createdOn!,
-        // TODO restore this once the modified info is returned here
-        // modifiedBy: vmd!.modifiedBy,
-        // modifiedOn: vmd!.modifiedOn,
-        // TODO implement handling of labels in Studio
-        labels: labelsToAny((vmd as any).labels),
+        modifiedBy: vmd!.modifiedBy as string | undefined,
+        modifiedOn: vmd!.modifiedOn as Date | undefined,
+        labels: labelsToAny(vmd?.labels),
     };
     return draft;
 };

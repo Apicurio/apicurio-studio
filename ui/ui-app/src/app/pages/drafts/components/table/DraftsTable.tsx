@@ -34,7 +34,7 @@ export const DraftsTable: FunctionComponent<DraftsTableProps> = (props: DraftsTa
     const columns: any[] = [
         { index: 0, id: "name", label: "Name", width: 60, sortable: true, sortBy: DraftsSortBy.name },
         { index: 1, id: "version", label: "Version", width: 10, sortable: true, sortBy: DraftsSortBy.version },
-        { index: 2, id: "modifiedBy", label: "Modifed by", width: 15, sortable: false },
+        { index: 2, id: "modifiedBy", label: "Modified by", width: 15, sortable: false },
         { index: 3, id: "modifiedOn", label: "Modified on", width: 15, sortable: true, sortBy: DraftsSortBy.modifiedOn },
     ];
 

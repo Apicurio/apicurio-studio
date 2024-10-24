@@ -289,7 +289,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
             content: validateContent(data.content)
         });
     }, [data]);
-    
+
     useEffect(() => {
         if (data.draftId && data.draftId.length > 0 && data.version && data.version.length > 0) {
             setIsCoordinatesAvailable(false);

@@ -218,7 +218,7 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                                                 </DescriptionListDescription>
                                             </DescriptionListGroup>
                                         </If>
-                                        <If condition={draft!.modifiedBy !== undefined}>
+                                        <If condition={draft!.modifiedBy !== undefined && draft!.modifiedBy.length > 0}>
                                             <DescriptionListGroup>
                                                 <DescriptionListTerm>Modified by</DescriptionListTerm>
                                                 <DescriptionListDescription data-testid="draft-details-modified-by">

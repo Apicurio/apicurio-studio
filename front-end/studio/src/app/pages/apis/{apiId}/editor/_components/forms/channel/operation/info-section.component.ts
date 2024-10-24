@@ -47,7 +47,7 @@ export class ChannelOperationInfoSectionComponent extends AbstractBaseComponent 
     @Input() operation: AaiOperation;
 
     private _operationInfoPaths: string[];
-
+    
     /**
      * C'tor.
      * @param changeDetectorRef
@@ -106,27 +106,5 @@ export class ChannelOperationInfoSectionComponent extends AbstractBaseComponent 
         console.info("[ChannelOperationInfoSectionComponent] User changed the operationId.");
         let command: ICommand = CommandFactory.createChangePropertyCommand(this.operation, "operationId", newOperationId);
         this.commandService.emit(command);
-    }
-
-    /**
-     * Called when the user changes the tags.
-     * @param newTags
-     */
-    public changeTags(newTags: string[]): void {
-        console.info("[ChannelOperationInfoSectionComponent] User changed the tags.");
-        let command: ICommand = CommandFactory.createChangePropertyCommand(this.operation, "tags", newTags);
-        this.commandService.emit(command);
-    }
-
-    public tagDefs(): ()=>string[] {
-        return ()=> {
-            if (this.operation.ownerDocument().tags && this.operation.ownerDocument().tags.length > 0) {
-                let tagDefs: string[] = this.operation.ownerDocument().tags.map(tagDef => tagDef.name);
-                tagDefs.sort();
-                return tagDefs;
-            } else {
-                return [];
-            }
-        }
     }
 }

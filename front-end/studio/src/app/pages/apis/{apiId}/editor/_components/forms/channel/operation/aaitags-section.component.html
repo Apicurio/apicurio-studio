@@ -3,7 +3,7 @@
          collaborationNodePath="/tags"
          [validationModels]="tags()">
     <span actions>
-        <icon-button (onClick)="addTagDialog.open(document)" [pullRight]="true" type="add"
+        <icon-button (onClick)="addTagDialog.open(node)" [pullRight]="true" type="add"
                      title="Add a tag to the API."></icon-button>
         <icon-button (onClick)="deleteAllTags()" [disabled]="!hasTags()"
                      [pullRight]="true" type="delete"
@@ -12,23 +12,15 @@
     <div body>
         <signpost *ngIf="tags().length === 0">
             <span>No tags have been configured.</span>
-            <a (click)="addTagDialog.open(document)">Add a tag</a>
+            <a (click)="addTagDialog.open(node)">Add a tag</a>
         </signpost>
 
         <!-- The list of tags -->
         <div class="tags" *ngIf="tags().length > 0">
             <tag-row *ngFor="let tag of tags()" [item]="tag"
-                     [enableRename]="enableRename"
-                     (onRename)="openRenameDialog(tag)"
-                     (onDelete)="deleteTag(tag)"></tag-row>
+                     (onDelete)="deleteTag(tag)" [enableRename]="false"></tag-row>
         </div>
     </div>
 </section>
-<add-tag-dialog #addTagDialog (onAdd)="addTag($event)"></add-tag-dialog>
-<rename-entity-dialog #renameDialog
-                      type="Tag"
-                      title="Rename Tag"
-                      warning="Renaming a Tag will also update any references to that tag elsewhere in the API (e.g. tagging on operations)."
-                      validationPattern="[a-zA-Z0-9\.\-_]+"
-                      validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
-                      (onRename)="rename($event)"></rename-entity-dialog>
+<aaiadd-tag-dialog #addTagDialog (onAdd)="addTag($event)"></aaiadd-tag-dialog>
+

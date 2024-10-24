@@ -20,39 +20,32 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
-    ViewChild,
     ViewEncapsulation
 } from "@angular/core";
 import {
-    CombinedVisitorAdapter,
+    AaiOperationBase,
+    AaiMessageBase,
     CommandFactory,
     ICommand,
     Library,
-    OasDocument,
     OasTag,
-    TraverserDirection,
-    VisitorUtil
 } from "@apicurio/data-models";
-import {CommandService} from "../../../_services/command.service";
-import {AbstractBaseComponent} from "../../common/base-component";
-import {DocumentService} from "../../../_services/document.service";
-import {SelectionService} from "../../../_services/selection.service";
-import {RenameEntityDialogComponent, RenameEntityEvent} from "../../dialogs/rename-entity.component";
+import {CommandService} from "../../../../_services/command.service";
+import {AbstractBaseComponent} from "../../../common/base-component";
+import {DocumentService} from "../../../../_services/document.service";
+import {SelectionService} from "../../../../_services/selection.service";
 import {ObjectUtils} from "apicurio-ts-core";
 
 
 @Component({
-    selector: "tags-section",
-    templateUrl: "tags-section.component.html",
+    selector: "aaitags-section",
+    templateUrl: "aaitags-section.component.html",
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TagsSectionComponent extends AbstractBaseComponent {
+export class AaitagsSectionComponent extends AbstractBaseComponent {
 
-    @Input() document: OasDocument;
-    @Input() enableRename: boolean = true;
-
-    @ViewChild("renameDialog", { static: true }) renameDialog: RenameEntityDialogComponent;
+    @Input() node: AaiOperationBase | AaiMessageBase;
 
     /**
      * C'tor.
@@ -71,7 +64,7 @@ export class TagsSectionComponent extends AbstractBaseComponent {
      * @return
      */
     public tags(): OasTag[] {
-        let tags: OasTag[] = this.document.tags;
+        let tags: OasTag[] = this.node.tags;
         if (ObjectUtils.isNullOrUndefined(tags)) {
             tags = [];
         }
@@ -99,7 +92,7 @@ export class TagsSectionComponent extends AbstractBaseComponent {
      * @param tag
      */
     public deleteTag(tag: OasTag): void {
-        let command: ICommand = CommandFactory.createDeleteTagCommand(tag.name);
+        let command: ICommand = CommandFactory.createDeleteTagCommand_Aai20(tag.name, this.node);
         this.commandService.emit(command);
     }
 
@@ -108,9 +101,9 @@ export class TagsSectionComponent extends AbstractBaseComponent {
      * @param tag
      */
     public addTag(tag: any): void {
-        let command: ICommand = CommandFactory.createNewTagCommand(tag.name, tag.description);
+        let command: ICommand = CommandFactory.createNewTagCommand_Aai20(tag.name, tag.description, this.node);
         this.commandService.emit(command);
-        let path = Library.createNodePath(this.document);
+        let path = Library.createNodePath(this.node);
         path.appendSegment("tags", false);
         this.selectionService.select(path.toString());
     }
@@ -119,41 +112,14 @@ export class TagsSectionComponent extends AbstractBaseComponent {
      * Returns true if the document has at least one tag defined.
      */
     public hasTags(): boolean {
-        return this.document.tags && this.document.tags.length > 0;
+        return this.node.tags && this.node.tags.length > 0;
     }
 
     /**
      * Called when the user clicks the trash icon to delete all the tags.
      */
     public deleteAllTags(): void {
-        let command: ICommand = CommandFactory.createDeleteAllTagsCommand();
+        let command: ICommand = CommandFactory.createDeleteAllTagsCommand_Aai20(this.node);
         this.commandService.emit(command);
     }
-
-    /**
-     * Opens the rename tag dialog.
-     * @param tag
-     */
-    public openRenameDialog(tag: OasTag): void {
-        let tagNames: string[] = [];
-        VisitorUtil.visitTree(tag.ownerDocument(), new class extends CombinedVisitorAdapter {
-            public visitTag(node: OasTag): void {
-                tagNames.push(node.name);
-            }
-        }, TraverserDirection.down);
-        this.renameDialog.open(tag, tag.name, newName => {
-            return tagNames.indexOf(newName) !== -1;
-        });
-    }
-
-    /**
-     * Renames the tag.
-     * @param event
-     */
-    public rename(event: RenameEntityEvent): void {
-        let tag: OasTag = <any>event.entity;
-        let command: ICommand = CommandFactory.createRenameTagDefinitionCommand(tag.name, event.newName);
-        this.commandService.emit(command);
-    }
-
 }

@@ -1,9 +1,9 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { PageSection, PageSectionVariants, TextContent } from "@patternfly/react-core";
 import {
+    DraftsList,
     DraftsPageEmptyState,
     DraftsPageToolbar,
-    DraftsTable,
     PageDataLoader,
     PageError,
     PageErrorHandler,
@@ -140,8 +140,14 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
         <DraftsPageToolbar
             results={results}
             paging={paging}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
             onPageChange={setPaging}
             onCreateDraft={() => setIsCreateDraftModalOpen(true)}
+            onSortChange={(by, dir) => {
+                setSortBy(by);
+                setSortOrder(dir);
+            }}
             onCriteriaChange={setCriteria} />
     );
 
@@ -173,16 +179,10 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                         isFiltered={isFiltered()}
                         isEmpty={results.count === 0}
                     >
-                        <DraftsTable
+                        <DraftsList
                             drafts={results.drafts}
-                            sortBy={sortBy}
-                            sortOrder={sortOrder}
                             onView={onViewDraft}
                             onDelete={onDeleteDraft}
-                            onSort={(by, order) => {
-                                setSortBy(by);
-                                setSortOrder(order);
-                            }}
                         />
                     </ListWithToolbar>
                 </PageSection>

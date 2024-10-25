@@ -1,0 +1,97 @@
+.drafts-list {
+}
+
+.drafts-list .drafts-list-item {
+    background-color: white;
+    margin-bottom: 2px;
+}
+
+.drafts-list .drafts-list-item .type-icon-cell {
+    flex: initial;
+}
+
+.drafts-list .drafts-list-item .type-icon-cell > .type-icon {
+    margin-top: 5px;
+}
+
+.drafts-list .drafts-list-item .content-cell {
+}
+
+.drafts-list .drafts-list-item .content-cell .draft-title {
+}
+
+.drafts-list .drafts-list-item .content-cell .draft-title a, .drafts-list .drafts-list-item .content-cell .draft-title a:hover {
+    text-decoration: none;
+}
+
+.drafts-list .drafts-list-item .content-cell .draft-title .group {
+    color: #2b9af3;
+    font-weight: bold;
+}
+.drafts-list .drafts-list-item .content-cell .draft-title .group::after {
+    color: #9c9c9c;
+    content: "/";
+    font-size: 11px;
+    padding: 0 5px 0 5px;
+    line-height: 12px;
+}
+
+.drafts-list .drafts-list-item .content-cell .draft-title .nogroup {
+    display: none;
+}
+
+.drafts-list .drafts-list-item .content-cell .draft-title .id {
+    color: #2b9af3;
+    font-weight: bold;
+    font-size: 18px;
+    margin-right: 10px;
+}
+.drafts-list .drafts-list-item .content-cell .draft-title .name::before {
+    content: '(';
+}
+.drafts-list .drafts-list-item .content-cell .draft-title .name {
+    color: #2b9af3;
+    font-weight: bold;
+    font-size: 16px;
+}
+.drafts-list .drafts-list-item .content-cell .draft-title .name::after {
+    content: ')';
+}
+
+.drafts-list .drafts-list-item .content-cell .draft-title .status-badge {
+    margin-left: 10px;
+    border: 1px solid #ccc;
+}
+
+.drafts-list .drafts-list-item .content-cell .draft-description {
+    font-size: 13px;
+}
+
+.drafts-list .drafts-list-item .content-cell .draft-tags {
+    margin-top: 8px;
+}
+.drafts-list .drafts-list-item .content-cell .draft-tags span {
+    font-size: 12px;
+}
+
+#drafts-list .drafts-list-item .version-cell {
+    flex: initial;
+    width: 100px;
+    text-align: left;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#drafts-list .drafts-list-item .modified-cell {
+    flex: initial;
+    padding-left: 20px;
+    width: 275px;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#drafts-list .drafts-list-item .modified-cell .modified-by {
+    font-weight: bold;
+}

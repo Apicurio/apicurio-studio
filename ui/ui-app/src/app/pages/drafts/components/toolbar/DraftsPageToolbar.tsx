@@ -1,18 +1,30 @@
 import { FunctionComponent, useState } from "react";
 import "./DraftsPageToolbar.css";
 import { Button, Pagination, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
-import { ChipFilterCriteria, ChipFilterInput, ChipFilterType, FilterChips, If } from "@apicurio/common-ui-components";
-import { DraftsFilterBy, DraftsSearchFilter, DraftsSearchResults } from "@models/drafts";
+import {
+    ChipFilterCriteria,
+    ChipFilterInput,
+    ChipFilterType,
+    FilterChips,
+    If,
+    ObjectSelect
+} from "@apicurio/common-ui-components";
+import { DraftsFilterBy, DraftsSearchFilter, DraftsSearchResults, DraftsSortBy } from "@models/drafts";
 import { Paging } from "@models/Paging.ts";
+import { SortOrder } from "@models/SortOrder.ts";
+import { SortOrderToggle } from "@app/components";
 
 
 export type DraftsPageToolbarProps = {
     results: DraftsSearchResults;
     paging: Paging;
+    sortBy: DraftsSortBy;
+    sortOrder: SortOrder;
 
     onCriteriaChange: (criteria: DraftsSearchFilter[]) => void;
     onPageChange: (paging: Paging) => void;
     onCreateDraft: () => void;
+    onSortChange: (sortBy: any, sortOrder: SortOrder) => void;
 };
 
 const FILTER_TYPES: ChipFilterType[] = [
@@ -93,16 +105,50 @@ export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (pro
         fireCriteriaChange(newCriteria);
     };
 
+    const sortByLabel = (sortBy: DraftsSortBy): string => {
+        switch (sortBy) {
+            case DraftsSortBy.version:
+                return "Version";
+            case DraftsSortBy.name:
+                return "Name";
+            case DraftsSortBy.modifiedOn:
+                return "Modified On";
+        }
+        return "" + sortBy;
+    };
+
     return (
         <div>
             <Toolbar id="drafts-toolbar-1" className="drafts-toolbar">
                 <ToolbarContent>
+                    <ToolbarItem variant="label" id="filter-by-label">
+                        Filter by
+                    </ToolbarItem>
                     <ToolbarItem className="filter-item">
                         <ChipFilterInput
                             filterTypes={FILTER_TYPES}
                             onAddCriteria={onAddFilterCriteria} />
                     </ToolbarItem>
-                    <ToolbarItem className="create-draft-item">
+                    <ToolbarItem variant="label" id="order-by-label">
+                        Order by
+                    </ToolbarItem>
+                    <ToolbarItem className="ordering-item">
+                        <ObjectSelect
+                            value={props.sortBy}
+                            items={[
+                                DraftsSortBy.name,
+                                DraftsSortBy.modifiedOn
+                            ]}
+                            onSelect={(newSortBy) => {
+                                props.onSortChange(newSortBy, props.sortOrder);
+                            }}
+                            itemToString={item => sortByLabel(item)}
+                        />
+                        <SortOrderToggle sortOrder={props.sortOrder} onChange={(newSortOrder => {
+                            props.onSortChange(props.sortBy, newSortOrder);
+                        })} />
+                    </ToolbarItem>
+                    <ToolbarItem className="create-draft-item" style={{ paddingLeft: "20px" }}>
                         <Button className="btn-header-create-draft" data-testid="btn-toolbar-create-draft"
                             variant="primary" onClick={props.onCreateDraft}>Create draft</Button>
                     </ToolbarItem>

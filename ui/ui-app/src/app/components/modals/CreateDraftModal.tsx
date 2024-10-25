@@ -472,7 +472,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
                                             templates.map(template =>
                                                 <SimpleListItem
                                                     key={template.id}
-                                                    componentProps={{ "data-testId": template.id }}
+                                                    componentProps={{ "data-testid": template.id }}
                                                     isActive={selectedTemplate === template}
                                                     onClick={() => onTemplateChange(template)}
                                                 >

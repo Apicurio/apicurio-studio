@@ -16,6 +16,7 @@ import { DraftId } from "@app/pages/drafts/components/list/DraftId.tsx";
 
 export type DraftsListProps = {
     drafts: Draft[];
+    onGroupClick: (groupId: string) => void;
     onView: (version: Draft) => void;
     onDelete: (version: Draft) => void;
 }
@@ -34,7 +35,7 @@ export const DraftsList: FunctionComponent<DraftsListProps> = (props: DraftsList
                                 </DataListCell>,
                                 <DataListCell key="main content" className="content-cell">
                                     <div className="draft-title">
-                                        <a className="group" onClick={() => {}}>{ draft.groupId || "default" }</a>
+                                        <a className="group" onClick={() => props.onGroupClick(draft.groupId)}>{ draft.groupId || "default" }</a>
                                         <DraftId
                                             groupId={draft.groupId!}
                                             draftId={draft.draftId!}

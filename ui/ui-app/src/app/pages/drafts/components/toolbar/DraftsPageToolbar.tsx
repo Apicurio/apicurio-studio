@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 import "./DraftsPageToolbar.css";
 import { Button, Pagination, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
 import {
@@ -16,6 +16,7 @@ import { SortOrderToggle } from "@app/components";
 
 
 export type DraftsPageToolbarProps = {
+    criteria: DraftsSearchFilter[];
     results: DraftsSearchResults;
     paging: Paging;
     sortBy: DraftsSortBy;
@@ -34,13 +35,22 @@ const FILTER_TYPES: ChipFilterType[] = [
     { value: DraftsFilterBy.description, label: "Description", testId: "drafts-filter-type-description" },
     { value: DraftsFilterBy.labels, label: "Labels", testId: "drafts-filter-type-labels" },
 ];
+const FILTER_TYPE_LOOKUP: any = {};
+FILTER_TYPES.forEach(filterType => {
+    FILTER_TYPE_LOOKUP[filterType.value] = filterType;
+});
 
 
 /**
  * Models the toolbar for the Drafts page.
  */
 export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (props: DraftsPageToolbarProps) => {
-    const [filterCriteria, setFilterCriteria] = useState<ChipFilterCriteria[]>([]);
+    const filterCriteria: ChipFilterCriteria[] = props.criteria.map(c => {
+        return {
+            filterBy: FILTER_TYPE_LOOKUP[c.by],
+            filterValue: c.value
+        };
+    });
 
     const totalDraftsCount = (): number => {
         return props.results.count!;
@@ -62,47 +72,43 @@ export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (pro
         props.onPageChange(newPaging);
     };
 
-    const fireCriteriaChange = (criteria: ChipFilterCriteria[]): void => {
-        props.onCriteriaChange(criteria.map(fc => {
-            return {
-                value: fc.filterValue,
-                by: fc.filterBy.value as DraftsFilterBy
-            };
-        }));
+    const fireCriteriaChange = (criteria: DraftsSearchFilter[]): void => {
+        props.onCriteriaChange(criteria);
     };
 
     const onAddFilterCriteria = (criteria: ChipFilterCriteria): void => {
         if (criteria.filterValue === "") {
-            fireCriteriaChange(filterCriteria);
+            fireCriteriaChange(props.criteria);
         } else {
+            const dsf: DraftsSearchFilter = {
+                by: criteria.filterBy.value,
+                value: criteria.filterValue
+            };
+            
             let updated: boolean = false;
-            const newCriteria: ChipFilterCriteria[] = filterCriteria.map(fc => {
-                if (fc.filterBy === criteria.filterBy) {
+            const newCriteria: DraftsSearchFilter[] = props.criteria.map(c => {
+                if (c.by === criteria.filterBy.value) {
                     updated = true;
-                    return criteria;
+                    return dsf;
                 } else {
-                    return fc;
+                    return c;
                 }
             });
             if (!updated) {
-                newCriteria.push(criteria);
+                newCriteria.push(dsf);
             }
 
-            setFilterCriteria(newCriteria);
             fireCriteriaChange(newCriteria);
         }
     };
 
     const onRemoveFilterCriteria = (criteria: ChipFilterCriteria): void => {
-        const newCriteria: ChipFilterCriteria[] = filterCriteria.filter(fc => fc !== criteria);
-        setFilterCriteria(newCriteria);
+        const newCriteria: DraftsSearchFilter[] = props.criteria.filter(c => c.by !== criteria.filterBy.value);
         fireCriteriaChange(newCriteria);
     };
 
     const onRemoveAllFilterCriteria = (): void => {
-        const newCriteria: ChipFilterCriteria[] = [];
-        setFilterCriteria(newCriteria);
-        fireCriteriaChange(newCriteria);
+        fireCriteriaChange([]);
     };
 
     const sortByLabel = (sortBy: DraftsSortBy): string => {

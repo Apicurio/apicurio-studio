@@ -13,6 +13,7 @@ import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
 import {
     CreateDraft,
     Draft,
+    DraftsFilterBy,
     DraftsSearchFilter,
     DraftsSearchResults,
     DraftsSortBy
@@ -122,6 +123,27 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
         });
     };
 
+    const filterByGroupId = (groupId: string): void => {
+        const dsf: DraftsSearchFilter = {
+            by: DraftsFilterBy.groupId,
+            value: groupId
+        };
+
+        let updated: boolean = false;
+        const newCriteria: DraftsSearchFilter[] = criteria.map(c => {
+            if (c.by === dsf.by) {
+                updated = true;
+                return dsf;
+            } else {
+                return c;
+            }
+        });
+        if (!updated) {
+            newCriteria.push(dsf);
+        }
+        setCriteria(newCriteria);
+    };
+
     const search = async (criteria: DraftsSearchFilter[], sortBy: DraftsSortBy, sortOrder: SortOrder, paging: Paging): Promise<any> => {
         setSearching(true);
 
@@ -139,6 +161,7 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const toolbar = (
         <DraftsPageToolbar
             results={results}
+            criteria={criteria}
             paging={paging}
             sortBy={sortBy}
             sortOrder={sortOrder}
@@ -181,6 +204,7 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                     >
                         <DraftsList
                             drafts={results.drafts}
+                            onGroupClick={groupId => filterByGroupId(groupId)}
                             onView={onViewDraft}
                             onDelete={onDeleteDraft}
                         />

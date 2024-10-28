@@ -15,9 +15,9 @@ import { GroupsService, useGroupsService } from "@services/useGroupsService.ts";
 import { If } from "@apicurio/common-ui-components";
 import { ExclamationCircleIcon } from "@patternfly/react-icons";
 
-export type ValidType = "default" | "success" | "error";
+type ValidType = "default" | "success" | "error";
 
-export type Validities = {
+type Validities = {
     groupId?: ValidType;
     draftId?: ValidType;
     version?: ValidType;

@@ -34,9 +34,9 @@ import { Template } from "@models/templates";
 import { GroupsService, useGroupsService } from "@services/useGroupsService.ts";
 
 
-export type ValidType = "default" | "success" | "error";
+type ValidType = "default" | "success" | "error";
 
-export type Validities = {
+type Validities = {
     groupId?: ValidType;
     draftId?: ValidType;
     version?: ValidType;

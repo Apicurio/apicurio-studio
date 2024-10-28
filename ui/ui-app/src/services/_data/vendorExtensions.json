@@ -1,0 +1,259 @@
+[
+  {
+    "name": "x-codegen",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "suppress-date-time-formatting": {
+          "type": "boolean",
+          "title": "Suppress Datetime Formatting"
+        },
+        "bean-annotations": {
+          "type": "array",
+          "title": "Bean Annotations",
+          "items": {
+            "type": "object",
+            "properties": {
+              "annotation": {
+                "type": "string",
+                "title": "Annotation"
+              },
+              "excludeEnums": {
+                "type": "boolean",
+                "title": "Exclude Enums"
+              }
+            },
+            "required": [
+              "annotation"
+            ]
+          }
+        }
+      },
+      "required": []
+    },
+    "model": {
+      "suppress-date-time-formatting": false,
+      "bean-annotations": []
+    },
+    "components": [
+      "document"
+    ]
+  },
+  {
+    "name": "x-kuadrant",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "route": {
+          "type": "object",
+          "title": "Route",
+          "properties": {
+            "name": {
+              "type": "string",
+              "title": "Name"
+            },
+            "namespace": {
+              "type": "string",
+              "title": "Namespace"
+            },
+            "labels": {
+              "type": "object",
+              "title": "Labels",
+              "patternProperties": {
+                ".{1,}": {
+                  "type": "string",
+                  "title": "Value"
+                }
+              }
+            },
+            "hostnames": {
+              "type": "array",
+              "title": "Hostnames",
+              "items": {
+                "type": "string",
+                "title": "Hostname"
+              }
+            },
+            "parentRefs": {
+              "type": "array",
+              "title": "Parent Refs",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "title": "Name"
+                  },
+                  "namespace": {
+                    "type": "string",
+                    "title": "Namespace"
+                  }
+                },
+                "required": [
+                  "name",
+                  "namespace"
+                ]
+              }
+            }
+          },
+          "required": [
+            "name",
+            "namespace",
+            "labels",
+            "hostnames",
+            "parentRefs"
+          ]
+        }
+      },
+      "required": [
+        "route"
+      ]
+    },
+    "model": {
+      "route": {
+        "name": "",
+        "namespace": "",
+        "labels": {},
+        "hostnames": [
+          "example.com"
+        ],
+        "parentRefs": []
+      }
+    },
+    "components": [
+      "document"
+    ]
+  },
+  {
+    "name": "x-kuadrant",
+    "schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "type": "object",
+      "properties": {
+        "disable": {
+          "type": "boolean",
+          "title": "Disable"
+        },
+        "pathMatchType": {
+          "type": "string",
+          "enum": [
+            "Exact",
+            "PathPrefix"
+          ],
+          "title": "Path Match Type"
+        },
+        "backendRefs": {
+          "type": "array",
+          "title": "Backend Refs",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "port": {
+                "type": "integer",
+                "title": "Port"
+              },
+              "namespace": {
+                "type": "string",
+                "title": "Namespace"
+              }
+            },
+            "required": [
+              "name",
+              "port",
+              "namespace"
+            ]
+          }
+        },
+        "rate_limit": {
+          "type": "object",
+          "title": "Rate Limits",
+          "properties": {
+            "rates": {
+              "type": "array",
+              "title": "Rates",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "limit": {
+                    "type": "integer",
+                    "title": "Limit"
+                  },
+                  "duration": {
+                    "type": "integer",
+                    "title": "Duration"
+                  },
+                  "unit": {
+                    "type": "string",
+                    "title": "Unit"
+                  }
+                },
+                "required": [
+                  "limit",
+                  "duration",
+                  "unit"
+                ]
+              }
+            },
+            "counters": {
+              "type": "array",
+              "title": "Counters",
+              "items": {
+                "type": "string"
+              }
+            },
+            "when": {
+              "type": "array",
+              "title": "When",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "selector": {
+                    "type": "string",
+                    "title": "Selector"
+                  },
+                  "operator": {
+                    "type": "string",
+                    "title": "Operator"
+                  },
+                  "value": {
+                    "type": "string",
+                    "title": "Value"
+                  }
+                },
+                "required": [
+                  "selector",
+                  "operator",
+                  "value"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "disable",
+        "backendRefs"
+      ]
+    },
+    "model": {
+      "disable": true,
+      "pathMatchType": "Exact",
+      "backendRefs": [],
+      "rate_limit": {
+        "rates": [],
+        "counters": [],
+        "when": []
+      }
+    },
+    "components": [
+      "pathItem",
+      "operation"
+    ]
+  }
+]

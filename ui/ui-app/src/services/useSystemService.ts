@@ -4,6 +4,7 @@ import { ApicurioStudioConfig, useConfigService } from "@services/useConfigServi
 import { VendorExtension } from "@models/system";
 import { ApicurioRegistryClient } from "@apicurio/apicurio-registry-sdk";
 import { SystemInfo } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import DEFAULT_VENDOR_EXTENSIONS from "./_data/vendorExtensions.json";
 
 
 const getInfo = async (appConfig: ApicurioStudioConfig, auth: AuthService): Promise<SystemInfo> => {
@@ -15,8 +16,7 @@ const getInfo = async (appConfig: ApicurioStudioConfig, auth: AuthService): Prom
 const getOpenApiVendorExtensions = async (/*appConfig: ApicurioStudioConfig, auth: AuthService*/): Promise<VendorExtension[]> => {
     // TODO cache the vendor extensions?
     console.debug("[SystemService] Getting openapi vendor extensions.");
-    // TODO implement this in some way
-    return Promise.resolve([]);
+    return Promise.resolve(DEFAULT_VENDOR_EXTENSIONS);
 };
 
 export interface SystemService {

@@ -67,14 +67,14 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
         appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}`);
     };
 
-    const doCreateDraftFromVersion = (fromVersion: SearchedVersion, newVersionNumber: string): void => {
+    const doCreateDraftFromVersion = (fromVersion: SearchedVersion, groupId: string, draftId: string, version: string): void => {
         pleaseWait("Creating draft, please wait...");
 
         drafts.getDraftContent(fromVersion.groupId || null, fromVersion.artifactId!, fromVersion.version!).then(draftContent => {
             const createDraft: CreateDraft = {
-                groupId: fromVersion.groupId || "default",
-                draftId: fromVersion.artifactId!,
-                version: newVersionNumber,
+                groupId: groupId,
+                draftId: draftId,
+                version: version,
                 type: fromVersion.artifactType!,
                 name: "",
                 description: "",

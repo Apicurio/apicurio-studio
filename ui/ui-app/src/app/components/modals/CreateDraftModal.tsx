@@ -291,7 +291,10 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
     }, [data]);
 
     useEffect(() => {
-        if (data.draftId && data.draftId.length > 0 && data.version && data.version.length > 0) {
+        const isGroupIdValid: boolean = validateField(data.groupId) !== "error";
+        const isDraftIdValid: boolean = validateField(data.draftId) !== "error";
+
+        if (data.draftId && data.draftId.length > 0 && data.version && data.version.length > 0 && isGroupIdValid && isDraftIdValid) {
             setIsCoordinatesAvailable(false);
             setIsValidatingCoordinates(true);
             // Debounce the validation logic because it hits the REST API each time.
@@ -300,7 +303,7 @@ export const CreateDraftModal: FunctionComponent<CreateDraftModalProps> = (props
         } else {
             setIsCoordinatesAvailable(true);
         }
-    }, [data.draftId, data.version]);
+    }, [data.groupId, data.draftId, data.version]);
 
     const isGroupIdValid: boolean = validities.groupId !== "error";
     const isDraftIdValid: boolean = validities.draftId !== "error";

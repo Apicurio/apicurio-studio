@@ -154,7 +154,8 @@ export const ExplorePage: FunctionComponent<ExplorePageProps> = () => {
                 </PageSection>
                 <PageSection className="ps_explore-description" variant={PageSectionVariants.light}>
                     <TextContent>
-                        Explore content in the registry by searching for groups or artifacts.
+                        Explore the contents of the Registry by searching for <b>Groups</b> below, then navigating
+                        the results.
                     </TextContent>
                 </PageSection>
                 <PageSection variant={PageSectionVariants.default} isFilled={true}>

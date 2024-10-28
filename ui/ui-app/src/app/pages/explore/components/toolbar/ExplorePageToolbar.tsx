@@ -3,7 +3,6 @@ import "./ExplorePageToolbar.css";
 import {
     Button,
     ButtonVariant,
-    capitalize,
     Form,
     InputGroup,
     TextInput,
@@ -84,33 +83,11 @@ export const ExplorePageToolbar: FunctionComponent<ExplorePageToolbarProps> = (p
         props.onCriteriaChange(criteria);
     };
 
-    const onExploreTypeChange = (newExploreType: ExploreType): void => {
-        setFilterAscending(true);
-        setFilterValue("");
-        if (newExploreType === ExploreType.GROUP) {
-            setGroupFilterType(GROUP_FILTER_TYPES[0]);
-        }
-        props.onExploreTypeChange(newExploreType);
-    };
-
     return (
         <Toolbar id="artifacts-toolbar-1" className="artifacts-toolbar">
             <ToolbarContent>
                 <ToolbarItem variant="label">
-                    Search for
-                </ToolbarItem>
-                <ToolbarItem className="filter-item">
-                    <ObjectSelect
-                        value={props.exploreType}
-                        items={[ExploreType.GROUP]}
-                        testId="explore-type-select"
-                        toggleClassname="explore-type-toggle"
-                        onSelect={onExploreTypeChange}
-                        itemToTestId={(item) => `explore-type-${item.toString().toLowerCase()}`}
-                        itemToString={(item) => capitalize(item.toString().toLowerCase())}/>
-                </ToolbarItem>
-                <ToolbarItem variant="label">
-                    filter by
+                    Filter by
                 </ToolbarItem>
                 <ToolbarItem className="filter-item">
                     <Form onSubmit={onFilterSubmit}>

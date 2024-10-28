@@ -6,6 +6,7 @@ import { ArtifactDescription } from "@app/components";
 import { ArtifactMetaData, SearchedVersion } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import { VersionsSortBy } from "@models/versions";
 import { SortOrder } from "@models/SortOrder.ts";
+import { Flex, FlexItem, Label } from "@patternfly/react-core";
 
 export type VersionsTableProps = {
     artifact: ArtifactMetaData;
@@ -29,10 +30,9 @@ export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: Vers
     const [sortByIndex, setSortByIndex] = useState<number>();
 
     const columns: any[] = [
-        { index: 0, id: "version", label: "Version", width: 40, sortable: true, sortBy: VersionsSortBy.version },
-        { index: 1, id: "globalId", label: "Global Id", width: 10, sortable: true, sortBy: VersionsSortBy.globalId },
-        { index: 2, id: "contentId", label: "Content Id", width: 10, sortable: false },
-        { index: 3, id: "createdOn", label: "Created on", width: 15, sortable: true, sortBy: VersionsSortBy.createdOn },
+        { index: 0, id: "version", label: "Version", width: 65, sortable: true, sortBy: VersionsSortBy.version },
+        { index: 1, id: "globalId", label: "Global Id", width: 15, sortable: true, sortBy: VersionsSortBy.globalId },
+        { index: 2, id: "createdOn", label: "Created on", width: 20, sortable: true, sortBy: VersionsSortBy.createdOn },
     ];
 
     const renderColumnData = (column: SearchedVersion, colIndex: number): React.ReactNode => {
@@ -40,13 +40,32 @@ export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: Vers
         if (colIndex === 0) {
             return (
                 <div>
-                    <div>
-                        <span>{ column.version }</span>
-                        <If condition={column.name != "" && column.name !== undefined && column.name !== null}>
-                            <span style={{ marginLeft: "10px" }}>({column.name})</span>
-                        </If>
-                    </div>
-                    <ArtifactDescription className="version-description" style={{ overflow: "hidden", textOverflow: "hidden", whiteSpace: "nowrap", fontSize: "14px" }}
+                    <Flex>
+                        <FlexItem>
+                            <span>{column.version}</span>
+                            <If condition={column.name != "" && column.name !== undefined && column.name !== null}>
+                                <span style={{ marginLeft: "10px" }}>({column.name})</span>
+                            </If>
+                        </FlexItem>
+                        <FlexItem>
+                            <If condition={column.state === "DRAFT"}>
+                                <Label color="grey">Draft</Label>
+                            </If>
+                            <If condition={column.state === "DEPRECATED"}>
+                                <Label color="orange">Deprecated</Label>
+                            </If>
+                            <If condition={column.state === "DISABLED"}>
+                                <Label color="red">Disabled</Label>
+                            </If>
+                        </FlexItem>
+                    </Flex>
+                    <ArtifactDescription
+                        className="version-description"
+                        style={{
+                            overflow: "hidden",
+                            textOverflow: "hidden",
+                            whiteSpace: "nowrap",
+                            fontSize: "14px" }}
                         description={column.description}
                         truncate={true} />
                 </div>
@@ -58,14 +77,8 @@ export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: Vers
                 <span>{ column.globalId }</span>
             );
         }
-        // Global id.
-        if (colIndex === 2) {
-            return (
-                <span>{ column.contentId }</span>
-            );
-        }
         // Created on.
-        if (colIndex === 3) {
+        if (colIndex === 2) {
             return (
                 <FromNow date={column.createdOn} />
             );

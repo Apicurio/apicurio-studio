@@ -43,7 +43,7 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const [criteria, setCriteria] = useState<DraftsSearchFilter[]>([]);
     const [isSearching, setSearching] = useState(false);
     const [paging, setPaging] = useState<Paging>(DEFAULT_PAGING);
-    const [sortBy, setSortBy] = useState<DraftsSortBy>(DraftsSortBy.name);
+    const [sortBy, setSortBy] = useState<DraftsSortBy>(DraftsSortBy.artifactId);
     const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.asc);
     const [results, setResults] = useState<DraftsSearchResults>(EMPTY_RESULTS);
     const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);

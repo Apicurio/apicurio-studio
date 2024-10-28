@@ -29,9 +29,9 @@ export type DraftsPageToolbarProps = {
 };
 
 const FILTER_TYPES: ChipFilterType[] = [
-    { value: DraftsFilterBy.name, label: "Name", testId: "drafts-filter-type-name" },
+    { value: DraftsFilterBy.artifactId, label: "Draft Id", testId: "drafts-filter-type-draftid" },
     { value: DraftsFilterBy.groupId, label: "Group Id", testId: "drafts-filter-type-groupid" },
-    { value: DraftsFilterBy.artifactId, label: "Artifact Id", testId: "drafts-filter-type-artifactid" },
+    { value: DraftsFilterBy.name, label: "Name", testId: "drafts-filter-type-name" },
     { value: DraftsFilterBy.description, label: "Description", testId: "drafts-filter-type-description" },
     { value: DraftsFilterBy.labels, label: "Labels", testId: "drafts-filter-type-labels" },
 ];
@@ -113,6 +113,10 @@ export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (pro
 
     const sortByLabel = (sortBy: DraftsSortBy): string => {
         switch (sortBy) {
+            case DraftsSortBy.groupId:
+                return "Group Id";
+            case DraftsSortBy.artifactId:
+                return "Draft Id";
             case DraftsSortBy.version:
                 return "Version";
             case DraftsSortBy.name:
@@ -142,6 +146,8 @@ export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (pro
                         <ObjectSelect
                             value={props.sortBy}
                             items={[
+                                DraftsSortBy.artifactId,
+                                DraftsSortBy.groupId,
                                 DraftsSortBy.name,
                                 DraftsSortBy.modifiedOn
                             ]}

@@ -23,7 +23,13 @@ import {
 } from "@patternfly/react-core";
 import { DraftComments, PageDataLoader, PageError, PageErrorHandler, toPageError } from "@app/pages";
 import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
-import { ArtifactTypeIcon, ConfirmDeleteModal, EditDraftInfoModal, RootPageHeader } from "@app/components";
+import {
+    ArtifactTypeIcon,
+    ConfirmDeleteModal,
+    ConfirmFinalizeModal,
+    EditDraftInfoModal,
+    RootPageHeader
+} from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 import { Link, useParams } from "react-router-dom";
 import { Draft, DraftInfo } from "@models/drafts";
@@ -50,18 +56,19 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
         version: ""
     });
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+    const [isConfirmFinalizeModalOpen, setIsConfirmFinalizeModalOpen] = useState(false);
     const [isEditDraftInfoModalOpen, setIsEditDraftInfoModalOpen] = useState(false);
     const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
     const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
 
     const { groupId, draftId, version } = useParams();
 
-    const drafts: DraftsService = useDraftsService();
+    const draftsService: DraftsService = useDraftsService();
     const appNavigation: AppNavigationService = useAppNavigation();
 
     const createLoaders = (): Promise<any>[] => {
         return [
-            drafts.getDraft(groupId as string, draftId as string, version as string)
+            draftsService.getDraft(groupId as string, draftId as string, version as string)
                 .then(setDraft)
                 .catch(error => {
                     setPageError(toPageError(error, "Error loading page data."));
@@ -81,7 +88,7 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
     const doDeleteDraft = (): void => {
         setIsConfirmDeleteModalOpen(false);
         pleaseWait("Deleting draft, please wait.");
-        drafts.deleteDraft(groupId as string, draftId as string, version as string).then( () => {
+        draftsService.deleteDraft(groupId as string, draftId as string, version as string).then( () => {
             setPleaseWaitModalOpen(false);
             appNavigation.navigateTo("/drafts");
         }).catch( error => {
@@ -90,10 +97,20 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
         });
     };
 
+    const doFinalizeDraft = (draft: Draft): void => {
+        draftsService.finalizeDraft(draft.groupId, draft.draftId, draft.version).then(() => {
+            const groupId: string = encodeURIComponent(draft.groupId || "default");
+            const draftId: string = encodeURIComponent(draft.draftId!);
+            appNavigation.navigateTo(`/explore/${groupId}/${draftId}`);
+        }).catch(e => {
+            setPageError(toPageError(e, "Error promoting a draft."));
+        });
+    };
+
     const doEditDraftInfo = (draftInfo: DraftInfo): void => {
         setIsEditDraftInfoModalOpen(false);
         pleaseWait("Updating draft information...");
-        drafts.updateDraftInfo(groupId as string, draftId as string, version as string, draftInfo).then( () => {
+        draftsService.updateDraftInfo(groupId as string, draftId as string, version as string, draftInfo).then( () => {
             setPleaseWaitModalOpen(false);
             setDraft({
                 ...draft,
@@ -142,6 +159,11 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                                 data-testid="draft-btn-edit"
                                 onClick={navigateToEditor}
                                 variant="primary"><PencilAltIcon />{" "}Edit draft</Button>
+                            <Button id="finalize-action"
+                                data-testid="draft-btn-finalize"
+                                style={{ marginLeft: "8px" }}
+                                onClick={() => setIsConfirmFinalizeModalOpen(true)}
+                                variant="secondary">Finalize draft</Button>
                             <Button id="delete-action"
                                 data-testid="draft-btn-delete"
                                 style={{ marginLeft: "8px" }}
@@ -269,6 +291,11 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                         description={draft.description || ""}
                         onClose={() => setIsEditDraftInfoModalOpen(false)}
                         onEdit={doEditDraftInfo} />
+                    <ConfirmFinalizeModal
+                        draft={draft}
+                        onClose={() => setIsConfirmFinalizeModalOpen(false)}
+                        onFinalize={doFinalizeDraft}
+                        isOpen={isConfirmFinalizeModalOpen} />
                     <PleaseWaitModal
                         message={pleaseWaitMessage}
                         isOpen={isPleaseWaitModalOpen} />

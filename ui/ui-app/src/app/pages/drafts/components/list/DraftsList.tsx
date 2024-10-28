@@ -17,8 +17,9 @@ import { DraftId } from "@app/pages/drafts/components/list/DraftId.tsx";
 export type DraftsListProps = {
     drafts: Draft[];
     onGroupClick: (groupId: string) => void;
-    onView: (version: Draft) => void;
-    onDelete: (version: Draft) => void;
+    onView: (draft: Draft) => void;
+    onFinalize: (draft: Draft) => void;
+    onDelete: (draft: Draft) => void;
 }
 
 export const DraftsList: FunctionComponent<DraftsListProps> = (props: DraftsListProps) => {
@@ -98,6 +99,12 @@ export const DraftsList: FunctionComponent<DraftsListProps> = (props: DraftsList
                                         label: "View draft",
                                         testId: "view-draft-" + idx,
                                         action: () => props.onView(draft)
+                                    },
+                                    {
+                                        id: "finalize-draft",
+                                        label: "Finalize draft",
+                                        testId: "finalize-draft-" + idx,
+                                        action: () => props.onFinalize(draft)
                                     },
                                     {
                                         divider: true

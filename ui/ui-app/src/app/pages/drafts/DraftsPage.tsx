@@ -21,7 +21,7 @@ import {
 import { Paging } from "@models/Paging.ts";
 import { SortOrder } from "@models/SortOrder.ts";
 import { ListWithToolbar, PleaseWaitModal } from "@apicurio/common-ui-components";
-import { ConfirmDeleteModal, CreateDraftModal, RootPageHeader } from "@app/components";
+import { ConfirmDeleteModal, ConfirmFinalizeModal, CreateDraftModal, RootPageHeader } from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 
 
@@ -51,6 +51,8 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const [draftToDelete, setDraftToDelete] = useState<Draft>();
     const [isCreateDraftModalOpen, setIsCreateDraftModalOpen] = useState(false);
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
+    const [isConfirmFinalizeModalOpen, setIsConfirmFinalizeModalOpen] = useState(false);
+    const [draftToFinalize, setDraftToFinalize] = useState<Draft>();
 
     const draftsService: DraftsService = useDraftsService();
     // const nav: AppNavigationService = useAppNavigation();
@@ -81,6 +83,16 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
         const version: string = encodeURIComponent(draft.version!);
 
         appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}`);
+    };
+
+    const doFinalizeDraft = (draft: Draft): void => {
+        draftsService.finalizeDraft(draft.groupId, draft.draftId, draft.version).then(() => {
+            const groupId: string = encodeURIComponent(draft.groupId || "default");
+            const draftId: string = encodeURIComponent(draft.draftId!);
+            appNavigation.navigateTo(`/explore/${groupId}/${draftId}`);
+        }).catch(e => {
+            setPageError(toPageError(e, "Error promoting a draft."));
+        });
     };
 
     const onDeleteDraft = (draft: Draft): void => {
@@ -206,6 +218,10 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                             drafts={results.drafts}
                             onGroupClick={groupId => filterByGroupId(groupId)}
                             onView={onViewDraft}
+                            onFinalize={(draft) => {
+                                setDraftToFinalize(draft);
+                                setIsConfirmFinalizeModalOpen(true);
+                            }}
                             onDelete={onDeleteDraft}
                         />
                     </ListWithToolbar>
@@ -221,6 +237,11 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                 isOpen={isConfirmDeleteModalOpen}
                 onDelete={doDeleteDraft}
                 onClose={() => setIsConfirmDeleteModalOpen(false)} />
+            <ConfirmFinalizeModal
+                draft={draftToFinalize}
+                onClose={() => setIsConfirmFinalizeModalOpen(false)}
+                onFinalize={doFinalizeDraft}
+                isOpen={isConfirmFinalizeModalOpen} />
             <PleaseWaitModal
                 message={pleaseWaitMessage}
                 isOpen={isPleaseWaitModalOpen} />

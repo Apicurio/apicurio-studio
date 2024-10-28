@@ -20,7 +20,7 @@ import {
     NewComment,
     SearchedVersion,
     VersionContent,
-    VersionMetaData
+    VersionMetaData, WrappedVersionState
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import {
     VersionsRequestBuilderGetQueryParameters
@@ -227,6 +227,22 @@ function deleteDraft(appConfig: ApicurioStudioConfig, auth: AuthService, groupId
 }
 
 /**
+ * Finalize a draft.
+ */
+function finalizeDraft(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string): Promise<void> {
+    const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
+
+    groupId = normalizeGroupId(groupId);
+    console.info("[DraftsService] Finalizing a draft: ", groupId, draftId, version);
+
+    const newState: WrappedVersionState = {
+        state: "ENABLED"
+    };
+
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).state.put(newState);
+}
+
+/**
  * Get draft content.
  */
 function getDraftContent(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string): Promise<DraftContent> {
@@ -286,6 +302,7 @@ export interface DraftsService {
     deleteDraft(groupId: string|null, draftId: string, version: string): Promise<void>;
     getDraftContent(groupId: string|null, draftId: string, version: string): Promise<DraftContent>;
     updateDraftContent(groupId: string|null, draftId: string, version: string, data: DraftContent): Promise<void>;
+    finalizeDraft(groupId: string|null, draftId: string, version: string): Promise<void>;
 
     getDraftComments(groupId: string|null, draftId: string, version: string): Promise<Comment[]>;
     createDraftComment(groupId: string|null, draftId: string, version: string, data: NewComment): Promise<Comment>;
@@ -317,6 +334,8 @@ export const useDraftsService: () => DraftsService = (): DraftsService => {
             getDraftContent(appConfig, auth, groupId, draftId, version),
         updateDraftContent: (groupId: string|null, draftId: string, version: string, data: DraftContent) =>
             updateDraftContent(appConfig, auth, groupId, draftId, version, data),
+        finalizeDraft: (groupId: string|null, draftId: string, version: string) =>
+            finalizeDraft(appConfig, auth, groupId, draftId, version),
 
         getDraftComments: (groupId: string|null, draftId: string, version: string) =>
             getDraftComments(appConfig, auth, groupId, draftId, version),

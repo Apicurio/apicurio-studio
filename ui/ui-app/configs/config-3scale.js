@@ -10,6 +10,9 @@ const ApicurioStudioConfig = {
             url: "https://sso.dev.apicur.io/realms/apicurio"
         }
     },
+    links: {
+        registry: "https://registry.dev.apicur.io"
+    },
     components: {
         editors: {
             url: "http://localhost:9011"

@@ -13,7 +13,7 @@ export const AppHeader: FunctionComponent<AppHeaderProps> = () => {
     const appNav: AppNavigationService = useAppNavigation();
     const config: ApicurioStudioConfig = useConfigService().getApicurioStudioConfig();
 
-    if (config?.components.masthead.show === false) {
+    if (!config?.components?.masthead?.show) {
         return (<></>);
     }
 

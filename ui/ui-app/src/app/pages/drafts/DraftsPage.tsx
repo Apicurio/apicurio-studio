@@ -23,6 +23,7 @@ import { SortOrder } from "@models/SortOrder.ts";
 import { ListWithToolbar, PleaseWaitModal } from "@apicurio/common-ui-components";
 import { ConfirmDeleteModal, ConfirmFinalizeModal, CreateDraftModal, RootPageHeader } from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
+import { ConfigService, useConfigService } from "@services/useConfigService.ts";
 
 
 const EMPTY_RESULTS: DraftsSearchResults = {
@@ -54,14 +55,13 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const [isConfirmFinalizeModalOpen, setIsConfirmFinalizeModalOpen] = useState(false);
     const [draftToFinalize, setDraftToFinalize] = useState<Draft>();
 
+    const config: ConfigService = useConfigService();
     const draftsService: DraftsService = useDraftsService();
-    // const nav: AppNavigationService = useAppNavigation();
+    const appNavigation: AppNavigationService = useAppNavigation();
 
     const createLoaders = (): Promise<any> => {
         return search(criteria, sortBy, sortOrder, paging);
     };
-
-    const appNavigation: AppNavigationService = useAppNavigation();
 
     useEffect(() => {
         setLoaders([]);
@@ -83,6 +83,16 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
         const version: string = encodeURIComponent(draft.version!);
 
         appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}`);
+    };
+
+    const onViewDraftInRegistry = (draft: Draft): void => {
+        const registryBaseUrl: string = config.getApicurioStudioConfig().links.registry!;
+        const groupId: string = encodeURIComponent(draft.groupId || "default");
+        const draftId: string = encodeURIComponent(draft.draftId!);
+        const version: string = encodeURIComponent(draft.version!);
+
+        const registryUrl: string = `${registryBaseUrl}/explore/${groupId}/${draftId}/versions/${version}`;
+        window.location.href = registryUrl;
     };
 
     const doFinalizeDraft = (draft: Draft): void => {
@@ -222,6 +232,7 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                                 setDraftToFinalize(draft);
                                 setIsConfirmFinalizeModalOpen(true);
                             }}
+                            onViewInRegistry={onViewDraftInRegistry}
                             onDelete={onDeleteDraft}
                         />
                     </ListWithToolbar>

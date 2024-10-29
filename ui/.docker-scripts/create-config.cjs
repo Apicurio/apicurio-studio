@@ -7,6 +7,7 @@ const CONFIG_OUTPUT_PATH=process.env["APICURIO_CONFIG_OUTPUT_PATH"] || "/opt/app
 console.info("Generating application config at:", CONFIG_OUTPUT_PATH);
 
 const APICURIO_REGISTRY_API_URL=process.env["APICURIO_REGISTRY_API_URL"] || "http://localhost:8080/apis/registry/v3";
+const APICURIO_REGISTRY_UI_URL=process.env["APICURIO_REGISTRY_UI_URL"];
 
 const CONTEXT_PATH=process.env["APICURIO_CONTEXT_PATH"];
 const NAV_PREFIX_PATH=process.env["APICURIO_NAV_PREFIX_PATH"];
@@ -25,6 +26,8 @@ const CONFIG = {
     apis: {
         registry: APICURIO_REGISTRY_API_URL
     },
+    links: {
+    },
     ui: {
         navPrefixPath: "",
         contextPath: "/"
@@ -39,6 +42,11 @@ const CONFIG = {
     },
     auth: {}
 };
+
+// Configure Links
+if (APICURIO_REGISTRY_UI_URL) {
+    CONFIG.links.registry = APICURIO_REGISTRY_UI_URL;
+}
 
 // Configure UI elements
 if (CONTEXT_PATH) {

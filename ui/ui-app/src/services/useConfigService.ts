@@ -10,6 +10,10 @@ export type UiType = {
     navPrefixPath: string;
 };
 
+export type LinksType = {
+    registry: string;
+};
+
 export type MastheadType = {
     show: boolean;
     label: string;
@@ -40,6 +44,7 @@ export interface VersionType {
 
 export type ApicurioStudioConfig = {
     apis: ApisType;
+    links: LinksType;
     ui: UiType;
     components: ComponentsType;
     auth: AuthType;

@@ -27,14 +27,15 @@ import {
     ArtifactTypeIcon,
     ConfirmDeleteModal,
     ConfirmFinalizeModal,
-    EditDraftInfoModal, IfRegistryFeature,
+    EditDraftInfoModal,
     RootPageHeader
 } from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 import { Link, useParams } from "react-router-dom";
 import { Draft, DraftInfo } from "@models/drafts";
-import { FromNow, If, PleaseWaitModal } from "@apicurio/common-ui-components";
-import { PencilAltIcon, TrashIcon } from "@patternfly/react-icons";
+import { FromNow, If, ObjectDropdown, PleaseWaitModal } from "@apicurio/common-ui-components";
+import { PencilAltIcon } from "@patternfly/react-icons";
+import { ConfigService, useConfigService } from "@services/useConfigService.ts";
 
 
 export type DraftPageProps = object;
@@ -65,6 +66,15 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
 
     const draftsService: DraftsService = useDraftsService();
     const appNavigation: AppNavigationService = useAppNavigation();
+    const config: ConfigService = useConfigService();
+
+    const isDeleteEnabled = (): boolean => {
+        return config.getApicurioRegistryConfig().features?.deleteVersion || false;
+    };
+
+    const isRegistryUIConfigured = (): boolean => {
+        return config.getApicurioStudioConfig().links.registry !== undefined && config.getApicurioStudioConfig().links.registry.length > 0;
+    };
 
     const createLoaders = (): Promise<any>[] => {
         return [
@@ -130,6 +140,16 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
         appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}/editor`);
     };
 
+    const viewDraftInRegistry = (): void => {
+        const registryBaseUrl: string = config.getApicurioStudioConfig().links.registry!;
+        const groupId: string = encodeURIComponent(draft.groupId || "default");
+        const draftId: string = encodeURIComponent(draft.draftId!);
+        const version: string = encodeURIComponent(draft.version!);
+
+        const registryUrl: string = `${registryBaseUrl}/explore/${groupId}/${draftId}/versions/${version}`;
+        window.location.href = registryUrl;
+    };
+
 
     const breadcrumbs = (
         <Breadcrumb>
@@ -164,13 +184,39 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                                 style={{ marginLeft: "8px" }}
                                 onClick={() => setIsConfirmFinalizeModalOpen(true)}
                                 variant="secondary">Finalize draft</Button>
-                            <IfRegistryFeature feature="deleteVersion" is={true}>
-                                <Button id="delete-action"
-                                    data-testid="draft-btn-delete"
-                                    style={{ marginLeft: "8px" }}
-                                    onClick={() => setIsConfirmDeleteModalOpen(true)}
-                                    variant="danger"><TrashIcon />{" "}Delete draft</Button>
-                            </IfRegistryFeature>
+                            <ObjectDropdown
+                                label=""
+                                isKebab={true}
+                                testId="draft-actions-dropdown"
+                                popperProps={{
+                                    position: "right"
+                                }}
+                                items={[
+                                    {
+                                        id: "view-draft-in-registry",
+                                        label: "View in Registry",
+                                        testId: "view-draft-in-registry",
+                                        isVisible: isRegistryUIConfigured,
+                                        action: viewDraftInRegistry
+                                    },
+                                    {
+                                        divider: true,
+                                        isVisible: () => isDeleteEnabled() && isRegistryUIConfigured()
+                                    },
+                                    {
+                                        id: "delete-draft",
+                                        label: "Delete draft",
+                                        testId: "delete-draft",
+                                        isVisible: isDeleteEnabled,
+                                        action: () => setIsConfirmDeleteModalOpen(true)
+                                    }
+                                ]}
+                                onSelect={item => item.action()}
+                                itemToString={item => item.label}
+                                itemToTestId={item => item.testId}
+                                itemIsDivider={item => item.divider}
+                                itemIsVisible={item => !item.isVisible || item.isVisible()}
+                            />
                         </FlexItem>
                     </Flex>
                 </PageSection>

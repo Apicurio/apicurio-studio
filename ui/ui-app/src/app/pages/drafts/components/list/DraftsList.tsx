@@ -21,6 +21,7 @@ export type DraftsListProps = {
     onView: (draft: Draft) => void;
     onFinalize: (draft: Draft) => void;
     onDelete: (draft: Draft) => void;
+    onViewInRegistry: (draft: Draft) => void;
 }
 
 export const DraftsList: FunctionComponent<DraftsListProps> = (props: DraftsListProps) => {
@@ -29,6 +30,10 @@ export const DraftsList: FunctionComponent<DraftsListProps> = (props: DraftsList
 
     const isDeleteEnabled = (): boolean => {
         return config.getApicurioRegistryConfig().features?.deleteVersion || false;
+    };
+
+    const isRegistryUIConfigured = (): boolean => {
+        return config.getApicurioStudioConfig().links.registry !== undefined && config.getApicurioStudioConfig().links.registry.length > 0;
     };
 
     return (
@@ -112,6 +117,13 @@ export const DraftsList: FunctionComponent<DraftsListProps> = (props: DraftsList
                                         label: "Finalize draft",
                                         testId: "finalize-draft-" + idx,
                                         action: () => props.onFinalize(draft)
+                                    },
+                                    {
+                                        id: "view-draft-in-registry",
+                                        label: "View in Registry",
+                                        testId: "view-draft-in-registry-" + idx,
+                                        isVisible: isRegistryUIConfigured,
+                                        action: () => props.onViewInRegistry(draft)
                                     },
                                     {
                                         divider: true,

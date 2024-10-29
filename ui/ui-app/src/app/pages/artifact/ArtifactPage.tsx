@@ -69,6 +69,7 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
 
     const doCreateDraftFromVersion = (fromVersion: SearchedVersion, groupId: string, draftId: string, version: string): void => {
         pleaseWait("Creating draft, please wait...");
+        setIsCreateDraftFromModalOpen(false);
 
         drafts.getDraftContent(fromVersion.groupId || null, fromVersion.artifactId!, fromVersion.version!).then(draftContent => {
             const createDraft: CreateDraft = {
@@ -98,7 +99,6 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
             setPleaseWaitModalOpen(false);
             setPageError(toPageError(error, "Error creating draft."));
         });
-
     };
 
     const pleaseWait = (message: string = ""): void => {

@@ -27,15 +27,16 @@ import {
     ArtifactTypeIcon,
     ConfirmDeleteModal,
     ConfirmFinalizeModal,
-    EditDraftInfoModal,
+    EditDraftInfoModal, NewDraftFromModal,
     RootPageHeader
 } from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 import { Link, useParams } from "react-router-dom";
-import { Draft, DraftInfo } from "@models/drafts";
+import { CreateDraft, Draft, DraftInfo } from "@models/drafts";
 import { FromNow, If, ObjectDropdown, PleaseWaitModal } from "@apicurio/common-ui-components";
 import { PencilAltIcon } from "@patternfly/react-icons";
 import { ConfigService, useConfigService } from "@services/useConfigService.ts";
+import { SearchedVersion } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
 
 export type DraftPageProps = object;
@@ -61,12 +62,19 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
     const [isEditDraftInfoModalOpen, setIsEditDraftInfoModalOpen] = useState(false);
     const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
     const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
+    const [isCreateDraftFromModalOpen, setIsCreateDraftFromModalOpen] = useState(false);
 
     const { groupId, draftId, version } = useParams();
 
     const draftsService: DraftsService = useDraftsService();
     const appNavigation: AppNavigationService = useAppNavigation();
     const config: ConfigService = useConfigService();
+
+    const fromVersion: SearchedVersion = {
+        groupId: draft.groupId,
+        artifactId: draft.draftId,
+        version: draft.version
+    };
 
     const isDeleteEnabled = (): boolean => {
         return config.getApicurioRegistryConfig().features?.deleteVersion || false;
@@ -95,6 +103,14 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
         setPleaseWaitMessage(message);
     };
 
+    const navigateToDraft = (draft: Draft): void => {
+        const groupId: string = encodeURIComponent(draft.groupId || "default");
+        const draftId: string = encodeURIComponent(draft.draftId!);
+        const version: string = encodeURIComponent(draft.version!);
+
+        appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}`);
+    };
+
     const doDeleteDraft = (): void => {
         setIsConfirmDeleteModalOpen(false);
         pleaseWait("Deleting draft, please wait.");
@@ -104,6 +120,44 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
         }).catch( error => {
             setPageError(toPageError(error, "Error deleting a draft."));
             setPleaseWaitModalOpen(false);
+        });
+    };
+
+    const doCreateDraft = (data: CreateDraft): void => {
+        draftsService.createDraft(data).then(draft => {
+            setPleaseWaitModalOpen(false);
+            console.info("[DraftPage] Draft successfully created.  Redirecting to details.");
+            navigateToDraft(draft);
+        }).catch(error => {
+            setPleaseWaitModalOpen(false);
+            setPageError(toPageError(error, "Error creating draft."));
+        });
+    };
+
+    const doCreateDraftFromVersion = (fromVersion: SearchedVersion, groupId: string, draftId: string, version: string): void => {
+        pleaseWait("Creating draft, please wait...");
+        setIsCreateDraftFromModalOpen(false);
+
+        draftsService.getDraftContent(fromVersion.groupId || null, fromVersion.artifactId!, fromVersion.version!).then(draftContent => {
+            const createDraft: CreateDraft = {
+                groupId: groupId,
+                draftId: draftId,
+                version: version,
+                type: fromVersion.artifactType!,
+                name: "",
+                description: "",
+                labels: {
+                    basedOnGroupId: fromVersion.groupId,
+                    basedOnArtifactId: fromVersion.artifactId,
+                    basedOnVersion: fromVersion.version
+                },
+                content: draftContent.content,
+                contentType: draftContent.contentType
+            };
+            doCreateDraft(createDraft);
+        }).catch(error => {
+            setPleaseWaitModalOpen(false);
+            setPageError(toPageError(error, "Error creating draft."));
         });
     };
 
@@ -200,8 +254,14 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                                         action: viewDraftInRegistry
                                     },
                                     {
+                                        id: "create-draft-from",
+                                        label: "Create new draft",
+                                        testId: "create-draft-from",
+                                        action: () => setIsCreateDraftFromModalOpen(true)
+                                    },
+                                    {
                                         divider: true,
-                                        isVisible: () => isDeleteEnabled() && isRegistryUIConfigured()
+                                        isVisible: isDeleteEnabled
                                     },
                                     {
                                         id: "delete-draft",
@@ -344,6 +404,11 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                         onClose={() => setIsConfirmFinalizeModalOpen(false)}
                         onFinalize={doFinalizeDraft}
                         isOpen={isConfirmFinalizeModalOpen} />
+                    <NewDraftFromModal
+                        isOpen={isCreateDraftFromModalOpen}
+                        onClose={() => setIsCreateDraftFromModalOpen(false)}
+                        onCreate={doCreateDraftFromVersion}
+                        fromVersion={fromVersion!} />
                     <PleaseWaitModal
                         message={pleaseWaitMessage}
                         isOpen={isPleaseWaitModalOpen} />

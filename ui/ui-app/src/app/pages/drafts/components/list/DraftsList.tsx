@@ -21,6 +21,7 @@ export type DraftsListProps = {
     onView: (draft: Draft) => void;
     onFinalize: (draft: Draft) => void;
     onDelete: (draft: Draft) => void;
+    onCreateDraftFrom: (draft: Draft) => void;
     onViewInRegistry: (draft: Draft) => void;
 }
 
@@ -124,6 +125,12 @@ export const DraftsList: FunctionComponent<DraftsListProps> = (props: DraftsList
                                         testId: "view-draft-in-registry-" + idx,
                                         isVisible: isRegistryUIConfigured,
                                         action: () => props.onViewInRegistry(draft)
+                                    },
+                                    {
+                                        id: "create-new-draft",
+                                        label: "Create new draft",
+                                        testId: "create-new-draft-" + idx,
+                                        action: () => props.onCreateDraftFrom(draft)
                                     },
                                     {
                                         divider: true,

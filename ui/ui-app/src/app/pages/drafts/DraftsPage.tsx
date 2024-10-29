@@ -21,9 +21,16 @@ import {
 import { Paging } from "@models/Paging.ts";
 import { SortOrder } from "@models/SortOrder.ts";
 import { ListWithToolbar, PleaseWaitModal } from "@apicurio/common-ui-components";
-import { ConfirmDeleteModal, ConfirmFinalizeModal, CreateDraftModal, RootPageHeader } from "@app/components";
+import {
+    ConfirmDeleteModal,
+    ConfirmFinalizeModal,
+    CreateDraftModal,
+    NewDraftFromModal,
+    RootPageHeader
+} from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 import { ConfigService, useConfigService } from "@services/useConfigService.ts";
+import { SearchedVersion } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
 
 const EMPTY_RESULTS: DraftsSearchResults = {
@@ -54,6 +61,8 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
     const [isConfirmFinalizeModalOpen, setIsConfirmFinalizeModalOpen] = useState(false);
     const [draftToFinalize, setDraftToFinalize] = useState<Draft>();
+    const [fromVersion, setFromVersion] = useState<SearchedVersion>();
+    const [isCreateDraftFromModalOpen, setIsCreateDraftFromModalOpen] = useState(false);
 
     const config: ConfigService = useConfigService();
     const draftsService: DraftsService = useDraftsService();
@@ -139,6 +148,33 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
             setPleaseWaitModalOpen(false);
             console.info("[DraftsPage] Draft successfully created.  Redirecting to details.");
             onViewDraft(draft);
+        }).catch(error => {
+            setPleaseWaitModalOpen(false);
+            setPageError(toPageError(error, "Error creating draft."));
+        });
+    };
+
+    const doCreateDraftFromVersion = (fromVersion: SearchedVersion, groupId: string, draftId: string, version: string): void => {
+        pleaseWait("Creating draft, please wait...");
+        setIsCreateDraftFromModalOpen(false);
+
+        draftsService.getDraftContent(fromVersion.groupId || null, fromVersion.artifactId!, fromVersion.version!).then(draftContent => {
+            const createDraft: CreateDraft = {
+                groupId: groupId,
+                draftId: draftId,
+                version: version,
+                type: fromVersion.artifactType!,
+                name: "",
+                description: "",
+                labels: {
+                    basedOnGroupId: fromVersion.groupId,
+                    basedOnArtifactId: fromVersion.artifactId,
+                    basedOnVersion: fromVersion.version
+                },
+                content: draftContent.content,
+                contentType: draftContent.contentType
+            };
+            doCreateDraft(createDraft);
         }).catch(error => {
             setPleaseWaitModalOpen(false);
             setPageError(toPageError(error, "Error creating draft."));
@@ -232,6 +268,14 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                                 setDraftToFinalize(draft);
                                 setIsConfirmFinalizeModalOpen(true);
                             }}
+                            onCreateDraftFrom={(draft) => {
+                                setFromVersion({
+                                    groupId: draft.groupId,
+                                    artifactId: draft.draftId,
+                                    version: draft.version
+                                });
+                                setIsCreateDraftFromModalOpen(true);
+                            }}
                             onViewInRegistry={onViewDraftInRegistry}
                             onDelete={onDeleteDraft}
                         />
@@ -253,6 +297,11 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                 onClose={() => setIsConfirmFinalizeModalOpen(false)}
                 onFinalize={doFinalizeDraft}
                 isOpen={isConfirmFinalizeModalOpen} />
+            <NewDraftFromModal
+                isOpen={isCreateDraftFromModalOpen}
+                onClose={() => setIsCreateDraftFromModalOpen(false)}
+                onCreate={doCreateDraftFromVersion}
+                fromVersion={fromVersion!} />
             <PleaseWaitModal
                 message={pleaseWaitMessage}
                 isOpen={isPleaseWaitModalOpen} />

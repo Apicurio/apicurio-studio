@@ -1,1 +1,2 @@
-export * from "./ArtifactsSortBy.ts";
+export * from "./ArtifactsSortBy";
+export * from "./ArtifactFilterCriteria";

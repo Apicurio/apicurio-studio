@@ -10,8 +10,9 @@ import {
     VersionSearchResults
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import { SortOrder } from "@models/SortOrder.ts";
-import { ArtifactsSortBy } from "@models/artifacts";
-import { VersionsSortBy } from "@models/versions";
+import { ArtifactFilterCriteria, ArtifactsSortBy } from "@models/artifacts";
+import { VersionFilterCriteria, VersionsSortBy } from "@models/versions";
+import { ApicurioRegistryClient } from "@apicurio/apicurio-registry-sdk";
 
 
 const getGroupMetaData = async (config: ConfigService, auth: AuthService, groupId: string): Promise<GroupMetaData> => {
@@ -20,7 +21,9 @@ const getGroupMetaData = async (config: ConfigService, auth: AuthService, groupI
     return getRegistryClient(config.getApicurioStudioConfig(), auth).groups.byGroupId(groupId).get().then(v => v!);
 };
 
-const getGroupArtifacts = async (config: ConfigService, auth: AuthService, groupId: string, sortBy: ArtifactsSortBy, sortOrder: SortOrder, paging: Paging): Promise<ArtifactSearchResults> => {
+const getGroupArtifacts = async (config: ConfigService, auth: AuthService, groupId: string, filterBy: ArtifactFilterCriteria[],
+    sortBy: ArtifactsSortBy, sortOrder: SortOrder, paging: Paging): Promise<ArtifactSearchResults> => {
+
     console.info("[GroupsService] Getting artifacts in group: ", groupId);
     groupId = normalizeGroupId(groupId);
     const start: number = (paging.page - 1) * paging.pageSize;
@@ -29,10 +32,18 @@ const getGroupArtifacts = async (config: ConfigService, auth: AuthService, group
         limit: end,
         offset: start,
         order: sortOrder,
-        orderby: sortBy
+        orderby: sortBy,
+        groupId: groupId
     };
 
-    return getRegistryClient(config.getApicurioStudioConfig(), auth).groups.byGroupId(groupId).artifacts.get({
+    if (filterBy && filterBy.length > 0) {
+        filterBy.forEach((filter) => {
+            queryParams[filter.type] = filter.value;
+        });
+    }
+
+    const client: ApicurioRegistryClient = getRegistryClient(config.getApicurioStudioConfig(), auth);
+    return client.search.artifacts.get({
         queryParameters: queryParams
     }).then(v => v!);
 };
@@ -51,7 +62,9 @@ const getArtifactVersionMetaData = async (config: ConfigService, auth: AuthServi
         .byVersionExpression(versionExpression).get().then(v => v!);
 };
 
-const getArtifactVersions = async (config: ConfigService, auth: AuthService, groupId: string|null, artifactId: string, sortBy: VersionsSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults> => {
+const getArtifactVersions = async (config: ConfigService, auth: AuthService, groupId: string|null, artifactId: string,
+    filterBy: VersionFilterCriteria[], sortBy: VersionsSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults> => {
+
     groupId = normalizeGroupId(groupId);
     const start: number = (paging.page - 1) * paging.pageSize;
     const end: number = start + paging.pageSize;
@@ -59,11 +72,20 @@ const getArtifactVersions = async (config: ConfigService, auth: AuthService, gro
         limit: end,
         offset: start,
         order: sortOrder,
-        orderby: sortBy
+        orderby: sortBy,
+        groupId: groupId || "default",
+        artifactId: artifactId,
     };
 
+    if (filterBy && filterBy.length > 0) {
+        filterBy.forEach((filter) => {
+            queryParams[filter.type] = filter.value;
+        });
+    }
+
     console.info("[GroupsService] Getting the list of versions for artifact: ", groupId, artifactId);
-    return getRegistryClient(config.getApicurioStudioConfig(), auth).groups.byGroupId(groupId).artifacts.byArtifactId(artifactId).versions.get({
+    const client: ApicurioRegistryClient = getRegistryClient(config.getApicurioStudioConfig(), auth);
+    return client.search.versions.get({
         queryParameters: queryParams
     }).then(v => v!);
 };
@@ -75,11 +97,11 @@ const normalizeGroupId = (groupId: string|null): string => {
 
 export interface GroupsService {
     getGroupMetaData(groupId: string): Promise<GroupMetaData>;
-    getGroupArtifacts(groupId: string, sortBy: ArtifactsSortBy, sortOrder: SortOrder, paging: Paging): Promise<ArtifactSearchResults>;
+    getGroupArtifacts(groupId: string, filterBy: ArtifactFilterCriteria[], sortBy: ArtifactsSortBy, sortOrder: SortOrder, paging: Paging): Promise<ArtifactSearchResults>;
 
     getArtifactMetaData(groupId: string|null, artifactId: string): Promise<ArtifactMetaData>;
 
-    getArtifactVersions(groupId: string|null, artifactId: string, sortBy: VersionsSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults>;
+    getArtifactVersions(groupId: string|null, artifactId: string, filterBy: VersionFilterCriteria[], sortBy: VersionsSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults>;
     getArtifactVersionMetaData(groupId: string|null, artifactId: string, version: string): Promise<VersionMetaData>;
 }
 
@@ -92,14 +114,14 @@ export const useGroupsService: () => GroupsService = (): GroupsService => {
         getGroupMetaData(groupId: string): Promise<GroupMetaData> {
             return getGroupMetaData(config, auth, groupId);
         },
-        getGroupArtifacts(groupId: string, sortBy: ArtifactsSortBy, sortOrder: SortOrder, paging: Paging): Promise<ArtifactSearchResults> {
-            return getGroupArtifacts(config, auth, groupId, sortBy, sortOrder, paging);
+        getGroupArtifacts(groupId: string, filterBy: ArtifactFilterCriteria[], sortBy: ArtifactsSortBy, sortOrder: SortOrder, paging: Paging): Promise<ArtifactSearchResults> {
+            return getGroupArtifacts(config, auth, groupId, filterBy, sortBy, sortOrder, paging);
         },
         getArtifactMetaData(groupId: string|null, artifactId: string): Promise<ArtifactMetaData> {
             return getArtifactMetaData(config, auth, groupId, artifactId);
         },
-        getArtifactVersions(groupId: string|null, artifactId: string, sortBy: VersionsSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults> {
-            return getArtifactVersions(config, auth, groupId, artifactId, sortBy, sortOrder, paging);
+        getArtifactVersions(groupId: string|null, artifactId: string, filterBy: VersionFilterCriteria[], sortBy: VersionsSortBy, sortOrder: SortOrder, paging: Paging): Promise<VersionSearchResults> {
+            return getArtifactVersions(config, auth, groupId, artifactId, filterBy, sortBy, sortOrder, paging);
         },
         getArtifactVersionMetaData(groupId: string|null, artifactId: string, version: string): Promise<VersionMetaData> {
             return getArtifactVersionMetaData(config, auth, groupId, artifactId, version);

@@ -1,1 +1,2 @@
-export * from "./VersionsSortBy.ts";
+export * from "./VersionsSortBy";
+export * from "./VersionFilterCriteria";

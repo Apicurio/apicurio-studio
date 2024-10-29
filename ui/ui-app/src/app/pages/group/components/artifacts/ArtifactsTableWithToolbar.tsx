@@ -12,7 +12,7 @@ import {
     EmptyStateVariant,
     Title
 } from "@patternfly/react-core";
-import { PlusCircleIcon } from "@patternfly/react-icons";
+import { ExclamationCircleIcon, PlusCircleIcon } from "@patternfly/react-icons";
 import { ArtifactsTable } from "@app/pages/group/components/artifacts/ArtifactsTable.tsx";
 import { GroupsService, useGroupsService } from "@services/useGroupsService.ts";
 import {
@@ -21,7 +21,7 @@ import {
     SearchedArtifact
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import { SortOrder } from "@models/SortOrder.ts";
-import { ArtifactsSortBy } from "@models/artifacts";
+import { ArtifactFilterCriteria, ArtifactsSortBy } from "@models/artifacts";
 
 /**
  * Properties
@@ -47,13 +47,14 @@ export const ArtifactsTableWithToolbar: FunctionComponent<ArtifactsTableWithTool
         count: 0,
         artifacts: []
     });
+    const [filterCriteria, setFilterCriteria] = useState<ArtifactFilterCriteria[]>([]);
 
     const groups: GroupsService = useGroupsService();
 
     const refresh = (): void => {
         setLoading(true);
 
-        groups.getGroupArtifacts(props.group.groupId!, sortBy, sortOrder, paging).then(sr => {
+        groups.getGroupArtifacts(props.group.groupId!, filterCriteria, sortBy, sortOrder, paging).then(sr => {
             setResults(sr);
             setLoading(false);
         }).catch(() => {
@@ -64,7 +65,7 @@ export const ArtifactsTableWithToolbar: FunctionComponent<ArtifactsTableWithTool
 
     useEffect(() => {
         refresh();
-    }, [props.group, paging, sortBy, sortOrder]);
+    }, [props.group, paging, sortBy, sortOrder, filterCriteria]);
 
     const onSort = (by: ArtifactsSortBy, order: SortOrder): void => {
         setSortBy(by);
@@ -72,7 +73,12 @@ export const ArtifactsTableWithToolbar: FunctionComponent<ArtifactsTableWithTool
     };
 
     const toolbar = (
-        <ArtifactsToolbar results={results} paging={paging} onPageChange={setPaging}/>
+        <ArtifactsToolbar
+            results={results}
+            filterCriteria={filterCriteria}
+            onFilterCriteriaChange={setFilterCriteria}
+            paging={paging}
+            onPageChange={setPaging} />
     );
 
     const emptyState = (
@@ -89,13 +95,27 @@ export const ArtifactsTableWithToolbar: FunctionComponent<ArtifactsTableWithTool
         </EmptyState>
     );
 
+    const filteredEmptyState = (
+        <EmptyState variant={EmptyStateVariant.sm}>
+            <EmptyStateIcon icon={ExclamationCircleIcon}/>
+            <Title headingLevel="h5" size="lg">No artifacts found</Title>
+            <EmptyStateBody>
+                No artifacts matched the filter criteria.
+            </EmptyStateBody>
+            <EmptyStateFooter>
+                <EmptyStateActions>
+                </EmptyStateActions>
+            </EmptyStateFooter>
+        </EmptyState>
+    );
+
     return (
         <ListWithToolbar toolbar={toolbar}
             emptyState={emptyState}
-            filteredEmptyState={emptyState}
+            filteredEmptyState={filteredEmptyState}
             isLoading={isLoading}
             isError={isError}
-            isFiltered={false}
+            isFiltered={filterCriteria.length > 0}
             isEmpty={results.count === 0}
         >
             <ArtifactsTable

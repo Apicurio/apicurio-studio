@@ -11,7 +11,7 @@ import {
     EmptyStateVariant,
     Title
 } from "@patternfly/react-core";
-import { PlusCircleIcon } from "@patternfly/react-icons";
+import { ExclamationCircleIcon, PlusCircleIcon } from "@patternfly/react-icons";
 import { GroupsService, useGroupsService } from "@services/useGroupsService.ts";
 import { VersionsTable, VersionsToolbar } from "@app/pages/artifact";
 import {
@@ -19,7 +19,7 @@ import {
     SearchedVersion,
     VersionSearchResults,
 } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
-import { VersionsSortBy } from "@models/versions";
+import { VersionFilterCriteria, VersionsSortBy } from "@models/versions";
 import { SortOrder } from "@models/SortOrder.ts";
 
 /**
@@ -46,13 +46,14 @@ export const VersionsTableWithToolbar: FunctionComponent<VersionsTableWithToolba
         count: 0,
         versions: []
     });
+    const [filterCriteria, setFilterCriteria] = useState<VersionFilterCriteria[]>([]);
 
     const groups: GroupsService = useGroupsService();
 
     const refresh = (): void => {
         setLoading(true);
 
-        groups.getArtifactVersions(props.artifact.groupId!, props.artifact.artifactId!, sortBy, sortOrder, paging).then(sr => {
+        groups.getArtifactVersions(props.artifact.groupId!, props.artifact.artifactId!, filterCriteria, sortBy, sortOrder, paging).then(sr => {
             setResults(sr);
             setLoading(false);
         }).catch(() => {
@@ -68,10 +69,15 @@ export const VersionsTableWithToolbar: FunctionComponent<VersionsTableWithToolba
 
     useEffect(() => {
         refresh();
-    }, [props.artifact, paging, sortBy, sortOrder]);
+    }, [props.artifact, paging, sortBy, sortOrder, filterCriteria]);
 
     const toolbar = (
-        <VersionsToolbar results={results} paging={paging} onPageChange={setPaging} />
+        <VersionsToolbar
+            results={results}
+            filterCriteria={filterCriteria}
+            onFilterCriteriaChange={setFilterCriteria}
+            paging={paging}
+            onPageChange={setPaging} />
     );
 
     const emptyState = (
@@ -88,13 +94,28 @@ export const VersionsTableWithToolbar: FunctionComponent<VersionsTableWithToolba
         </EmptyState>
     );
 
+    const filteredEmptyState = (
+        <EmptyState variant={EmptyStateVariant.sm}>
+            <EmptyStateIcon icon={ExclamationCircleIcon}/>
+            <Title headingLevel="h5" size="lg">No versions found</Title>
+            <EmptyStateBody>
+                No versions matched the filter criteria.
+            </EmptyStateBody>
+            <EmptyStateFooter>
+                <EmptyStateActions>
+                </EmptyStateActions>
+            </EmptyStateFooter>
+        </EmptyState>
+    );
+
     return (
-        <ListWithToolbar toolbar={toolbar}
+        <ListWithToolbar
+            toolbar={toolbar}
             emptyState={emptyState}
-            filteredEmptyState={emptyState}
+            filteredEmptyState={filteredEmptyState}
             isLoading={isLoading}
             isError={isError}
-            isFiltered={false}
+            isFiltered={filterCriteria.length > 0}
             isEmpty={results.count === 0}
         >
             <VersionsTable

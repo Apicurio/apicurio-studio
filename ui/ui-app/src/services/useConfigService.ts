@@ -1,3 +1,5 @@
+import { util } from "protobufjs";
+import fetch = util.fetch;
 
 export type EditorsType = {
     url: string;
@@ -49,6 +51,7 @@ export interface FeaturesConfig {
     deleteGroup?: boolean;
     deleteArtifact?: boolean;
     deleteVersion?: boolean;
+    draftMutability?: boolean;
 }
 
 export interface AuthConfig {
@@ -148,10 +151,17 @@ export class ConfigServiceImpl implements ConfigService {
             };
         }
 
-        // TODO use fetch() to get the UI config from registry
-        // const endpoint: string = createEndpoint(studioConfig.apis.registry, "/system/uiConfig");
+        console.info("[ConfigService] Loaded Studio UI config: ", studioConfig);
 
-        return Promise.resolve();
+        const registryApi: string = studioConfig.apis.registry;
+        const registryConfigEndpoint: string = `${registryApi}/system/uiConfig`;
+
+        // Fetching Registry UI config
+        console.info("[ConfigService] Loading Registry UI config: ", registryConfigEndpoint);
+        return fetch(registryConfigEndpoint).then(response => {
+            console.info("[ConfigService] Loaded Registry UI config: ", response);
+            registryConfig = JSON.parse(response as string);
+        });
     }
 
     public getApicurioStudioConfig(): ApicurioStudioConfig {

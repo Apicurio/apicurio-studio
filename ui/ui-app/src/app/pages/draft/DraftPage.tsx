@@ -27,7 +27,7 @@ import {
     ArtifactTypeIcon,
     ConfirmDeleteModal,
     ConfirmFinalizeModal,
-    EditDraftInfoModal,
+    EditDraftInfoModal, IfRegistryFeature,
     RootPageHeader
 } from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
@@ -164,11 +164,13 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                                 style={{ marginLeft: "8px" }}
                                 onClick={() => setIsConfirmFinalizeModalOpen(true)}
                                 variant="secondary">Finalize draft</Button>
-                            <Button id="delete-action"
-                                data-testid="draft-btn-delete"
-                                style={{ marginLeft: "8px" }}
-                                onClick={() => setIsConfirmDeleteModalOpen(true)}
-                                variant="danger"><TrashIcon />{" "}Delete draft</Button>
+                            <IfRegistryFeature feature="deleteVersion" is={true}>
+                                <Button id="delete-action"
+                                    data-testid="draft-btn-delete"
+                                    style={{ marginLeft: "8px" }}
+                                    onClick={() => setIsConfirmDeleteModalOpen(true)}
+                                    variant="danger"><TrashIcon />{" "}Delete draft</Button>
+                            </IfRegistryFeature>
                         </FlexItem>
                     </Flex>
                 </PageSection>

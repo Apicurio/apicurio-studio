@@ -13,6 +13,7 @@ import {
 import { ArtifactTypeIcon } from "@app/components";
 import { FromNow, If, ObjectDropdown } from "@apicurio/common-ui-components";
 import { DraftId } from "@app/pages/drafts/components/list/DraftId.tsx";
+import { ConfigService, useConfigService } from "@services/useConfigService.ts";
 
 export type DraftsListProps = {
     drafts: Draft[];
@@ -23,6 +24,12 @@ export type DraftsListProps = {
 }
 
 export const DraftsList: FunctionComponent<DraftsListProps> = (props: DraftsListProps) => {
+
+    const config: ConfigService = useConfigService();
+
+    const isDeleteEnabled = (): boolean => {
+        return config.getApicurioRegistryConfig().features?.deleteVersion || false;
+    };
 
     return (
         <DataList aria-label="List of drafts" className="drafts-list" id="drafts-list">
@@ -107,12 +114,14 @@ export const DraftsList: FunctionComponent<DraftsListProps> = (props: DraftsList
                                         action: () => props.onFinalize(draft)
                                     },
                                     {
-                                        divider: true
+                                        divider: true,
+                                        isVisible: isDeleteEnabled
                                     },
                                     {
                                         id: "delete-draft",
                                         label: "Delete draft",
                                         testId: "delete-draft-" + idx,
+                                        isVisible: isDeleteEnabled,
                                         action: () => props.onDelete(draft)
                                     }
                                 ]}
@@ -120,6 +129,7 @@ export const DraftsList: FunctionComponent<DraftsListProps> = (props: DraftsList
                                 itemToString={item => item.label}
                                 itemToTestId={item => item.testId}
                                 itemIsDivider={item => item.divider}
+                                itemIsVisible={item => !item.isVisible || item.isVisible()}
                             />
                         </DataListAction>
                     </DataListItemRow>

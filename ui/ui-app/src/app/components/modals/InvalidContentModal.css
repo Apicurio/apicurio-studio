@@ -1,0 +1,38 @@
+.error-detail {
+    margin-top: 15px;
+    font-size: 13px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding: 8px;
+    height: 300px;
+    overflow: auto;
+}
+
+.modal-desc {
+    margin-bottom: 10px;
+}
+
+.error-causes {
+
+}
+
+.error-causes .error-causes-item {
+    background-color: white;
+    margin-bottom: 2px;
+}
+
+.error-causes .error-causes-item .type-icon-cell {
+    flex: initial;
+}
+
+.error-causes .error-causes-item .type-icon-cell > .type-icon {
+    margin-top: 5px;
+}
+
+.error-causes .error-causes-item .error-causes-item-title {
+
+}
+
+.error-causes .error-causes-item .error-causes-item-description {
+    font-size: 16px;
+}

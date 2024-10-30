@@ -27,7 +27,7 @@ import {
     ArtifactTypeIcon,
     ConfirmDeleteModal,
     ConfirmFinalizeModal,
-    EditDraftInfoModal, NewDraftFromModal,
+    EditDraftInfoModal, InvalidContentModal, NewDraftFromModal,
     RootPageHeader
 } from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
@@ -36,7 +36,10 @@ import { CreateDraft, Draft, DraftInfo } from "@models/drafts";
 import { FromNow, If, ObjectDropdown, PleaseWaitModal } from "@apicurio/common-ui-components";
 import { PencilAltIcon } from "@patternfly/react-icons";
 import { ConfigService, useConfigService } from "@services/useConfigService.ts";
-import { SearchedVersion } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import {
+    RuleViolationProblemDetails,
+    SearchedVersion
+} from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
 
 export type DraftPageProps = object;
@@ -63,6 +66,8 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
     const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
     const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
     const [isCreateDraftFromModalOpen, setIsCreateDraftFromModalOpen] = useState(false);
+    const [isInvalidContentModalOpen, setIsInvalidContentModalOpen] = useState<boolean>(false);
+    const [invalidContentError, setInvalidContentError] = useState<RuleViolationProblemDetails>();
 
     const { groupId, draftId, version } = useParams();
 
@@ -101,6 +106,12 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
     const pleaseWait = (message: string = ""): void => {
         setPleaseWaitModalOpen(true);
         setPleaseWaitMessage(message);
+    };
+
+    const handleInvalidContentError = (error: any): void => {
+        console.info("[DraftsPage] Invalid content error:", error);
+        setInvalidContentError(error);
+        setIsInvalidContentModalOpen(true);
     };
 
     const navigateToDraft = (draft: Draft): void => {
@@ -162,12 +173,19 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
     };
 
     const doFinalizeDraft = (draft: Draft): void => {
+        setIsConfirmFinalizeModalOpen(false);
+        pleaseWait("Finalizing draft, please wait...");
         draftsService.finalizeDraft(draft.groupId, draft.draftId, draft.version).then(() => {
             const groupId: string = encodeURIComponent(draft.groupId || "default");
             const draftId: string = encodeURIComponent(draft.draftId!);
             appNavigation.navigateTo(`/explore/${groupId}/${draftId}`);
-        }).catch(e => {
-            setPageError(toPageError(e, "Error promoting a draft."));
+        }).catch(error => {
+            setPleaseWaitModalOpen(false);
+            if (error && (error.status === 400 || error.status === 409)) {
+                handleInvalidContentError(error);
+            } else {
+                setPageError(toPageError(error, "Error finalizing a draft."));
+            }
         });
     };
 
@@ -409,6 +427,13 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                         onClose={() => setIsCreateDraftFromModalOpen(false)}
                         onCreate={doCreateDraftFromVersion}
                         fromVersion={fromVersion!} />
+                    <InvalidContentModal
+                        error={invalidContentError}
+                        isOpen={isInvalidContentModalOpen}
+                        onClose={() => {
+                            setInvalidContentError(undefined);
+                            setIsInvalidContentModalOpen(false);
+                        }} />
                     <PleaseWaitModal
                         message={pleaseWaitMessage}
                         isOpen={isPleaseWaitModalOpen} />

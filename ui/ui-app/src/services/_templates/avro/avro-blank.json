@@ -1,9 +1,10 @@
 {
   "type": "record",
   "name": "Example",
+  "namespace": "com.example",
   "fields": [
     {
-      "name": "field-1",
+      "name": "fieldOne",
       "type": "string"
     }
   ]

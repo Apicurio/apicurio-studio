@@ -24,13 +24,16 @@ import { ListWithToolbar, PleaseWaitModal } from "@apicurio/common-ui-components
 import {
     ConfirmDeleteModal,
     ConfirmFinalizeModal,
-    CreateDraftModal,
+    CreateDraftModal, InvalidContentModal,
     NewDraftFromModal,
     RootPageHeader
 } from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
 import { ConfigService, useConfigService } from "@services/useConfigService.ts";
-import { SearchedVersion } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
+import {
+    RuleViolationProblemDetails,
+    SearchedVersion
+} from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 
 
 const EMPTY_RESULTS: DraftsSearchResults = {
@@ -63,6 +66,8 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const [draftToFinalize, setDraftToFinalize] = useState<Draft>();
     const [fromVersion, setFromVersion] = useState<SearchedVersion>();
     const [isCreateDraftFromModalOpen, setIsCreateDraftFromModalOpen] = useState(false);
+    const [isInvalidContentModalOpen, setIsInvalidContentModalOpen] = useState<boolean>(false);
+    const [invalidContentError, setInvalidContentError] = useState<RuleViolationProblemDetails>();
 
     const config: ConfigService = useConfigService();
     const draftsService: DraftsService = useDraftsService();
@@ -79,6 +84,12 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const pleaseWait = (message: string = ""): void => {
         setPleaseWaitModalOpen(true);
         setPleaseWaitMessage(message);
+    };
+
+    const handleInvalidContentError = (error: any): void => {
+        console.info("[DraftsPage] Invalid content error:", error);
+        setInvalidContentError(error);
+        setIsInvalidContentModalOpen(true);
     };
 
     const onResultsLoaded = (results: DraftsSearchResults): void => {
@@ -105,12 +116,19 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     };
 
     const doFinalizeDraft = (draft: Draft): void => {
+        setIsConfirmFinalizeModalOpen(false);
+        pleaseWait("Finalizing draft, please wait...");
         draftsService.finalizeDraft(draft.groupId, draft.draftId, draft.version).then(() => {
             const groupId: string = encodeURIComponent(draft.groupId || "default");
             const draftId: string = encodeURIComponent(draft.draftId!);
             appNavigation.navigateTo(`/explore/${groupId}/${draftId}`);
-        }).catch(e => {
-            setPageError(toPageError(e, "Error promoting a draft."));
+        }).catch(error => {
+            setPleaseWaitModalOpen(false);
+            if (error && (error.status === 400 || error.status === 409)) {
+                handleInvalidContentError(error);
+            } else {
+                setPageError(toPageError(error, "Error finalizing a draft."));
+            }
         });
     };
 
@@ -297,6 +315,13 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                 onClose={() => setIsConfirmFinalizeModalOpen(false)}
                 onFinalize={doFinalizeDraft}
                 isOpen={isConfirmFinalizeModalOpen} />
+            <InvalidContentModal
+                error={invalidContentError}
+                isOpen={isInvalidContentModalOpen}
+                onClose={() => {
+                    setInvalidContentError(undefined);
+                    setIsInvalidContentModalOpen(false);
+                }} />
             <NewDraftFromModal
                 isOpen={isCreateDraftFromModalOpen}
                 onClose={() => setIsCreateDraftFromModalOpen(false)}

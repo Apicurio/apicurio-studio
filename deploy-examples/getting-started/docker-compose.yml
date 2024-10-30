@@ -1,0 +1,22 @@
+services:
+  # Define the Apicurio Registry service
+  apicurio-registry:
+    image: apicurio/apicurio-registry:latest-snapshot
+    container_name: apicurio-studio-getting-started_registry
+    environment:
+      - apicurio.rest.deletion.group.enabled=true
+      - apicurio.rest.deletion.artifact.enabled=true
+      - apicurio.rest.deletion.artifact-version.enabled=true
+      - apicurio.rest.mutability.artifact-version-content.enabled=true
+      - QUARKUS_HTTP_CORS_ORIGINS=*
+    ports:
+      - "8080:8080"
+
+  # Define the Apicurio Studio service
+  apicurio-studio:
+    image: apicurio/apicurio-studio-ui:latest-snapshot
+    container_name: apicurio-studio-getting-started_studio
+    ports:
+      - "8888:8080"
+    depends_on:
+      - apicurio-registry

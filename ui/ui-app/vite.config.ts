@@ -6,6 +6,7 @@ const PORT: number = parseInt(process.env.SERVER_PORT || "8888");
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    base: "./",
     plugins: [react(), tsconfigPaths()],
     server: {
         port: PORT

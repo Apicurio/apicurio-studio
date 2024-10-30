@@ -51,6 +51,7 @@ if (APICURIO_REGISTRY_UI_URL) {
 // Configure UI elements
 if (CONTEXT_PATH) {
     CONFIG.ui.contextPath = CONTEXT_PATH;
+    CONFIG.components.editors.url = `${CONTEXT_PATH}editors/`;
 }
 if (NAV_PREFIX_PATH) {
     CONFIG.ui.navPrefixPath = NAV_PREFIX_PATH;

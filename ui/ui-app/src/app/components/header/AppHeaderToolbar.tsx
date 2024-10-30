@@ -31,13 +31,15 @@ export const AppHeaderToolbar: FunctionComponent<AppHeaderToolbarProps> = () => 
         });
     };
 
+    const logoSrc: string = `${config.ui?.contextPath || "/"}apicurio_studio_logo_reverse.svg`;
+
     return (
         <>
             <AppAboutModal
                 frontendInfo={frontendInfo}
                 backendInfo={fetchBackendInfo}
                 backendLabel="Apicurio Registry API info"
-                brandImageSrc="/apicurio_studio_logo_reverse.svg"
+                brandImageSrc={logoSrc}
                 brandImageAlt={version.name}
                 isOpen={isAboutModalOpen}
                 onClose={() => setIsAboutModalOpen(false)} />

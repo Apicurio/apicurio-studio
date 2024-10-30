@@ -17,11 +17,13 @@ export const AppHeader: FunctionComponent<AppHeaderProps> = () => {
         return (<></>);
     }
 
+    const logoSrc: string = `${config.ui?.contextPath || "/"}apicurio_studio_logo_reverse.svg`;
+
     return (
         <Masthead id="icon-router-link">
             <MastheadMain>
                 <MastheadBrand component={props => <Link {...props} to={ appNav.createLink("/") } />}>
-                    <Brand src="/apicurio_studio_logo_reverse.svg" alt="Apicurio Studio" heights={{ default: "36px" }} />
+                    <Brand src={logoSrc} alt="Apicurio Studio" heights={{ default: "36px" }} />
                 </MastheadBrand>
             </MastheadMain>
             <MastheadContent>

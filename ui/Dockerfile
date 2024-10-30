@@ -18,6 +18,7 @@ RUN chmod -R g+w /opt/app-root/src /usr/local/bin/
 
 # Copy configuration scripts
 COPY --chown=1001:0 .docker-scripts/create-config.cjs /usr/local/bin/create-config.cjs
+COPY --chown=1001:0 .docker-scripts/update-base-href.cjs /usr/local/bin/update-base-href.cjs
 COPY --chown=1001:0 .docker-scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 # Copy nginx config
@@ -26,6 +27,7 @@ COPY --chown=1001:0 .docker-scripts/nginx.conf /etc/nginx/nginx.conf
 # To avoid docker-scripts failure in windows, convert text files from DOS line
 # endings (carriage return + line feed) to Unix line endings (line feed).
 RUN dos2unix /usr/local/bin/create-config.cjs && \
+    dos2unix /usr/local/bin/update-base-href.cjs && \
     dos2unix /usr/local/bin/entrypoint.sh && \
     dos2unix /etc/nginx/nginx.conf
 

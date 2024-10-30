@@ -49,6 +49,7 @@ const toDraft = (vmd: VersionMetaData | SearchedVersion | undefined): Draft => {
         modifiedBy: vmd!.modifiedBy as string | undefined,
         modifiedOn: vmd!.modifiedOn as Date | undefined,
         labels: labelsToAny(vmd?.labels),
+        contentId: vmd?.contentId as number | undefined,
     };
     return draft;
 };

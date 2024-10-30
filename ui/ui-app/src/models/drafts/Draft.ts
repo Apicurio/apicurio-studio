@@ -15,5 +15,6 @@ export interface Draft {
     modifiedBy?: string;
     modifiedOn?: Date;
     labels?: object;
+    contentId?: number;
 
 }

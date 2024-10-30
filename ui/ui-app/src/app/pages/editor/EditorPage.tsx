@@ -165,13 +165,16 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
                 console.error("[EditorPage] Failed to save design content: ", error);
             });
         } else {
+            console.debug("[EditorPage] Checking for conflicting Draft content");
             return drafts.getDraft(groupId as string, draftId as string, version as string).then(currentDraft => {
-                if (currentDraft.modifiedOn !== draft.modifiedOn) {
+                if (currentDraft.contentId !== draft.contentId) {
+                    console.debug(`[EditorPage] Detected Draft content conflict.  Expected '${draft.contentId}' but found '${currentDraft.contentId}'.'`);
                     // Uh oh, if we save now we'll be overwriting someone else's changes!
                     setPleaseWaitModalOpen(false);
                     setConfirmOverwriteModalOpen(true);
                     return Promise.resolve();
                 } else {
+                    console.debug("[EditorPage] Draft content not in conflict, saving...");
                     return onSave(true);
                 }
             }).catch(error => {

@@ -98,7 +98,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
                         itemToString={item => item.label} />
                 </div>
                 <div className="editor-context-save">
-                    <Button className="btn-save" variant="primary" onClick={props.onSave} isDisabled={!props.dirty}>Save</Button>
+                    <Button className="btn-save" variant="primary" onClick={() => props.onSave()} isDisabled={!props.dirty}>Save</Button>
                 </div>
             </div>
         </React.Fragment>

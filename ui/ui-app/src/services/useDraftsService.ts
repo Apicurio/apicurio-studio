@@ -278,7 +278,7 @@ function updateDraftContent(appConfig: ApicurioStudioConfig, auth: AuthService, 
     const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
 
     groupId = normalizeGroupId(groupId);
-    console.info("[DraftsService] Deleting a draft: ", groupId, draftId, version);
+    console.info("[DraftsService] Updating a draft: ", groupId, draftId, version);
 
     console.info(client);
     console.info(data);

@@ -18,7 +18,7 @@ import { Draft, DraftContent } from "@models/drafts";
 import { PageDataLoader, PageError, PageErrorHandler, toPageError } from "@app/pages";
 import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
 import { PleaseWaitModal } from "@apicurio/common-ui-components";
-import { RootPageHeader } from "@app/components";
+import { ConfirmOverwriteModal, RootPageHeader } from "@app/components";
 import { isStringEmptyOrUndefined } from "@utils/string.utils.ts";
 
 const sectionContextStyle: CSSProperties = {
@@ -74,6 +74,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     const [isDirty, setDirty] = useState(false);
     const [isCompareModalOpen, setCompareModalOpen] = useState(false);
     const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
+    const [isConfirmOverwriteModalOpen, setConfirmOverwriteModalOpen] = useState(false);
     const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
 
     const { groupId, draftId, version } = useParams();
@@ -133,24 +134,52 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
         setPleaseWaitMessage(message);
     };
 
-    // Called when the user makes an edit in the editor.
-    const onSave = (): void => {
+    const updateDraftMetadata = (): void => {
+        drafts.getDraft(groupId as string, draftId as string, version as string).then(setDraft);
+    };
+
+    // Called when the user makes an edit in the editor.  First checks that the
+    // content hasn't been changed on the server by someone else...
+    const onSave = (overwrite?: boolean): Promise<void> => {
         pleaseWait("Saving the draft, please wait...");
-        const content: DraftContent = {
-            content: currentContent,
-            contentType: draftContent.contentType
-        };
-        drafts.updateDraftContent(groupId as string, draftId as string, version as string, content).then(() => {
-            setPleaseWaitModalOpen(false);
-            if (draft) {
-                draft.modifiedOn = new Date();
-                setOriginalContent(currentContent);
-                setDirty(false);
-            }
-        }).catch(error => {
-            // TODO handle error
-            console.error("[EditorPage] Failed to save design content: ", error);
-        });
+
+        if (overwrite === undefined) {
+            overwrite = false;
+        }
+
+        if (overwrite) {
+            const content: DraftContent = {
+                content: currentContent,
+                contentType: draftContent.contentType
+            };
+            return drafts.updateDraftContent(groupId as string, draftId as string, version as string, content).then(() => {
+                setPleaseWaitModalOpen(false);
+                if (draft) {
+                    updateDraftMetadata();
+                    setOriginalContent(currentContent);
+                    setDirty(false);
+                }
+            }).catch(error => {
+                setPleaseWaitModalOpen(false);
+                // TODO handle error
+                console.error("[EditorPage] Failed to save design content: ", error);
+            });
+        } else {
+            return drafts.getDraft(groupId as string, draftId as string, version as string).then(currentDraft => {
+                if (currentDraft.modifiedOn !== draft.modifiedOn) {
+                    // Uh oh, if we save now we'll be overwriting someone else's changes!
+                    setPleaseWaitModalOpen(false);
+                    setConfirmOverwriteModalOpen(true);
+                    return Promise.resolve();
+                } else {
+                    return onSave(true);
+                }
+            }).catch(error => {
+                setPleaseWaitModalOpen(false);
+                // TODO handle error
+                console.error("[EditorPage] Failed to save design content: ", error);
+            });
+        }
     };
 
     const onFormat = (): void => {
@@ -238,6 +267,13 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
                     beforeName={draft?.name || ""}
                     after={currentContent}
                     afterName={draft?.name || ""}/>
+                <ConfirmOverwriteModal
+                    isOpen={isConfirmOverwriteModalOpen}
+                    onOverwrite={() => {
+                        setConfirmOverwriteModalOpen(false);
+                        onSave(true);
+                    }}
+                    onClose={() => setConfirmOverwriteModalOpen(false)} />
                 <PleaseWaitModal
                     message={pleaseWaitMessage}
                     isOpen={isPleaseWaitModalOpen} />

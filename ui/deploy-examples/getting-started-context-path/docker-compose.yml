@@ -26,8 +26,9 @@ services:
     image: nginx
     container_name: apicurio-studio-getting-started-context-path_proxy
     ports:
-      - "8888:8080" # Expose the reverse proxy on port 8000
+      - "8888:8080"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro # Mount custom Nginx config
     depends_on:
+      - apicurio-registry
       - apicurio-studio

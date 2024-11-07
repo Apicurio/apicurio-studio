@@ -9,6 +9,7 @@ import { Truncate } from "@patternfly/react-core";
 import { SearchedArtifact, } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import { SortOrder } from "@models/SortOrder.ts";
 import { ArtifactsSortBy } from "@models/artifacts";
+import { ConfigService, useConfigService } from "@services/useConfigService.ts";
 
 export type ArtifactsTableProps = {
     artifacts: SearchedArtifact[];
@@ -16,11 +17,13 @@ export type ArtifactsTableProps = {
     sortOrder: SortOrder;
     onSort: (by: ArtifactsSortBy, order: SortOrder) => void;
     onView: (artifact: SearchedArtifact) => void;
+    onViewInRegistry: (artifact: SearchedArtifact) => void;
 }
 type ArtifactAction = {
     label: string;
     testId: string;
     onClick: () => void;
+    isVisible?: () => boolean;
 };
 
 type ArtifactActionSeparator = {
@@ -31,6 +34,11 @@ export const ArtifactsTable: FunctionComponent<ArtifactsTableProps> = (props: Ar
     const [sortByIndex, setSortByIndex] = useState<number>();
 
     const appNavigation: AppNavigationService = useAppNavigation();
+    const config: ConfigService = useConfigService();
+
+    const isRegistryUIConfigured = (): boolean => {
+        return config.getApicurioStudioConfig().links.registry !== undefined && config.getApicurioStudioConfig().links.registry.length > 0;
+    };
 
     const columns: any[] = [
         {
@@ -116,7 +124,10 @@ export const ArtifactsTable: FunctionComponent<ArtifactsTableProps> = (props: Ar
     const actionsFor = (artifact: SearchedArtifact): (ArtifactAction | ArtifactActionSeparator)[] => {
         const ahash: number = shash(artifact.artifactId!);
 
-        return [{ label: "View artifact", onClick: () => props.onView(artifact), testId: `view-artifact-${ahash}` }];
+        return [
+            { label: "Explore artifact", onClick: () => props.onView(artifact), testId: `explore-artifact-${ahash}` },
+            { label: "View in Registry", onClick: () => props.onViewInRegistry(artifact), testId: `view-artifact-in-registry-${ahash}`, isVisible: isRegistryUIConfigured },
+        ];
     };
 
     const sortParams = (column: any): ThProps["sort"] | undefined => {
@@ -178,6 +189,7 @@ export const ArtifactsTable: FunctionComponent<ArtifactsTableProps> = (props: Ar
                         itemToString={item => item.label}
                         itemToTestId={item => item.testId}
                         itemIsDivider={item => item.isSeparator}
+                        itemIsVisible={item => item.isVisible || (() => true)}
                         onSelect={item => item.onClick()}
                         testId={`artifact-actions-${shash(row.artifactId!)}`}
                         popperProps={{

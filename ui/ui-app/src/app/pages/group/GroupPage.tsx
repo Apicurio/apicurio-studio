@@ -33,6 +33,7 @@ import { RootPageHeader } from "@app/components";
 import { OutlinedFolderIcon } from "@patternfly/react-icons";
 import { FromNow, If } from "@apicurio/common-ui-components";
 import { isStringEmptyOrUndefined } from "@utils/string.utils.ts";
+import { ConfigService, useConfigService } from "@services/useConfigService.ts";
 
 
 export type GroupPageProps = object;
@@ -46,8 +47,10 @@ export const GroupPage: FunctionComponent<GroupPageProps> = () => {
     const [group, setGroup] = useState<GroupMetaData>();
 
     const appNavigation: AppNavigationService = useAppNavigation();
+    const config: ConfigService = useConfigService();
     const groups: GroupsService = useGroupsService();
     const { groupId } = useParams();
+
 
     const createLoaders = (): Promise<any>[] => {
         return [
@@ -63,6 +66,15 @@ export const GroupPage: FunctionComponent<GroupPageProps> = () => {
         const groupId: string = encodeURIComponent(group?.groupId || "default");
         const artifactId: string = encodeURIComponent(artifact.artifactId!);
         appNavigation.navigateTo(`/explore/${groupId}/${artifactId}`);
+    };
+
+    const onViewArtifactInRegistry = (artifact: SearchedArtifact): void => {
+        const registryBaseUrl: string = config.getApicurioStudioConfig().links.registry!;
+        const groupId: string = encodeURIComponent(artifact.groupId || "default");
+        const artifactId: string = encodeURIComponent(artifact.artifactId!);
+
+        const registryUrl: string = `${registryBaseUrl}/explore/${groupId}/${artifactId}`;
+        window.location.href = registryUrl;
     };
 
     useEffect(() => {
@@ -150,6 +162,7 @@ export const GroupPage: FunctionComponent<GroupPageProps> = () => {
                                     <ArtifactsTableWithToolbar
                                         group={group!}
                                         onViewArtifact={onViewArtifact}
+                                        onViewArtifactInRegistry={onViewArtifactInRegistry}
                                     />
                                 </CardBody>
                             </Card>

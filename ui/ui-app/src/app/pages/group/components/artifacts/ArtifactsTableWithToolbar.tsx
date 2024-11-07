@@ -29,6 +29,7 @@ import { ArtifactFilterCriteria, ArtifactsSortBy } from "@models/artifacts";
 export type ArtifactsTableWithToolbarProps = {
     group: GroupMetaData;
     onViewArtifact: (artifact: SearchedArtifact) => void;
+    onViewArtifactInRegistry: (artifact: SearchedArtifact) => void;
 };
 
 /**
@@ -124,6 +125,7 @@ export const ArtifactsTableWithToolbar: FunctionComponent<ArtifactsTableWithTool
                 sortBy={sortBy}
                 sortOrder={sortOrder}
                 onView={props.onViewArtifact}
+                onViewInRegistry={props.onViewArtifactInRegistry}
             />
         </ListWithToolbar>
     );

@@ -23,6 +23,7 @@ import { ArtifactTypeIcon, NewDraftFromModal, RootPageHeader } from "@app/compon
 import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
 import { CreateDraft, Draft } from "@models/drafts";
 import { PleaseWaitModal } from "@apicurio/common-ui-components";
+import { ConfigService, useConfigService } from "@services/useConfigService.ts";
 
 
 export type ArtifactPageProps = object
@@ -40,6 +41,7 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
     const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
 
     const appNavigation: AppNavigationService = useAppNavigation();
+    const config: ConfigService = useConfigService();
     const groups: GroupsService = useGroupsService();
     const drafts: DraftsService = useDraftsService();
     const { groupId, artifactId } = useParams();
@@ -65,6 +67,24 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
         const version: string = encodeURIComponent(draft.version!);
 
         appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}`);
+    };
+
+    const onViewVersionAsDraft = (searchedVersion: SearchedVersion): void => {
+        const groupId: string = encodeURIComponent(searchedVersion.groupId || "default");
+        const draftId: string = encodeURIComponent(searchedVersion.artifactId!);
+        const version: string = encodeURIComponent(searchedVersion.version!);
+
+        appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}`);
+    };
+
+    const onViewVersionInRegistry = (searchedVersion: SearchedVersion): void => {
+        const registryBaseUrl: string = config.getApicurioStudioConfig().links.registry!;
+        const groupId: string = encodeURIComponent(searchedVersion.groupId || "default");
+        const artifactId: string = encodeURIComponent(searchedVersion.artifactId!);
+        const version: string = encodeURIComponent(searchedVersion.version!);
+
+        const registryUrl: string = `${registryBaseUrl}/explore/${groupId}/${artifactId}/versions/${version}`;
+        window.location.href = registryUrl;
     };
 
     const doCreateDraftFromVersion = (fromVersion: SearchedVersion, groupId: string, draftId: string, version: string): void => {
@@ -167,6 +187,8 @@ export const ArtifactPage: FunctionComponent<ArtifactPageProps> = () => {
                                 <CardBody>
                                     <VersionsTableWithToolbar
                                         artifact={artifact!}
+                                        onViewVersionAsDraft={onViewVersionAsDraft}
+                                        onViewVersionInRegistry={onViewVersionInRegistry}
                                         onCreateNewDraft={(version: SearchedVersion) => {
                                             setFromVersion(version);
                                             setIsCreateDraftFromModalOpen(true);

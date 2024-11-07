@@ -7,6 +7,7 @@ import { ArtifactMetaData, SearchedVersion } from "@apicurio/apicurio-registry-s
 import { VersionsSortBy } from "@models/versions";
 import { SortOrder } from "@models/SortOrder.ts";
 import { Flex, FlexItem, Label } from "@patternfly/react-core";
+import { ConfigService, useConfigService } from "@services/useConfigService.ts";
 
 export type VersionsTableProps = {
     artifact: ArtifactMetaData;
@@ -15,11 +16,14 @@ export type VersionsTableProps = {
     sortOrder: SortOrder;
     onSort: (by: VersionsSortBy, order: SortOrder) => void;
     onCreateNewDraft: (fromVersion: SearchedVersion) => void;
+    onViewAsDraft:  (fromVersion: SearchedVersion) => void;
+    onViewInRegistry: (fromVersion: SearchedVersion) => void;
 }
 type VersionAction = {
     label: string;
     testId: string;
     onClick: () => void;
+    isVisible?: () => boolean;
 };
 
 type VersionActionSeparator = {
@@ -28,6 +32,11 @@ type VersionActionSeparator = {
 
 export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: VersionsTableProps) => {
     const [sortByIndex, setSortByIndex] = useState<number>();
+    const config: ConfigService = useConfigService();
+
+    const isRegistryUIConfigured = (): boolean => {
+        return config.getApicurioStudioConfig().links.registry !== undefined && config.getApicurioStudioConfig().links.registry.length > 0;
+    };
 
     const columns: any[] = [
         { index: 0, id: "version", label: "Version", width: 65, sortable: true, sortBy: VersionsSortBy.version },
@@ -88,6 +97,8 @@ export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: Vers
     const actionsFor = (version: SearchedVersion): (VersionAction | VersionActionSeparator)[] => {
         const vhash: number = shash(version.version!);
         return [
+            { label: "View as draft", onClick: () => props.onViewAsDraft(version), testId: `view-as-draft-${vhash}` },
+            { label: "View in Registry", onClick: () => props.onViewInRegistry(version), testId: `view-in-registry-${vhash}`, isVisible: isRegistryUIConfigured },
             { label: "Create new draft", onClick: () => props.onCreateNewDraft(version), testId: `create-new-version-${vhash}` },
         ];
     };

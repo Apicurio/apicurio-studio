@@ -28,6 +28,8 @@ import { SortOrder } from "@models/SortOrder.ts";
 export type VersionsTableWithToolbarProps = {
     artifact: ArtifactMetaData;
     onCreateNewDraft: (version: SearchedVersion) => void;
+    onViewVersionAsDraft: (version: SearchedVersion) => void;
+    onViewVersionInRegistry: (version: SearchedVersion) => void;
 };
 
 /**
@@ -125,6 +127,8 @@ export const VersionsTableWithToolbar: FunctionComponent<VersionsTableWithToolba
                 sortBy={sortBy}
                 sortOrder={sortOrder}
                 onCreateNewDraft={props.onCreateNewDraft}
+                onViewAsDraft={props.onViewVersionAsDraft}
+                onViewInRegistry={props.onViewVersionInRegistry}
             />
         </ListWithToolbar>
     );

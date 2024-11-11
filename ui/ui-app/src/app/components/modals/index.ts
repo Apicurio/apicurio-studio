@@ -8,3 +8,4 @@ export * from "./EditDraftInfoModal";
 export * from "./ErrorModal";
 export * from "./InvalidContentModal";
 export * from "./NewDraftFromModal";
+export * from "./FinalizeDryRunSuccessModal";

@@ -81,7 +81,6 @@ export const DraftComments: FunctionComponent<DraftCommentsProps> = (props: Draf
     };
 
     const editComment = (commentId: string, newComment: NewComment): void => {
-        console.info("EDITING COMMENT!", commentId, newComment);
         setIsEditModalOpen(false);
         setIsPleaseWaitModalOpen(true);
         setPleaseWaitMessage("Updating comment, please wait.");

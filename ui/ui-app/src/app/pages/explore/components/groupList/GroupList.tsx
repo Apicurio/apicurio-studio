@@ -36,8 +36,6 @@ export const GroupList: FunctionComponent<GroupListProps> = (props: GroupListPro
         return "A group with no description.";
     };
 
-    console.info(props.groups);
-
     return (
         <DataList aria-label="List of groups" className="group-list">
             <If condition={!props.isFiltered}>

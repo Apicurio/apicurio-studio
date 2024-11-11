@@ -24,7 +24,7 @@ import { ListWithToolbar, PleaseWaitModal } from "@apicurio/common-ui-components
 import {
     ConfirmDeleteModal,
     ConfirmFinalizeModal,
-    CreateDraftModal, InvalidContentModal,
+    CreateDraftModal, FinalizeDryRunSuccessModal, InvalidContentModal,
     NewDraftFromModal,
     RootPageHeader
 } from "@app/components";
@@ -68,6 +68,7 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
     const [isCreateDraftFromModalOpen, setIsCreateDraftFromModalOpen] = useState(false);
     const [isInvalidContentModalOpen, setIsInvalidContentModalOpen] = useState<boolean>(false);
     const [invalidContentError, setInvalidContentError] = useState<RuleViolationProblemDetails>();
+    const [isFinalizeDryRunSuccessModalOpen, setIsFinalizeDryRunSuccessModalOpen] = useState(false);
 
     const config: ConfigService = useConfigService();
     const draftsService: DraftsService = useDraftsService();
@@ -115,13 +116,18 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
         window.location.href = registryUrl;
     };
 
-    const doFinalizeDraft = (draft: Draft): void => {
+    const doFinalizeDraft = (draft: Draft, dryRun?: boolean): void => {
         setIsConfirmFinalizeModalOpen(false);
         pleaseWait("Finalizing draft, please wait...");
-        draftsService.finalizeDraft(draft.groupId, draft.draftId, draft.version).then(() => {
-            const groupId: string = encodeURIComponent(draft.groupId || "default");
-            const draftId: string = encodeURIComponent(draft.draftId!);
-            appNavigation.navigateTo(`/explore/${groupId}/${draftId}`);
+        draftsService.finalizeDraft(draft.groupId, draft.draftId, draft.version, dryRun || false).then(() => {
+            if (!dryRun) {
+                const groupId: string = encodeURIComponent(draft.groupId || "default");
+                const draftId: string = encodeURIComponent(draft.draftId!);
+                appNavigation.navigateTo(`/explore/${groupId}/${draftId}`);
+            } else {
+                setPleaseWaitModalOpen(false);
+                setIsFinalizeDryRunSuccessModalOpen(true);
+            }
         }).catch(error => {
             setPleaseWaitModalOpen(false);
             if (error && (error.status === 400 || error.status === 409)) {
@@ -330,6 +336,9 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
             <PleaseWaitModal
                 message={pleaseWaitMessage}
                 isOpen={isPleaseWaitModalOpen} />
+            <FinalizeDryRunSuccessModal
+                isOpen={isFinalizeDryRunSuccessModalOpen}
+                onClose={() => setIsFinalizeDryRunSuccessModalOpen(false)} />
         </PageErrorHandler>
     );
 };

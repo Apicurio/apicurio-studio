@@ -27,7 +27,7 @@ import {
     ArtifactTypeIcon,
     ConfirmDeleteModal,
     ConfirmFinalizeModal,
-    EditDraftInfoModal, InvalidContentModal, NewDraftFromModal,
+    EditDraftInfoModal, FinalizeDryRunSuccessModal, InvalidContentModal, NewDraftFromModal,
     RootPageHeader
 } from "@app/components";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
@@ -66,8 +66,9 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
     const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
     const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
     const [isCreateDraftFromModalOpen, setIsCreateDraftFromModalOpen] = useState(false);
-    const [isInvalidContentModalOpen, setIsInvalidContentModalOpen] = useState<boolean>(false);
+    const [isInvalidContentModalOpen, setIsInvalidContentModalOpen] = useState(false);
     const [invalidContentError, setInvalidContentError] = useState<RuleViolationProblemDetails>();
+    const [isFinalizeDryRunSuccessModalOpen, setIsFinalizeDryRunSuccessModalOpen] = useState(false);
 
     const { groupId, draftId, version } = useParams();
 
@@ -172,13 +173,18 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
         });
     };
 
-    const doFinalizeDraft = (draft: Draft): void => {
+    const doFinalizeDraft = (draft: Draft, dryRun?: boolean): void => {
         setIsConfirmFinalizeModalOpen(false);
         pleaseWait("Finalizing draft, please wait...");
-        draftsService.finalizeDraft(draft.groupId, draft.draftId, draft.version).then(() => {
-            const groupId: string = encodeURIComponent(draft.groupId || "default");
-            const draftId: string = encodeURIComponent(draft.draftId!);
-            appNavigation.navigateTo(`/explore/${groupId}/${draftId}`);
+        draftsService.finalizeDraft(draft.groupId, draft.draftId, draft.version, dryRun || false).then(() => {
+            if (!dryRun) {
+                const groupId: string = encodeURIComponent(draft.groupId || "default");
+                const draftId: string = encodeURIComponent(draft.draftId!);
+                appNavigation.navigateTo(`/explore/${groupId}/${draftId}`);
+            } else {
+                setPleaseWaitModalOpen(false);
+                setIsFinalizeDryRunSuccessModalOpen(true);
+            }
         }).catch(error => {
             setPleaseWaitModalOpen(false);
             if (error && (error.status === 400 || error.status === 409)) {
@@ -437,6 +443,9 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                     <PleaseWaitModal
                         message={pleaseWaitMessage}
                         isOpen={isPleaseWaitModalOpen} />
+                    <FinalizeDryRunSuccessModal
+                        isOpen={isFinalizeDryRunSuccessModalOpen}
+                        onClose={() => setIsFinalizeDryRunSuccessModalOpen(false)} />
                 </PageSection>
             </PageDataLoader>
         </PageErrorHandler>

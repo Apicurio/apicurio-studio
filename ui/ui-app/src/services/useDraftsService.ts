@@ -230,17 +230,23 @@ function deleteDraft(appConfig: ApicurioStudioConfig, auth: AuthService, groupId
 /**
  * Finalize a draft.
  */
-function finalizeDraft(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string): Promise<void> {
+function finalizeDraft(appConfig: ApicurioStudioConfig, auth: AuthService, groupId: string | null, draftId: string, version: string, dryRun: boolean): Promise<void> {
     const client: ApicurioRegistryClient = getRegistryClient(appConfig, auth);
 
     groupId = normalizeGroupId(groupId);
     console.info("[DraftsService] Finalizing a draft: ", groupId, draftId, version);
-
+    if (dryRun) {
+        console.info("                Note: dry run only enabled");
+    }
     const newState: WrappedVersionState = {
         state: "ENABLED"
     };
 
-    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).state.put(newState);
+    return client.groups.byGroupId(groupId).artifacts.byArtifactId(draftId).versions.byVersionExpression(version).state.put(newState, {
+        queryParameters: {
+            dryRun
+        }
+    });
 }
 
 /**
@@ -281,9 +287,6 @@ function updateDraftContent(appConfig: ApicurioStudioConfig, auth: AuthService, 
     groupId = normalizeGroupId(groupId);
     console.info("[DraftsService] Updating a draft: ", groupId, draftId, version);
 
-    console.info(client);
-    console.info(data);
-
     const versionContent: VersionContent = {
         content: data.content,
         contentType: data.contentType
@@ -303,7 +306,7 @@ export interface DraftsService {
     deleteDraft(groupId: string|null, draftId: string, version: string): Promise<void>;
     getDraftContent(groupId: string|null, draftId: string, version: string): Promise<DraftContent>;
     updateDraftContent(groupId: string|null, draftId: string, version: string, data: DraftContent): Promise<void>;
-    finalizeDraft(groupId: string|null, draftId: string, version: string): Promise<void>;
+    finalizeDraft(groupId: string|null, draftId: string, version: string, dryRun: boolean): Promise<void>;
 
     getDraftComments(groupId: string|null, draftId: string, version: string): Promise<Comment[]>;
     createDraftComment(groupId: string|null, draftId: string, version: string, data: NewComment): Promise<Comment>;
@@ -335,8 +338,8 @@ export const useDraftsService: () => DraftsService = (): DraftsService => {
             getDraftContent(appConfig, auth, groupId, draftId, version),
         updateDraftContent: (groupId: string|null, draftId: string, version: string, data: DraftContent) =>
             updateDraftContent(appConfig, auth, groupId, draftId, version, data),
-        finalizeDraft: (groupId: string|null, draftId: string, version: string) =>
-            finalizeDraft(appConfig, auth, groupId, draftId, version),
+        finalizeDraft: (groupId: string|null, draftId: string, version: string, dryRun: boolean) =>
+            finalizeDraft(appConfig, auth, groupId, draftId, version, dryRun),
 
         getDraftComments: (groupId: string|null, draftId: string, version: string) =>
             getDraftComments(appConfig, auth, groupId, draftId, version),

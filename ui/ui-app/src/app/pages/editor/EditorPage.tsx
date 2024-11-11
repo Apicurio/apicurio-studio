@@ -199,7 +199,6 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     const onDownload = (): void => {
         if (draft) {
             const fname: string = isStringEmptyOrUndefined(draft.name) ? draft.draftId : draft.name;
-            console.info("===> fname: ", fname);
             const filename: string = `${convertToValidFilename(fname)}.${fileExtensionForDraft(draft, draftContent)}`;
             const contentType: string = contentTypeForDraft(draft, draftContent);
             const theContent: string = typeof currentContent === "object" ? JSON.stringify(currentContent, null, 4) : currentContent as string;

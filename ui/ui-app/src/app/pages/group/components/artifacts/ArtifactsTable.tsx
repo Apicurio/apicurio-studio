@@ -86,7 +86,7 @@ export const ArtifactsTable: FunctionComponent<ArtifactsTableProps> = (props: Ar
                 <div>
                     <Link className="artifact-title"
                         style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                        to={appNavigation.createLink(`/explore/${encodeURIComponent(column.groupId as string)}/${encodeURIComponent(column.artifactId!)}`)}
+                        to={appNavigation.createLink(`/explore/${encodeURIComponent(column.groupId || "default")}/${encodeURIComponent(column.artifactId!)}`)}
                     >
                         <Truncate content={idAndName(column)}/>
                     </Link>

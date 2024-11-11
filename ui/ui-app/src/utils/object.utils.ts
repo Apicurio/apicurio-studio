@@ -24,3 +24,7 @@ export function propertyReplace(object: any, from: string, to: string): void {
         }
     });
 }
+
+export function isNullOrUndefined(object: any): boolean {
+    return object === null || object === undefined;
+}

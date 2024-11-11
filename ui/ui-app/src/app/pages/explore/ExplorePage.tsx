@@ -168,7 +168,7 @@ export const ExplorePage: FunctionComponent<ExplorePageProps> = () => {
                         isFiltered={isFiltered()}
                         isEmpty={results.count === 0}>
                         <If condition={exploreType === ExploreType.GROUP}>
-                            <GroupList groups={(results as GroupSearchResults).groups!} />
+                            <GroupList isFiltered={isFiltered()} groups={(results as GroupSearchResults).groups!} />
                         </If>
                     </ListWithToolbar>
                 </PageSection>

@@ -54,7 +54,15 @@ export const GroupPage: FunctionComponent<GroupPageProps> = () => {
 
     const createLoaders = (): Promise<any>[] => {
         return [
-            groups.getGroupMetaData(groupId as string)
+            (groupId === "default") ? Promise.resolve(setGroup({
+                groupId: "default",
+                description: "The default group (system generated).",
+                createdOn: null,
+                owner: null,
+                labels: null,
+                modifiedOn: null,
+                modifiedBy: null
+            })) : groups.getGroupMetaData(groupId as string)
                 .then(setGroup)
                 .catch(error => {
                     setPageError(toPageError(error, "Error loading page data."));
@@ -124,12 +132,14 @@ export const GroupPage: FunctionComponent<GroupPageProps> = () => {
                                                 {group?.description || "No description"}
                                             </DescriptionListDescription>
                                         </DescriptionListGroup>
-                                        <DescriptionListGroup>
-                                            <DescriptionListTerm>Created</DescriptionListTerm>
-                                            <DescriptionListDescription data-testid="group-details-created-on">
-                                                <FromNow date={group?.createdOn}/>
-                                            </DescriptionListDescription>
-                                        </DescriptionListGroup>
+                                        <If condition={group?.createdOn !== null}>
+                                            <DescriptionListGroup>
+                                                <DescriptionListTerm>Created</DescriptionListTerm>
+                                                <DescriptionListDescription data-testid="group-details-created-on">
+                                                    <FromNow date={group?.createdOn}/>
+                                                </DescriptionListDescription>
+                                            </DescriptionListGroup>
+                                        </If>
                                         <If condition={!isStringEmptyOrUndefined(group?.owner)}>
                                             <DescriptionListGroup>
                                                 <DescriptionListTerm>Owner</DescriptionListTerm>
@@ -138,12 +148,14 @@ export const GroupPage: FunctionComponent<GroupPageProps> = () => {
                                                 </DescriptionListDescription>
                                             </DescriptionListGroup>
                                         </If>
-                                        <DescriptionListGroup>
-                                            <DescriptionListTerm>Modified</DescriptionListTerm>
-                                            <DescriptionListDescription data-testid="group-details-modified-on">
-                                                <FromNow date={group?.modifiedOn}/>
-                                            </DescriptionListDescription>
-                                        </DescriptionListGroup>
+                                        <If condition={group?.modifiedOn !== null}>
+                                            <DescriptionListGroup>
+                                                <DescriptionListTerm>Modified</DescriptionListTerm>
+                                                <DescriptionListDescription data-testid="group-details-modified-on">
+                                                    <FromNow date={group?.modifiedOn}/>
+                                                </DescriptionListDescription>
+                                            </DescriptionListGroup>
+                                        </If>
                                     </DescriptionList>
                                 </CardBody>
                             </Card>

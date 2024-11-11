@@ -24,12 +24,6 @@ jobs:
     if: github.repository_owner == 'Apicurio'
     runs-on: ubuntu-22.04
     steps:
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -63,18 +57,6 @@ jobs:
 
       - name: Download Source Code
         run: git clone --branch $RELEASE_VERSION --single-branch ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git studio
-        
-      # We have faced issues in the past where a github release was created from a wrong commit
-      # This step will ensure that the release was created from the right commit  
-      - name: Verify Project Version
-        run: |
-          cd studio
-          PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          if [[ $PROJECT_VERSION != $RELEASE_VERSION ]]
-          then
-              echo "ERROR: Project Version '${PROJECT_VERSION}' does not match with Released Version '${RELEASE_VERSION}'"
-              exit 1	  
-          fi      
 
       - name: Build Apicurio Studio
         run: |
@@ -99,8 +81,10 @@ jobs:
           tags: |
             docker.io/${{env.IMAGE_ORG}}/apicurio-studio-ui:${{env.RELEASE_VERSION}}
             docker.io/${{env.IMAGE_ORG}}/apicurio-studio-ui:latest
+            docker.io/${{env.IMAGE_ORG}}/apicurio-studio-ui:latest-release
             quay.io/${{env.IMAGE_ORG}}/apicurio-studio-ui:${{env.RELEASE_VERSION}}
             quay.io/${{env.IMAGE_ORG}}/apicurio-studio-ui:latest
+            quay.io/${{env.IMAGE_ORG}}/apicurio-studio-ui:latest-release
 
       - name: Google Chat Notification (Always)
         if: always()

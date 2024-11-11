@@ -5,8 +5,8 @@ on:
       release-version:
         description: 'Version being released'
         required: true
-      snapshot-version:
-        description: 'Next snapshot version'
+      dev-version:
+        description: 'Next -Dev version'
         required: true
       branch:
         description: 'Branch to release from'
@@ -25,7 +25,7 @@ jobs:
           echo "Release Version: ${{ github.event.inputs.release-version }}
           echo "Release Branch: ${{ github.event.inputs.branch }}"
           echo "Release Actor: ${{ env.GITHUB_ACTOR }}"
-          echo "Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
+          echo "Next Snapshot Version: ${{ github.event.inputs.dev-version }}"
           echo "==========================================================================================================="
 
       - name: Configure Git
@@ -45,21 +45,23 @@ jobs:
         with:
           node-version: 20
 
-      - name: Update Release Version ${{ github.event.inputs.release-version }} in pom.xml
+      - name: Update Release Version ${{ github.event.inputs.release-version }} in package.json files
         run: |
-          cd studio
-          UI_VERSION=$(echo ${{ github.event.inputs.release-version }} | sed 's/.Beta[0-9]//' | sed 's/.Alpha[0-9]//'| sed 's/.RC[0-9]//')
-          cd ui
+          UI_VERSION=$(echo "${{ github.event.inputs.release-version}}" | awk -F '[.-]' '{print $1"."$2"."$3}')
+          cd studio/ui
           npm version $UI_VERSION --allow-same-version
           cd ui-app
           npm version $UI_VERSION --allow-same-version
           cd ../ui-editors
+          npm version $UI_VERSION --allow-same-version
+          cd ../tests
           npm version $UI_VERSION --allow-same-version
 
       - name: Build Apicurio Studio
         run: |
           cd studio/ui
           npm install
+          npm run lint
           npm run build
           npm run package
 
@@ -91,22 +93,23 @@ jobs:
           target_commitish: ${{ env.latest-commit-sha }}
           prerelease: false
 
-      - name: Update Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
+      - name: Update Next Snapshot Version ${{ github.event.inputs.dev-version }}
         run: |
-          cd studio
-          UI_VERSION=$(echo ${{ github.event.inputs.snapshot-version }} | sed 's/-SNAPSHOT//')
-          cd ui
+          UI_VERSION=$(echo ${{ github.event.inputs.dev-version }} | sed 's/-SNAPSHOT//')
+          cd studio/ui
           npm version $UI_VERSION --allow-same-version
           cd ui-app
           npm version $UI_VERSION --allow-same-version
           cd ../ui-editors
           npm version $UI_VERSION --allow-same-version
+          cd ../tests
+          npm version $UI_VERSION --allow-same-version
 
-      - name: Push Changes for Next Snapshot Version ${{ github.event.inputs.snapshot-version }}
+      - name: Push Changes for Next Snapshot Version ${{ github.event.inputs.dev-version }}
         run: |
           cd studio
           git add .
-          git commit -m "Automated update for Next Snapshot Version: ${{ github.event.inputs.snapshot-version }}"
+          git commit -m "Automated update for Next Snapshot Version: ${{ github.event.inputs.dev-version }}"
           git push origin ${{github.event.inputs.branch}}
 
       - name: Google Chat Notification (Always)

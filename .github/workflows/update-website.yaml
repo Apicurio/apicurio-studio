@@ -1,8 +1,6 @@
 name: Update Website
 on:
   workflow_dispatch: {}
-  release:
-    types: [released]
 
 jobs:
   update-website:

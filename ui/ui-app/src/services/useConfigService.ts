@@ -166,6 +166,20 @@ export class ConfigServiceImpl implements ConfigService {
         return fetch(registryConfigEndpoint).then(response => {
             console.info("[ConfigService] Loaded Registry UI config: ", response);
             registryConfig = JSON.parse(response as string);
+        }).catch(() => {
+            registryConfig = {
+                auth: {
+                    type: "none",
+                    obacEnabled: false,
+                    rbacEnabled: false,
+                },
+                features: {
+                    deleteVersion: false,
+                    deleteArtifact: false,
+                    deleteGroup: false,
+                    draftMutability: false
+                },
+            };
         });
     }
 

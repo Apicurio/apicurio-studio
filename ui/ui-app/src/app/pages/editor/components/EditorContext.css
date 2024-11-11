@@ -6,6 +6,9 @@
     flex-grow: 1;
     line-height: 34px;
 }
+.editor-context .editor-context-conflict {
+    line-height: 34px;
+}
 .editor-context .editor-context-last-modified {
     margin-left: 10px;
     line-height: 34px;
@@ -46,4 +49,24 @@
 
 #action-toggle {
     padding-right: 5px;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2); /* Slightly larger */
+        opacity: 0.8; /* Slightly faded */
+        color: #ea6b1b;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.icon-pulse {
+    animation: pulse 1.5s infinite ease-in-out;
 }

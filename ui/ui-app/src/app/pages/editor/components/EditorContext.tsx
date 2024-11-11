@@ -1,11 +1,12 @@
-import React, { FunctionComponent } from "react";
+import { FunctionComponent } from "react";
 import "./EditorContext.css";
-import { Breadcrumb, BreadcrumbItem, Button } from "@patternfly/react-core";
+import { Breadcrumb, BreadcrumbItem, Button, Icon, Popover } from "@patternfly/react-core";
 import { FromNow, If, ObjectDropdown } from "@apicurio/common-ui-components";
 import { ArtifactTypes } from "@models/common";
 import { Draft } from "@models/drafts";
 import { Link } from "react-router-dom";
 import { AppNavigationService, useAppNavigation } from "@services/useAppNavigation.ts";
+import { ExclamationTriangleIcon } from "@patternfly/react-icons";
 
 /**
  * Properties
@@ -13,6 +14,7 @@ import { AppNavigationService, useAppNavigation } from "@services/useAppNavigati
 export type EditorContextProps = {
     draft: Draft;
     dirty: boolean;
+    contentConflict: boolean;
     onSave: () => void;
     onFormat: () => void;
     onDownload: () => void;
@@ -74,33 +76,50 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
         </Breadcrumb>
     );
 
+    const contentConflictHeader = (
+        <span>Content conflict</span>
+    );
+    const contentConflictComponent = (
+        <div>The content of this Draft has been saved by someone else since you opened this editor!</div>
+    );
+
     return (
-        <React.Fragment>
-            <div className="editor-context">
-                <div className="editor-context-breadcrumbs" children={breadcrumbs} />
-                <If condition={props.draft.modifiedOn !== undefined}>
-                    <div className="editor-context-last-modified">
-                        <span>Last modified:</span>
-                        <FromNow date={props.draft.modifiedOn}/>
-                    </div>
-                </If>
-                <div className="editor-context-actions">
-                    <ObjectDropdown
-                        label="Actions"
-                        items={menuItems}
-                        testId="select-actions"
-                        onSelect={item => item.onSelect()}
-                        noSelectionLabel="Actions"
-                        itemToTestId={item => item.testId}
-                        itemIsVisible={item => !item.isVisible || item.isVisible()}
-                        itemIsDivider={item => item.isDivider}
-                        itemIsDisabled={item => item.isDisabled === undefined ? false : item.isDisabled()}
-                        itemToString={item => item.label} />
+        <div className="editor-context">
+            <div className="editor-context-breadcrumbs" children={breadcrumbs} />
+            <If condition={props.contentConflict}>
+                <div className="editor-context-conflict">
+                    <Icon status="warning">
+                        <Popover
+                            triggerAction="hover"
+                            headerContent={contentConflictHeader}
+                            bodyContent={contentConflictComponent}>
+                            <ExclamationTriangleIcon className="icon-pulse" />
+                        </Popover>
+                    </Icon>
                 </div>
-                <div className="editor-context-save">
-                    <Button className="btn-save" variant="primary" onClick={() => props.onSave()} isDisabled={!props.dirty}>Save</Button>
+            </If>
+            <If condition={props.draft.modifiedOn !== undefined}>
+                <div className="editor-context-last-modified">
+                    <span>Last modified:</span>
+                    <FromNow date={props.draft.modifiedOn}/>
                 </div>
+            </If>
+            <div className="editor-context-actions">
+                <ObjectDropdown
+                    label="Actions"
+                    items={menuItems}
+                    testId="select-actions"
+                    onSelect={item => item.onSelect()}
+                    noSelectionLabel="Actions"
+                    itemToTestId={item => item.testId}
+                    itemIsVisible={item => !item.isVisible || item.isVisible()}
+                    itemIsDivider={item => item.isDivider}
+                    itemIsDisabled={item => item.isDisabled === undefined ? false : item.isDisabled()}
+                    itemToString={item => item.label} />
             </div>
-        </React.Fragment>
+            <div className="editor-context-save">
+                <Button className="btn-save" variant="primary" onClick={() => props.onSave()} isDisabled={!props.dirty}>Save</Button>
+            </div>
+        </div>
     );
 };

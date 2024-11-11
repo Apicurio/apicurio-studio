@@ -76,6 +76,8 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
     const [isConfirmOverwriteModalOpen, setConfirmOverwriteModalOpen] = useState(false);
     const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
+    const [intervalId, setIntervalId] = useState<any>();
+    const [isContentConflicting, setIsContentConflicting] = useState(false);
 
     const { groupId, draftId, version } = useParams();
 
@@ -85,7 +87,13 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     const createLoaders = (): Promise<any>[] => {
         return [
             drafts.getDraft(groupId as string, draftId as string, version as string)
-                .then(setDraft)
+                .then(d => {
+                    setDraft(d);
+
+                    // Poll the server for new content every 60s.  If the content has been updated on
+                    // the server then we have a conflict that we need to report to the user.
+                    setIntervalId(setInterval(detectContentConflict, 60000));
+                })
                 .catch(error => {
                     setPageError(toPageError(error, "Error loading page data."));
                 }),
@@ -93,7 +101,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
                 setOriginalContent(content.content);
                 setCurrentContent(content.content);
                 setDraftContent(content);
-            })
+            }),
         ];
     };
 
@@ -102,6 +110,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
         // Cleanup any possible event listener we might still have registered
         return () => {
             window.removeEventListener("beforeunload", onBeforeUnload);
+            clearInterval(intervalId);
         };
     }, []);
 
@@ -132,6 +141,15 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     const pleaseWait = (message: string = ""): void => {
         setPleaseWaitModalOpen(true);
         setPleaseWaitMessage(message);
+    };
+
+    const detectContentConflict = (): void => {
+        drafts.getDraft(groupId as string, draftId as string, version as string).then(currentDraft => {
+            if (currentDraft.contentId !== draft.contentId) {
+                console.debug(`[EditorPage] Detected Draft content conflict.  Expected '${draft.contentId}' but found '${currentDraft.contentId}'.'`);
+                setIsContentConflicting(true);
+            }
+        });
     };
 
     const updateDraftMetadata = (): void => {
@@ -254,6 +272,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
                     <EditorContext
                         draft={draft}
                         dirty={isDirty}
+                        contentConflict={isContentConflicting}
                         onSave={onSave}
                         onFormat={onFormat}
                         onDownload={onDownload}

@@ -20,7 +20,7 @@ export const IfRegistryFeature: FunctionComponent<IfRegistryFeatureProps> = (pro
     const config = useConfigService();
 
     const accept = () => {
-        const features: any = config.getApicurioRegistryConfig().features;
+        const features: any = config.getApicurioRegistryConfig().features || {};
         const featureValue: any = features[props.feature];
         if (props.is !== undefined) {
             return featureValue === props.is;

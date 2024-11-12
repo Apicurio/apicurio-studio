@@ -1,5 +1,5 @@
 import React, { CSSProperties, FunctionComponent, useEffect, useState } from "react";
-import { PageSection, PageSectionVariants } from "@patternfly/react-core";
+import { PageSection, PageSectionVariants, useInterval } from "@patternfly/react-core";
 import { ArtifactTypes, ContentTypes } from "@models/common";
 import { DownloadService, useDownloadService } from "@services/useDownloadService.ts";
 import {
@@ -61,6 +61,7 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
         labels: {},
         modifiedBy: "",
         modifiedOn: new Date(),
+        contentId: 0,
         name: "",
         type: "",
         version: ""
@@ -76,7 +77,6 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     const [isPleaseWaitModalOpen, setPleaseWaitModalOpen] = useState(false);
     const [isConfirmOverwriteModalOpen, setConfirmOverwriteModalOpen] = useState(false);
     const [pleaseWaitMessage, setPleaseWaitMessage] = useState("");
-    const [intervalId, setIntervalId] = useState<any>();
     const [isContentConflicting, setIsContentConflicting] = useState(false);
 
     const { groupId, draftId, version } = useParams();
@@ -84,15 +84,17 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     const drafts: DraftsService = useDraftsService();
     const downloadSvc: DownloadService = useDownloadService();
 
+    // Poll the server for new content every 60s.  If the content has been updated on
+    // the server then we have a conflict that we need to report to the user.
+    useInterval(() => {
+        detectContentConflict();
+    }, 30000);
+
     const createLoaders = (): Promise<any>[] => {
         return [
             drafts.getDraft(groupId as string, draftId as string, version as string)
                 .then(d => {
                     setDraft(d);
-
-                    // Poll the server for new content every 60s.  If the content has been updated on
-                    // the server then we have a conflict that we need to report to the user.
-                    setIntervalId(setInterval(detectContentConflict, 60000));
                 })
                 .catch(error => {
                     setPageError(toPageError(error, "Error loading page data."));
@@ -110,7 +112,6 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
         // Cleanup any possible event listener we might still have registered
         return () => {
             window.removeEventListener("beforeunload", onBeforeUnload);
-            clearInterval(intervalId);
         };
     }, []);
 
@@ -145,8 +146,9 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
 
     const detectContentConflict = (): void => {
         drafts.getDraft(groupId as string, draftId as string, version as string).then(currentDraft => {
+            console.info(`[EditorPage] Detecting conflicting content.  Latest contentId: ${currentDraft.contentId}  Editor contentId: ${draft.contentId}`);
             if (currentDraft.contentId !== draft.contentId) {
-                console.debug(`[EditorPage] Detected Draft content conflict.  Expected '${draft.contentId}' but found '${currentDraft.contentId}'.'`);
+                console.debug(`[EditorPage] Detected Draft content conflict.  Expected '${draft.contentId}' but found '${currentDraft.contentId}'`);
                 setIsContentConflicting(true);
             }
         });

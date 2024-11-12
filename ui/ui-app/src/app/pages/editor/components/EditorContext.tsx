@@ -85,9 +85,9 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
 
     return (
         <div className="editor-context">
-            <div className="editor-context-breadcrumbs" children={breadcrumbs} />
+            <div key="editor-context-breadcrumbs" className="editor-context-breadcrumbs" children={breadcrumbs} />
             <If condition={props.contentConflict}>
-                <div className="editor-context-conflict">
+                <div key="editor-context-conflict" className="editor-context-conflict">
                     <Icon status="warning">
                         <Popover
                             triggerAction="hover"
@@ -99,12 +99,12 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
                 </div>
             </If>
             <If condition={props.draft.modifiedOn !== undefined}>
-                <div className="editor-context-last-modified">
+                <div key="editor-context-last-modified" className="editor-context-last-modified">
                     <span>Last modified:</span>
                     <FromNow date={props.draft.modifiedOn}/>
                 </div>
             </If>
-            <div className="editor-context-actions">
+            <div key="editor-context-actions" className="editor-context-actions">
                 <ObjectDropdown
                     label="Actions"
                     items={menuItems}
@@ -117,7 +117,7 @@ export const EditorContext: FunctionComponent<EditorContextProps> = (props: Edit
                     itemIsDisabled={item => item.isDisabled === undefined ? false : item.isDisabled()}
                     itemToString={item => item.label} />
             </div>
-            <div className="editor-context-save">
+            <div key="editor-context-save" className="editor-context-save">
                 <Button className="btn-save" variant="primary" onClick={() => props.onSave()} isDisabled={!props.dirty}>Save</Button>
             </div>
         </div>

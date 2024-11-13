@@ -116,12 +116,11 @@ export class ModelUtils {
      */
     public static generateExampleFromSchema(schema: OasSchema | AaiSchema): any {
         let generator: ExampleGenerator = new ExampleGenerator();
-        let example : any[] = [];
-        example.push(generator.generate(schema));
+        let example = generator.generate(schema);
         if (schema.allOf) {
-            schema.allOf.forEach( inherited => {
+            schema.allOf.forEach(inherited => {
                 if (inherited.$ref) {
-                    example.push(generator.generate(inherited));
+                    Object.assign(example, generator.generate(inherited));
                 }
             });
         }

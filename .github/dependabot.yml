@@ -21,9 +21,23 @@ updates:
         - "*"
       exclude-patterns:
         - "eslint"
-    eslint:
+        - "@patternfly/*"
+        - "@microsoft/*"
+    ui-app-eslint:
       patterns:
         - "eslint"
+      update-types:
+        - "patch"
+        - "minor"
+    ui-app-patternfly:
+      patterns:
+        - "@patternfly/*"
+      update-types:
+        - "patch"
+        - "minor"
+    ui-app-kiota:
+      patterns:
+        - "@microsoft/*"
       update-types:
         - "patch"
         - "minor"

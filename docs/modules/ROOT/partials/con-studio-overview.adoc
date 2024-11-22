@@ -3,42 +3,64 @@
 
 {studio-long} enables you to design schemas and API definitions. It provides a web console to make it easy for API owners and developers to manage the content of event schemas and API definitions.
 
-You can use {studio} to create a schema or API design from a simple template, use one of the detailed templates provided, or import an existing design to edit it. When you’re happy with your content, you can save your design to a file, and export it to {registry-long} or use it in your client applications.
+ifndef::apicurio-studio-downstream[]
+You can use {studio} to create a schema or API design from a simple template, use one of the detailed templates provided, or import an existing design to edit it.
+endif::[]
 
 ifdef::apicurio-studio-downstream[]
+You can use {studio} to create a schema or API design from a simple template, use one of the detailed templates provided, or import an existing design to edit it. 
+As you evolve your design, it is saved automatically to {registry-long} as `DRAFT`.
+When you are happy with your content, you can promote your design to `ENABLED` in {registry}.
+
 {studio-long} is based on the https://github.com/Apicurio/apicurio-studio[Apicurio Studio] open source community project.
 endif::[]
 
-[id="studio-key-concepts"]
-== Key concepts
+.Key concepts
 
-To understand how {studio-long} works, it’s important to understand the following key concepts:
+To understand how {studio-long} works, it is important to understand the following key concepts:
 
-* *{studio-long} web console*
+{studio} web console:: The web environment where developers create, manage, and organize their API and schema designs.
 +
-The web environment where users from an organization can manage designs.
+--
+You can use the {studio-long} web console to complete the following tasks:
 
-* *Design*
+* Browse and search the schema and API designs that are stored in {studio-long}
+* Add new schema and API designs and versions
+* Import content from a file, from a URL, or from a {registry-long} instance
+* Show the changes that you have made in your current editing session
+--
+
+Design:: An API design or schema design. When downloaded to a local project, or used in {registry}, designs are referred to as _artifacts_.
 +
-An API design or schema design. When downloaded to a local project, or exported into {registry-long}, designs are referred to as _artifacts_.
+--
+{studio-long} supports the following API types:
 
-[id="studio-capabilities"]
-== {studio-long} capabilities
+* AsyncAPI
+* OpenAPI
 
-The {studio-long} has the following key capabilities:
+{studio-long} supports the following schema types:
 
-* Creation of APIs and schemas in a visual editor
-* Increased developer productivity with code and test generation from downloaded designs
+* Apache Avro
+* JSON Schema
+* Google Protocol Buffers (Protobuf)
+--
 
-[id="studio-use-cases"]
-== {studio-long} use cases
+
+.{studio} use cases
 
 The main use cases for {studio} are as follows:
 
 * *Contract-first application development*
 +
-You can use {studio-long} to visually design the API and data models (_contracts_) required by your applications, before you write any application code. After you define the contract, it’s much easier to create the application logic needed to satisfy the contract. You can generate Quarkus-based client and server applications from designs created in {studio-long}.
+You can use {studio} to visually design the API and data models (_contracts_) required by your applications, before you write any application code. 
+After you define the contract, it is easier to create the application logic needed to satisfy the contract. You can generate Quarkus-based client and server applications from designs created in {studio}.
 
-* *Schema editing for Kafka applications*
+ifdef::apicurio-studio-downstream[]
+
+* *Population of {registry}*
 +
-When you use Kafka to produce and consume messages, you can define the data shape of your message payloads by using one of a number of event schema types. When you need to define a new schema, you can use {studio-long}.
+All API and schema designs are saved to {registry}.
+You can use {registy} features, for example:
+* Creating rules for design change validation.
+* Using the {registry} REST API to dereference complex JSON Schemas.
+endif::[]

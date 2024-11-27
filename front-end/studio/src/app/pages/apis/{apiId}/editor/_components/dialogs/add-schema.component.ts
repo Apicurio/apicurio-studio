@@ -17,7 +17,7 @@
 
 import {Component, EventEmitter, Output, QueryList, ViewChildren} from "@angular/core";
 import {ModalDirective} from "ngx-bootstrap/modal";
-import {Library, Document, TraverserDirection, OasDocument} from "@apicurio/data-models";
+import {Document, DocumentType, Library, OasDocument, TraverserDirection} from "@apicurio/data-models";
 import {DropDownOption, DropDownOptionValue} from "../../../../../../components/common/drop-down.component";
 import {FindSchemaDefinitionsVisitor} from "../../_visitors/schema-definitions.visitor";
 
@@ -89,7 +89,7 @@ export class AddSchemaDialogComponent {
     add(): void {
         if (this.isValid()) {
             let refPrefix: string = "#/components/schemas/";
-            if (this.doc.is2xDocument()) {
+            if (this.doc.getDocumentType() == DocumentType.openapi2) {
                 refPrefix = "#/definitions/";
             }
 

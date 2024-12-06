@@ -23,24 +23,24 @@ import {
     ViewEncapsulation
 } from "@angular/core";
 import {
+    Aai20Document, Aai20SchemaDefinition,
     CombinedVisitorAdapter,
     CommandFactory,
     DocumentType,
     ICommand,
     Library,
+    Node,
     Oas20Document,
     Oas20SchemaDefinition,
     Oas30Document,
+    Oas30Schema,
     Oas30SchemaDefinition,
     OasDocument,
-    OasSchema, ReferenceUtil,
+    OasSchema,
+    ReferenceUtil,
     SimplifiedType,
     TraverserDirection,
     VisitorUtil,
-    Node,
-    Oas30Schema,
-    Schema,
-    SimplifiedPropertyType,
 } from "@apicurio/data-models";
 
 import {SourceFormComponent} from "./source-form.base";
@@ -52,6 +52,7 @@ import {EditorsService} from "../../_services/editors.service";
 import {RenameEntityDialogComponent, RenameEntityEvent} from "../dialogs/rename-entity.component";
 import {DropDownOption, DropDownOptionValue as Value} from "../../../../../../components/common/drop-down.component";
 import {ApiCatalogService} from "../../_services/api-catalog.service";
+import {Schema} from "@apicurio/data-models/src/io/apicurio/datamodels/core/models/common/Schema";
 
 const INHERITANCE_TYPES: DropDownOption[] = [
     new Value("No inheritance", "none"),
@@ -71,22 +72,22 @@ const INHERITANCE_TYPES_20: DropDownOption[] = [
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
+export class DefinitionFormComponent extends SourceFormComponent<Schema> {
 
     private _stype: SimplifiedType = null;
 
     private currentPart : string = "payload";
 
-    private _definition: Oas20SchemaDefinition | Oas30SchemaDefinition;
+    private _definition: Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition;
     @Input()
-    set definition(definition: Oas20SchemaDefinition | Oas30SchemaDefinition) {
+    set definition(definition: Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition) {
         this._definition = definition;
         this.sourceNode = definition;
         this._stype = null;
         this.revertSource();
     }
 
-    get definition(): Oas20SchemaDefinition | Oas30SchemaDefinition {
+    get definition(): Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition {
         return this._definition;
     }
 
@@ -119,15 +120,18 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
         return this.definition.$ref && !this.definition.$ref.startsWith("#");
     }
 
-    protected createEmptyNodeForSource(): Oas20SchemaDefinition | Oas30SchemaDefinition {
-        if (this.definition.ownerDocument().getDocumentType() == DocumentType.openapi2) {
-            return (this.definition.ownerDocument() as Oas20Document).definitions.createSchemaDefinition(this.definitionName());
-        } else {
-            return (this.definition.ownerDocument() as Oas30Document).components.createSchemaDefinition(this.definitionName());
+    protected createEmptyNodeForSource(): Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition {
+        switch (this.definition.ownerDocument().getDocumentType()) {
+            case DocumentType.openapi2:
+                return (this.definition.ownerDocument() as Oas20Document).definitions.createSchemaDefinition(this.definitionName());
+            case DocumentType.openapi3:
+                return (this.definition.ownerDocument() as Oas30Document).components.createSchemaDefinition(this.definitionName());
+            case DocumentType.asyncapi2:
+                return (this.definition.ownerDocument() as Aai20Document).components.createSchemaDefinition(this.definitionName());
         }
     }
 
-    protected createReplaceNodeCommand(node: Oas20SchemaDefinition | Oas30SchemaDefinition): ICommand {
+    protected createReplaceNodeCommand(node: Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition): ICommand {
         return CommandFactory.createReplaceSchemaDefinitionCommand(this.definition.ownerDocument().getDocumentType(), this.definition, node);
     }
 
@@ -153,12 +157,12 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
     public rename(event?: RenameEntityEvent): void {
         if (undefined === event || event === null) {
-            let schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition = this.definition;
+            let schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition = this.definition;
             let name: string = this.definitionName();
             let definitionNames: string[] = [];
             let form: DefinitionFormComponent = this;
             VisitorUtil.visitTree(this.definition.ownerDocument(), new class extends CombinedVisitorAdapter {
-                public visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition): void {
+                public visitSchemaDefinition(node: Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition): void {
                     definitionNames.push(form._definitionName(node));
                 }
             }, TraverserDirection.down);
@@ -184,7 +188,7 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
      * Figures out the definition name.
      * @param schemaDef
      */
-    protected _definitionName(schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition): string {
+    protected _definitionName(schemaDef: Oas20SchemaDefinition | Oas30SchemaDefinition | Aai20SchemaDefinition): string {
         return schemaDef.getName();
     }
 
@@ -194,7 +198,9 @@ export class DefinitionFormComponent extends SourceFormComponent<OasSchema> {
 
     public simpleType(): SimplifiedType {
         if (this._stype === null) {
-            this._stype = SimplifiedType.fromSchema(this.definition);
+            this._stype = this.definition instanceof OasSchema
+                ? SimplifiedType.fromSchema(this.definition)
+                : SimplifiedType.fromAaiSchema(this.definition);
         }
         return this._stype;
     }

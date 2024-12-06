@@ -110,6 +110,7 @@ export class ActivityItemComponent {
             case "AddParameterExampleCommand_30":
             case "AddChannelItemCommand":
             case "AddChildSchemaCommand":
+            case "AddChildSchemaCommand_Aai20":
             case "AddMessageExampleCommand_Aai20":
             case "AddOneOfInMessageCommand":
             case "AddResponseDefinitionCommand":
@@ -147,6 +148,7 @@ export class ActivityItemComponent {
             case "ChangeResponseTypeCommand":
             case "ChangeResponseTypeCommand_20":
             case "ChangeSchemaTypeCommand":
+            case "ChangeSchemaTypeCommand_Aai20":
             case "ChangeResponseDefinitionTypeCommand":
             case "ChangeResponseDefinitionTypeCommand_20":
             case "ChangePayloadRefCommand_Aai20":
@@ -155,6 +157,8 @@ export class ActivityItemComponent {
             case "ChangePropertyCommand":
             case "ChangePropertyCommand_20":
             case "ChangePropertyCommand_30":
+            case "ChangeSchemaInheritanceCommand":
+            case "ChangeSchemaInheritanceCommand_Aai20":
             case "ChangeSecuritySchemeCommand":
             case "ChangeSecuritySchemeCommand_20":
             case "ChangeSecuritySchemeCommand_30":
@@ -189,6 +193,7 @@ export class ActivityItemComponent {
             case "DeleteAllSecurityRequirementsCommand":
             case "DeleteAllSecuritySchemesCommand":
             case "DeleteAllChildSchemasCommand":
+            case "DeleteAllChildSchemasCommand_Aai20":
             case "DeleteAllExamplesCommand":
             case "DeleteAllMessageExamplesCommand_Aai20":
             case "DeleteAllOperationsCommand_Aai20":
@@ -240,6 +245,7 @@ export class ActivityItemComponent {
             case "DeleteExtensionCommand":
             case "DeleteChannelCommand":
             case "DeleteChildSchemaCommand":
+            case "DeleteChildSchemaCommand_Aai20":
             case "DeleteMessageDefinitionCommand":
             case "DeleteMessageExampleCommand_Aai20":
             case "DeleteMessageTraitDefinitionCommand":
@@ -400,6 +406,10 @@ export class ActivityItemComponent {
             case "AddChannelItemCommand":
                 rval = "added a Channel Item named " + this.command()["_newChannelItemName"] + ".";
                 break;
+            case "AddChildSchemaCommand":
+            case "AddChildSchemaCommand_Aai20":
+                rval = "added child schema to schema from path '" + this.command()["_schemaPath"] + "'";
+                break;
             case "AddPathItemCommand":
             case "AddPathItemCommand_20":
             case "AddPathItemCommand_30":
@@ -456,6 +466,10 @@ export class ActivityItemComponent {
             case "ChangePropertyTypeCommand_30":
                 rval = "changed the type of the Schema Property named '" + this.command()["_propName"] + "' at location " + this.command()["_propPath"] + ".";
                 break;
+            case "ChangeSchemaInheritanceCommand":
+            case "ChangeSchemaInheritanceCommand_Aai20":
+                rval = "changed the type of the Schema inheritance at location " + this.command()["_schemaPath"] + ".";
+                break;
             case "ChangeSchemaTypeCommand":
                 rval = "changed the type of the Schema at location " + this.command()["_schemaPath"] + ".";
                 break;
@@ -494,6 +508,10 @@ export class ActivityItemComponent {
             case "ChangeVersionCommand_20":
             case "ChangeVersionCommand_30":
                 rval = "altered the API's version to '" + this.command()["_newVersion"] + "'";
+                break;
+            case "DeleteAllChildSchemasCommand":
+            case "DeleteAllChildSchemasCommand_Aai20":
+                rval = "deleted all inherited schemas of the schema from path '" + this.command()["_schemaPath"] + "'";
                 break;
             case "DeleteAllOperationsCommand":
                 rval = "deleted all of the operations from path " + this.command()["_parentPath"] + ".";
@@ -544,6 +562,10 @@ export class ActivityItemComponent {
                 break;
             case "DeleteMediaTypeCommand":
                 rval = "deleted Media Type '" + this.command()["_mediaTypeName"] + "' at location " + this.command()["_mediaTypePath"] + ".";
+                break;
+            case "DeleteChildSchemaCommand":
+            case "DeleteChildSchemaCommand_Aai20":
+                rval = "deleted child schema to schema from path '" + this.command()["_schemaPath"] + "'";
                 break;
             case "DeleteOneOfMessageCommand":
                 rval = "deleted Message from component/operation'" + JSON.stringify(this.command()["_oldMessage"]) + ".";

@@ -122,7 +122,7 @@ jobs:
           npm run test
 
       - name: Upload Test Report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.0.0
         if: always()
         with:
           name: playwright-report
@@ -135,7 +135,7 @@ jobs:
 
       - name: Upload tests logs artifacts
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.0.0
         with:
           name: tests-logs-ui
           path: artifacts

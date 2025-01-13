@@ -27,7 +27,7 @@
         "core-js": "3.40.0",
         "js-yaml": "4.1.0",
         "marked": "12.0.2",
-        "ngx-bootstrap": "18.1.3",
+        "ngx-bootstrap": "19.0.0",
         "patternfly": "3.59.5",
         "pluralize": "8.0.0",
         "rxjs": "7.8.1",

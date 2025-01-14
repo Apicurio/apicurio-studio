@@ -97,7 +97,7 @@ export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: Vers
     const actionsFor = (version: SearchedVersion): (VersionAction | VersionActionSeparator)[] => {
         const vhash: number = shash(version.version!);
         return [
-            { label: "View as draft", onClick: () => props.onViewAsDraft(version), testId: `view-as-draft-${vhash}` },
+            { label: "View as draft", onClick: () => props.onViewAsDraft(version), testId: `view-as-draft-${vhash}`, isVisible: () => version.state === "DRAFT" },
             { label: "View in Registry", onClick: () => props.onViewInRegistry(version), testId: `view-in-registry-${vhash}`, isVisible: isRegistryUIConfigured },
             { label: "Create new draft", onClick: () => props.onCreateNewDraft(version), testId: `create-new-version-${vhash}` },
         ];
@@ -159,6 +159,7 @@ export const VersionsTable: FunctionComponent<VersionsTableProps> = (props: Vers
                         itemToString={item => item.label}
                         itemToTestId={item => item.testId}
                         itemIsDivider={item => item.isSeparator}
+                        itemIsVisible={item => item.isVisible ? item.isVisible() : true}
                         onSelect={item => item.onClick()}
                         testId={`version-actions-${shash(row.version!)}`}
                         popperProps={{

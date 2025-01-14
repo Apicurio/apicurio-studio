@@ -34,7 +34,7 @@ import { AppNavigationService, useAppNavigation } from "@services/useAppNavigati
 import { Link, useParams } from "react-router-dom";
 import { CreateDraft, Draft, DraftInfo } from "@models/drafts";
 import { FromNow, If, ObjectDropdown, PleaseWaitModal } from "@apicurio/common-ui-components";
-import { PencilAltIcon } from "@patternfly/react-icons";
+import { EyeIcon, PencilAltIcon, WarningTriangleIcon } from "@patternfly/react-icons";
 import { ConfigService, useConfigService } from "@services/useConfigService.ts";
 import {
     RuleViolationProblemDetails,
@@ -218,6 +218,13 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
         appNavigation.navigateTo(`/drafts/${groupId}/${draftId}/${version}/editor`);
     };
 
+    const navigateToExplore = (): void => {
+        const groupId: string = encodeURIComponent(draft.groupId || "default");
+        const draftId: string = encodeURIComponent(draft.draftId!);
+
+        appNavigation.navigateTo(`/explore/${groupId}/${draftId}`);
+    };
+
     const viewDraftInRegistry = (): void => {
         const registryBaseUrl: string = config.getApicurioStudioConfig().links.registry!;
         const groupId: string = encodeURIComponent(draft.groupId || "default");
@@ -248,59 +255,76 @@ export const DraftPage: FunctionComponent<DraftPageProps> = () => {
                 <PageSection className="ps_draft-description" variant={PageSectionVariants.light}>
                     <Flex>
                         <FlexItem className="instructions">
-                            <TextContent>
-                                Manage this draft by viewing its metadata, managing its comments, and editing its content.
-                            </TextContent>
+                            <If condition={draft.isDraft!}>
+                                <TextContent>
+                                    Manage this draft by viewing its metadata, managing its comments, and editing its content.
+                                </TextContent>
+                            </If>
+                            <If condition={!draft.isDraft!}>
+                                <TextContent>
+                                    <WarningTriangleIcon color="orange" style={{ marginRight: "5px" }} />
+                                    This artifact version is not in <em>DRAFT</em> status and so its content cannot be edited.
+                                </TextContent>
+                            </If>
                         </FlexItem>
                         <FlexItem className="actions" align={{ default: "alignRight" }}>
-                            <Button id="edit-action"
-                                data-testid="draft-btn-edit"
-                                onClick={navigateToEditor}
-                                variant="primary"><PencilAltIcon />{" "}Edit draft</Button>
-                            <Button id="finalize-action"
-                                data-testid="draft-btn-finalize"
-                                style={{ marginLeft: "8px" }}
-                                onClick={() => setIsConfirmFinalizeModalOpen(true)}
-                                variant="secondary">Finalize draft</Button>
-                            <ObjectDropdown
-                                label=""
-                                isKebab={true}
-                                testId="draft-actions-dropdown"
-                                popperProps={{
-                                    position: "right"
-                                }}
-                                items={[
-                                    {
-                                        id: "view-draft-in-registry",
-                                        label: "View in Registry",
-                                        testId: "view-draft-in-registry",
-                                        isVisible: isRegistryUIConfigured,
-                                        action: viewDraftInRegistry
-                                    },
-                                    {
-                                        id: "create-draft-from",
-                                        label: "Create new draft",
-                                        testId: "create-draft-from",
-                                        action: () => setIsCreateDraftFromModalOpen(true)
-                                    },
-                                    {
-                                        divider: true,
-                                        isVisible: isDeleteEnabled
-                                    },
-                                    {
-                                        id: "delete-draft",
-                                        label: "Delete draft",
-                                        testId: "delete-draft",
-                                        isVisible: isDeleteEnabled,
-                                        action: () => setIsConfirmDeleteModalOpen(true)
-                                    }
-                                ]}
-                                onSelect={item => item.action()}
-                                itemToString={item => item.label}
-                                itemToTestId={item => item.testId}
-                                itemIsDivider={item => item.divider}
-                                itemIsVisible={item => !item.isVisible || item.isVisible()}
-                            />
+                            <If condition={draft.isDraft!}>
+                                <Button id="edit-action"
+                                    data-testid="draft-btn-edit"
+                                    onClick={navigateToEditor}
+                                    variant="primary"><PencilAltIcon />{" "}Edit draft</Button>
+                                <Button id="finalize-action"
+                                    data-testid="draft-btn-finalize"
+                                    style={{ marginLeft: "8px" }}
+                                    onClick={() => setIsConfirmFinalizeModalOpen(true)}
+                                    variant="secondary">Finalize draft</Button>
+                                <ObjectDropdown
+                                    label=""
+                                    isKebab={true}
+                                    testId="draft-actions-dropdown"
+                                    popperProps={{
+                                        position: "right"
+                                    }}
+                                    items={[
+                                        {
+                                            id: "view-draft-in-registry",
+                                            label: "View in Registry",
+                                            testId: "view-draft-in-registry",
+                                            isVisible: isRegistryUIConfigured,
+                                            action: viewDraftInRegistry
+                                        },
+                                        {
+                                            id: "create-draft-from",
+                                            label: "Create new draft",
+                                            testId: "create-draft-from",
+                                            action: () => setIsCreateDraftFromModalOpen(true)
+                                        },
+                                        {
+                                            divider: true,
+                                            isVisible: isDeleteEnabled
+                                        },
+                                        {
+                                            id: "delete-draft",
+                                            label: "Delete draft",
+                                            testId: "delete-draft",
+                                            isVisible: isDeleteEnabled,
+                                            action: () => setIsConfirmDeleteModalOpen(true)
+                                        }
+                                    ]}
+                                    onSelect={item => item.action()}
+                                    itemToString={item => item.label}
+                                    itemToTestId={item => item.testId}
+                                    itemIsDivider={item => item.divider}
+                                    itemIsVisible={item => !item.isVisible || item.isVisible()}
+                                />
+                            </If>
+                            <If condition={!draft.isDraft!}>
+                                <Button id="explore-action"
+                                    data-testid="draft-btn-explore"
+                                    onClick={navigateToExplore}
+                                    icon={<EyeIcon />}
+                                    variant="primary">Explore</Button>
+                            </If>
                         </FlexItem>
                     </Flex>
                 </PageSection>

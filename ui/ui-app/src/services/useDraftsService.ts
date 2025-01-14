@@ -50,6 +50,7 @@ const toDraft = (vmd: VersionMetaData | SearchedVersion | undefined): Draft => {
         modifiedOn: vmd!.modifiedOn as Date | undefined,
         labels: labelsToAny(vmd?.labels),
         contentId: vmd?.contentId as number | undefined,
+        isDraft: vmd!.state === "DRAFT"
     };
     return draft;
 };

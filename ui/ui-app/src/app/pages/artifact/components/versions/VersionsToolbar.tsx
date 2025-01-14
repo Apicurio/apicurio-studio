@@ -1,12 +1,13 @@
 import { FunctionComponent } from "react";
 import "./VersionsToolbar.css";
-import { Pagination, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
+import { Button, Pagination, Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core";
 import { Paging } from "@models/Paging.ts";
 import { VersionSearchResults } from "@apicurio/apicurio-registry-sdk/dist/generated-client/models";
 import { ChipFilterType } from "@apicurio/common-ui-components/dist/filtering/ChipFilterType";
 import { VersionFilterCriteria, VersionFilterCriteriaType } from "@models/versions";
 import { ChipFilterCriteria } from "@apicurio/common-ui-components/dist/filtering/ChipFilterCriteria";
 import { ChipFilterInput, FilterChips, If } from "@apicurio/common-ui-components";
+import { SyncAltIcon } from "@patternfly/react-icons";
 
 
 const FILTER_TYPES: ChipFilterType[] = [
@@ -41,6 +42,7 @@ export type VersionsToolbarProps = {
     paging: Paging;
     onFilterCriteriaChange: (newFilters: VersionFilterCriteria[]) => void;
     onPageChange: (paging: Paging) => void;
+    onRefresh: () => void;
 };
 
 
@@ -112,6 +114,12 @@ export const VersionsToolbar: FunctionComponent<VersionsToolbarProps> = (props: 
                         <ChipFilterInput
                             filterTypes={FILTER_TYPES}
                             onAddCriteria={onAddFilterCriteria}
+                        />
+                        <Button
+                            variant="control" aria-label="Refresh"
+                            className="btn-header-refresh" data-testid="btn-toolbar-refresh"
+                            icon={<SyncAltIcon title="Refresh" />}
+                            onClick={props.onRefresh}
                         />
                     </ToolbarItem>
                     <ToolbarItem className="paging-item" align={{ default: "alignRight" }}>

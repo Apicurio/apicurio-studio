@@ -79,7 +79,9 @@ export const VersionsTableWithToolbar: FunctionComponent<VersionsTableWithToolba
             filterCriteria={filterCriteria}
             onFilterCriteriaChange={setFilterCriteria}
             paging={paging}
-            onPageChange={setPaging} />
+            onPageChange={setPaging}
+            onRefresh={refresh}
+        />
     );
 
     const emptyState = (

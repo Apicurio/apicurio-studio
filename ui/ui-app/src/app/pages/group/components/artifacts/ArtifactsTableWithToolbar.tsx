@@ -79,7 +79,9 @@ export const ArtifactsTableWithToolbar: FunctionComponent<ArtifactsTableWithTool
             filterCriteria={filterCriteria}
             onFilterCriteriaChange={setFilterCriteria}
             paging={paging}
-            onPageChange={setPaging} />
+            onPageChange={setPaging}
+            onRefresh={refresh}
+        />
     );
 
     const emptyState = (

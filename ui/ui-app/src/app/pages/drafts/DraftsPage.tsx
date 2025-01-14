@@ -253,7 +253,11 @@ export const DraftsPage: FunctionComponent<DraftsPageProps> = () => {
                 setSortBy(by);
                 setSortOrder(dir);
             }}
-            onCriteriaChange={setCriteria} />
+            onCriteriaChange={setCriteria}
+            onRefresh={() => {
+                search(criteria, sortBy, sortOrder, paging);
+            }}
+        />
     );
 
     const emptyState = (

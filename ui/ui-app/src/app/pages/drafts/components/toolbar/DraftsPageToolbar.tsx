@@ -13,6 +13,7 @@ import { DraftsFilterBy, DraftsSearchFilter, DraftsSearchResults, DraftsSortBy }
 import { Paging } from "@models/Paging.ts";
 import { SortOrder } from "@models/SortOrder.ts";
 import { SortOrderToggle } from "@app/components";
+import { SyncAltIcon } from "@patternfly/react-icons";
 
 
 export type DraftsPageToolbarProps = {
@@ -26,6 +27,7 @@ export type DraftsPageToolbarProps = {
     onPageChange: (paging: Paging) => void;
     onCreateDraft: () => void;
     onSortChange: (sortBy: any, sortOrder: SortOrder) => void;
+    onRefresh: () => void;
 };
 
 const FILTER_TYPES: ChipFilterType[] = [
@@ -138,6 +140,12 @@ export const DraftsPageToolbar: FunctionComponent<DraftsPageToolbarProps> = (pro
                         <ChipFilterInput
                             filterTypes={FILTER_TYPES}
                             onAddCriteria={onAddFilterCriteria} />
+                        <Button
+                            variant="control" aria-label="Refresh"
+                            className="btn-header-refresh" data-testid="btn-toolbar-refresh"
+                            icon={<SyncAltIcon title="Refresh" />}
+                            onClick={props.onRefresh}
+                        />
                     </ToolbarItem>
                     <ToolbarItem variant="label" id="order-by-label">
                         Order by

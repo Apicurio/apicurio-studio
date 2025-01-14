@@ -29,6 +29,8 @@ export const ConfirmFinalizeModal: FunctionComponent<ConfirmFinalizeModalProps> 
         }
     }, [props.isOpen]);
 
+    const finalizeButtonLabel: string = isDryRun ? "Finalize (dry run)" : "Finalize";
+
     return (
         <Modal
             title="Finalize draft?"
@@ -38,7 +40,7 @@ export const ConfirmFinalizeModal: FunctionComponent<ConfirmFinalizeModalProps> 
             className="finalize-confirm-modal pf-m-redhat-font"
             actions={[
                 <Button key="finalize" variant="primary" data-testid="modal-btn-finalize"
-                    onClick={() => props.onFinalize(props.draft!, isDryRun)}>Finalize</Button>,
+                    onClick={() => props.onFinalize(props.draft!, isDryRun)}>{finalizeButtonLabel}</Button>,
                 <Button key="cancel" variant="link" data-testid="modal-btn-cancel"
                     onClick={props.onClose}>Cancel</Button>
             ]}

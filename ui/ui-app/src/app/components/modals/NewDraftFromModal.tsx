@@ -62,15 +62,33 @@ export type NewDraftFromModalProps = {
     onCreate: (fromVersion: SearchedVersion, groupId: string, draftId: string, version: string) => void;
 };
 
+const isValidNumber = (str: string): boolean => {
+    return !isNaN(Number(str));
+};
+
+const incrementNumber = (str: string): string => {
+    return "" + (parseInt(str, 10) + 1);
+};
+
 const deriveVersion = (fromVersion: string): string => {
     // Regex patterns for different version formats
     const numberRegex = /^\d+$/; // Single number: 42
 
     if (fromVersion.indexOf(".") > 0) {
-        const idx: number = fromVersion.lastIndexOf(".");
-        const lastComponent: string = fromVersion.substring(idx + 1);
-        const prefix: string = fromVersion.substring(0, idx + 1);
-        return prefix + (parseInt(lastComponent, 10) + 1);
+        let suffix: string = "";
+        if (fromVersion.endsWith("-SNAPSHOT")) {
+            fromVersion = fromVersion.substring(0, fromVersion.lastIndexOf("-"));
+            suffix = "-SNAPSHOT";
+        }
+        const versionComponents: string[] = fromVersion.split(".");
+        for (let componentIdx = versionComponents.length - 1; componentIdx >= 0; componentIdx--) {
+            const component: string = versionComponents[componentIdx];
+            if (isValidNumber(component)) {
+                versionComponents[componentIdx] = incrementNumber(component);
+                break;
+            }
+        }
+        return versionComponents.join(".") + suffix;
     } else if (numberRegex.test(fromVersion)) {
         // If the version is a single number, increment it
         return (parseInt(fromVersion, 10) + 1).toString();

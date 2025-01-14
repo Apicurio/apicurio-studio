@@ -1,5 +1,14 @@
 import React, { CSSProperties, FunctionComponent, useEffect, useState } from "react";
-import { PageSection, PageSectionVariants, useInterval } from "@patternfly/react-core";
+import {
+    EmptyState,
+    EmptyStateBody,
+    EmptyStateIcon,
+    EmptyStateVariant,
+    PageSection,
+    PageSectionVariants,
+    Title,
+    useInterval
+} from "@patternfly/react-core";
 import { ArtifactTypes, ContentTypes } from "@models/common";
 import { DownloadService, useDownloadService } from "@services/useDownloadService.ts";
 import {
@@ -20,6 +29,7 @@ import { DraftsService, useDraftsService } from "@services/useDraftsService.ts";
 import { PleaseWaitModal } from "@apicurio/common-ui-components";
 import { ConfirmOverwriteModal, RootPageHeader } from "@app/components";
 import { isStringEmptyOrUndefined } from "@utils/string.utils.ts";
+import { WarningTriangleIcon } from "@patternfly/react-icons";
 
 const sectionContextStyle: CSSProperties = {
     borderBottom: "1px solid #ccc",
@@ -226,6 +236,16 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
         }
     };
 
+    const notDraftEmptyState = (
+        <EmptyState variant={EmptyStateVariant.sm}>
+            <EmptyStateIcon icon={WarningTriangleIcon}/>
+            <Title headingLevel="h5" size="lg">Not a Draft</Title>
+            <EmptyStateBody>
+                This artifact is not in <em>DRAFT</em> status and so its content cannot be edited.
+            </EmptyStateBody>
+        </EmptyState>
+    );
+
     const textEditor: React.ReactElement = (
         <TextEditor content={draftContent} onChange={onEditorChange}/>
     );
@@ -243,6 +263,10 @@ export const EditorPage: FunctionComponent<EditorPageProps> = () => {
     );
 
     const editor = (): React.ReactElement => {
+        if (!draft.isDraft!) {
+            return notDraftEmptyState;
+        }
+
         if (draft?.type === ArtifactTypes.OPENAPI) {
             return openapiEditor;
         } else if (draft?.type === ArtifactTypes.ASYNCAPI) {

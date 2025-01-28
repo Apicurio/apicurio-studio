@@ -44,7 +44,7 @@ jobs:
 
       - name: Google Chat Notification
         if: ${{ failure() }}
-        uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
+        uses: Co-qn/google-chat-notification@3691ccf4763537d6e544bc6cdcccc1965799d056
         with:
           name: ${{ github.job }}
           url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}

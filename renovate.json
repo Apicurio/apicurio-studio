@@ -2,5 +2,33 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "enabledManagers": [
+    "npm"
+  ],
+  "rangeStrategy": "bump",
+  "ignorePaths": [
+    "ui/deploy-examples/**",
+    "ui/Dockerfile",
+    "docs/**",
+    "docs-playbook/**"
+  ],
+  "packageRules": [
+    {
+      "matchPaths": [
+        "ui/ui-app/**"
+      ],
+      "enabled": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Dependencies: App"
+    },
+    {
+      "matchPaths": [
+        "ui/tests/**"
+      ],
+      "enabled": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Dependencies: Tests"
+    }
   ]
 }

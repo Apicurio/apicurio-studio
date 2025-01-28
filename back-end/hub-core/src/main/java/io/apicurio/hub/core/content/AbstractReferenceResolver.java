@@ -52,7 +52,8 @@ public abstract class AbstractReferenceResolver implements IReferenceResolver {
     @Override
     public Node resolveRef(String reference, Node from) {
         try {
-            URI uri = new URI(reference);
+            // escape curly brackets to handle path items external refs with templates
+            URI uri = new URI(reference.replaceAll("\\{", "%7B").replaceAll("}", "%7D"));
             if (accepts(uri)) {
                 return resolveUriRef(uri, from);
             }

@@ -39,7 +39,7 @@
     "@microsoft/kiota-serialization-multipart": "1.0.0-preview.77",
     "@microsoft/kiota-serialization-text": "1.0.0-preview.77",
     "@monaco-editor/react": "4.6.0",
-    "@patternfly/patternfly": "5.4.2",
+    "@patternfly/patternfly": "6.1.0",
     "@patternfly/react-core": "5.4.12",
     "@patternfly/react-icons": "5.4.2",
     "@patternfly/react-table": "5.4.13",

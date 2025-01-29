@@ -29,7 +29,7 @@
       ],
       "enabled": true,
       "matchUpdateTypes": ["major"],
-      "schedule": [ "0 0 1 * *" ]
+      "schedule": [ "* 0 1 * *" ]
     },
     {
       "groupName": "Dependencies: App : Kiota",
@@ -38,7 +38,7 @@
       ],
       "matchPackageNames": ["@microsoft/kiota-*", "@apicurio/apicurio-registry-sdk"],
       "enabled": true,
-      "schedule": [ "0 0 1 * *" ]
+      "schedule": [ "* 0 1 * *" ]
     },
     {
       "groupName": "Dependencies: Playwright Tests",
@@ -55,7 +55,7 @@
       ],
       "enabled": true,
       "matchUpdateTypes": ["major"],
-      "schedule": [ "0 0 1 * *" ]
+      "schedule": [ "* 0 1 * *" ]
     },
     {
       "groupName": "Dependencies: Editors",

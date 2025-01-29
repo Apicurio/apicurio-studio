@@ -18,7 +18,7 @@
         "@angular/platform-browser-dynamic": "18.2.13",
         "@angular/router": "18.2.13",
         "@patternfly/patternfly": "1.0.250",
-        "@apicurio/data-models": "1.1.30",
+        "@apicurio/data-models": "1.1.31",
         "@ngx-formly/bootstrap": "6.3.12",
         "@ngx-formly/core": "6.3.12",
         "apicurio-ts-core": "0.1.3",

@@ -23,6 +23,14 @@
       "matchUpdateTypes": ["minor", "patch"]
     },
     {
+      "groupName": "Dependencies: App (Disabled Major)",
+      "matchPaths": [
+        "ui/ui-app/**"
+      ],
+      "enabled": false,
+      "matchUpdateTypes": ["major"]
+    },
+    {
       "groupName": "Dependencies: App : Kiota (exclude)",
       "matchPaths": [
         "ui/ui-app/**"
@@ -36,7 +44,7 @@
         "ui/tests/**"
       ],
       "enabled": true,
-      "matchUpdateTypes": ["minor", "patch"]
+      "matchUpdateTypes": ["major", "minor", "patch"]
     },
     {
       "groupName": "Dependencies: Editors",

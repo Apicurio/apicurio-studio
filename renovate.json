@@ -15,20 +15,35 @@
   ],
   "packageRules": [
     {
+      "groupName": "Dependencies: App",
       "matchPaths": [
         "ui/ui-app/**"
       ],
       "enabled": true,
-      "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "Dependencies: App"
+      "matchUpdateTypes": ["minor", "patch"]
     },
     {
+      "groupName": "Dependencies: App : Kiota (exclude)",
+      "matchPaths": [
+        "ui/ui-app/**"
+      ],
+      "matchPackageNames": ["@microsoft/kiota-*", "@apicurio/apicurio-registry-sdk"],
+      "enabled": false
+    },
+    {
+      "groupName": "Dependencies: Playwright Tests",
       "matchPaths": [
         "ui/tests/**"
       ],
       "enabled": true,
-      "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "Dependencies: Tests"
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "groupName": "Dependencies: Editors",
+      "matchPaths": [
+        "ui/ui-editors/**"
+      ],
+      "enabled": false
     }
   ]
 }

@@ -6,6 +6,7 @@
   "enabledManagers": [
     "npm"
   ],
+  "dependencyDashboard": true,
   "rangeStrategy": "bump",
   "ignorePaths": [
     "ui/deploy-examples/**",
@@ -13,6 +14,8 @@
     "docs/**",
     "docs-playbook/**"
   ],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 5,
   "packageRules": [
     {
       "groupName": "Dependencies: App",

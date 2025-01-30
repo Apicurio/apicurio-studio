@@ -19,50 +19,69 @@
   "packageRules": [
     {
       "groupName": "Dependencies: App",
-      "matchPaths": [
+      "matchFileNames": [
         "ui/ui-app/**"
       ],
       "enabled": true,
-      "matchUpdateTypes": ["minor", "patch"]
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
     },
     {
       "groupName": "Dependencies: App (Major)",
-      "matchPaths": [
+      "matchFileNames": [
         "ui/ui-app/**"
       ],
       "enabled": true,
-      "matchUpdateTypes": ["major"],
-      "schedule": [ "* 0 1 * *" ]
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "schedule": [
+        "* 0 1 * *"
+      ]
     },
     {
       "groupName": "Dependencies: App : Kiota",
-      "matchPaths": [
+      "matchFileNames": [
         "ui/ui-app/**"
       ],
-      "matchPackageNames": ["@microsoft/kiota-*", "@apicurio/apicurio-registry-sdk"],
+      "matchPackageNames": [
+        "@microsoft/kiota-*",
+        "@apicurio/apicurio-registry-sdk"
+      ],
       "enabled": true,
-      "schedule": [ "* 0 1 * *" ]
+      "schedule": [
+        "* 0 1 * *"
+      ]
     },
     {
       "groupName": "Dependencies: Playwright Tests",
-      "matchPaths": [
+      "matchFileNames": [
         "ui/tests/**"
       ],
       "enabled": true,
-      "matchUpdateTypes": ["minor", "patch"]
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
     },
     {
       "groupName": "Dependencies: Playwright Tests (Major)",
-      "matchPaths": [
+      "matchFileNames": [
         "ui/tests/**"
       ],
       "enabled": true,
-      "matchUpdateTypes": ["major"],
-      "schedule": [ "* 0 1 * *" ]
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "schedule": [
+        "* 0 1 * *"
+      ]
     },
     {
       "groupName": "Dependencies: Editors",
-      "matchPaths": [
+      "matchFileNames": [
         "ui/ui-editors/**"
       ],
       "enabled": false

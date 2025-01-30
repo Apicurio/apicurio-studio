@@ -96,21 +96,23 @@ jobs:
             docker.io/${{env.IMAGE_ORG}}/apicurio-studio-ui:${{env.IMAGE_TAG}}
             quay.io/${{env.IMAGE_ORG}}/apicurio-studio-ui:${{env.IMAGE_TAG}}
 
-      - name: Google Chat Notification (Always)
+      - name: Slack Notification (Always)
         if: github.event_name == 'push' && always()
-        uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
-        with:
-          name: ${{ github.job }}
-          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-          status: ${{ job.status }}
+        run: |
+          MESSAGE="${{ github.repository }} :: '${{ github.workflow }}/${{ github.job }}' job completed with status: ${{ job.status }}"
+          REPO="${{ github.repository }}"
+          LINK="https://github.com/$REPO/actions/runs/${{ github.run_id }}"
+          PAYLOAD="{\"workflow\": \"${{ github.workflow }}\", \"status\": \"${{ job.status }}\", \"message\": \"$MESSAGE\", \"link\": \"$LINK\", \"repository\": \"$REPO\"}"
+          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" ${{ secrets.SLACK_NOTIFICATION_WEBHOOK }}
 
-      - name: Google Chat Notification (Error)
+      - name: Slack Notification (Error)
         if: github.event_name == 'push' && failure()
-        uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
-        with:
-          name: ${{ github.job }}
-          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK_ERRORS }}
-          status: ${{ job.status }}
+        run: |
+          MESSAGE="${{ github.repository }} :: '${{ github.workflow }}/${{ github.job }}' job FAILED!"
+          REPO="${{ github.repository }}"
+          LINK="https://github.com/$REPO/actions/runs/${{ github.run_id }}"
+          PAYLOAD="{\"workflow\": \"${{ github.workflow }}\", \"status\": \"${{ job.status }}\", \"message\": \"$MESSAGE\", \"link\": \"$LINK\", \"repository\": \"$REPO\"}"
+          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" ${{ secrets.SLACK_ERROR_WEBHOOK }}
 
   # Trigger a deployment workflow in the apicurio-operate-first repository, which will
   # deploy the `latest-snapshot` version of Studio into the 3scale OpenShift cluster

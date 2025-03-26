@@ -86,18 +86,20 @@ jobs:
             quay.io/${{env.IMAGE_ORG}}/apicurio-studio-ui:latest
             quay.io/${{env.IMAGE_ORG}}/apicurio-studio-ui:latest-release
 
-      - name: Google Chat Notification (Always)
+      - name: Slack Notification (Always)
         if: always()
-        uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
-        with:
-          name: ${{ github.job }}
-          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
-          status: ${{ job.status }}
+        run: |
+          MESSAGE="'${{ github.workflow }}/${{ github.job }}' job completed with status: ${{ job.status }}"
+          REPO="${{ github.repository }}"
+          LINK="https://github.com/$REPO/actions/runs/${{ github.run_id }}"
+          PAYLOAD="{\"workflow\": \"${{ github.workflow }}\", \"status\": \"${{ job.status }}\", \"message\": \"$MESSAGE\", \"link\": \"$LINK\", \"repository\": \"$REPO\"}"
+          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" ${{ secrets.SLACK_NOTIFICATION_WEBHOOK }}
 
-      - name: Google Chat Notification (Error)
+      - name: Slack Notification (Error)
         if: failure()
-        uses: Co-qn/google-chat-notification@b9227d9daa4638c9782a5bd16c4abb86268127a1
-        with:
-          name: ${{ github.job }}
-          url: ${{ secrets.GOOGLE_CHAT_WEBHOOK_ERRORS }}
-          status: ${{ job.status }}
+        run: |
+          MESSAGE="'${{ github.workflow }}/${{ github.job }}' job FAILED!"
+          REPO="${{ github.repository }}"
+          LINK="https://github.com/$REPO/actions/runs/${{ github.run_id }}"
+          PAYLOAD="{\"workflow\": \"${{ github.workflow }}\", \"status\": \"${{ job.status }}\", \"message\": \"$MESSAGE\", \"link\": \"$LINK\", \"repository\": \"$REPO\"}"
+          curl -X POST -H "Content-Type: application/json" -d "$PAYLOAD" ${{ secrets.SLACK_ERROR_WEBHOOK }}

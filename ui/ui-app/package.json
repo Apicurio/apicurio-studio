@@ -51,6 +51,6 @@
     "react-router-dom": "6.30.0",
     "use-resize-observer": "9.1.0",
     "uuid": "11.1.0",
-    "yaml": "2.7.0"
+    "yaml": "2.7.1"
   }
 }

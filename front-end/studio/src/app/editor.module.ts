@@ -170,6 +170,10 @@ import {AddExtensionDialogComponent} from "./pages/apis/{apiId}/editor/_componen
 import {ReferencePropertiesSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/definition/reference-properties-section.component";
 import {AaitagsSectionComponent} from "./pages/apis/{apiId}/editor/_components/forms/channel/operation/aaitags-section.component";
 import {AaiAddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/aaiadd-tag.component";
+import {CorrelationIdEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/correlationid-editor.component";
+import {CorrelationIdItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/correlationid-item.component";
+import {CorrelationIdFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/correlationid-form.component";
+import {CorrelationIdSelectComponent} from "./pages/apis/{apiId}/editor/_components/forms/shared/correlationid-select.component";
 
 @NgModule({
     imports: [
@@ -204,7 +208,8 @@ import {AaiAddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/
         ResponseEditorComponent, MessageTraitEditorComponent, MessageEditorComponent, OneOfInMessageEditorComponent, ResponseFormComponent, CloneResponseDefinitionDialogComponent,
         AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
         SchemaRowComponent, AddSchemaDialogComponent, CloneChannelDialogComponent, ExtensionsSectionComponent,
-        ExtensionRowComponent, JsonSummaryComponent, InlineJsonEditorComponent, AddExtensionDialogComponent, AaitagsSectionComponent, AaiAddTagDialogComponent
+        ExtensionRowComponent, JsonSummaryComponent, InlineJsonEditorComponent, AddExtensionDialogComponent, AaitagsSectionComponent, AaiAddTagDialogComponent,
+        CorrelationIdEditorComponent, CorrelationIdItemComponent, CorrelationIdFormComponent, CorrelationIdSelectComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

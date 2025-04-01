@@ -1,0 +1,92 @@
+.correlationids {
+}
+.correlationids.expanded {
+    border: 1px solid #bbb;
+    box-shadow: 0 2px 6px rgba(3,3,3,.2);
+    margin-bottom: 3px;
+}
+
+.correlationids .correlationid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    padding: 8px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #f5f5f5;
+}
+.correlationids .correlationid:hover {
+    background-color: #edf8ff;
+}
+.correlationids.expanded .correlationid {
+    border-bottom: solid 1px #bbb;
+    background-color: #def3ff;
+}
+
+.correlationids .correlationid .reference {
+    flex-basis: 22%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 5px;
+}
+.correlationids .correlationid .reference > span {
+    font-weight: 600;
+    color: #333;
+}
+.correlationids .correlationid .reference > span.fa {
+    font-weight: normal;
+    margin-right: 3px;
+}
+.correlationids .correlationid .reference .icon-override {
+    font-size: 16px;
+    font-weight: normal;
+    cursor: help;
+    margin-right: 3px;
+}
+
+.correlationids .correlationid .type {
+    flex-basis: 38%;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 15px;
+}
+.correlationids .correlationid .type:hover {
+    color: #0088ce;
+    cursor: pointer;
+}
+
+.correlationids .body {
+    position: relative;
+    padding: 15px;
+}
+.correlationids .body .close {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+}
+
+.correlationids .problem-flex {
+    display: flex;
+}
+.correlationids .problem-flex .grow {
+    flex-grow: 1;
+}
+.correlationids .problem-flex > *:first-child {
+    margin-right: 7px;
+    margin-top: 2px;
+}
+
+.correlationids div.form-label {
+    margin-top: 15px;
+    font-weight: 600;
+}
+.correlationids .correlationids-reference div.form-label {
+    margin-top: 2px;
+}
+
+.dropdown {
+    display: inline-block;
+    margin-left: 3px;
+    margin-right: 3px;
+}

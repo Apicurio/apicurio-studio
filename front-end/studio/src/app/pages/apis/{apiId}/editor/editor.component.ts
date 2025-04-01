@@ -79,6 +79,7 @@ import {MessageTraitEditorComponent} from "./_components/editors/messagetrait-ed
 import {MessageEditorComponent} from "./_components/editors/message-editor.component";
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 import { OneOfInMessageEditorComponent } from "./_components/editors/oneof-in-message-editor.component";
+import {CorrelationIdEditorComponent} from "./_components/editors/correlationid-editor.component";
 
 
 @Component({
@@ -655,6 +656,10 @@ export class ApiEditorComponent extends AbstractApiEditorComponent implements On
 
 
     getOneOfInMessageEditor(): OneOfInMessageEditorComponent {
+        return null;
+    }
+
+    getCorrelationIdEditor(): CorrelationIdEditorComponent {
         return null;
     }
 

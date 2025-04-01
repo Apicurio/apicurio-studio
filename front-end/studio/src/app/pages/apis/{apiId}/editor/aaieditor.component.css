@@ -153,10 +153,6 @@
     margin-right: 4px;
 }
 
-.aai-editor .editor-master .editor-outline .api-message:hover {
-    background-color: #d1eaf7;
-}
-
 .aai-editor .editor-master .editor-outline .api-message.selected {
     background-color: #a5d6ef;
     border-left: 2px solid #39a5dc;
@@ -925,7 +921,8 @@
 #definition-context-menu,
 #message-context-menu,
 #operationtrait-context-menu,
-#messagetrait-context-menu {
+#messagetrait-context-menu,
+#correlationid-context-menu {
     display: block;
     position: fixed;
 }

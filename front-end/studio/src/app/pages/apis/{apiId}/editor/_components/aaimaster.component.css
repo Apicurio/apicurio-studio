@@ -2,7 +2,7 @@
     padding-left: 15px;
     font-size: 14px;
 }
-.aai-editor .editor-master .editor-outline .api-operationtrait.hover {
+.aai-editor .editor-master .editor-outline .api-operationtrait:hover {
     cursor: pointer;
     background-color: #d1eaf7;
 }
@@ -39,7 +39,11 @@
     padding-left: 15px;
     font-size: 14px;
 }
-.aai-editor .editor-master .editor-outline .api-messagetrait.hover {
+.aai-editor .editor-master .editor-outline .api-message:hover {
+    cursor: pointer;
+    background-color: #d1eaf7;
+}
+.aai-editor .editor-master .editor-outline .api-messagetrait:hover {
     cursor: pointer;
     background-color: #d1eaf7;
 }
@@ -115,4 +119,42 @@
 
 .editor-master .editor-outline .master-entity-list:focus {
     outline: none;
+}
+
+.aai-editor .editor-master .editor-outline .api-correlationid {
+    padding-left: 15px;
+    font-size: 14px;
+}
+.aai-editor .editor-master .editor-outline .api-correlationid:hover {
+    background-color: #d1eaf7;
+    cursor: pointer;
+
+}
+.aai-editor .editor-master .editor-outline .api-correlationid.selected {
+    background-color: #a5d6ef;
+    border-left: 2px solid #39a5dc;
+}
+.aai-editor .editor-master .editor-outline .api-correlationid.contexted,
+.aai-editor .editor-master .editor-outline .api-correlationid.contexted:hover {
+    background-color: #FFCC87;
+    border-left: 2px dotted #E89F3D;
+}
+.aai-editor .editor-master .editor-outline .api-correlationid.selected .label {
+    -webkit-transition: border-color 350ms, box-shadow 350ms;
+    -moz-transition: border-color 350ms, box-shadow 350ms;
+    -ms-transition: border-color 350ms, box-shadow 350ms;
+    -o-transition: border-color 350ms, box-shadow 350ms;
+    transition: border-color 350ms, box-shadow 350ms;
+}
+.aai-editor .editor-master .editor-outline .api-correlationid.selected .label:hover {
+    box-shadow: 0 0 3px #646464;
+    border: 1px solid #666;
+}
+.aai-editor .editor-master .editor-outline .api-correlationid.selected .label.selected {
+    border: 1px solid black;
+    box-shadow: 0 0 3px #141414;
+}
+
+.api-correlationid-item > * {
+    margin-right: 4px;
 }

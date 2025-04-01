@@ -78,19 +78,6 @@
         </div>
 
         <div class="half-section right" *ngIf="hasMessage() && !isMultiMessages()">
-            <!-- Correlation ID -->
-            <div class="section-field-label">
-                <validation-problem [model]="messageFromOperation()" [shallow]="true" [property]="'name'"></validation-problem>
-                <span>Correlation ID</span>
-            </div>
-            <div class="section-field name">
-                <pf-inline-text-editor [value]="messageFromOperation().name" [noValueMessage]="'No name.'"
-                                        [labelClass]="'api-version'"
-                                        [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
-                                        [baseNode]="messageFromOperation()" nodePath="name"
-                                        (onChange)="changeName($event)"></pf-inline-text-editor>
-            </div>
-
             <!-- Content Type -->
             <div class="section-field-label" *ngIf="hasMessage() && !isMultiMessages()">
                 <validation-problem [model]="messageFromOperation()" [shallow]="true" [property]="'contentType'"></validation-problem>
@@ -115,6 +102,13 @@
                                         (onValueChange)="changeSchemaFormat($event)"
                                         noSelectionLabel="No Schema Format"></drop-down>
             </div>
+
+            <!-- Correlation Id -->
+            <div class="section-field-label">
+                <span>Correlation Id</span>
+            </div>
+            <correlationid-select [message]="messageFromOperation()"></correlationid-select>
+
         </div>
 
         <div class="section-field-label" *ngIf="hasMessage() && !isMultiMessages()">

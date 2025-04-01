@@ -39,11 +39,13 @@ export function componentTypeToString(type: ComponentType): string {
             return "messageTrait";
         case ComponentType.message:
             return "message";
+        case ComponentType.correlationId:
+            return "correlationId";
     }
     return "n/a";
 }
 
 export enum ComponentType {
     schema, response, parameter, header, requestBody, callback, example, securityScheme, link, messageTrait,
-    message,
+    message, correlationId
 }

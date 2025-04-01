@@ -1,0 +1,31 @@
+<div class="correlationids" [class.expanded]="isEditing()">
+    <div class="correlationid">
+        <div class="reference">
+            <span>Reference</span>
+        </div>
+        <div class="problem-flex type" (click)="toggleEditing()" [class.selected]="isEditing()">
+            <span class="fa fa-angle-right" [class.fa-angle-down]="isEditing()"></span>
+            <span [class.empty]="!refSelected">{{ refSelected }}</span>
+        </div>
+    </div>
+    <div class="body" *ngIf="isEditing()">
+        <div class="content container-fluid">
+            <form  class="form-horizontal">
+                <div class="col-md-11">
+                    <div class="mt-content">
+                        <div class="mt-type">
+                            <div class="schema-type-type">
+                                <span class="strong dropdown-label">Correlation Id:</span>
+                                <drop-down [id]="'api-correlation-id'"
+                                           [value]="refSelected"
+                                           [options]="correlationIdOptions()"
+                                           (onValueChange)="changeRefType($event)"
+                                           [noSelectionLabel]="'Choose Correlation Id'"></drop-down>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

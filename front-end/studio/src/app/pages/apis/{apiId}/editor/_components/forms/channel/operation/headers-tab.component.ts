@@ -24,7 +24,7 @@ import {
 } from "@angular/core";
 import { 
     AaiDocument,
-    AaiMessage, 
+    AaiMessageBase,
     CommandFactory,
     ICommand,
     SimplifiedType
@@ -43,7 +43,7 @@ import {SelectionService} from "../../../../_services/selection.service";
 })
 export class HeadersTabComponent extends AbstractBaseComponent {
 
-    @Input() message: AaiMessage;
+    @Input() message: AaiMessageBase;
 
     protected _model: SimplifiedType = null;
     protected editing: boolean = false;
@@ -98,7 +98,7 @@ export class HeadersTabComponent extends AbstractBaseComponent {
         nt.of = newType.of;
         nt.as = newType.as;
         
-        let command: ICommand = CommandFactory.createChangeHeadersRefCommand_Aai20$java_lang_String$io_apicurio_datamodels_asyncapi_models_AaiMessage(nt.type, this.message);
+        let command: ICommand = CommandFactory.createChangeHeadersRefCommand_Aai20$java_lang_String$io_apicurio_datamodels_asyncapi_models_AaiMessageBase(nt.type, this.message);
         this.commandService.emit(command);
         this._model = nt;
     }

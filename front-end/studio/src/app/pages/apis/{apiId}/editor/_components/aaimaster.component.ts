@@ -40,7 +40,7 @@ import {
     AaiMessageTraitDefinition,
     AaiOperationTraitDefinition,
     TraverserDirection,
-    VisitorUtil, AaiMessage
+    VisitorUtil, AaiMessage, AaiCorrelationId
 } from "@apicurio/data-models";
 import {AddChannelDialogComponent} from "./dialogs/add-channel.component";
 import {CloneDefinitionDialogComponent} from "./dialogs/clone-definition.component";
@@ -67,6 +67,12 @@ import {CloneChannelDialogComponent} from "./dialogs/clone-channel.component";
 import {ConfigService} from "../../../../../services/config.service";
 import {FindMessageDefinitionsVisitor} from "../_visitors/message-definitions.visitor";
 import {IMessageEditorHandler, MessageData, MessageEditorComponent} from "./editors/message-editor.component";
+import {FindCorrelationIdDefinitionsVisitor} from "../_visitors/correlationid-definitions.visitor";
+import {
+    CorrelationIdData,
+    CorrelationIdEditorComponent,
+    ICorrelationIdEditorHandler
+} from "./editors/correlationid-editor.component";
 
 
 /**
@@ -108,6 +114,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     @ViewChild("renameMessageTraitDialog", { static: true }) renameMessageTraitDialog: RenameEntityDialogComponent;
 
     @ViewChild("renameMessageDialog", { static: true }) renameMessageDialog: RenameEntityDialogComponent;
+    @ViewChild("renameCorrelationIdDialog", { static: true }) renameCorrelationIdDialog: RenameEntityDialogComponent;
 
     filterCriteria: string = null;
     _channels: AaiChannelItem[];
@@ -115,6 +122,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     _opTraitsDefs: AaiOperationTraitDefinition[];
     _msgTraitsDefs: AaiMessageTraitDefinition[];
     _msgsDefs: AaiMessage[];
+    _correlationIdsDefs: AaiCorrelationId[];
 
     /**
      * C'tor.
@@ -145,6 +153,7 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         this._opTraitsDefs = null;
         this._msgTraitsDefs = null;
         this._msgsDefs = null;
+        this._correlationIdsDefs = null;
     }
 
     public onChannelsKeypress(event: KeyboardEvent): void {
@@ -655,11 +664,70 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      */
     public deleteMessage(): void {
         let definition: AaiMessage = this.contextMenuSelection.resolve(this.document) as AaiMessage;
-        let command: ICommand = CommandFactory.createDeleteMessageDefinitionCommand(definition.getName());
+        let command: ICommand = CommandFactory.createDeleteCorrelationIdDefinitionCommand(definition.getName());
         this.commandService.emit(command);
         this.closeContextMenu();
     }
 
+    public hasCorrelationIds(): boolean {
+        let correlationIdList = this.correlationIds();
+        return !!correlationIdList && correlationIdList.length > 0;
+    }
+
+    public correlationIds(): AaiCorrelationId[] {
+        if (!this._correlationIdsDefs) {
+            if (this.document.components) {
+                let viz: FindCorrelationIdDefinitionsVisitor = new FindCorrelationIdDefinitionsVisitor(this.filterCriteria);
+                this.document.components.getCorrelationIdsList().forEach(corrIdDef => {
+                    VisitorUtil.visitNode(corrIdDef, viz);
+                })
+                this._correlationIdsDefs = viz.getSortedCorrelationIdDefinitions();
+            } else {
+                this._correlationIdsDefs = [];
+            }
+        }
+        return this._correlationIdsDefs;
+    }
+
+    public addCorrelationId(mes: CorrelationIdData): void {
+        console.info("[AsyncAPIEditorMasterComponent] Adding a correlation id: ", mes);
+        let command: ICommand = CommandFactory.createNewCorrelationIdDefinitionCommand(mes.name, mes.description);
+        this.commandService.emit(command);
+        this.deselectCorrelationId();
+    }
+
+    /**
+     * Called when the user clicks "Rename Correlation Id" in the context-menu for a Correlation Id.
+     */
+    public renameCorrelationId(event?: RenameEntityEvent): void {
+        if (undefined === event || event === null) {
+            let corrId: AaiCorrelationId = <any>this.contextMenuSelection.resolve(this.document);
+            let name: string = corrId.getName();
+            let corrIdNames: string[] = [];
+            VisitorUtil.visitTree(this.document, new class extends CombinedVisitorAdapter {
+                public visitCorrelationId(node: AaiCorrelationId): void {
+                    corrIdNames.push(node.getName());
+                }
+            }, TraverserDirection.down);
+            this.renameCorrelationIdDialog.open(corrId, name, newName => {
+                return corrIdNames.indexOf(newName) !== -1;
+            });
+        } else {
+            let corrId: AaiCorrelationId = <any>event.entity;
+            let oldName: string = corrId.getName();
+            console.info("[AsyncApiEditorMasterComponent] Rename correlation id to: %s", event.newName);
+            let command: ICommand = CommandFactory.createRenameCorrelationIdDefinitionCommand(oldName, event.newName);
+            this.commandService.emit(command);
+        }
+    }
+
+    public deleteCorrelationId(): void {
+        let definition: AaiCorrelationId = this.contextMenuSelection.resolve(this.document) as AaiCorrelationId;
+        let command: ICommand = CommandFactory.createDeleteCorrelationIdDefinitionCommand(definition.getName());
+        this.commandService.emit(command);
+        this.closeContextMenu();
+    }
+    
     /**
      * Converts a JSON formatted string example to an object.
      * @param from
@@ -762,6 +830,14 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Called when the user selects a message trait definition from the master area.
+     * @param correlationId
+     */
+    public selectCorrelationId(correlationId: AaiCorrelationId): void {
+        this.__selectionService.selectNode(correlationId);
+    }
+
+    /**
      * Deselects the currently selected message trait definition.
      */
     public deselectMessageTrait(): void {
@@ -772,6 +848,13 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
      * Deselects the currently selected message definition.
      */
     public deselectMessage(): void {
+        this.selectMain();
+    }
+
+    /**
+     * Deselects the currently selected message definition.
+     */
+    public deselectCorrelationId(): void {
         this.selectMain();
     }
 
@@ -876,6 +959,20 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Called when the user right-clicks on a correlation id definition.
+     * @param event
+     * @param corrId
+     */
+    public showCorrelationIdContextMenu(event: MouseEvent, corrId: AaiCorrelationId): void {
+        event.preventDefault();
+        event.stopPropagation();
+        this.contextMenuPos.left = event.clientX + "px";
+        this.contextMenuPos.top = event.clientY + "px";
+        this.contextMenuSelection = Library.createNodePath(corrId);
+        this.contextMenuType = "correlationId";
+    }
+
+    /**
      * Called when the user clicks somewhere in the document.  Used to close the context
      * menu if it is open.
      */
@@ -968,6 +1065,15 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
     }
 
     /**
+     * Returns the classes that should be applied to the correlation id definition in the master view.
+     * @param node
+     * @return
+     */
+    public correlationIdClasses(node: Node): string {
+        return this.entityClasses(node);
+    }
+
+    /**
      * Opens the Add Definition Editor (full screen editor for adding a data type).
      */
     public openAddDefinitionEditor(): void {
@@ -1023,6 +1129,20 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
         dtEditor.open(handler, this.document);
     }
 
+    /**
+     * Opens the Add Correlation Id Editor (full screen editor for adding a data type).
+     */
+    public openAddCorrelationIdEditor(): void {
+        let editor: CorrelationIdEditorComponent = this.editors.getCorrelationIdEditor();
+        let handler: ICorrelationIdEditorHandler = {
+            onSave: (event) => {
+                this.addCorrelationId(event.data);
+            },
+            onCancel: () => { /* Do nothing on cancel... */ }
+        };
+        editor.open(handler, this.document);
+    }
+    
     importsEnabled(): boolean {
         return this.features.getFeatures().componentImports;
     }
@@ -1037,6 +1157,9 @@ export class AsyncApiEditorMasterComponent extends AbstractBaseComponent {
 
     importMessages(): void {
         this.onImportComponent.emit(ComponentType.message);
+    }
+    importCorrelationIds(): void {
+        this.onImportComponent.emit(ComponentType.correlationId);
     }
 }
 

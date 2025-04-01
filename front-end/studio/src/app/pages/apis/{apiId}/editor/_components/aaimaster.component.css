@@ -2,7 +2,7 @@
     padding-left: 15px;
     font-size: 14px;
 }
-.aai-editor .editor-master .editor-outline .api-operationtrait.hover {
+.aai-editor .editor-master .editor-outline .api-operationtrait:hover {
     cursor: pointer;
     background-color: #d1eaf7;
 }
@@ -39,7 +39,11 @@
     padding-left: 15px;
     font-size: 14px;
 }
-.aai-editor .editor-master .editor-outline .api-messagetrait.hover {
+.aai-editor .editor-master .editor-outline .api-message:hover {
+    cursor: pointer;
+    background-color: #d1eaf7;
+}
+.aai-editor .editor-master .editor-outline .api-messagetrait:hover {
     cursor: pointer;
     background-color: #d1eaf7;
 }

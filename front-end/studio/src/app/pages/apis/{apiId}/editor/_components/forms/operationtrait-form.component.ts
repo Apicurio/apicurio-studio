@@ -106,4 +106,10 @@ export class OperationTraitFormComponent extends SourceFormComponent<AaiOperatio
                 "description", newDescription);
         this.commandService.emit(command);
     }
+    
+    public changeOperationId(newOperationId: string): void {
+        console.info("[OperationTraitFormComponent] User changed the operationId.");
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.operationTrait, "operationId", newOperationId);
+        this.commandService.emit(command);
+    }
 }

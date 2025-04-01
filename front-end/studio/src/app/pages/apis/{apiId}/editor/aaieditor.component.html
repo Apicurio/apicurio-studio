@@ -22,6 +22,8 @@
                             *ngSwitchCase="'messageTrait_20'"></messagetrait-form>
         <message-form [message]="selectedMessage()" class="editor-detail-form"
                            *ngSwitchCase="'message_20'"></message-form>
+        <correlationid-form [correlationId]="selectedCorrelationId()" class="editor-detail-form"
+                      *ngSwitchCase="'correlationId_20'"></correlationid-form>
     </div>
 
     <data-type-editor #dataTypeEditor></data-type-editor>

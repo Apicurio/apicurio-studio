@@ -321,6 +321,7 @@ export class ActivityItemComponent {
             case "ReplaceResponseDefinitionCommand_20":
             case "ReplaceResponseDefinitionCommand_30":
             case "ReplaceDocumentCommand":
+            case "ReplaceCorrelationIdDefinitionCommand":
                 rval = "code";
                 break;
             case "RenamePathItemCommand":
@@ -678,7 +679,7 @@ export class ActivityItemComponent {
                 rval = "added a new Channel named '" + this.command()["_newChannel"] + "'.";
                 break;
             case "NewCorrelationIdDefinitionCommand":
-                rval = "added a new Correlation Id named '" + this.command()["_newName"] + "'.";
+                rval = "added a new Correlation Id definition named '" + this.command()["_newName"] + "'.";
                 break;
             case "NewRequestBodyCommand":
             case "NewRequestBodyCommand_20":
@@ -739,6 +740,9 @@ export class ActivityItemComponent {
                 break;
             case "ReplaceDocumentCommand":
                 rval = `fully replaced the source for the entire API!`;
+                break;
+            case "ReplaceCorrelationIdDefinitionCommand":
+                rval = "fully replaced the source for Correlation Id Definition '" + this.command()["_correlationIdName"] + "'.";
                 break;
             case "ReplaceSchemaDefinitionCommand":
             case "ReplaceSchemaDefinitionCommand_20":

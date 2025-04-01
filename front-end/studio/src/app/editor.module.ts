@@ -172,6 +172,7 @@ import {AaitagsSectionComponent} from "./pages/apis/{apiId}/editor/_components/f
 import {AaiAddTagDialogComponent} from "./pages/apis/{apiId}/editor/_components/dialogs/aaiadd-tag.component";
 import {CorrelationIdEditorComponent} from "./pages/apis/{apiId}/editor/_components/editors/correlationid-editor.component";
 import {CorrelationIdItemComponent} from "./pages/apis/{apiId}/editor/_components/forms/correlationid-item.component";
+import {CorrelationIdFormComponent} from "./pages/apis/{apiId}/editor/_components/forms/correlationid-form.component";
 
 @NgModule({
     imports: [
@@ -207,7 +208,7 @@ import {CorrelationIdItemComponent} from "./pages/apis/{apiId}/editor/_component
         AsyncApiEditorComponent, GraphQLEditorComponent, PropertiesSectionComponent, InheritanceSchemasSectionComponent,
         SchemaRowComponent, AddSchemaDialogComponent, CloneChannelDialogComponent, ExtensionsSectionComponent,
         ExtensionRowComponent, JsonSummaryComponent, InlineJsonEditorComponent, AddExtensionDialogComponent, AaitagsSectionComponent, AaiAddTagDialogComponent,
-        CorrelationIdEditorComponent, CorrelationIdItemComponent
+        CorrelationIdEditorComponent, CorrelationIdItemComponent, CorrelationIdFormComponent
     ],
     providers: [
         ProblemsService, SelectionService, LicenseService, CommandService, DocumentService, EditorsService,

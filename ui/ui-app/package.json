@@ -18,8 +18,8 @@
     "@types/react": "18.3.20",
     "@types/react-dom": "18.3.5",
     "@types/uuid": "10.0.0",
-    "@typescript-eslint/eslint-plugin": "8.28.0",
-    "@typescript-eslint/parser": "8.28.0",
+    "@typescript-eslint/eslint-plugin": "8.29.0",
+    "@typescript-eslint/parser": "8.29.0",
     "@vitejs/plugin-react-swc": "3.8.1",
     "eslint": "8.57.1",
     "eslint-plugin-react-hooks": "5.2.0",
@@ -51,6 +51,6 @@
     "react-router-dom": "6.30.0",
     "use-resize-observer": "9.1.0",
     "uuid": "11.1.0",
-    "yaml": "2.7.0"
+    "yaml": "2.7.1"
   }
 }

@@ -96,18 +96,6 @@
                 </div>
 
                 <div class="half-section right">
-                    <!-- Correlation ID -->
-                    <div class="section-field-label">
-                        <validation-problem [model]="message" [shallow]="true" [property]="'name'"></validation-problem>
-                        <span>Correlation ID</span>
-                    </div>
-                    <div class="section-field name">
-                        <pf-inline-text-editor [value]="message.name" [noValueMessage]="'No name.'"
-                                               [labelClass]="'api-version'"
-                                               [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
-                                               [baseNode]="message" nodePath="name"
-                                               (onChange)="changeName($event)"></pf-inline-text-editor>
-                    </div>
 
                     <!-- Content Type -->
                     <div class="section-field-label">

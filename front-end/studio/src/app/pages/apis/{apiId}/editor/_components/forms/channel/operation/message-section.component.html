@@ -102,6 +102,13 @@
                                         (onValueChange)="changeSchemaFormat($event)"
                                         noSelectionLabel="No Schema Format"></drop-down>
             </div>
+
+            <!-- Correlation Id -->
+            <div class="section-field-label">
+                <span>Correlation Id</span>
+            </div>
+            <correlationid-select [message]="messageFromOperation()"></correlationid-select>
+
         </div>
 
         <div class="section-field-label" *ngIf="hasMessage() && !isMultiMessages()">

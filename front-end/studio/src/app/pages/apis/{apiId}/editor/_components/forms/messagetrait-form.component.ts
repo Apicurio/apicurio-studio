@@ -42,6 +42,7 @@ import {CommandService} from "../../_services/command.service";
 import {DocumentService} from "../../_services/document.service";
 import {EditorsService} from "../../_services/editors.service";
 import {ApiCatalogService} from "../../_services/api-catalog.service";
+import {SchemaUtil} from "../../_util/schema.util";
 
 @Component({
     selector: "messagetrait-form",
@@ -112,5 +113,30 @@ export class MessageTraitFormComponent extends SourceFormComponent<AaiMessageTra
         let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.messageTrait,
                 "description", newDescription);
         this.commandService.emit(command);
+    }
+
+    public changeName(newName: string): void {
+        console.info("[MessageTraitFormComponent] Changing message name to: ", this.messageTrait);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.messageTrait,
+            "name", newName);
+        this.commandService.emit(command);
+    }
+
+    public changeContentType(newContentType: string): void {
+        console.info("[MessageTraitFormComponent] Changing message contentType to: ", newContentType);
+        let command: ICommand = CommandFactory.createChangePropertyCommand<string>(this.messageTrait,
+            "contentType", newContentType);
+        this.commandService.emit(command);
+    }
+
+    public changeSchemaFormat(newSchemaFormat: boolean): void {
+        console.info("[MessageTraitFormComponent] Changing message schemaFormat to: ", newSchemaFormat);
+        let command: ICommand = CommandFactory.createChangePropertyCommand(this.messageTrait,
+            "schemaFormat", newSchemaFormat);
+        this.commandService.emit(command);
+    }
+
+    public schemaFormatOptions() {
+        return SchemaUtil.schemaFormatOptions;
     }
 }

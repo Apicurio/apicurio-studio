@@ -18,7 +18,7 @@
   "private": false,
   "peerDependencies": {
     "@patternfly/patternfly": "1.0.250",
-    "@apicurio/data-models": "1.1.30",
+    "@apicurio/data-models": "1.1.32",
     "apicurio-ts-core": "0.1.3",
     "keycloak-js": "^16.1.1",
     "brace": "0.11.1",
@@ -49,7 +49,7 @@
     "@types/js-base64": "2.3.1",
     "@types/marked": "0.6.1",
     "@types/node": "15.14.0",
-    "@apicurio/data-models": "1.1.30",
+    "@apicurio/data-models": "1.1.32",
     "apicurio-ts-core": "0.1.3",
     "keycloak-js": "^16.1.1",
     "brace": "0.11.1",

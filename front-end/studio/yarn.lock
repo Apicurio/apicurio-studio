@@ -249,10 +249,10 @@
   dependencies:
     tslib "^2.0.0"
 
-"@apicurio/data-models@1.1.30":
-  version "1.1.30"
-  resolved "https://artifactory.s.arkea.com/artifactory/api/npm/npm/@apicurio/data-models/-/data-models-1.1.30.tgz#be60781eb1296b2cda497e161100d0619f53561b"
-  integrity sha512-6GWSZKRREKiBgqzRfL7QJiTlUaflP0FnFQ02h4W6Jqdtoal247nQRxdyDEPK8s8wmIVJp8MP3zlvWgkLCMOgag==
+"@apicurio/data-models@1.1.32":
+  version "1.1.32"
+  resolved "https://artifactory.s.arkea.com/artifactory/api/npm/npm/@apicurio/data-models/-/data-models-1.1.32.tgz#b78a76e8a32773148287d96f219b3a8ce90f117a"
+  integrity sha512-2M2he5jrcjSNCiOveevZ8Qs3hNV3KK8W+Rurf6R34NMqxnXJbxQygw1KvYgop23CAjSKV4EjDnv0o7X+yU9kIA==
   dependencies:
     core-js "3.27.2"
 

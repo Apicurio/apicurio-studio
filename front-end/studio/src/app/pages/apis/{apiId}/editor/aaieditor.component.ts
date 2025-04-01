@@ -44,7 +44,7 @@ import {
     AaiMessageTraitDefinition,
     OtCommand,
     OtEngine,
-    ValidationProblem, AaiMessage, IDocumentValidatorExtension
+    ValidationProblem, AaiMessage, IDocumentValidatorExtension, AaiCorrelationId
 } from "@apicurio/data-models";
 import {AsyncApiEditorMasterComponent} from "./_components/aaimaster.component";
 import {VersionedAck} from "../../../../models/ack.model";
@@ -75,6 +75,7 @@ import * as YAML from 'js-yaml';
 import {AaiServerEditorComponent} from "./_components/editors/aaiserver-editor.component";
 import {MessageEditorComponent} from "./_components/editors/message-editor.component";
 import {OneOfInMessageEditorComponent} from "./_components/editors/oneof-in-message-editor.component";
+import {CorrelationIdEditorComponent} from "./_components/editors/correlationid-editor.component";
 
 
 @Component({
@@ -130,6 +131,7 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
     @ViewChild("messageEditor", { static: true }) messageEditor: MessageEditorComponent;
     @ViewChild("oneOfInMessageEditor", { static: true }) oneOfInMessageEditor: OneOfInMessageEditorComponent;
     @ViewChild("propertyEditor", { static: true }) propertyEditor: PropertyEditorComponent;
+    @ViewChild("correlationIdEditor", { static: true }) correlationIdEditor: CorrelationIdEditorComponent;
 
 
     formType: string;
@@ -522,6 +524,14 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         }
     }
 
+    public selectedCorrelationId(): AaiCorrelationId {
+        if (this.currentSelectionType === "correlationId") {
+            return this.currentSelectionNode as AaiCorrelationId;
+        } else {
+            return null;
+        }
+    }
+
     public preDocumentChange(): void {
         // Before changing the document, let's clear/reset the current selection
         this.selectionService.clearAllSelections();
@@ -661,6 +671,10 @@ export class AsyncApiEditorComponent extends AbstractApiEditorComponent implemen
         return this.oneOfInMessageEditor;
     }
 
+    getCorrelationIdEditor(): CorrelationIdEditorComponent {
+        return this.correlationIdEditor;
+    }
+    
     importComponent(type: ComponentType) {
         if (this.componentImporter) {
             this.componentImporter(type).then(imports => {
@@ -746,5 +760,10 @@ export class FormSelectionVisitor extends CombinedVisitorAdapter {
     public visitMessage(node: AaiMessage): void {
         this._selectedNode = node;
         this._selectionType = "message";
+    }
+
+    public visitCorrelationId(node: AaiCorrelationId): void {
+        this._selectedNode = node;
+        this._selectionType = "correlationId";
     }
 }

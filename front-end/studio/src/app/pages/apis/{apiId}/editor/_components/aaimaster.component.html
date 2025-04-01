@@ -106,6 +106,25 @@
         </li>
     </ul>
 
+    <!-- Correlation id Context Menu -->
+    <ul id="correlationid-context-menu" class="dropdown-menu context-menu" *ngIf="contextMenuType === 'correlationId'"
+        (window:keydown)="onGlobalKeyDown($event)"
+        [style.left]="contextMenuPos.left" [style.top]="contextMenuPos.top">
+        <li>
+            <a href="#" onclick="return false" (click)="renameCorrelationId()">
+                <span class="fa fa-pencil-square-o"></span>
+                <span>Rename</span>
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="#" onclick="return false" (click)="deleteCorrelationId()">
+                <span class="pficon pficon-delete"></span>
+                <span>Delete</span>
+            </a>
+        </li>
+    </ul>
+
     <!-- Search - Used to Filter Channels and Data Type -->
     <div class="editor-search">
         <search [placeholder]="'Search everything...'" [searchId]="'masterSearch'" (onSearch)="filterAll($event)"></search>
@@ -217,6 +236,28 @@
                 </div>
             </div>
         </section>
+
+        <!-- Correlation ids Section -->
+        <section type="correlationid" label="Correlation Ids" [counterItems]="correlationIds()" [inForm]="false"
+                 collaborationNodePath="/components/correlationIds"
+                 contextHelp="Reusable correlation ids can be defined.">
+            <span actions>
+                <icon-button (onClick)="openAddCorrelationIdEditor()" [pullRight]="true" type="add" title="Create Correlation Id"></icon-button>
+                <icon-button *ngIf="importsEnabled()" (onClick)="importCorrelationIds()" [pullRight]="true" type="import" title="Import Correlation Ids"></icon-button>
+            </span>
+            <div body tabindex="0" class="correlationid-list master-entity-list" (keydown)="onDefinitionsKeypress($event)" #correlationIdList>
+                <signpost *ngIf="!hasCorrelationIds()">
+                    <span>No correlation ids have been created.</span>
+                    <a (click)="openAddCorrelationIdEditor()">Add a correlation id</a>
+                </signpost>
+
+                <div class="api-correlationid {{ correlationIdClasses(correlationId) }}" *ngFor="let correlationId of correlationIds()">
+                    <div class="api-correlationid-item" correlationid-item [correlationId]="correlationId"
+                         (click)="correlationIdList.focus() ; selectCorrelationId(correlationId)"
+                         (contextmenu)="showCorrelationIdContextMenu($event, correlationId)"></div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <!-- Dialogs -->
@@ -254,4 +295,11 @@
                           validationPattern="[a-zA-Z0-9\.\-_]+"
                           validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
                           (onRename)="renameMessage($event)"></rename-entity-dialog>
+    <rename-entity-dialog #renameCorrelationIdDialog
+                          type="Correlation Id"
+                          title="Rename Correlation Id"
+                          warning="Renaming a Correlation Id will also update any references to the correlation id elsewhere in the API (e.g. operation)."
+                          validationPattern="[a-zA-Z0-9\.\-_]+"
+                          validationError="Enter a valid name (only alpha-numeric characters are allowed - no whitespace)."
+                          (onRename)="renameCorrelationId($event)"></rename-entity-dialog>
 </div>

@@ -1,0 +1,22 @@
+span.icon {
+    line-height: 21px;
+}
+span.name {
+    flex-grow: 2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+span.imported {
+    font-size: 11px;
+    border-radius: 2px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.validation-aggregate {
+}
+
+.collaborator-aggregate {
+}

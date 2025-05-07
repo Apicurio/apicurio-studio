@@ -34,7 +34,7 @@ jobs:
 
   build-test:
     name: Build and Test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: github.repository_owner == 'apicurio'
     steps:
       - name: Checkout Code with Ref '${{ github.ref }}'

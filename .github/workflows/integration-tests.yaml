@@ -25,7 +25,7 @@ concurrency:
 jobs:
   prepare-ui-tests:
     name: Prepare for UI Integration Tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: github.repository_owner == 'Apicurio' && !contains(github.event.*.labels.*.name, 'DO NOT MERGE')
     steps:
       - name: Show Actor
@@ -69,7 +69,7 @@ jobs:
 
   integration-tests-ui:
     name: Integration Tests UI
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: [prepare-ui-tests]
     steps:
       - name: Checkout Code

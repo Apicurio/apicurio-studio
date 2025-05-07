@@ -9,7 +9,7 @@ on:
 jobs:
   publish-docs:
     if: github.repository_owner == 'Apicurio'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
 
       - name: Apicurio Website Checkout

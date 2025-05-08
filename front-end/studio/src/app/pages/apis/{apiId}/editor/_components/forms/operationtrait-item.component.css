@@ -20,3 +20,12 @@ span.imported {
 
 .collaborator-aggregate {
 }
+
+.half-section {
+    width: 50%;
+    display: inline-block;
+}
+
+.half-section.right {
+    float: right;
+}

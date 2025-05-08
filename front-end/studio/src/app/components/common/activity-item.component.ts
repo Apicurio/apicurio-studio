@@ -235,6 +235,7 @@ export class ActivityItemComponent {
             case "DeleteContactCommand":
             case "DeleteContactCommand_20":
             case "DeleteContactCommand_30":
+            case "DeleteCorrelationIdDefinitionCommand":
             case "DeleteLicenseCommand":
             case "DeleteLicenseCommand_20":
             case "DeleteLicenseCommand_30":
@@ -287,6 +288,7 @@ export class ActivityItemComponent {
             case "NewSecuritySchemeCommand_20":
             case "NewSecuritySchemeCommand_30":
             case "NewChannelCommand":
+            case "NewCorrelationIdDefinitionCommand":
             case "NewMessageDefinitionCommand":
             case "NewMessageTraitDefinitionCommand":
             case "NewOperationCommand_Aai20":
@@ -319,10 +321,12 @@ export class ActivityItemComponent {
             case "ReplaceResponseDefinitionCommand_20":
             case "ReplaceResponseDefinitionCommand_30":
             case "ReplaceDocumentCommand":
+            case "ReplaceCorrelationIdDefinitionCommand":
                 rval = "code";
                 break;
             case "RenamePathItemCommand":
             case "RenameChannelItemCommand":
+            case "RenameCorrelationIdDefinitionCommand":
             case "RenameParameterCommand":
             case "RenameSchemaDefinitionCommand":
             case "RenameSchemaDefinitionCommand_20":
@@ -567,6 +571,9 @@ export class ActivityItemComponent {
             case "DeleteChildSchemaCommand_Aai20":
                 rval = "deleted child schema to schema from path '" + this.command()["_schemaPath"] + "'";
                 break;
+            case "DeleteCorrelationIdDefinitionCommand":
+                rval = "deleted correlation id definition with name '" + this.command()["_name"] + "'";
+                break;
             case "DeleteOneOfMessageCommand":
                 rval = "deleted Message from component/operation'" + JSON.stringify(this.command()["_oldMessage"]) + ".";
                 break;
@@ -671,6 +678,9 @@ export class ActivityItemComponent {
             case "NewChannelCommand":
                 rval = "added a new Channel named '" + this.command()["_newChannel"] + "'.";
                 break;
+            case "NewCorrelationIdDefinitionCommand":
+                rval = "added a new Correlation Id definition named '" + this.command()["_newName"] + "'.";
+                break;
             case "NewRequestBodyCommand":
             case "NewRequestBodyCommand_20":
             case "NewRequestBodyCommand_30":
@@ -731,6 +741,9 @@ export class ActivityItemComponent {
             case "ReplaceDocumentCommand":
                 rval = `fully replaced the source for the entire API!`;
                 break;
+            case "ReplaceCorrelationIdDefinitionCommand":
+                rval = "fully replaced the source for Correlation Id Definition '" + this.command()["_correlationIdName"] + "'.";
+                break;
             case "ReplaceSchemaDefinitionCommand":
             case "ReplaceSchemaDefinitionCommand_20":
             case "ReplaceSchemaDefinitionCommand_30":
@@ -749,6 +762,9 @@ export class ActivityItemComponent {
                 break;
             case "RenameChannelItemCommand":
                 rval = `renamed a channel from '${this.command()['_oldChannelName']}' to '${this.command()['_newChannelName']}'.`;
+                break;
+            case "RenameCorrelationIdDefinitionCommand":
+                rval = `renamed a Correlation Id from '${this.command()['_oldName']}' to '${this.command()['_newName']}'.`;
                 break;
             case "RenameParameterCommand":
                 rval = `renamed a ${this.command()['_paramIn']} parameter from '${this.command()['_oldParamName']}' to '${this.command()['_newParamName']}'.`;

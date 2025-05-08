@@ -37,40 +37,57 @@
     <div class="api-path-detail">
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="apipath-2-get">
-                <!-- Summary -->
-                <div class="section-field-label">
-                    <validation-problem [model]="operationTrait" [shallow]="true" [property]="'summary'"></validation-problem>
-                    <span>Summary</span>
+                <div class="half-section">
+                    <!-- Summary -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="operationTrait" [shallow]="true" [property]="'summary'"></validation-problem>
+                        <span>Summary</span>
+                    </div>
+                    <div class="section-field summary">
+                        <pf-inline-text-editor [value]="operationTrait.summary" [noValueMessage]="'No summary.'"
+                                                [labelClass]="'api-version'"
+                                                [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                                [baseNode]="operationTrait" nodePath="summary"
+                                                (onChange)="changeSummary($event)"></pf-inline-text-editor>
+                    </div>
+    
+                    <!-- Description -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="operationTrait" [shallow]="true" [property]="'description'"></validation-problem>
+                        <span>Description</span>
+                    </div>
+                    <div class="section-field description">
+                        <inline-markdown-editor [value]="operationTrait.description" [noValueMessage]="'No description.'"
+                                                [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
+                                                [inputClass]="'api-item-description'"
+                                                [formClass]="'api-description-editor-form'"
+                                                [baseNode]="operationTrait" nodePath="description"
+                                                (onChange)="changeDescription($event)"></inline-markdown-editor>
+                    </div>
+    
+                    <!-- Tags -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="operationTrait" [shallow]="true" [property]="'tags'"></validation-problem>
+                        <span>Tags</span>
+                    </div>
+                    <div class="section-field tags">
+                        <aaitags-section [node]="operationTrait"></aaitags-section>
+                    </div>
                 </div>
-                <div class="section-field summary">
-                    <pf-inline-text-editor [value]="operationTrait.summary" [noValueMessage]="'No summary.'"
-                                            [labelClass]="'api-version'"
-                                            [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
-                                            [baseNode]="operationTrait" nodePath="summary"
-                                            (onChange)="changeSummary($event)"></pf-inline-text-editor>
-                </div>
-
-                <!-- Description -->
-                <div class="section-field-label">
-                    <validation-problem [model]="operationTrait" [shallow]="true" [property]="'description'"></validation-problem>
-                    <span>Description</span>
-                </div>
-                <div class="section-field description">
-                    <inline-markdown-editor [value]="operationTrait.description" [noValueMessage]="'No description.'"
-                                            [labelClass]="'api-item-editor api-description-editor operation-description api-item-description'"
-                                            [inputClass]="'api-item-description'"
-                                            [formClass]="'api-description-editor-form'"
-                                            [baseNode]="operationTrait" nodePath="description"
-                                            (onChange)="changeDescription($event)"></inline-markdown-editor>
-                </div>
-
-                <!-- Tags -->
-                <div class="section-field-label">
-                    <validation-problem [model]="operationTrait" [shallow]="true" [property]="'tags'"></validation-problem>
-                    <span>Tags</span>
-                </div>
-                <div class="section-field tags">
-                    <aaitags-section [node]="operationTrait"></aaitags-section>
+                
+                <div class="half-section right">
+                    <!-- Operation ID -->
+                    <div class="section-field-label">
+                        <validation-problem [model]="operationTrait" [shallow]="true" [property]="'operationId'"></validation-problem>
+                        <span>Operation ID</span>
+                    </div>
+                    <div class="section-field operationId">
+                        <pf-inline-text-editor [value]="operationTrait.operationId" [noValueMessage]="'No Operation ID'"
+                                               [labelClass]="'api-item-operation-id'"
+                                               [inputClass]="'api-item-editor api-operationId-editor api-item-operationId'"
+                                               [baseNode]="operationTrait" nodePath="operationId"
+                                               (onChange)="changeOperationId($event)"></pf-inline-text-editor>
+                    </div>
                 </div>
             </div>
         </div>

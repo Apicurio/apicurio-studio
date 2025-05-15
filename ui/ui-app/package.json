@@ -45,12 +45,12 @@
     "@patternfly/react-table": "5.4.16",
     "oidc-client-ts": "3.2.1",
     "prop-types": "15.8.1",
-    "protobufjs": "7.5.1",
+    "protobufjs": "7.5.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "6.30.0",
     "use-resize-observer": "9.1.0",
     "uuid": "11.1.0",
-    "yaml": "2.7.1"
+    "yaml": "2.8.0"
   }
 }

@@ -15,7 +15,7 @@
   "devDependencies": {
     "@apicurio/eslint-config": "0.3.0",
     "@monaco-editor/react": "4.7.0",
-    "@types/react": "18.3.21",
+    "@types/react": "18.3.22",
     "@types/react-dom": "18.3.7",
     "@types/uuid": "10.0.0",
     "@typescript-eslint/eslint-plugin": "8.32.1",
@@ -48,7 +48,7 @@
     "protobufjs": "7.5.2",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-router-dom": "6.30.0",
+    "react-router-dom": "6.30.1",
     "use-resize-observer": "9.1.0",
     "uuid": "11.1.0",
     "yaml": "2.8.0"

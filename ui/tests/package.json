@@ -14,8 +14,8 @@
     "@apicurio/eslint-config": "0.3.0",
     "@playwright/test": "1.53.0",
     "@types/node": "22.15.32",
-    "@typescript-eslint/eslint-plugin": "8.34.0",
-    "@typescript-eslint/parser": "8.34.0",
+    "@typescript-eslint/eslint-plugin": "8.34.1",
+    "@typescript-eslint/parser": "8.34.1",
     "eslint": "8.57.1",
     "eslint-plugin-react-hooks": "5.2.0",
     "eslint-plugin-react-refresh": "0.4.20"

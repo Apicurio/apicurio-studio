@@ -1,0 +1,71 @@
+services:
+  keycloak:
+    container_name: inmemorywithauth-keycloak
+    image: quay.io/keycloak/keycloak:23.0.7
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: "localhost"
+      KC_HOSTNAME_PORT: "8080"
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
+    command:
+      - start-dev
+      - --import-realm
+    ports:
+      - 8080:8080
+    volumes:
+      - ../config/realm.json:/opt/keycloak/data/import/realm.json
+
+  apicurio-registry:
+    image: apicurio/apicurio-registry:latest-snapshot
+    container_name: inmemorywithauth-apicurio-registry-api
+    environment:
+      apicurio.rest.deletion.group.enabled: "true"
+      apicurio.rest.deletion.artifact.enabled: "true"
+      apicurio.rest.deletion.artifact-version.enabled: "true"
+      apicurio.rest.mutability.artifact-version-content.enabled: "true"
+
+      QUARKUS_OIDC_TENANT_ENABLED: "true"
+      QUARKUS_OIDC_AUTH_SERVER_URL: "http://keycloak:8080/realms/apicurio"
+      QUARKUS_OIDC_CLIENT_ID: "registry-api"
+      QUARKUS_OIDC_TLS_VERIFICATION: "none"
+
+      apicurio.ui.auth.oidc.redirect-uri: "http://localhost:8888/"
+      APICURIO_UI_AUTH_OIDC_CLIENT_ID: "apicurio-registry"
+
+      QUARKUS_HTTP_CORS_ORIGINS: "*"
+      QUARKUS_PROFILE: "prod"
+    ports:
+      - "8081:8080"
+    depends_on:
+      - keycloak
+
+  apicurio-registry-ui:
+    image: apicurio/apicurio-registry-ui:latest-snapshot
+    container_name: inmemorywithauth-apicurio-registry-ui
+    environment:
+      REGISTRY_API_URL: "http://localhost:8081/apis/registry/v3"
+      REGISTRY_AUTH_TYPE: "oidc"
+      REGISTRY_AUTH_URL: "http://localhost:8080/realms/apicurio"
+      REGISTRY_AUTH_CLIENT_ID: "registry-ui"
+    ports:
+      - "8888:8080"
+    depends_on:
+      - apicurio-registry
+      - keycloak
+
+  apicurio-studio-ui:
+    image: apicurio/apicurio-studio-ui:1.1.0-Beta4
+    container_name: inmemorywithauth-apicurio-studio-ui
+    environment:
+      APICURIO_REGISTRY_API_URL: "http://localhost:8081/apis/registry/v3"
+      APICURIO_AUTH_TYPE: "oidc"
+      APICURIO_AUTH_URL: "http://localhost:8080/realms/apicurio"
+      APICURIO_AUTH_CLIENT_ID: "studio-ui"
+      APICURIO_AUTH_REDIRECT_URL: "http://localhost:8889/"
+      APICURIO_REGISTRY_UI_URL: "http://localhost:8888/"
+    ports:
+      - "8889:8080"
+    depends_on:
+      - apicurio-registry
+      - keycloak

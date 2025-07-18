@@ -1,6 +1,6 @@
 {
   "name": "@apicurio/studio-ui-tests",
-  "version": "1.1.0",
+  "version": "1.1.0-Dev",
   "description": "UI tests (playwright) for Apicurio Studio UI",
   "repository": "https://github.com/Apicurio/apicurio-studio.git",
   "main": "index.js",

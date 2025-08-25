@@ -15,7 +15,7 @@
   "devDependencies": {
     "@apicurio/eslint-config": "0.3.0",
     "@monaco-editor/react": "4.7.0",
-    "@types/react": "18.3.23",
+    "@types/react": "18.3.24",
     "@types/react-dom": "18.3.7",
     "@types/uuid": "10.0.0",
     "@typescript-eslint/eslint-plugin": "8.40.0",
